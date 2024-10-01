@@ -1,27 +1,39 @@
 import "./App.css";
-import {
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import { Fragment } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { DefaultLayout } from "./Layouts";
-import { Home } from "./Pages";
-
+import { publicRoutes } from "./routes";
 function App() {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        <Route path="/" element={<DefaultLayout />}>
-          <Route index element={<Home />}></Route>
-        </Route>
-      </>
-    )
-  );
   return (
-    <>
-      <RouterProvider router={router} />
-    </>
+    <BrowserRouter>
+      <div className={`App`}>
+        <Routes>
+          {publicRoutes.map((route, index) => {
+            const Page = route.component;
+            let Layout = DefaultLayout;
+
+            if (route.layout) {
+              Layout = route.layout;
+            } else {
+              if (route.layout === null) {
+                Layout = Fragment;
+              }
+            }
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                }
+              ></Route>
+            );
+          })}
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
