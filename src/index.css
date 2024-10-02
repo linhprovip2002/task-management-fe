@@ -1,26 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @import 'normalize.css';
 
 :root {
-  --primary: #fe2c55;
-  --black: #000;
-  --white: #fff;
-  --text-color: #161823;
+  --primary: #0C66E4;
+  --primary-cyan: #E9F2FF; 
+  --text-color: #172B4D;
   --default-layout-height: 60px;
   --default-layout-width: 1150px;
   --default-layout-horizontal-spacer: 24px;
-  --font-family: 'ProximaNova', sans-serif;
-  --background-dark: rgba(18, 18, 18, 1);
-  --background-gray: rgba(255, 255, 255, 0.12);
-  --text-white: rgba(255, 255, 255, 0.9);
-  --text-gray: rgba(22, 24, 35, 0.5);
+
 }
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 body {
@@ -58,4 +55,9 @@ a {
 
 input[type='range' i] {
   appearance: none;
+}
+
+@font-face {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  src: url('../src/Assets/fonts/BlinkMacSystemFont.ttf');
 }
