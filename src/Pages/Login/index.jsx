@@ -17,7 +17,18 @@ const Login = memo((props) => {
                 fontSize: 14,
                 borderRadius: 4,
               }}
+              type="email"
               placeholder="Nhập email của bạn"
+              className="text-[14px] mb-2"
+            />
+
+            <Input
+              sx={{
+                fontSize: 14,
+                borderRadius: 4,
+              }}
+              placeholder="Nhập mật khẩu"
+              type="password"
               className="text-[14px] mb-2"
             />
             <Button sx={{ borderRadius: 4 }} className="w-full" variant="solid">
