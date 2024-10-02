@@ -1,10 +1,8 @@
 import config from '../config';
-import BoardLayout from '../Layouts/BoardLayout';
-import Board from '../Pages/Board';
+import { BoardLayout } from '../Layouts';
+import { Board, Home, Login } from '../Pages';
 
 // Page
-import Home from '../Pages/Home';
-import Login from '../Pages/Login';
 
 // Khong can dang nhap
 const publicRoutes = [

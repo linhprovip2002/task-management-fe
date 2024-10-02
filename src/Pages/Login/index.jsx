@@ -11,7 +11,7 @@ const Login = memo((props) => {
         <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
           <div>
             <h3 className="font-semibold">TRELLO</h3>
-            <span className="text-[16px]">Đăng nhập để tiếp tục</span>
+            <span className="text-[14px]">Đăng nhập để tiếp tục</span>
             <Input
               sx={{
                 fontSize: 14,
@@ -57,9 +57,9 @@ const Login = memo((props) => {
               <Divider variant="inset" component="li" />
             </div>
             <div className="flex">
-              <Link className="text-[#0c66e4] text-[14px]">Bạn không đăng nhập được ?</Link>
+              <Link className="text-[#0c66e4] text-[14px] hover:underline">Bạn không đăng nhập được ?</Link>
               <p className="text-[14px] text-[#42526E] mx-2">•</p>
-              <Link className="text-[#0c66e4] text-[14px]">Tạo tài khoản</Link>
+              <Link className="text-[#0c66e4] text-[14px] hover:underline">Tạo tài khoản</Link>
             </div>
           </div>
         </div>
