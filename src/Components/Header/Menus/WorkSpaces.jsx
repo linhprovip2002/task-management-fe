@@ -8,13 +8,13 @@ import ContentPaste from '@mui/icons-material/ContentPaste'
 import Cloud from '@mui/icons-material/Cloud';
 import { Divider, ListItemIcon, ListItemText } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import { pageBackgroundColor } from '~/ultis/constantTheme';
 
-export default function WorkSpaces() {
-  
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+
+export default function WorkSpaces() {  
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {

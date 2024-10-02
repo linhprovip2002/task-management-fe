@@ -1,5 +1,4 @@
 import AppsIcon from "@mui/icons-material/Apps";
-import SelectSmall from "../SelectSmall/SelectSmall";
 import TrelloLogoIcon from "../TrelloLogoIcon/TrelloLogoIcon";
 import WorkSpaces from "./Menus/WorkSpaces";
 import Recent from "./Menus/Recent";
@@ -58,7 +57,6 @@ const Header = () => {
             />
           </div>
           <div className="flex items-center w-full md:w-auto">
-            <SelectSmall />
             <NotificationsNoneIcon
               sx={{ marginLeft: "8px", color: 'primary.main' }}
               className="cursor-pointer"
