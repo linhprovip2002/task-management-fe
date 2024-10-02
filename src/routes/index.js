@@ -1,6 +1,6 @@
 import config from '../config';
 import { BoardLayout } from '../Layouts';
-import { Board, Home, Login } from '../Pages';
+import { Board, Home, Login, SignUp } from '../Pages';
 
 // Page
 
@@ -8,6 +8,7 @@ import { Board, Home, Login } from '../Pages';
 const publicRoutes = [
   { path: config.routes.root, component: Home },
   { path: config.routes.login, component: Login, layout: null },
+  { path: config.routes.signup, component: SignUp, layout: null },
   { path: config.routes.board, component: Board, layout: BoardLayout },
 ];
 

@@ -59,7 +59,9 @@ const Login = memo((props) => {
             <div className="flex">
               <Link className="text-[#0c66e4] text-[14px] hover:underline">Bạn không đăng nhập được ?</Link>
               <p className="text-[14px] text-[#42526E] mx-2">•</p>
-              <Link className="text-[#0c66e4] text-[14px] hover:underline">Tạo tài khoản</Link>
+              <Link to="/signup" className="text-[#0c66e4] text-[14px] hover:underline">
+                Tạo tài khoản
+              </Link>
             </div>
           </div>
         </div>
