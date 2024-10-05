@@ -28,7 +28,7 @@ export default function Stared() {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        sx={{ fontSize: '16px'}}
+        sx={{  textTransform: 'none', color: '#44546f' }}
         endIcon={<ExpandMoreIcon />}
       >
         Stared
