@@ -11,7 +11,7 @@ const Login = memo((props) => {
         <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
           <div>
             <h3 className="font-semibold">TRELLO</h3>
-            <span className="text-[14px]">Đăng nhập để tiếp tục</span>
+            <span className="text-[14px] font-medium">Đăng nhập để tiếp tục</span>
             <Input
               sx={{
                 fontSize: 14,

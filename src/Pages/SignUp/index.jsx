@@ -24,7 +24,7 @@ function SignUp(props) {
           <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
             <div>
               <h3 className="font-semibold">TRELLO</h3>
-              <span className="text-[14px]">Đăng ký để tiếp tục</span>
+              <span className="text-[14px] font-medium">Đăng ký để tiếp tục</span>
 
               <Input
                 value={email}
