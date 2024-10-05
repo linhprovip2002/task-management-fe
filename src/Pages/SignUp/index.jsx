@@ -5,6 +5,7 @@ import Input from '@mui/joy/Input';
 import { Button, Divider, FormControl, FormHelperText } from '@mui/joy';
 import { Link } from 'react-router-dom';
 import { InfoOutlined } from '@mui/icons-material';
+import { Apple, FaceBookColor, GoogleColor } from '../../Components/Icons';
 
 function SignUp(props) {
   const [email, setEmail] = useState('');
@@ -73,9 +74,34 @@ function SignUp(props) {
                   </FormHelperText>
                 )}
               </FormControl>
+
+              <p className="text-[12px]">
+                Bằng việc đăng ký, tôi chấp nhận Điều khoản dịch vụ của Atlassian Cloud và công nhận Chính sách quyền
+                riêng tư.
+              </p>
               <Button onClick={handleSignUp} sx={{ borderRadius: 4 }} className="w-full" variant="solid">
                 Đăng ký
               </Button>
+
+              <div className="mt-6 text-center">
+                <span className="mb-4 text-[14px] font-bold text-slate-400">Hoặc tiếp tục với:</span>
+              </div>
+
+              <div>
+                <div className="h-10 w-full flex justify-center items-center gap-2 border-solid border-2 border-gray-300 cursor-pointer hover:bg-slate-50 mb-4">
+                  <GoogleColor />
+                  <span className="text-[14px] font-bold">Google</span>
+                </div>
+                <div className="h-10 w-full flex justify-center items-center gap-2 border-solid border-2 border-gray-300 cursor-pointer hover:bg-slate-50 mb-4">
+                  <FaceBookColor />
+                  <span className="text-[14px] font-bold">Facebook</span>
+                </div>
+
+                <div className="h-10 w-full flex justify-center items-center gap-2 border-solid border-2 border-gray-300 cursor-pointer hover:bg-slate-50 mb-4">
+                  <Apple />
+                  <span className="text-[14px] font-bold">Apple</span>
+                </div>
+              </div>
 
               <div className="my-4">
                 <Divider variant="inset" component="li" />
