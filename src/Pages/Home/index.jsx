@@ -5,7 +5,7 @@ import Divider from '@mui/material/Divider';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import Board from '../Board';
-import Collapse from '../../Components/Collapse';
+// import Collapse from '../../Components/Collapse';
 
 const Home = () => {
   return (
