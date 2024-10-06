@@ -3,5 +3,6 @@ const routes = {
   login: '/login',
   board: '/board',
   signup: '/signup',
+  listboard: '/listboard',
 };
 export default routes;
