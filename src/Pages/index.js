@@ -1,4 +1,12 @@
-export { default as Home } from './Home';
-export { default as Login } from './Login';
-export { default as Board } from './Board';
-export { default as SignUp } from './SignUp';
+export { default as Home } from "./Home";
+export { default as Login } from "./Login";
+export { default as Board } from "./Board";
+export { default as SignUp } from "./SignUp";
+// Workspace
+export { default as WorkspaceHighlights } from "./Workspaces/Highlights";
+export { default as WorkspaceViews } from "./Workspaces/Views";
+export { default as WorkspaceMembers } from "./Workspaces/Members";
+export { default as DashBoard } from "./Workspaces/DashBoard";
+export { default as WorkspaceSettings } from "./Workspaces/Settings";
+// User
+export { default as UserBoards } from "./Users/Boards";
