@@ -5,6 +5,7 @@ import Divider from '@mui/material/Divider';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import Board from '../Board';
+import Collapse from '../../Components/Collapse';
 
 const Home = () => {
   return (
@@ -47,18 +48,18 @@ const Home = () => {
         <div className="w-full">
           <div className="p-8">
             <h2 className="text-2xl font-bold uppercase text-[#44546f]">Không gian làm việc 1</h2>
-            <span className='text-[#44546f] text-[12px] flex items-center font-normal'>
-              <LockIcon sx={{width: '12px', height: '12px'}}/> {" "}
-              private</span>
+            <span className="text-[#44546f] text-[12px] flex items-center font-normal">
+              <LockIcon sx={{ width: '12px', height: '12px' }} /> private
+            </span>
           </div>
           <Divider sx={{ width: 'full', margin: '8px 0' }} />
-          <div className='pl-3'>
-            <div className='flex items-center my-2'>
-              <PersonIcon sx={{width: '18px', height: '18px'}}/>
-              <p className='text-lg font-medium text-[#44546f]'>Các bảng của bạn</p>
+          <div className="pl-3">
+            <div className="flex items-center my-2">
+              <PersonIcon sx={{ width: '18px', height: '18px' }} />
+              <p className="text-lg font-medium text-[#44546f]">Các bảng của bạn</p>
             </div>
             <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-              <div className=''>
+              <div className="">
                 <Board />
               </div>
             </div>
