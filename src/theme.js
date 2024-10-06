@@ -35,6 +35,17 @@ const theme = createTheme({
         },
       },
     },
+    MuiPaper: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          fontSize: '14px',
+          textTransform: 'none',
+          fontWeight: '500',
+          marginTop: '12px'
+        },
+      },
+    },
     MuiInputLabel: {
       styleOverrides: {
         // Name of the slot
