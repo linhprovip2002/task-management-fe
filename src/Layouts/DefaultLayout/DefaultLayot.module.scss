@@ -1,53 +1,53 @@
-.wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all ease-in 200ms;
-}
-.container {
-    width: var(--default-layout-width);
-    max-width: 100%;
-    min-height: 1000px;
-    display: flex;
-    padding: 0px var(--default-layout-horizontal-spacer);
-    margin-top: 60px;
-}
-.sidebar_container {
-    height: 100%;
-    width: 356px;
-    padding: 20px 0px 26px 8px;
-    position: fixed;
-    overflow: overlay;
-}
-.content {
-    flex: 1;
-    margin-left: 356px;
-}
-.dark {
-    background-color: var(--background-dark);
-    transition: all ease-in 200ms;
-}
-/* PC */
-@media (min-width: 1024px) {
-}
+// .wrapper {
+//     width: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     transition: all ease-in 200ms;
+// }
+// .container {
+//     width: var(--default-layout-width);
+//     max-width: 100%;
+//     min-height: 1000px;
+//     display: flex;
+//     padding: 0px var(--default-layout-horizontal-spacer);
+//     margin-top: 60px;
+// }
+// .sidebar_container {
+//     height: 100%;
+//     width: 356px;
+//     padding: 20px 0px 26px 8px;
+//     position: fixed;
+//     overflow: overlay;
+// }
+// .content {
+//     flex: 1;
+//     margin-left: 356px;
+// }
+// .dark {
+//     background-color: var(--background-dark);
+//     transition: all ease-in 200ms;
+// }
+// /* PC */
+// @media (min-width: 1024px) {
+// }
 
-/* Tablet */
-@media (min-width: 740px) and (max-width: 1023px) {
-}
-//  mobile
-@media (max-width: 740px) {
-    .sidebar_container {
-        padding: 0 8px;
-        width: 72px;
-        flex: 0 0 72px;
-        border-right: 1px solid rgba(22, 24, 35, 0.12);
-        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.06);
-    }
-    .container {
-        padding: 0;
-    }
-    .content {
-        margin-left: 72px;
-    }
-}
+// /* Tablet */
+// @media (min-width: 740px) and (max-width: 1023px) {
+// }
+// //  mobile
+// @media (max-width: 740px) {
+//     .sidebar_container {
+//         padding: 0 8px;
+//         width: 72px;
+//         flex: 0 0 72px;
+//         border-right: 1px solid rgba(22, 24, 35, 0.12);
+//         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.06);
+//     }
+//     .container {
+//         padding: 0;
+//     }
+//     .content {
+//         margin-left: 72px;
+//     }
+// }
