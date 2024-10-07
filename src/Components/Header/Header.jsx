@@ -4,12 +4,26 @@ import WorkSpaces from './Menus/WorkSpaces';
 import Recent from './Menus/Recent';
 import Template from './Menus/Template';
 import Stared from './Menus/Stared';
-import { Button, TextField } from '@mui/material';
+import { Box, Button, ClickAwayListener, Fade, TextField } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import AccountMenu from './Menus/AccountMenu';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import NotificationsTab from '../NotificationsTab';
+import { useState } from 'react';
+import Popper from '@mui/material/Popper';
 
 const Header = () => {
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
+  };
+
+  const canBeOpen = open && Boolean(anchorEl);
+  const id = canBeOpen ? 'transition-popper' : undefined;
+
   return (
     <>
       {/* shadow-md #0c66e4 */}
@@ -47,7 +61,24 @@ const Header = () => {
             />
           </div>
           <div className="flex items-center w-full md:w-auto">
-            <NotificationsNoneIcon sx={{ color: 'primary.secondary' }} className="cursor-pointer" />
+            <button className="relative" aria-describedby={id} type="button" onClick={handleClick}>
+              <NotificationsNoneIcon sx={{ color: 'primary.secondary' }} className="cursor-pointer" />
+            </button>
+            <Popper placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                  <Box>
+                    <ClickAwayListener
+                      onClickAway={() => {
+                        setOpen(false);
+                      }}
+                    >
+                      <NotificationsTab />
+                    </ClickAwayListener>
+                  </Box>
+                </Fade>
+              )}
+            </Popper>
             <HelpOutlineIcon sx={{ color: 'primary.secondary', marginLeft: '8px' }} className="cursor-pointer" />
             <AccountMenu />
           </div>

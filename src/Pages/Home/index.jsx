@@ -11,7 +11,7 @@ const Home = () => {
   return (
     <>
       <div className="mx-[93px] mt-10 flex">
-        <sidebar className="px-4  w-[256px]">
+        <div className="px-4  w-[256px]">
           <div>
             <div className="flex items-center text-[14px] color-[#44546f] cursor-pointer py-3">
               <TrelloLogoIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
@@ -44,7 +44,7 @@ const Home = () => {
               </li>
             </ul>
           </div>
-        </sidebar>
+        </div>
         <div className="w-full">
           <div className="p-8">
             <h2 className="text-2xl font-bold uppercase text-[#44546f]">Không gian làm việc 1</h2>

@@ -6,8 +6,10 @@
 
 :root {
   --primary: #0c66e4;
+  --light-blue: #E9F2FF;
   --primary-cyan: #e9f2ff;
   --text-color: #172b4d;
+  --light-gray: #626f86;
   --hover-background: #091e420f;
   --default-layout-height: 60px;
   --default-layout-width: 1150px;
