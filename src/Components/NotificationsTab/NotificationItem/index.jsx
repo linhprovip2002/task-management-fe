@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import { Avatar } from '@mui/material';
 
-function NotificationsItem(props) {
+function NotificationsItem({ isReaded = false }) {
+  const [isReadedState, setIsReadedState] = useState(isReaded);
+  const handleMarkReaded = () => {
+    setIsReadedState((prev) => !prev);
+  };
+
   return (
-    <div className="relative flex mr-12 ml-4 mb-3 bg-white rounded-xl border-[1px] border-solid border-slate-200  shadow-sm">
+    <div className="NotifyItem relative flex mr-12 ml-4 mb-3 bg-white rounded-xl border-[1px] border-solid border-slate-200  shadow-sm">
       <div className="flex flex-col flex-1">
         <div className="py-[6px] px-2 flex items-center text-[var(--light-gray)]">
           <PeopleOutlinedIcon fontSize="small" />
@@ -13,7 +18,7 @@ function NotificationsItem(props) {
         <div className="bg-[var(--hover-background)]">
           <div className="flex pt-4 px-2 items-center">
             <Avatar sx={{ bgcolor: `var(--primary)`, width: 24, height: 24 }}>N</Avatar>
-            <div className="ml-2 flex flex-col items-start">
+            <div className="ml-2 flex flex-col items-start pb-2">
               <span className="font-bold text-[14px] text-[var(--text-color)]">Đặng Quang Nhật Linh</span>
               <div className="text-[14px] font-normal text-[var(--text-color)] text-left flex-col flex">
                 <span>Added you to the Workspace BKDN as admin</span>
@@ -24,7 +29,16 @@ function NotificationsItem(props) {
         </div>
       </div>
 
-      <div className="w-4 h-4 rounded-full bg-[var(--primary)] absolute right-[-36px] top-0"></div>
+      <div
+        onClick={handleMarkReaded}
+        className="absolute right-[-36px] top-0 w-6 h-6 flex items-center justify-center cursor-pointer hover:bg-[#cce0ff] rounded-sm"
+      >
+        {isReadedState ? (
+          <div className="w-4 h-4 rounded-full bg-[var(--primary)]"></div>
+        ) : (
+          <div className="w-4 h-4 rounded-full bg-white  border-solid border-[1px] border-[var(--border-gray)]"></div>
+        )}
+      </div>
     </div>
   );
 }

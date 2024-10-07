@@ -7,7 +7,7 @@ const NotificationsTab = React.forwardRef((props, ref) => {
   return (
     <div
       ref={ref}
-      className="bg-white mt-2 shadow-lg rounded-xl w-[400px] border-[1px] border-solid border-slate-200 max-h-[623px]"
+      className="NotificationsTab bg-white mt-2 shadow-lg rounded-xl w-[400px] border-[1px] border-solid border-slate-200 max-h-[623px]"
     >
       <div className="mt-10 mx-[10px] pb-5 border-b-1">
         <div className="flex justify-between border-b-[1px] border-solid border-slate-200">
@@ -22,7 +22,7 @@ const NotificationsTab = React.forwardRef((props, ref) => {
                 },
               }}
             />
-            <MoreVertIcon className="text-[var(--light-gray)]" />
+            <MoreVertIcon className="text-[var(--light-gray)] cursor-pointer hover:bg-slate-200 rounded-sm" />
           </div>
         </div>
         <div className="py-2 pl-3 pr-4 flex justify-end">
