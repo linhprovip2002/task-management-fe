@@ -1,13 +1,17 @@
-import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import GridViewIcon from "@mui/icons-material/GridView";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HomeIcon from "@mui/icons-material/Home";
+import TrelloLogoIcon from "../../../Components/TrelloLogoIcon/TrelloLogoIcon";
+
+const TrelloIcon = (
+  <TrelloLogoIcon style={{ color: "#44546f", width: "18px", height: "18px" }} />
+);
 
 export const WorkSpaceItems = (workspaceId) => [
   {
-    icon: <SpaceDashboardIcon />,
+    icon: TrelloIcon,
     title: "Boards",
     path: `/workspace/${workspaceId}/home`
   },
@@ -35,7 +39,7 @@ export const WorkSpaceItems = (workspaceId) => [
 
 export const UserItems = (id) => [
   {
-    icon: <SpaceDashboardIcon />,
+    icon: TrelloIcon,
     title: "Boards",
     path: `/user/${id}/boards`
   },
