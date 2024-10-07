@@ -4,7 +4,7 @@ import WorkSpaces from './Menus/WorkSpaces';
 import Recent from './Menus/Recent';
 import Template from './Menus/Template';
 import Stared from './Menus/Stared';
-import { Box, Button, ClickAwayListener, Fade, TextField } from '@mui/material';
+import { Box, Button, ClickAwayListener, Fade, TextField, Tooltip } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import AccountMenu from './Menus/AccountMenu';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -62,7 +62,9 @@ const Header = () => {
           </div>
           <div className="flex items-center w-full md:w-auto">
             <button className="relative" aria-describedby={id} type="button" onClick={handleClick}>
-              <NotificationsNoneIcon sx={{ color: 'primary.secondary' }} className="cursor-pointer" />
+              <Tooltip title="Notifications">
+                <NotificationsNoneIcon sx={{ color: 'primary.secondary' }} className="cursor-pointer" />
+              </Tooltip>
             </button>
             <Popper placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
               {({ TransitionProps }) => (
