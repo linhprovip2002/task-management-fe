@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import { Avatar } from '@mui/material';
 
-function NotificationsItem({ isReaded = false }) {
+function NotificationsItem({ isReaded = false, onAfterRead }) {
   const [isReadedState, setIsReadedState] = useState(isReaded);
-  const handleMarkReaded = () => {
+  const handleMarkReaded = (e) => {
     setIsReadedState((prev) => !prev);
+    handleAfterRead(e);
+  };
+
+  const handleAfterRead = (e) => {
+    if (onAfterRead) return onAfterRead(e);
   };
 
   return (
