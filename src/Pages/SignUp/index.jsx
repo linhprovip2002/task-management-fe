@@ -24,7 +24,7 @@ function SignUp(props) {
           <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
             <div>
               <h3 className="font-semibold">TRELLO</h3>
-              <span className="text-[14px] font-medium">Đăng ký để tiếp tục</span>
+              <span className="text-[14px] font-medium">Sign up to continue</span>
 
               <Input
                 value={email}
@@ -34,7 +34,7 @@ function SignUp(props) {
                   borderRadius: 4,
                 }}
                 type="email"
-                placeholder="Nhập email của bạn"
+                placeholder="Your email"
                 className="text-[14px] mb-2"
               />
 
@@ -45,7 +45,7 @@ function SignUp(props) {
                   fontSize: 14,
                   borderRadius: 4,
                 }}
-                placeholder="Nhập mật khẩu"
+                placeholder="Password"
                 type="password"
                 className="text-[14px] mb-2"
               />
@@ -62,7 +62,7 @@ function SignUp(props) {
                     fontSize: 14,
                     borderRadius: 4,
                   }}
-                  placeholder="Nhập lại mật khẩu"
+                  placeholder="Confirm your password"
                   type="password"
                   className="text-[14px]"
                 />
@@ -75,16 +75,15 @@ function SignUp(props) {
                 )}
               </FormControl>
 
-              <p className="text-[12px]">
-                Bằng việc đăng ký, tôi chấp nhận Điều khoản dịch vụ của Atlassian Cloud và công nhận Chính sách quyền
-                riêng tư.
+              <p className="text-[12px] mb-2">
+                By signing up, I accept the Atlassian Cloud Terms of Service and acknowledge the Privacy Policy.
               </p>
               <Button onClick={handleSignUp} sx={{ borderRadius: 4 }} className="w-full" variant="solid">
-                Đăng ký
+                Sign up
               </Button>
 
               <div className="mt-6 text-center">
-                <span className="mb-4 text-[14px] font-bold text-slate-400">Hoặc tiếp tục với:</span>
+                <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
               </div>
 
               <div>
@@ -108,7 +107,7 @@ function SignUp(props) {
               </div>
               <div className="flex">
                 <Link to="/login" className="text-[#0c66e4] text-[14px] hover:underline">
-                  Bạn đã có tài khoản Atlassian? Đăng nhập
+                  Already have an Atlassian account? Sign in
                 </Link>
               </div>
             </div>

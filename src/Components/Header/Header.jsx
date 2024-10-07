@@ -1,16 +1,15 @@
-import AppsIcon from "@mui/icons-material/Apps";
-import TrelloLogoIcon from "../TrelloLogoIcon/TrelloLogoIcon";
-import WorkSpaces from "./Menus/WorkSpaces";
-import Recent from "./Menus/Recent";
-import Template from "./Menus/Template";
-import Stared from "./Menus/Stared";
-import { Button, TextField } from "@mui/material";
+import AppsIcon from '@mui/icons-material/Apps';
+import TrelloLogoIcon from '../TrelloLogoIcon/TrelloLogoIcon';
+import WorkSpaces from './Menus/WorkSpaces';
+import Recent from './Menus/Recent';
+import Template from './Menus/Template';
+import Stared from './Menus/Stared';
+import { Button, TextField } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import AccountMenu from "./Menus/AccountMenu";
+import AccountMenu from './Menus/AccountMenu';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const Header = () => {
-
   return (
     <>
       {/* shadow-md #0c66e4 */}
@@ -53,7 +52,7 @@ const Header = () => {
               size="small"
               variant="outlined"
               className="w-full md:w-64"
-              sx={{ marginLeft: "8px" }}
+              sx={{ marginLeft: '8px' }}
             />
           </div>
           <div className="flex items-center w-full md:w-auto">

@@ -1,7 +1,7 @@
-import { Avatar, Divider } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import PersonIcon from "@mui/icons-material/Person";
-import { Board } from "../../../Components/Board/Board";
+import { Avatar, Divider } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import PersonIcon from '@mui/icons-material/Person';
+import { Board } from '../../../Components/Board/Board';
 
 const DashBoard = () => {
   const tempBoards = [1, 2, 3, 4, 5];
@@ -13,10 +13,7 @@ const DashBoard = () => {
         <div>
           <div className="flex gap-2 items-center text-xl font-bold">
             <div>Dashboard name</div>
-            <EditIcon
-              fontSize="10"
-              className="hover:bg-gray-200 hover:cursor-pointer p-1"
-            />
+            <EditIcon fontSize="10" className="hover:bg-gray-200 hover:cursor-pointer p-1" />
           </div>
           <div>Privacy</div>
         </div>

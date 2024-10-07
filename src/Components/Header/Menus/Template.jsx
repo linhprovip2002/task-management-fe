@@ -4,13 +4,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ContentCut from '@mui/icons-material/ContentCut';
 import ContentCopy from '@mui/icons-material/ContentCopy';
-import ContentPaste from '@mui/icons-material/ContentPaste'
+import ContentPaste from '@mui/icons-material/ContentPaste';
 import Cloud from '@mui/icons-material/Cloud';
 import { Divider, ListItemIcon, ListItemText } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-
-export default function Template() {  
+export default function Template() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -21,7 +20,7 @@ export default function Template() {
   };
 
   return (
-    <div className='ml-1 mr-1'>
+    <div className="ml-1 mr-1">
       <Button
         id="basic-button-template"
         aria-controls={open ? 'basic-menu-template' : undefined}
@@ -60,14 +59,12 @@ export default function Template() {
             <ContentCopy fontSize="small" />
           </ListItemIcon>
           <ListItemText>Copy</ListItemText>
-          
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <ContentPaste fontSize="small" />
           </ListItemIcon>
           <ListItemText>Paste</ListItemText>
-          
         </MenuItem>
       </Menu>
     </div>

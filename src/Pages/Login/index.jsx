@@ -11,14 +11,14 @@ const Login = memo((props) => {
         <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
           <div>
             <h3 className="font-semibold">TRELLO</h3>
-            <span className="text-[14px] font-medium">Đăng nhập để tiếp tục</span>
+            <span className="text-[14px] font-medium">Login to continue</span>
             <Input
               sx={{
                 fontSize: 14,
                 borderRadius: 4,
               }}
               type="email"
-              placeholder="Nhập email của bạn"
+              placeholder="Your email"
               className="text-[14px] mb-2"
             />
 
@@ -27,15 +27,15 @@ const Login = memo((props) => {
                 fontSize: 14,
                 borderRadius: 4,
               }}
-              placeholder="Nhập mật khẩu"
+              placeholder="Password"
               type="password"
               className="text-[14px] mb-2"
             />
             <Button sx={{ borderRadius: 4 }} className="w-full" variant="solid">
-              Tiếp tục
+              Continue
             </Button>
             <div className="mt-6">
-              <span className="mb-4 text-[14px] font-bold text-slate-400">Hoặc tiếp tục với:</span>
+              <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
             </div>
 
             <div>
@@ -57,10 +57,10 @@ const Login = memo((props) => {
               <Divider variant="inset" component="li" />
             </div>
             <div className="flex">
-              <Link className="text-[#0c66e4] text-[14px] hover:underline">Bạn không đăng nhập được ?</Link>
+              <Link className="text-[#0c66e4] text-[14px] hover:underline">You can't login ?</Link>
               <p className="text-[14px] text-[#42526E] mx-2">•</p>
               <Link to="/signup" className="text-[#0c66e4] text-[14px] hover:underline">
-                Tạo tài khoản
+                Create account
               </Link>
             </div>
           </div>
