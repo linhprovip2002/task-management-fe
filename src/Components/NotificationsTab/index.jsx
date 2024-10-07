@@ -1,12 +1,22 @@
-import { Switch } from '@mui/material';
+import { Box, Popper, Switch } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import NotificationsItem from './NotificationItem';
+import Wrapper from '../Wrapper';
+import NotifySetting from '../NotifySetting';
 
 const NotificationsTab = React.forwardRef((props, ref) => {
+  const [isOpenSetting, setIsOpenSetting] = useState(false);
+  const moreBtnRef = useRef(null);
+
+  const handleOpenSetting = (event) => {
+    setIsOpenSetting((previousOpen) => !previousOpen);
+  };
+
   const handleReadAll = () => {
     console.log('Handle read all');
   };
+
   return (
     <div
       ref={ref}
@@ -25,7 +35,20 @@ const NotificationsTab = React.forwardRef((props, ref) => {
                 },
               }}
             />
-            <MoreVertIcon className="text-[var(--light-gray)] cursor-pointer hover:bg-slate-200 rounded-sm" />
+            <button ref={moreBtnRef}>
+              <MoreVertIcon
+                onClick={handleOpenSetting}
+                className="text-[var(--light-gray)] cursor-pointer hover:bg-slate-200 rounded-sm"
+              />
+            </button>
+
+            <Popper placement="bottom-end" open={isOpenSetting} anchorEl={moreBtnRef.current}>
+              <Box>
+                <Wrapper>
+                  <NotifySetting />
+                </Wrapper>
+              </Box>
+            </Popper>
           </div>
         </div>
         <div onClick={handleReadAll} className="py-2 pl-3 pr-4 flex justify-end">
