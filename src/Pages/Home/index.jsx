@@ -13,33 +13,30 @@ const Home = () => {
       <div className="mx-[93px] mt-10 flex">
         <sidebar className="px-4  w-[256px]">
           <div>
-            <div className="flex items-center text-[14px] color-[#44546f] cursor-pointer py-3">
+            <div className="flex items-center text-[14px] color-[#44546f] p-2 rounded-md hover:bg-hoverBackground cursor-pointer py-3">
               <TrelloLogoIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
-              <p className="ml-3 font-medium">Bảng</p>
+              <p className="ml-3 font-medium">Boards</p>
             </div>
-            <div className="flex items-center text-[14px] color-[#44546f] cursor-pointer py-3">
-              <TrelloLogoIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
-              <p className="ml-3 font-medium">Mẫu</p>
-            </div>
-            <div className="flex items-center text-[14px] color-[#44546f] cursor-pointer py-3">
+            
+            <div className="flex items-center text-[14px] color-[#44546f] p-2 rounded-md hover:bg-hoverBackground cursor-pointer py-3">
               <ShowChartIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
-              <p className="ml-3 font-medium">Trang chủ</p>
+              <p className="ml-3 font-medium">Home</p>
             </div>
           </div>
           <Divider sx={{ width: '224px' }} />
           <div>
-            <p className="text-[14px] my-3">Các không gian làm việc</p>
+            <p className="text-[14px] my-3">Workspaces</p>
             <ul className="overflow-y-auto">
-              <li className="py-3 px-1 cursor-pointer rounded-md font-medium text-[14px] hover:bg-[rgb(245,249,254)]">
+              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
                 Không gian 1
               </li>
-              <li className="py-3 px-1 cursor-pointer rounded-md font-medium text-[14px] hover:bg-[rgb(245,249,254)]">
+              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
                 Không gian 2
               </li>
-              <li className="py-3 px-1 cursor-pointer rounded-md font-medium text-[14px] hover:bg-[rgb(245,249,254)]">
+              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
                 Không gian 3
               </li>
-              <li className="py-3 px-1 cursor-pointer rounded-md font-medium text-[14px] hover:bg-[rgb(245,249,254)]">
+              <li className="py-3 p-2 cursor-pointer rounded-md font-medium text-[14px] hover:bg-hoverBackground">
                 Không gian 4
               </li>
             </ul>
@@ -56,7 +53,7 @@ const Home = () => {
           <div className="pl-3">
             <div className="flex items-center my-2">
               <PersonIcon sx={{ width: '18px', height: '18px' }} />
-              <p className="text-lg font-medium text-[#44546f]">Các bảng của bạn</p>
+              <p className="text-lg font-medium text-[#44546f]">Your boards</p>
             </div>
             <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
               <div className="">

@@ -18,10 +18,10 @@ const Header = () => {
         {/* Left Section: Logo and Menu */}
         <div className="flex items-center space-x-4">
           <AppsIcon
-            style={{ color: '#44546f' }}
-            className="cursor-pointer"
+            style={{ color: '#44546f', hover: '#091e420f' }}
+            className="cursor-pointer hover:bg-hoverBackground"
           />
-          <div className="flex items-center space-x-2 cursor-pointer">
+          <div className="flex items-center space-x-2 cursor-pointer hover:bg-hoverBackground">
             <TrelloLogoIcon
               style={{ color: '#44546f' }}
               className="w-4 h-4"
@@ -58,11 +58,11 @@ const Header = () => {
           </div>
           <div className="flex items-center w-full md:w-auto">
             <NotificationsNoneIcon
-              sx={{ color: 'primary.secondary' }}
+              sx={{ color: 'primary.secondary', hover: '#091e420f' }}
               className="cursor-pointer"
             />
             <HelpOutlineIcon
-              sx={{ color: 'primary.secondary', marginLeft:'8px' }}
+              sx={{ color: 'primary.secondary', marginLeft:'8px', hover: '#091e420f' }}
               className="cursor-pointer"
             />
             <AccountMenu />

@@ -31,7 +31,26 @@ const theme = createTheme({
           // color: '#0c66e4',
           fontSize: '14px',
           textTransform: 'none',
-          fontWeight: '500'
+          fontWeight: '500',
+          '&:hover' : {
+            backgroundColor: '#091e420f',
+          }
+        },
+      },
+    },
+    MuiSvgIcon: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          // color: '#0c66e4',
+          // fontSize: '14px',
+          // textTransform: 'none',
+          // fontWeight: '500',
+          
+          '&:hover' : {
+            backgroundColor: '#091e420f',
+          }
         },
       },
     },
