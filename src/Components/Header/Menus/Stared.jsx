@@ -4,13 +4,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ContentCut from '@mui/icons-material/ContentCut';
 import ContentCopy from '@mui/icons-material/ContentCopy';
-import ContentPaste from '@mui/icons-material/ContentPaste'
+import ContentPaste from '@mui/icons-material/ContentPaste';
 import Cloud from '@mui/icons-material/Cloud';
 import { Divider, ListItemIcon, ListItemText } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-
-export default function Stared() {  
+export default function Stared() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -21,14 +20,14 @@ export default function Stared() {
   };
 
   return (
-    <div className='mx-1'>
+    <div className="mx-1">
       <Button
         id="basic-button-stared"
         aria-controls={open ? 'basic-menu-workspaces' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        sx={{  textTransform: 'none', color: '#44546f' }}
+        sx={{ textTransform: 'none', color: '#44546f' }}
         endIcon={<ExpandMoreIcon />}
       >
         Stared
@@ -60,14 +59,12 @@ export default function Stared() {
             <ContentCopy fontSize="small" />
           </ListItemIcon>
           <ListItemText>Copy</ListItemText>
-          
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <ContentPaste fontSize="small" />
           </ListItemIcon>
           <ListItemText>Paste</ListItemText>
-          
         </MenuItem>
       </Menu>
     </div>

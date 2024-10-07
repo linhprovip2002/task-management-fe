@@ -1,16 +1,16 @@
-import { Avatar, Divider } from "@mui/material";
-import { WorkSpaceItems, UserItems } from "./constant";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Avatar, Divider } from '@mui/material';
+import { WorkSpaceItems, UserItems } from './constant';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const DashBoardLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const tempUserId = "userId";
-  const workspaceId = "workspaceId";
+  const tempUserId = 'userId';
+  const workspaceId = 'workspaceId';
 
   const isActiveClassname = (path) => {
-    return location.pathname === path ? "bg-blue-100" : "hover:bg-gray-200";
+    return location.pathname === path ? 'bg-blue-100' : 'hover:bg-gray-200';
   };
 
   return (
