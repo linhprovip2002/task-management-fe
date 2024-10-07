@@ -21,7 +21,7 @@ function NotificationsItem({ isReaded = false, onAfterRead }) {
           <span>BKDN</span>
         </div>
         <div className="bg-[var(--hover-background)]">
-          <div className="flex pt-4 px-2 items-center">
+          <div className="flex pt-4 px-2 items-start">
             <Avatar sx={{ bgcolor: `var(--primary)`, width: 24, height: 24 }}>N</Avatar>
             <div className="ml-2 flex flex-col items-start pb-2">
               <span className="font-bold text-[14px] text-[var(--text-color)]">Đặng Quang Nhật Linh</span>
