@@ -1,16 +1,16 @@
-import { Box, Popper, Switch } from '@mui/material';
+import { Switch } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import NotificationsItem from './NotificationItem';
 import Wrapper from '../Wrapper';
 import NotifySetting from '../NotifySetting';
+import HeadlessTippy from '@tippyjs/react/headless';
 
 const NotificationsTab = React.forwardRef((props, ref) => {
   const [isOpenSetting, setIsOpenSetting] = useState(false);
-  const moreBtnRef = useRef(null);
 
   const handleOpenSetting = (event) => {
-    setIsOpenSetting((previousOpen) => !previousOpen);
+    setIsOpenSetting(!isOpenSetting);
   };
 
   const handleReadAll = () => {
@@ -35,20 +35,22 @@ const NotificationsTab = React.forwardRef((props, ref) => {
                 },
               }}
             />
-            <button ref={moreBtnRef}>
-              <MoreVertIcon
-                onClick={handleOpenSetting}
-                className="text-[var(--light-gray)] cursor-pointer hover:bg-slate-200 rounded-sm"
-              />
-            </button>
-
-            <Popper placement="bottom-end" open={isOpenSetting} anchorEl={moreBtnRef.current}>
-              <Box>
+            <HeadlessTippy
+              visible={isOpenSetting}
+              onClickOutside={handleOpenSetting}
+              interactive
+              placement="bottom-end"
+              offset={[10, 10]}
+              render={() => (
                 <Wrapper>
-                  <NotifySetting />
+                  <NotifySetting onClose={handleOpenSetting} />
                 </Wrapper>
-              </Box>
-            </Popper>
+              )}
+            >
+              <button onClick={handleOpenSetting}>
+                <MoreVertIcon className="text-[var(--light-gray)] cursor-pointer hover:bg-slate-200 rounded-sm" />
+              </button>
+            </HeadlessTippy>
           </div>
         </div>
         <div onClick={handleReadAll} className="py-2 pl-3 pr-4 flex justify-end">

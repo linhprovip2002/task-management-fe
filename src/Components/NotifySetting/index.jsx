@@ -1,14 +1,21 @@
 import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import NorthEastIcon from '@mui/icons-material/NorthEast';
-function NotifySetting(props) {
+function NotifySetting({ onClose }) {
+  const handleClose = () => {
+    if (onClose) onClose();
+  };
+
   return (
     <div className="NotifySetting flex flex-col w-[304px] pb-2">
       <div className="flex items-center px-2 py-1">
         <div className="flex-1 flex justify-center">
           <h3 className="text-[14px] text-[#44546f] font-[600]">Notifications settings</h3>
         </div>
-        <button className="float-right w-8 h-8 rounded-lg hover:bg-[var(--hover-background)] flex items-center justify-center">
+        <button
+          onClick={handleClose}
+          className="float-right w-8 h-8 rounded-lg hover:bg-[var(--hover-background)] flex items-center justify-center"
+        >
           <CloseIcon fontSize="small" />
         </button>
       </div>
