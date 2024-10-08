@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import { Avatar } from '@mui/material';
+import { Avatar, Button } from '@mui/material';
 
-function NotificationsItem({ isReaded = false, onAfterRead }) {
+function NotificationsItem({ isReaded = false, onAfterRead, peddingButton = '' }) {
   const [isReadedState, setIsReadedState] = useState(isReaded);
   const handleMarkReaded = (e) => {
     setIsReadedState((prev) => !prev);
@@ -28,6 +28,17 @@ function NotificationsItem({ isReaded = false, onAfterRead }) {
               <div className="text-[14px] font-normal text-[var(--text-color)] text-left flex-col flex">
                 <span>Added you to the Workspace BKDN as admin</span>
                 <span className="text-[12px]">Oct 6, 2024, 8:54 PM</span>
+                {peddingButton && (
+                  <div>
+                    <Button
+                      sx={{ my: 1, backgroundColor: '#091E420F', color: 'var(--text-color)', textTransform: 'none' }}
+                      size="small"
+                      variant="contained"
+                    >
+                      {peddingButton}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

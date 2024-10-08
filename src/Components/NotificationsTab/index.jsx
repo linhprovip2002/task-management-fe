@@ -59,7 +59,7 @@ const NotificationsTab = React.forwardRef((props, ref) => {
       </div>
       <div className="bg-[var(--light-blue)] rounded-b-xl">
         <div className="py-2 max-h-[500px] overflow-y-scroll">
-          <NotificationsItem />
+          <NotificationsItem peddingButton="Review peding request" />
           <NotificationsItem />
           <NotificationsItem />
           <NotificationsItem />
