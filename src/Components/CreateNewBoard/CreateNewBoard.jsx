@@ -3,12 +3,14 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+// import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Autocomplete, Button } from '@mui/material';
 import { listWorkspaces } from './listWorkspaces';
+import { listRule } from './listRule';
 
 export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
+
   return (
     <>
       <button
@@ -24,6 +26,7 @@ export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
           alignItems: 'center',
           '& .MuiDialog-paper': {
             width: 420, // Đảm bảo dialog có width 420px
+            // height: 520, // Đảm bảo dialog có height 720px
           },
         }}
         maxWidth={false} // Đảm bảo không bị giới hạn chiều rộng
@@ -44,9 +47,9 @@ export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
       >
         <DialogTitle sx={{ justifyContent: 'center', display: 'flex' }} className='textColor'>Create board</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We will send updates occasionally.
-          </DialogContentText>
+          </DialogContentText> */}
           <TextField
             autoFocus
             required
@@ -65,10 +68,16 @@ export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
             sx={{ width: 300, margin: '16px 0' }}
             renderInput={(params) => <TextField {...params} label="Workspaces" />}
           />
+          <Autocomplete
+            disablePortal
+            options={listRule}
+            sx={{ width: 300,  }}
+            renderInput={(params) => <TextField {...params} label="Visibility" />}
+          />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ margin: 'auto'  }}>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Create</Button>
+          <Button variant="contained" size="small" className="hidden" type="submit">Create</Button>
         </DialogActions>
       </Dialog>
     </>
