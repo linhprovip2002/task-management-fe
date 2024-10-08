@@ -20,6 +20,15 @@ function NotifySetting({ onClose }) {
         </button>
       </div>
       <div className="flex flex-col items-start">
+        <div className="w-full px-3 my-1">
+          <h3 className="text-[12px] text-[var(--text-color)] font-[700]">Notifications email frequency</h3>
+          <select className="w-full border-[1px] border-[#7A869A] border-solid py-1 px-2 rounded-sm">
+            <option className="text-[var(--text-color)]">Never</option>
+            <option className="text-[var(--text-color)]">Preodically</option>
+            <option className="text-[var(--text-color)]">Instantly</option>
+          </select>
+        </div>
+
         <button className=" hover:bg-[var(--hover-background)] text-[14px] text-[var(--text-color)] font-normal py-[6px] px-3 w-full text-left">
           <span>Allow desktop notifications</span>
         </button>
