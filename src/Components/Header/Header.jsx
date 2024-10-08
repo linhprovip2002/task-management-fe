@@ -50,6 +50,7 @@ const Header = () => {
               id="outlined-basic"
               label="Search"
               size="small"
+              type='search'
               variant="outlined"
               className="w-full md:w-64"
               sx={{ marginLeft: '8px' }}
