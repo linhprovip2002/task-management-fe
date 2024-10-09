@@ -64,12 +64,14 @@ export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
           />
           <Autocomplete
             disablePortal
+            required
             options={listWorkspaces}
             sx={{ width: 300, margin: '16px 0' }}
             renderInput={(params) => <TextField {...params} label="Workspaces" />}
           />
           <Autocomplete
             disablePortal
+            required
             options={listRule}
             sx={{ width: 300,  }}
             renderInput={(params) => <TextField {...params} label="Visibility" />}
