@@ -5,8 +5,8 @@ const request = axios.create({
   baseURL: "http://localhost:3000",
   headers: {
     Accept: "application/json, text/plain, */*",
-    "Content-Type": "multipart/form-data",
-  },
+    "Content-Type": "application/json"
+  }
 });
 
 // Add a request interceptor
@@ -50,4 +50,5 @@ export const setHeaderConfigAxios = (token) => {
     delete request.defaults.headers.common["Authorization"];
   }
 };
+
 export default request;
