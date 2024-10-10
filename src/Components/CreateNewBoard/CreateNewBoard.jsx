@@ -11,6 +11,17 @@ import { listWorkspaces } from './listWorkspaces';
 import { listRule } from './listRule';
 import { createBoard } from '../../Services/API/ApiBoard/apiBoard';
 
+// {
+//   "title": "string",
+//   "description": "string",
+//   "backgroundColor": "string",
+//   "coverUrl": "string",
+//   "isPrivate": true,
+//   "isFavorite": true,
+//   "isArchived": true,
+//   "workspaceId": 0
+// }
+
 export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
   const {
     handleSubmit,
@@ -89,34 +100,42 @@ export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
             <p className="font-semibold">Background</p>
             <div className="grid grid-cols-5 gap-2">
               <div
-                className={`w-12 h-10 bg-orange-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'orange' ? 'ring-2  ring-orange-500' : ''}`}
+                className={`w-12 h-10 bg-orange-500 border flex items-center justify-center rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'orange' ? 'ring-2  ring-orange-500' : ''}`}
                 onClick={() => handleBackgroundClick('orange')}
               >
-                {selectedBg === 'orange' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+                {selectedBg === 'orange' && <CheckIcon className="text-white " />}
               </div>
               <div
-                className={`w-12 h-10 bg-green-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'green' ? 'ring-2 ring-green-500' : ''}`}
+                className={`w-12 h-10 bg-green-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'green' ? 'ring-2 ring-green-500' : ''}`}
                 onClick={() => handleBackgroundClick('green')}
               >
-                {selectedBg === 'green' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+                {selectedBg === 'green' && (
+                  <CheckIcon className="items-center justify-center text-center text-white " />
+                )}
               </div>
               <div
-                className={`w-12 h-10 bg-purple-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'purple' ? 'ring-2 ring-purple-500' : ''}`}
+                className={`w-12 h-10 bg-purple-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'purple' ? 'ring-2 ring-purple-500' : ''}`}
                 onClick={() => handleBackgroundClick('purple')}
               >
-                {selectedBg === 'purple' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+                {selectedBg === 'purple' && (
+                  <CheckIcon className="items-center justify-center text-center text-white " />
+                )}
               </div>
               <div
-                className={`w-12 h-10 bg-pink-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'pink' ? 'ring-2 ring-pink-500' : ''}`}
+                className={`w-12 h-10 bg-pink-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'pink' ? 'ring-2 ring-pink-500' : ''}`}
                 onClick={() => handleBackgroundClick('pink')}
               >
-                {selectedBg === 'pink' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+                {selectedBg === 'pink' && (
+                  <CheckIcon className="items-center justify-center text-center text-white " />
+                )}
               </div>
               <div
-                className={`w-12 h-10 bg-yellow-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'yellow' ? 'ring-2 ring-yellow-500' : ''}`}
+                className={`w-12 h-10 bg-yellow-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'yellow' ? 'ring-2 ring-yellow-500' : ''}`}
                 onClick={() => handleBackgroundClick('yellow')}
               >
-                {selectedBg === 'yellow' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+                {selectedBg === 'yellow' && (
+                  <CheckIcon className="items-center justify-center text-center text-white " />
+                )}
               </div>
             </div>
           </div>
