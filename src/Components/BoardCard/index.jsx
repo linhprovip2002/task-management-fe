@@ -22,10 +22,7 @@ import { ButtonBoardCard } from '../ButtonBoardCard';
 
 export const BoardCard = ({ onShowBoardCard }) => {
   return (
-    <div
-      onClick={onShowBoardCard}
-      className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-50"
-    >
+    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-50">
       <div className="mt-20 mb-10">
         <div className="relative flex justify-between min-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-50">
           <div className="flex-1 p-2">
