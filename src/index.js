@@ -1,29 +1,35 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import GlobalStyles from "./GlobalStyles";
-// import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
-import { CssBaseline } from "@mui/material";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-// import theme from './theme';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import GlobalStyles from './GlobalStyles';
+import { CssBaseline } from '@mui/material';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+// config font for MUI component
+const theme = createTheme({
+  typography: {
+    fontFamily: 'var(--font-family)',
+  },
+});
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
 const queryClient = new QueryClient();
 
 root.render(
   <>
-    {/* <CssVarsProvider theme={theme}> */}
-    <QueryClientProvider client={queryClient}>
-      <CssBaseline>
-        <GlobalStyles>
-          <App />
-        </GlobalStyles>
-      </CssBaseline>
-    </QueryClientProvider>
-    {/* </CssVarsProvider> */}
-  </>
+    <ThemeProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <CssBaseline>
+          <GlobalStyles>
+            <App />
+          </GlobalStyles>
+        </CssBaseline>
+      </QueryClientProvider>
+    </ThemeProvider>
+  </>,
 );
 
 reportWebVitals();
