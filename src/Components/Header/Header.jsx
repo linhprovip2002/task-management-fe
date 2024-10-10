@@ -4,12 +4,26 @@ import WorkSpaces from './Menus/WorkSpaces';
 import Recent from './Menus/Recent';
 import Template from './Menus/Template';
 import Stared from './Menus/Stared';
-import { Button, TextField } from '@mui/material';
+import { Box, Button, ClickAwayListener, Fade, TextField, Tooltip } from '@mui/material';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import AccountMenu from './Menus/AccountMenu';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import NotificationsTab from '../NotificationsTab';
+import { useState } from 'react';
+import Popper from '@mui/material/Popper';
 
 const Header = () => {
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
+  };
+
+  const canBeOpen = open && Boolean(anchorEl);
+  const id = canBeOpen ? 'transition-popper' : undefined;
+
   return (
     <>
       {/* shadow-md #0c66e4 */}
@@ -21,14 +35,8 @@ const Header = () => {
             className="cursor-pointer hover:bg-hoverBackground"
           />
           <div className="flex items-center space-x-2 cursor-pointer hover:bg-hoverBackground">
-            <TrelloLogoIcon
-              style={{ color: '#172b4d' }}
-              className="w-4 h-4"
-            />
-            <span
-              style={{ color: '#172b4d' }}
-              className="text-lg font-bold"
-            >
+            <TrelloLogoIcon style={{ color: '#172b4d' }} className="w-4 h-4" />
+            <span style={{ color: '#172b4d' }} className="text-lg font-bold">
               Trello
             </span>
           </div>
@@ -42,7 +50,6 @@ const Header = () => {
             </Button>
           </div>
         </div>
-
         {/* Right Section: Search and Account */}
         <div className="flex items-center mt-4 space-x-4 md:mt-0">
           <div className="flex items-center w-full space-x-2 md:w-auto">
@@ -50,21 +57,34 @@ const Header = () => {
               id="outlined-basic"
               label="Search"
               size="small"
-              type='search'
+              type="search"
               variant="outlined"
               className="w-full md:w-64"
               sx={{ marginLeft: '8px' }}
             />
           </div>
           <div className="flex items-center w-full md:w-auto">
-            <NotificationsNoneIcon
-              sx={{ color: 'primary.secondary', hover: '#091e420f' }}
-              className="cursor-pointer"
-            />
-            <HelpOutlineIcon
-              sx={{ color: 'primary.secondary', marginLeft:'8px', hover: '#091e420f' }}
-              className="cursor-pointer"
-            />
+            <button className="relative" aria-describedby={id} type="button" onClick={handleClick}>
+              <Tooltip title="Notifications">
+                <NotificationsNoneIcon sx={{ color: 'primary.secondary' }} className="cursor-pointer" />
+              </Tooltip>
+            </button>
+            <Popper placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
+              {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={350}>
+                  <Box>
+                    <ClickAwayListener
+                      onClickAway={() => {
+                        setOpen(false);
+                      }}
+                    >
+                      <NotificationsTab />
+                    </ClickAwayListener>
+                  </Box>
+                </Fade>
+              )}
+            </Popper>
+            <HelpOutlineIcon sx={{ color: 'primary.secondary', marginLeft: '8px' }} className="cursor-pointer" />
             <AccountMenu />
           </div>
         </div>

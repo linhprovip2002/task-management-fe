@@ -10,6 +10,9 @@ import Tooltip from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import PeopleIcon from '@mui/icons-material/People';
+
+import { EditWorkspaceModal } from '../../Modals';
 
 const Slot_Props = {
   paper: {
@@ -43,6 +46,7 @@ const Slot_Props = {
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openEditWorkspaceModal, setOpenEditWorkspaceModal] = React.useState(false);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -51,7 +55,7 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
   return (
-    <React.Fragment>
+    <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title="Account settings">
           <IconButton
@@ -62,7 +66,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 26, height: 26, backgroundColor: 'orange' }}>T</Avatar>
+            <Avatar sx={{ width: 26, height: 26, backgroundColor: 'orange' }}></Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -81,6 +85,18 @@ export default function AccountMenu() {
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <Avatar sx={{ width: 26, height: 26 }} /> My account
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            setOpenEditWorkspaceModal(true);
+            handleClose();
+          }}
+        >
+          <ListItemIcon>
+            <PeopleIcon fontSize="small" />
+          </ListItemIcon>
+          Create Workspace
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
@@ -102,6 +118,12 @@ export default function AccountMenu() {
           Logout
         </MenuItem>
       </Menu>
-    </React.Fragment>
+      <EditWorkspaceModal
+        open={openEditWorkspaceModal}
+        handleClose={() => {
+          setOpenEditWorkspaceModal(false);
+        }}
+      />
+    </>
   );
 }

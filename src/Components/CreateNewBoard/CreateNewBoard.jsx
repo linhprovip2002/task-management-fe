@@ -109,32 +109,28 @@ export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
                 className={`w-12 h-10 bg-green-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'green' ? 'ring-2 ring-green-500' : ''}`}
                 onClick={() => handleBackgroundClick('green')}
               >
-                {selectedBg === 'green' && (
-                  <CheckIcon className="items-center justify-center text-center text-white " />
-                )}
+                {selectedBg === 'green' && <CheckIcon className="items-center justify-center text-center text-white" />}
               </div>
               <div
                 className={`w-12 h-10 bg-purple-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'purple' ? 'ring-2 ring-purple-500' : ''}`}
                 onClick={() => handleBackgroundClick('purple')}
               >
                 {selectedBg === 'purple' && (
-                  <CheckIcon className="items-center justify-center text-center text-white " />
+                  <CheckIcon className="items-center justify-center text-center text-white" />
                 )}
               </div>
               <div
                 className={`w-12 h-10 bg-pink-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'pink' ? 'ring-2 ring-pink-500' : ''}`}
                 onClick={() => handleBackgroundClick('pink')}
               >
-                {selectedBg === 'pink' && (
-                  <CheckIcon className="items-center justify-center text-center text-white " />
-                )}
+                {selectedBg === 'pink' && <CheckIcon className="items-center justify-center text-center text-white" />}
               </div>
               <div
                 className={`w-12 h-10 bg-yellow-500 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'yellow' ? 'ring-2 ring-yellow-500' : ''}`}
                 onClick={() => handleBackgroundClick('yellow')}
               >
                 {selectedBg === 'yellow' && (
-                  <CheckIcon className="items-center justify-center text-center text-white " />
+                  <CheckIcon className="items-center justify-center text-center text-white" />
                 )}
               </div>
             </div>

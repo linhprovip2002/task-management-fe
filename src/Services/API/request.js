@@ -4,8 +4,9 @@ import Cookies from "js-cookie";
 const request = axios.create({
   baseURL: "http://localhost:3001/api",
   headers: {
-    Accept: "application/json",
-  },
+    Accept: "application/json, text/plain, */*",
+    "Content-Type": "application/json"
+  }
 });
 
 // Add a request interceptor
@@ -49,4 +50,5 @@ export const setHeaderConfigAxios = (token) => {
     delete request.defaults.headers.common["Authorization"];
   }
 };
+
 export default request;

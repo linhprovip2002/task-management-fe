@@ -17,13 +17,12 @@ const DashBoard = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   // const tempBoards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const fetchBoardData = async () => {
     try {
       const data = await getBoard({ limit: 10, page: 1 });
-      console.log('Fetching board data:', data);
-      
+
       setBoardData(data);
     } catch (error) {
       console.error('Failed to fetch board data:', error);
@@ -32,8 +31,8 @@ const DashBoard = () => {
 
   useEffect(() => {
     fetchBoardData();
-  }, [])
-  
+  }, []);
+
   return (
     <div>
       <div className="flex items-center gap-4 text-sm">
@@ -58,7 +57,12 @@ const DashBoard = () => {
           {boardData.map((board, index) => {
             return <Board key={index} />;
           })}
-          <CreateNewBoard onClick={handleClickOpen} open={open} handleClickOpen={handleClickOpen} handleClose={handleClose}/>
+          <CreateNewBoard
+            onClick={handleClickOpen}
+            open={open}
+            handleClickOpen={handleClickOpen}
+            handleClose={handleClose}
+          />
         </div>
       </div>
     </div>
