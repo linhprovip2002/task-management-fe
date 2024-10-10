@@ -33,7 +33,6 @@ const Header = () => {
             </Button>
           </div>
         </div>
-
         {/* Right Section: Search and Account */}
         <div className="flex items-center mt-4 space-x-4 md:mt-0">
           <div className="flex items-center w-full space-x-2 md:w-auto">
