@@ -52,6 +52,7 @@ const DashBoardLayout = ({ children }) => {
               return (
                 <>
                   <Collapse
+                    key={workspace.id}
                     value={false}
                     position="right"
                     title={

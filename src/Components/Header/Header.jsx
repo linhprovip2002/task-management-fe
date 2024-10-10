@@ -27,13 +27,16 @@ const Header = () => {
   return (
     <>
       {/* shadow-md #0c66e4 */}
-      <header className="flex flex-col items-center justify-between w-full px-4 py-2 border-b-[1px] border-[#44546f] bg-white md:flex-row">
+      <header className="flex flex-col items-center justify-between w-full px-4 py-2 border-b-[1px] border-[#172b4d] bg-white md:flex-row">
         {/* Left Section: Logo and Menu */}
         <div className="flex items-center space-x-4">
-          <AppsIcon style={{ color: '#44546f' }} className="cursor-pointer" />
-          <div className="flex items-center space-x-2 cursor-pointer">
-            <TrelloLogoIcon style={{ color: '#44546f' }} className="w-4 h-4" />
-            <span style={{ color: '#44546f' }} className="text-lg font-bold">
+          <AppsIcon
+            style={{ color: '#44546f', hover: '#091e420f' }}
+            className="cursor-pointer hover:bg-hoverBackground"
+          />
+          <div className="flex items-center space-x-2 cursor-pointer hover:bg-hoverBackground">
+            <TrelloLogoIcon style={{ color: '#172b4d' }} className="w-4 h-4" />
+            <span style={{ color: '#172b4d' }} className="text-lg font-bold">
               Trello
             </span>
           </div>
@@ -54,6 +57,7 @@ const Header = () => {
               id="outlined-basic"
               label="Search"
               size="small"
+              type="search"
               variant="outlined"
               className="w-full md:w-64"
               sx={{ marginLeft: '8px' }}
