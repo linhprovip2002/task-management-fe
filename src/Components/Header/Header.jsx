@@ -13,7 +13,7 @@ const Header = () => {
   return (
     <>
       {/* shadow-md #0c66e4 */}
-      <header className="flex flex-col items-center justify-between w-full px-4 py-2 border-b-[1px] border-[#44546f] bg-white md:flex-row">
+      <header className="flex flex-col items-center justify-between w-full px-4 py-2 border-b-[1px] border-[#172b4d] bg-white md:flex-row">
         {/* Left Section: Logo and Menu */}
         <div className="flex items-center space-x-4">
           <AppsIcon
@@ -22,11 +22,11 @@ const Header = () => {
           />
           <div className="flex items-center space-x-2 cursor-pointer hover:bg-hoverBackground">
             <TrelloLogoIcon
-              style={{ color: '#44546f' }}
+              style={{ color: '#172b4d' }}
               className="w-4 h-4"
             />
             <span
-              style={{ color: '#44546f' }}
+              style={{ color: '#172b4d' }}
               className="text-lg font-bold"
             >
               Trello

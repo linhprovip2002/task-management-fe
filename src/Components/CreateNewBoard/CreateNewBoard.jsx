@@ -1,15 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import CheckIcon from '@mui/icons-material/Check';
 import { Autocomplete, Button } from '@mui/material';
 import { listWorkspaces } from './listWorkspaces';
 import { listRule } from './listRule';
+import { createBoard } from '../../Services/API/ApiBoard/apiBoard';
 
 export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      boardTitle: '',
+      workspace: null,
+      visibility: null,
+    },
+  });
+
+  const [selectedBg, setSelectedBg] = useState(''); // Lưu màu background
+
+  const onSubmit = async (data) => {
+    const boardData = {
+      title: data.boardTitle,
+      description: '',
+      backgroundColor: selectedBg,
+      coverUrl: '',
+      isPrivate: true,
+      isFavorite: false,
+      isArchived: false,
+      workspaceId: data.workspace.id,
+    };
+
+    try {
+      await createBoard(boardData);
+      reset();
+      handleClose();
+    } catch (error) {
+      console.error('Failed to create board:', error);
+    }
+  };
+
+  const handleBackgroundClick = (color) => {
+    setSelectedBg(color);
+  };
 
   return (
     <>
@@ -20,66 +61,121 @@ export const CreateNewBoard = ({ open, handleClickOpen, handleClose }) => {
         <p className="text-sm text-textColor">Create new board</p>
       </button>
       <Dialog
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          '& .MuiDialog-paper': {
-            width: 420, // Đảm bảo dialog có width 420px
-            // height: 520, // Đảm bảo dialog có height 720px
-          },
-        }}
-        maxWidth={false} // Đảm bảo không bị giới hạn chiều rộng
         open={open}
         onClose={handleClose}
         PaperProps={{
           component: 'form',
-          onSubmit: (event) => {
-            event.preventDefault();
-            // const formData = new FormData(event.currentTarget);
-            // const formJson = Object.fromEntries(formData.entries());
-            // const email = formJson.email;
-            // console.log(email);
-            handleClose();
-          },
-          sx: { width: 420, margin: 'auto' },
+          onSubmit: handleSubmit(onSubmit),
+          sx: { width: 400, padding: 1 },
         }}
       >
-        <DialogTitle sx={{ justifyContent: 'center', display: 'flex' }} className='textColor'>Create board</DialogTitle>
+        <DialogTitle className="font-bold text-center text-textColor text-md">Create board</DialogTitle>
         <DialogContent>
-          {/* <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates occasionally.
-          </DialogContentText> */}
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="board-title"
-            label="Board Title"
-            type="text"
-            fullWidth
-            variant="outlined"
-            sx={{ width: 300 }}
+          {/* Hình ảnh bảng */}
+          <div className="flex justify-center my-2">
+            <div
+              className="w-64 rounded h-[152px]"
+              style={{
+                backgroundColor: selectedBg, // Áp dụng màu nền đã chọn
+                backgroundImage: `url('https://trello.com/assets/14cda5dc635d1f13bc48.svg')`, // Hình ảnh SVG
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            ></div>
+          </div>
+
+          {/* Lựa chọn màu background */}
+          <div className="my-4">
+            <p className="font-semibold">Background</p>
+            <div className="grid grid-cols-5 gap-2">
+              <div
+                className={`w-12 h-10 bg-orange-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'orange' ? 'ring-2  ring-orange-500' : ''}`}
+                onClick={() => handleBackgroundClick('orange')}
+              >
+                {selectedBg === 'orange' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+              </div>
+              <div
+                className={`w-12 h-10 bg-green-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'green' ? 'ring-2 ring-green-500' : ''}`}
+                onClick={() => handleBackgroundClick('green')}
+              >
+                {selectedBg === 'green' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+              </div>
+              <div
+                className={`w-12 h-10 bg-purple-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'purple' ? 'ring-2 ring-purple-500' : ''}`}
+                onClick={() => handleBackgroundClick('purple')}
+              >
+                {selectedBg === 'purple' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+              </div>
+              <div
+                className={`w-12 h-10 bg-pink-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'pink' ? 'ring-2 ring-pink-500' : ''}`}
+                onClick={() => handleBackgroundClick('pink')}
+              >
+                {selectedBg === 'pink' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+              </div>
+              <div
+                className={`w-12 h-10 bg-yellow-500 border rounded-md gap-x-1 hover:ring-2 cursor-pointer ${selectedBg === 'yellow' ? 'ring-2 ring-yellow-500' : ''}`}
+                onClick={() => handleBackgroundClick('yellow')}
+              >
+                {selectedBg === 'yellow' && <CheckIcon className="absolute items-center justify-center text-center text-white" />}
+              </div>
+            </div>
+          </div>
+
+          {/* Field nhập Board Title */}
+          <Controller
+            name="boardTitle"
+            control={control}
+            rules={{ required: 'Board title is required' }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Board title"
+                variant="outlined"
+                fullWidth
+                error={!!errors.boardTitle}
+                helperText={errors.boardTitle ? errors.boardTitle.message : ''}
+                className="my-4"
+              />
+            )}
           />
-          <Autocomplete
-            disablePortal
-            required
-            options={listWorkspaces}
-            sx={{ width: 300, margin: '16px 0' }}
-            renderInput={(params) => <TextField {...params} label="Workspaces" />}
+
+          {/* Field Autocomplete Workspace */}
+          <Controller
+            name="workspace"
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                {...field}
+                options={listWorkspaces}
+                getOptionLabel={(option) => option.label}
+                onChange={(e, value) => field.onChange(value)}
+                renderInput={(params) => <TextField {...params} label="Workspace" variant="outlined" fullWidth />}
+                className="my-4"
+              />
+            )}
           />
-          <Autocomplete
-            disablePortal
-            required
-            options={listRule}
-            sx={{ width: 300,  }}
-            renderInput={(params) => <TextField {...params} label="Visibility" />}
+
+          {/* Field Autocomplete Visibility */}
+          <Controller
+            name="visibility"
+            control={control}
+            render={({ field }) => (
+              <Autocomplete
+                {...field}
+                options={listRule}
+                getOptionLabel={(option) => option.label}
+                onChange={(e, value) => field.onChange(value)}
+                renderInput={(params) => <TextField {...params} label="Visibility" variant="outlined" fullWidth />}
+                className="my-4"
+              />
+            )}
           />
         </DialogContent>
-        <DialogActions sx={{ margin: 'auto'  }}>
+        <DialogActions className="flex justify-center">
           <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" size="small" className="hidden" type="submit">Create</Button>
+          <Button variant="contained" type="submit" className="bg-blue-500">
+            Create
+          </Button>
         </DialogActions>
       </Dialog>
     </>
