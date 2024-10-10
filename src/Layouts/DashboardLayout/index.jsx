@@ -1,22 +1,22 @@
-import { Avatar, Divider } from "@mui/material";
-import { WorkSpaceItems, UserItems } from "./constant";
-import { useLocation, useNavigate } from "react-router-dom";
-import Header from "../../Components/Header/Header";
-import Collapse from "../../Components/Collapse";
-import { useGetWorkspaceByUser } from "../../Hooks";
+import { Avatar, Divider } from '@mui/material';
+import { WorkSpaceItems, UserItems } from './constant';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Header from '../../Components/Header/Header';
+import Collapse from '../../Components/Collapse';
+import { useGetWorkspaceByUser } from '../../Hooks';
 
 const DashBoardLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const tempUserId = "userId";
-  const workspaceId = "workspaceId";
+  const tempUserId = 'userId';
+  // const workspaceId = "workspaceId";
 
   const { workspaceInfo, isLoading } = useGetWorkspaceByUser();
   console.log(workspaceInfo);
 
   const isActiveClassname = (path) => {
-    return location.pathname === path ? "bg-blue-100" : "hover:bg-gray-200";
+    return location.pathname === path ? 'bg-blue-100' : 'hover:bg-gray-200';
   };
 
   if (isLoading) {
@@ -56,12 +56,8 @@ const DashBoardLayout = ({ children }) => {
                     position="right"
                     title={
                       <div className="flex gap-4 items-center text-base">
-                        <Avatar sx={{ width: 28, height: 28 }}>
-                          {workspace.title[0]}
-                        </Avatar>
-                        <div className="text-xl font-bold">
-                          {workspace.title}
-                        </div>
+                        <Avatar sx={{ width: 28, height: 28 }}>{workspace.title[0]}</Avatar>
+                        <div className="text-xl font-bold">{workspace.title}</div>
                       </div>
                     }
                   >
