@@ -2,10 +2,30 @@ import React, { memo } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
 import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
 import { Link } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
+import { Signin } from '../../Services/API/Auth';
 
 const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
 
 const Login = memo((props) => {
+  const form = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const handleSubmit = (values) => {
+    const { email, password } = values;
+    Signin(email, password)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="mt-[50px] w-full flex justify-center">
@@ -18,31 +38,45 @@ const Login = memo((props) => {
               <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Login to continue</h5>
             </div>
 
-            <div className="flex flex-col">
-              <TextField
-                sx={{
-                  '& .MuiInputBase-input': {
-                    padding: 1,
-                  },
-                }}
-                placeholder="Input your email"
-                id="outlined-basic"
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col">
+              <Controller
+                name="email"
+                control={form.control}
+                render={(props) => (
+                  <TextField
+                    onChange={props.field.onChange}
+                    value={props.field.email}
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="Input your email"
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                render={(props) => (
+                  <TextField
+                    onChange={props.field.onChange}
+                    type="password"
+                    sx={{
+                      marginY: 2,
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="Input your password"
+                  />
+                )}
               />
 
-              <TextField
-                type="password"
-                sx={{
-                  marginY: 2,
-                  '& .MuiInputBase-input': {
-                    padding: 1,
-                  },
-                }}
-                placeholder="Input your password"
-                id="outlined-basic"
-              />
-
-              <Button variant="contained">Continue</Button>
-            </div>
+              <Button type="submit" variant="contained">
+                Continue
+              </Button>
+            </form>
             <div className="mt-6">
               <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
             </div>

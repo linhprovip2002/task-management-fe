@@ -2,10 +2,31 @@ import React, { memo } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
 import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
 import { Link } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
+import { Signup } from '../../Services/API/Auth';
 
 const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
 
 function SignUp(props) {
+  const form = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const handleSubmit = (values) => {
+    const { email, password } = values;
+    Signup('UserName', email, password)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="mt-[50px] w-full flex justify-center">
@@ -20,44 +41,66 @@ function SignUp(props) {
               </h5>
             </div>
 
-            <div className="flex flex-col">
-              <TextField
-                sx={{
-                  marginBottom: 2,
-                  '& .MuiInputBase-input': {
-                    padding: 1,
-                  },
-                }}
-                placeholder="Email"
-                id="outlined-basic"
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col">
+              <Controller
+                name="email"
+                control={form.control}
+                render={(props) => (
+                  <TextField
+                    value={props.field.email}
+                    onChange={props.field.onChange}
+                    sx={{
+                      marginBottom: 2,
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="Email"
+                  />
+                )}
               />
 
-              <TextField
-                type="password"
-                sx={{
-                  marginBottom: 2,
-                  '& .MuiInputBase-input': {
-                    padding: 1,
-                  },
-                }}
-                placeholder="Password"
-                id="outlined-basic"
+              <Controller
+                control={form.control}
+                name="password"
+                render={(props) => (
+                  <TextField
+                    value={props.field.password}
+                    onChange={props.field.onChange}
+                    type="password"
+                    sx={{
+                      marginBottom: 2,
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="Password"
+                  />
+                )}
+              />
+              <Controller
+                name="confirm_password"
+                control={form.control}
+                render={(props) => (
+                  <TextField
+                    value={props.field.confirmPassword}
+                    onChange={props.field.onChange}
+                    type="password"
+                    sx={{
+                      marginBottom: 2,
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="Confirm Password"
+                  />
+                )}
               />
 
-              <TextField
-                type="password"
-                sx={{
-                  marginBottom: 2,
-                  '& .MuiInputBase-input': {
-                    padding: 1,
-                  },
-                }}
-                placeholder="Confirm Password"
-                id="outlined-basic"
-              />
-
-              <Button variant="contained">Continue</Button>
-            </div>
+              <Button type="submit" variant="contained">
+                Continue
+              </Button>
+            </form>
             <div className="mt-6">
               <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
             </div>
