@@ -50,6 +50,7 @@ const Login = memo((props) => {
                 control={form.control}
                 render={(props) => (
                   <TextField
+                    type="email"
                     onChange={props.field.onChange}
                     value={props.field.email}
                     sx={{

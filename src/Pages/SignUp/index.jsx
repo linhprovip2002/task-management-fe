@@ -1,29 +1,40 @@
 import React, { memo } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
 import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
-import { Signup } from '../../Services/API/Auth';
+import { Signup as register } from '../../Services/API/Auth';
+
+import { joiResolver } from '@hookform/resolvers/joi';
+import { toast } from 'react-toastify';
+import validation from './validation';
 
 const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
 
 function SignUp(props) {
+  const navigate = useNavigate();
+
   const form = useForm({
     defaultValues: {
+      userName: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
+    resolver: joiResolver(validation),
+    mode: 'onSubmit',
+    reValidateMode: 'onBlur',
   });
 
   const handleSubmit = (values) => {
-    const { email, password } = values;
-    Signup('UserName', email, password)
+    const { email, password, userName } = values;
+    register(userName, email, password)
       .then((res) => {
-        console.log(res);
+        toast.success('Register account successfully');
+        navigate('/');
       })
       .catch((err) => {
-        console.log(err);
+        toast.error('Register account fail');
       });
   };
 
@@ -43,12 +54,35 @@ function SignUp(props) {
 
             <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col">
               <Controller
+                name="userName"
+                control={form.control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    value={field.userName}
+                    onChange={field.onChange}
+                    error={Boolean(error)} // Hiển thị lỗi nếu có
+                    helperText={error ? error.message : ''} // Hiển thị thông báo lỗi
+                    sx={{
+                      marginBottom: 2,
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="User Name"
+                  />
+                )}
+              />
+
+              <Controller
                 name="email"
                 control={form.control}
-                render={(props) => (
+                render={({ field, fieldState: { error } }) => (
                   <TextField
-                    value={props.field.email}
-                    onChange={props.field.onChange}
+                    error={Boolean(error)}
+                    helperText={error ? error.message : ''}
+                    value={field.email}
+                    onChange={field.onChange}
+                    type="email"
                     sx={{
                       marginBottom: 2,
                       '& .MuiInputBase-input': {
@@ -63,10 +97,12 @@ function SignUp(props) {
               <Controller
                 control={form.control}
                 name="password"
-                render={(props) => (
+                render={({ field, fieldState: { error } }) => (
                   <TextField
-                    value={props.field.password}
-                    onChange={props.field.onChange}
+                    error={Boolean(error)}
+                    helperText={error ? error.message : ''}
+                    value={field.password}
+                    onChange={field.onChange}
                     type="password"
                     sx={{
                       marginBottom: 2,
@@ -79,12 +115,14 @@ function SignUp(props) {
                 )}
               />
               <Controller
-                name="confirm_password"
+                name="confirmPassword"
                 control={form.control}
-                render={(props) => (
+                render={({ field, fieldState: { error } }) => (
                   <TextField
-                    value={props.field.confirmPassword}
-                    onChange={props.field.onChange}
+                    error={Boolean(error)}
+                    helperText={error && error.message}
+                    value={field.confirmPassword}
+                    onChange={field.onChange}
                     type="password"
                     sx={{
                       marginBottom: 2,
