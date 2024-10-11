@@ -3,10 +3,12 @@ import { deepOrange } from '@mui/material/colors';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import EditIcon from '@mui/icons-material/Edit';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import FormUpdate from './FormUpdate';
+import InviteWorkspace from '../../../Components/Modals/InviteWorkspace';
 const WorkspaceSettings = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
+  const [invitePopup, setInvitePopup] = useState(false);
 
   const handleOpenUpdate = () => {
     setOpenUpdate(true);
@@ -50,6 +52,7 @@ const WorkspaceSettings = () => {
         {/* right  */}
         <div>
           <Button
+            onClick={() => setInvitePopup(true)}
             sx={{
               textTransform: 'none',
               paddingY: '6px',
@@ -66,8 +69,15 @@ const WorkspaceSettings = () => {
       <div className="py-3">
         <p className="text-sm font-semibold text-[#AE2E24] cursor-pointer hover:underline">Delete this workspace?</p>
       </div>
+
+      <InviteWorkspace
+        open={invitePopup}
+        onClose={() => {
+          setInvitePopup(false);
+        }}
+      />
     </div>
   );
 };
 
-export default WorkspaceSettings;
+export default React.memo(WorkspaceSettings);
