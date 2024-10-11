@@ -1,9 +1,11 @@
 import React, { memo } from 'react';
 import { Button, Divider, TextField } from '@mui/material';
 import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { Signin } from '../../Services/API/Auth';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
 
@@ -15,14 +17,18 @@ const Login = memo((props) => {
     },
   });
 
+  const navigate = useNavigate();
+
   const handleSubmit = (values) => {
     const { email, password } = values;
     Signin(email, password)
       .then((res) => {
-        console.log(res);
+        toast.success('Login successfully');
+        Cookies.set('authToken', res.accessToken, { expires: 7, path: '/' });
+        navigate('/');
       })
       .catch((err) => {
-        console.log(err);
+        toast.error('Login not successfully');
       });
   };
 
