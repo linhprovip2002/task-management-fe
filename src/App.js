@@ -3,10 +3,13 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { DefaultLayout } from './Layouts';
 import { publicRoutes } from './routes';
 import '@fontsource/inter';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer />
+
       <div className={`App`}>
         <Routes>
           {publicRoutes.map((route, index) => {
