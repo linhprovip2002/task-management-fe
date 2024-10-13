@@ -9,6 +9,7 @@ import { useGetUser } from '../../../Hooks';
 import { useMutation, QueryClient } from '@tanstack/react-query';
 import { workspaceServices } from '../../../Services';
 import { EQueryKeys } from '../../../constants';
+import { SearchMember } from '../../SearchMember/SearchMember';
 
 const names = [
   'Oliver Hansen',
@@ -88,19 +89,7 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
               />
               <div>Get your members on board with a few words about your Workspace.</div>
             </div>
-            <div className="flex flex-col gap-1">
-              <div className="font-bold">Workspace members</div>
-              <Autocomplete
-                multiple
-                options={names}
-                filterSelectedOptions
-                onInputChange={(_, newInputValue) => {
-                  setSearchMember(newInputValue);
-                }}
-                renderInput={(params) => <TextField {...params} placeholder="Find members" />}
-              />
-              <div>Add members to your Workspace so they can collaborate on boards.</div>
-            </div>
+            <SearchMember />
             <Button variant="contained" color="primary" size="large" type="submit">
               Create Workspace
             </Button>
