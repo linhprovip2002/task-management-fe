@@ -1,10 +1,13 @@
-import request from "../request";
+import request from '../request';
 
-export async function createBoard() {
+export async function createBoard(boardData) {
   try {
-    const response = await request.post("/board");
-    console.log('in', response.data);
-    
+    const response = await request.post('/board', boardData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
     return response.data;
   } catch (error) {
     throw error;
@@ -14,8 +17,9 @@ export async function createBoard() {
 export async function getBoard({ limit = 10, page = 1 } = {}) {
   try {
     const response = await request.get(`/board`, {
-      params: { limit, page }
+      params: { limit, page },
     });
+
     return response.data.data;
   } catch (error) {
     throw error;

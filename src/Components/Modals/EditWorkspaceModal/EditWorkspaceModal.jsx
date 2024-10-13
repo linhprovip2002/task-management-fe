@@ -30,7 +30,6 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
 
   const onSubmit = (workspaceData) => {
     mutation.mutate(workspaceData);
-    console.log(workspaceData);
   };
 
   return (
