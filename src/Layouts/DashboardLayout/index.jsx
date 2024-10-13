@@ -19,14 +19,14 @@ const DashBoardLayout = ({ children }) => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className='text-center'>Loading...</div>;
   }
 
   return (
     <>
       <Header />
-      <div className="flex w-full justify-center">
-        <div className="flex w-3/4 gap-8 mt-4">
+      <div className="flex justify-center w-full">
+        <div className="flex w-[80%] gap-8 mt-12">
           <div className="w-1/4 text-sm text-textColor">
             <div className="flex flex-col gap-4 ml-4">
               {UserItems(tempUserId).map((item, index) => {
@@ -54,7 +54,7 @@ const DashBoardLayout = ({ children }) => {
                   value={false}
                   position="right"
                   title={
-                    <div className="flex gap-4 items-center text-base">
+                    <div className="flex items-center gap-4 text-base">
                       <Avatar sx={{ width: 28, height: 28 }}>{workspace.title[0]}</Avatar>
                       <div className="text-xl font-bold">{workspace.title}</div>
                     </div>
