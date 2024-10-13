@@ -2,23 +2,18 @@ import { Avatar, Divider } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonIcon from '@mui/icons-material/Person';
 import { Board } from '../../../Components/Board/Board';
-import { CreateNewBoard } from '../../../Components/CreateNewBoard/CreateNewBoard';
 import { useEffect, useState } from 'react';
 import { getBoard } from '../../../Services/API/ApiBoard/apiBoard';
+import { CreateNewBoard } from '../../../Components/Modals/CreateNewBoard/CreateNewBoard';
 
 const DashBoard = () => {
-  const [open, setOpen] = useState(false);
   const [boardData, setBoardData] = useState([]);
+  const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  // const tempBoards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const fetchBoardData = async () => {
     try {
       const data = await getBoard({ limit: 10, page: 1 });
@@ -58,10 +53,9 @@ const DashBoard = () => {
             return <Board key={index} />;
           })}
           <CreateNewBoard
-            onClick={handleClickOpen}
-            open={open}
-            handleClickOpen={handleClickOpen}
-            handleClose={handleClose}
+           open={open}
+           handleOpen={handleOpen}
+           handleClose={handleClose}
           />
         </div>
       </div>

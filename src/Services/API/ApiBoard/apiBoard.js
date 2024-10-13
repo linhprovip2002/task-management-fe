@@ -1,8 +1,14 @@
 import request from "../request";
 
-export async function createBoard() {
+export async function createBoard(boardData) {
   try {
-    const response = await request.post("/board");
+    console.log('in bbbbbbb', boardData);
+    const response = await request.post("/board", boardData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
     console.log('in', response.data);
     
     return response.data;
