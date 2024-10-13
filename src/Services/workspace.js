@@ -7,7 +7,7 @@ class WorkspaceServices {
     const response = await request({
       method: "POST",
       baseURL,
-      
+
       data: JSON.stringify(workspaceData)
     });
     return response.data;
@@ -42,6 +42,33 @@ class WorkspaceServices {
 
   // Method to delete a Workspace by ID
   deleteWorkspace(workspaceId) {}
+
+  async addWorkspaceMember(userId, workspaceId, role) {
+    const response = await request({
+      method: "POST",
+      baseURL: `${baseURL}/add-member`,
+      data: JSON.stringify({ userId, workspaceId, role })
+    });
+    return response.data;
+  }
+
+  async removeWorkspaceMember(workspaceId, memberId) {
+    const response = await request({
+      method: "DELETE",
+      baseURL: `${baseURL}/remove-member`,
+      data: JSON.stringify({ memberId })
+    });
+    return response.data;
+  }
+
+  async updateWorkspaceMember(workspaceId, memberId, updatedData) {
+    const response = await request({
+      method: "PATCH",
+      baseURL: `${baseURL}/update-member`,
+      data: JSON.stringify({ memberId, updatedData })
+    });
+    return response.data;
+  }
 }
 
 const workspaceServices = new WorkspaceServices();

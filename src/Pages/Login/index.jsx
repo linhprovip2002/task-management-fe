@@ -1,20 +1,25 @@
-import React, { memo } from 'react';
-import { Button, Divider, TextField } from '@mui/material';
-import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
-import { Link, useNavigate } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
-import { Signin } from '../../Services/API/Auth';
-import { toast } from 'react-toastify';
-import Cookies from 'js-cookie';
+import React, { memo } from "react";
+import { Button, Divider, TextField } from "@mui/material";
+import {
+  Apple,
+  FaceBookColor,
+  GoogleColor,
+  TrelloIconColor
+} from "../../Components/Icons";
+import { Link, useNavigate } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
+import { Signin } from "../../Services/API/Auth";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
-const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
+const borderStyle = "border-[1px] border-[#8590A2] border-solid";
 
 const Login = memo((props) => {
   const form = useForm({
     defaultValues: {
-      email: '',
-      password: '',
-    },
+      email: "",
+      password: ""
+    }
   });
 
   const navigate = useNavigate();
@@ -23,12 +28,15 @@ const Login = memo((props) => {
     const { email, password } = values;
     Signin(email, password)
       .then((res) => {
-        toast.success('Login successfully');
-        Cookies.set('authToken', res.accessToken, { expires: 7, path: '/' });
-        navigate('/');
+        toast.success("Login successfully");
+        Cookies.set("authToken", res.accessToken, {
+          expires: 7,
+          path: "/workspace/id/boards"
+        });
+        navigate("/");
       })
       .catch((err) => {
-        toast.error('Login not successfully');
+        toast.error("Login not successfully");
       });
   };
 
@@ -41,10 +49,15 @@ const Login = memo((props) => {
               <div className="flex justify-center">
                 <TrelloIconColor />
               </div>
-              <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Login to continue</h5>
+              <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
+                Login to continue
+              </h5>
             </div>
 
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="flex flex-col"
+            >
               <Controller
                 name="email"
                 control={form.control}
@@ -54,9 +67,9 @@ const Login = memo((props) => {
                     onChange={props.field.onChange}
                     value={props.field.email}
                     sx={{
-                      '& .MuiInputBase-input': {
-                        padding: 1,
-                      },
+                      "& .MuiInputBase-input": {
+                        padding: 1
+                      }
                     }}
                     placeholder="Input your email"
                   />
@@ -71,9 +84,9 @@ const Login = memo((props) => {
                     type="password"
                     sx={{
                       marginY: 2,
-                      '& .MuiInputBase-input': {
-                        padding: 1,
-                      },
+                      "& .MuiInputBase-input": {
+                        padding: 1
+                      }
                     }}
                     placeholder="Input your password"
                   />
@@ -85,7 +98,9 @@ const Login = memo((props) => {
               </Button>
             </form>
             <div className="mt-6">
-              <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
+              <span className="mb-4 text-[14px] font-bold text-slate-400">
+                Others:
+              </span>
             </div>
 
             <div>
@@ -113,9 +128,14 @@ const Login = memo((props) => {
               <Divider component="div" />
             </div>
             <div className="flex">
-              <Link className="text-[#0c66e4] text-[14px] hover:underline">You can't login ?</Link>
+              <Link className="text-[#0c66e4] text-[14px] hover:underline">
+                You can't login ?
+              </Link>
               <p className="text-[14px] text-[#42526E] mx-2">•</p>
-              <Link to="/signup" className="text-[#0c66e4] text-[14px] hover:underline">
+              <Link
+                to="/signup"
+                className="text-[#0c66e4] text-[14px] hover:underline"
+              >
                 Create account
               </Link>
             </div>

@@ -1,10 +1,10 @@
-import { Avatar, Divider } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import PersonIcon from '@mui/icons-material/Person';
-import { Board } from '../../../Components/Board/Board';
-import { useEffect, useState } from 'react';
-import { getBoard } from '../../../Services/API/ApiBoard/apiBoard';
-import { CreateNewBoard } from '../../../Components/Modals/CreateNewBoard/CreateNewBoard';
+import { Divider } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import { Board } from "../../../Components/Board/Board";
+import { CreateNewBoard } from "../../../Components/CreateNewBoard/CreateNewBoard";
+import { useEffect, useState } from "react";
+import { getBoard } from "../../../Services/API/ApiBoard/apiBoard";
+import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
 
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);
@@ -20,7 +20,7 @@ const DashBoard = () => {
 
       setListBoard(data);
     } catch (error) {
-      console.error('Failed to fetch board data:', error);
+      console.error("Failed to fetch board data:", error);
     }
   };
 
@@ -32,16 +32,7 @@ const DashBoard = () => {
 
   return (
     <div>
-      <div className="flex items-center gap-4 text-sm">
-        <Avatar />
-        <div>
-          <div className="flex items-center gap-2 text-xl font-bold">
-            <div>Dashboard name</div>
-            <EditIcon fontSize="10" className="p-1 hover:bg-gray-200 hover:cursor-pointer" />
-          </div>
-          <div>Privacy</div>
-        </div>
-      </div>
+      <BoardInformation />
       <div className="my-8">
         <Divider />
       </div>
