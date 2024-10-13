@@ -14,14 +14,14 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
   const [selectedBg, setSelectedBg] = useState(''); // Lưu màu background
   const { workspaceInfo } = useGetWorkspaceByUser();
 
-  const {id} = useParams();
+  const { id } = useParams();
   console.log('in ra id: ' + id);
-  
 
   const {
     handleSubmit,
     control,
     reset,
+    register,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -35,8 +35,6 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
       isArchived: false, // Mặc định là false
     },
   });
-
-
 
   const onSubmit = async (data) => {
     const { title, visibility, workspaceId } = data;
@@ -167,22 +165,15 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
             />
 
             {/* Autocomplete Visibility */}
-            <Controller
-              name="visibility"
-              control={control}
-              render={({ field }) => (
-                <Autocomplete
-                  {...field}
-                  options={listRule} // Các lựa chọn là isPrivate, isFavorite, isArchived
-                  getOptionLabel={(option) => option.label || ''} // Hiển thị nhãn của option
-                  isOptionEqualToValue={(option, value) => option.value === value} // So sánh đúng giữa option và value
-                  onChange={(event, newValue) => field.onChange(String(newValue?.value) || '')} // Cập nhật giá trị cho form
-                  renderInput={(params) => (
-                    <TextField {...params} required size="small" label="Visibility" variant="outlined" fullWidth />
-                  )}
-                  className="my-4"
-                />
+            <Autocomplete
+              {...register('visibility')}
+              options={listRule} // Các lựa chọn là isPrivate, isFavorite, isArchived
+              getOptionLabel={(option) => option.label} // Hiển thị nhãn của option
+              isOptionEqualToValue={(option, value) => option.value === value} // So sánh đúng giữa option và value
+              renderInput={(params) => (
+                <TextField {...params} size="small" label="Visibility" variant="outlined" fullWidth />
               )}
+              className="my-4"
             />
 
             <div className="flex justify-end gap-2">
