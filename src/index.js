@@ -7,6 +7,7 @@ import GlobalStyles from './GlobalStyles';
 import { CssBaseline } from '@mui/material';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ToastProvider } from './Contexts/Toast';
 
 // config font for MUI component
 const theme = createTheme({
@@ -24,7 +25,9 @@ root.render(
       <QueryClientProvider client={queryClient}>
         <CssBaseline>
           <GlobalStyles>
-            <App />
+            <ToastProvider>
+              <App />
+            </ToastProvider>
           </GlobalStyles>
         </CssBaseline>
       </QueryClientProvider>
