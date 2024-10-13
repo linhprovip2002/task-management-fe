@@ -1,57 +1,32 @@
-export const customStyleNewBoard = 
+export const customStyleNewBoard =
   'w-12 h-10 border rounded-md flex items-center justify-center gap-x-1 hover:ring-2 cursor-pointer';
 
-  export const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-  };
+export const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+};
+
+// export const colorData = ['yellow', 'orange', 'pink', 'purple', 'green', 'gray'];
+
+export const colorData = [
+  { name: 'red', class: 'bg-red-500' },
+  { name: 'blue', class: 'bg-blue-500' },
+  { name: 'green', class: 'bg-green-500' },
+  { name: 'yellow', class: 'bg-yellow-500' },
+  { name: 'purple', class: 'bg-purple-500' },
+  { name: 'gray', class: 'bg-gray-500' },
+];
+
+// console.log(colorData.map((color) => color);
+console.log('iiiiiiiiiiiiiiiii', colorData.map((color) => color));
 
 
-  export const colorData = [
-    'yellow', 'orange', 'pink', 'purple', 'green', 'gray',
-  ]
-  
-    export const listRule = [
-      { label: 'isPrivate', value: 'isPrivate' },
-      { label: 'isFavorite', value: 'isFavorite' },
-      { label: 'isArchived', value: 'isArchived' },
-    ];
-    
-  
-  export const listWorkspaces = [
-    {
-      id: '1',
-      label: 'Workspace 1'
-    },
-    {
-      id: '2',
-      label: 'Workspace 2'
-    },
-    {
-      id: '3',
-      label: 'Workspace 3'
-    },
-    {
-      id: '4',
-      label: 'Workspace 4'
-    },
-    {
-      id: '5',
-      label: 'Workspace 5'
-    },
-    {
-      id: '6',
-      label: 'Workspace 6'
-    },
-    {
-      id: '7',
-      label: 'Workspace 7'
-    },
-    {
-      id: '8',
-      label: 'Workspace 8'
-    }
-  ]
+export const listRule = [
+  { label: 'isPrivate', value: 'isPrivate' },
+  { label: 'isFavorite', value: 'isFavorite' },
+  { label: 'isArchived', value: 'isArchived' },
+];
+

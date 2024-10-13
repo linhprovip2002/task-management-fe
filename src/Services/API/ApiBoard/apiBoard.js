@@ -22,6 +22,8 @@ export async function getBoard({ limit = 10, page = 1 } = {}) {
     const response = await request.get(`/board`, {
       params: { limit, page }
     });
+    console.log('in ra danh sach board', response.data.data);
+    
     return response.data.data;
   } catch (error) {
     throw error;

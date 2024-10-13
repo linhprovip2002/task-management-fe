@@ -7,7 +7,7 @@ import { getBoard } from '../../../Services/API/ApiBoard/apiBoard';
 import { CreateNewBoard } from '../../../Components/Modals/CreateNewBoard/CreateNewBoard';
 
 const DashBoard = () => {
-  const [boardData, setBoardData] = useState([]);
+  const [listBoard, setListBoard] = useState([]);
   const [open, setOpen] = useState(false);
 
 
@@ -18,7 +18,7 @@ const DashBoard = () => {
     try {
       const data = await getBoard({ limit: 10, page: 1 });
 
-      setBoardData(data);
+      setListBoard(data);
     } catch (error) {
       console.error('Failed to fetch board data:', error);
     }
@@ -27,6 +27,8 @@ const DashBoard = () => {
   useEffect(() => {
     fetchBoardData();
   }, []);
+
+  
 
   return (
     <div>
@@ -48,9 +50,10 @@ const DashBoard = () => {
           <PersonIcon />
           <span className="ml-2 text-xl font-bold">Your Boards</span>
         </div>
-        <div className="grid grid-cols-3 mt-4 gap-y-6">
-          {boardData.map((board, index) => {
-            return <Board key={index} />;
+        {/* grid grid-cols-3 mt-4 gap-y-6 */}
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+          {listBoard.map((board, index) => {
+            return <Board key={index} board={board}/>;
           })}
           <CreateNewBoard
            open={open}
