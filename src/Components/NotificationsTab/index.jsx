@@ -13,9 +13,7 @@ const NotificationsTab = React.forwardRef((props, ref) => {
     setIsOpenSetting(!isOpenSetting);
   };
 
-  const handleReadAll = () => {
-    console.log('Handle read all');
-  };
+  const handleReadAll = () => {};
 
   return (
     <div

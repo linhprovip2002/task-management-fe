@@ -15,7 +15,6 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
   const { workspaceInfo } = useGetWorkspaceByUser();
 
   const { id } = useParams();
-  console.log('in ra id: ' + id);
 
   const {
     handleSubmit,
@@ -38,7 +37,6 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
 
   const onSubmit = async (data) => {
     const { title, visibility, workspaceId } = data;
-    console.log('in ra data', data);
 
     // Reset tất cả các giá trị boolean trước khi cập nhật
     let isPrivate = false;
@@ -66,7 +64,6 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
       workspaceId: Number(workspaceId), // Chuyển đổi thành số
     };
 
-    console.log('du lieu gui len', boardData);
     try {
       await createBoard(boardData); // Gửi dữ liệu lên API
       reset(); // Reset form sau khi gửi

@@ -20,13 +20,8 @@ export const colorData = [
   { name: 'gray', class: 'bg-gray-500' },
 ];
 
-// console.log(colorData.map((color) => color);
-console.log('iiiiiiiiiiiiiiiii', colorData.map((color) => color));
-
-
 export const listRule = [
   { label: 'isPrivate', value: 'isPrivate' },
   { label: 'isFavorite', value: 'isFavorite' },
   { label: 'isArchived', value: 'isArchived' },
 ];
-
