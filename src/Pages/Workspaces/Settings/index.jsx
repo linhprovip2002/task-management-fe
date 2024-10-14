@@ -17,7 +17,7 @@ import React, { useEffect, useState } from "react";
 import FormUpdate from "./FormUpdate";
 import InviteWorkspace from "../../../Components/Modals/InviteWorkspace";
 import { useParams } from "react-router-dom";
-import { getWorkspaceById } from "../../../Services/API/ApiWorkSpace/apiWorkSpace";
+import { deleteWorkspace, getWorkspaceById } from "../../../Services/API/ApiWorkSpace/apiWorkSpace";
 import { toast } from "react-toastify";
 const WorkspaceSettings = () => {
   const [workspaceData, setWorkspaceData] = useState({});
@@ -38,8 +38,12 @@ const WorkspaceSettings = () => {
   const handleOpenCloseDeletePopup = () => setDeletePopup(!deletePopup);
 
   const handleDeleteWsp = () => {
-    toast.success("Deleted Workspace");
-    setDeletePopup(false);
+    deleteWorkspace(id).then((res) => {
+      toast.success("Deleted Workspace");
+      setDeletePopup(false);
+
+      // chưa handle cập nhật lại workspace ở sidebar
+    });
   };
 
   useEffect(() => {

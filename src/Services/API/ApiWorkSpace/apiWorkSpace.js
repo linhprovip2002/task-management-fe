@@ -31,3 +31,12 @@ export async function updateWorkspace({ id, title, description }) {
     throw error;
   }
 }
+
+export async function deleteWorkspace(id) {
+  try {
+    const response = await request.delete(`/workspace/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

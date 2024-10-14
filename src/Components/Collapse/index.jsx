@@ -38,7 +38,7 @@ export default function Collapse({
   return (
     <div className={className}>
       <div
-        className={`flex cursor-pointer items-center justify-between gap-2 leading-[26px] 
+        className={`flex cursor-pointer items-center justify-between gap-2 leading-[26px] hover:bg-[var(--hover-background)] rounded-lg 
           ${TITLE_CONTAINER_PADDING[size]} 
           ${titleContainerClassName}
           ${disableToggle ? "cursor-default" : "cursor-pointer"}`}
@@ -86,7 +86,7 @@ export default function Collapse({
         {isCollapse ? (
           disabled ? null : (
             <div className="flex flex-col gap-6 overflow-hidden">
-              <div className={`px-6 pb-6 ${contentClassName}`}>{children}</div>
+              <div className={`pb-6 ${contentClassName}`}>{children}</div>
             </div>
           )
         ) : null}
