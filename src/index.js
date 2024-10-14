@@ -15,6 +15,60 @@ const theme = createTheme({
   typography: {
     fontFamily: 'var(--font-family)',
   },
+  components: {
+    // Name of the component
+    MuiPaper: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          marginTop: '10px'
+        },
+      },
+    },
+    // MuiSvgIcon: {
+    //   styleOverrides: {
+    //     // Name of the slot
+    //     root: {
+    //       // Some CSS
+    //       // fontSize: '14px',
+    //       // textTransform: 'none',
+    //       // fontWeight: '500',
+    //       Color: 'white',
+         
+    //     },
+    //   },
+    // },
+    // MuiInputLabel: {
+    //   styleOverrides: {
+    //     // Name of the slot
+    //     root: ({ theme }) => ({
+    //       color: theme.palette.primary.main,
+    //       fontSize: '0.875rem',
+    //     })
+    //   },
+    // },
+    // MuiOutlinedInput: {
+    //   styleOverrides: {
+    //     // Name of the slot
+    //     root: ({ theme }) => {
+    //       return {
+    //         // color: theme.palette.primary.main,
+    //         '.MuiOutlinedInput-notchedOutline': {
+    //           borderColor: theme.palette.primary.main,
+    //           fontSize: '0.875rem',
+    //         },
+    //         '&:hover': {
+    //           '.MuiOutlinedInput-notchedOutline': {
+    //             // borderColor: theme.palette.primary.main,
+    //             fontSize: '0.875rem',
+    //           },
+    //         }
+    //       };
+    //     },
+    //   },
+    // },
+  },
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
