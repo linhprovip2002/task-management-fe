@@ -35,6 +35,42 @@ export default function Profile() {
         <div className="max-w-[530px] m-auto flex flex-col">
           <img className="mt-[18px] mb-12" src="https://trello.com/assets/eff3d701a9c3a71105ea.svg" alt="" />
 
+          <div>
+            <h1 className="text-2xl font-semibold text-[var(--text-color)] mb-[10px]">
+              Manage your personal information
+            </h1>
+            <p className="bg-[var(--hover-background)] p-4 mb-2 text-sm text-[var(--dark-slate-blue)]">
+              This is an Atlassian account. Edit your personal information and visibility settings through your{' '}
+              <a
+                className="text-[var(--primary)]"
+                href="https://id.atlassian.com/manage-profile"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Atlassian profile
+              </a>
+              . To learn more, view our{' '}
+              <a
+                className="text-[var(--primary)]"
+                href="https://www.atlassian.com/legal/cloud-terms-of-service"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms of Service
+              </a>{' '}
+              or{' '}
+              <a
+                className="text-[var(--primary)]"
+                href="https://www.atlassian.com/legal/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
+              </a>
+              .
+            </p>
+          </div>
+
           <h3 className="mb-2 mt-10 text-[20px] font-semibold text-[var(--text-color)]">About</h3>
           <Divider component={'div'} />
 
