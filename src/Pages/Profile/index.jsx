@@ -12,6 +12,7 @@ export default function Profile() {
           <div className="py-5 flex">
             <div className="flex justify-center items-center w-12 h-12 rounded-full mr-4">
               <img
+                alt=""
                 className="w-full h-full object-cover rounded-full"
                 src="https://trello-members.s3.amazonaws.com/6411cb0b756e170127733b34/3cb3638a4c4bac4f4213caa087029bb6/170.png"
               />

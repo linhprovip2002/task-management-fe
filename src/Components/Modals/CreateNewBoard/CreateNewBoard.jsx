@@ -8,13 +8,10 @@ import { colorData, customStyleNewBoard, style } from './customNewBoard';
 import { listRule } from './customNewBoard';
 import { useGetWorkspaceByUser } from '../../../Hooks';
 import { createBoard } from '../../../Services/API/ApiBoard/apiBoard';
-import { useParams } from 'react-router-dom';
 
 export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
   const [selectedBg, setSelectedBg] = useState(''); // Lưu màu background
   const { workspaceInfo } = useGetWorkspaceByUser();
-
-  const { id } = useParams();
 
   const {
     handleSubmit,

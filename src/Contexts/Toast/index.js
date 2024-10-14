@@ -1,7 +1,7 @@
 // ToastContext.js
-import React, { createContext, useContext, useState } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { createContext, useContext, useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ToastContext = createContext();
 
@@ -19,11 +19,11 @@ export const ToastProvider = ({ children }) => {
   const show = () => {
     const { message, type } = toastConfig;
     toast[type](message, {
-      position: 'top-right',
+      position: "bottom-right",
       autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
-      pauseOnHover: true,
+      pauseOnHover: false,
       draggable: true,
       progress: undefined,
       onClose: closeToast,
@@ -36,7 +36,7 @@ export const ToastProvider = ({ children }) => {
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
+    throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
 };
