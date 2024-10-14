@@ -21,3 +21,12 @@ export const Signup = async (userName, email, password) => {
     throw error;
   }
 };
+
+export async function getProfile() {
+  try {
+    const res = await request.get('/auth/me');
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+}

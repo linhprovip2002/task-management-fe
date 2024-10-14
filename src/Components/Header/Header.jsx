@@ -11,6 +11,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import NotificationsTab from '../NotificationsTab';
 import { useState } from 'react';
 import Popper from '@mui/material/Popper';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -27,19 +28,19 @@ const Header = () => {
   return (
     <>
       {/* shadow-md #0c66e4 */}
-      <header className="flex flex-col items-center justify-between w-full px-4 py-2 border-b-[1px] border-[#172b4d] bg-white md:flex-row">
+      <header className="flex flex-col items-center justify-between w-full px-4 py-2 border-b-[1px] border-gray-300 bg-white md:flex-row">
         {/* Left Section: Logo and Menu */}
         <div className="flex items-center space-x-4">
           <AppsIcon
             style={{ color: '#44546f', hover: '#091e420f' }}
             className="cursor-pointer hover:bg-hoverBackground"
           />
-          <div className="flex items-center space-x-2 cursor-pointer hover:bg-hoverBackground">
+          <Link to={'/'} className="flex items-center space-x-2 cursor-pointer hover:bg-hoverBackground">
             <TrelloLogoIcon style={{ color: '#172b4d' }} className="w-4 h-4" />
             <span style={{ color: '#172b4d' }} className="text-lg font-bold">
               Trello
             </span>
-          </div>
+          </Link>
           <div className="items-center hidden space-x-4 xl:flex">
             <WorkSpaces />
             <Recent />

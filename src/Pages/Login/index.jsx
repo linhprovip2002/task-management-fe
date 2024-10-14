@@ -1,20 +1,20 @@
-import React, { memo } from "react";
-import { Button, Divider, TextField } from "@mui/material";
-import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from "../../Components/Icons";
-import { Link, useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
-import { Signin } from "../../Services/API/Auth";
-import { toast } from "react-toastify";
-import Cookies from "js-cookie";
-import { useStorage } from "../../Contexts/Storage";
+import React, { memo } from 'react';
+import { Button, Divider, TextField } from '@mui/material';
+import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
+import { Signin } from '../../Services/API/Auth';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
+import { useStorage } from '../../Contexts/Storage';
 
-const borderStyle = "border-[1px] border-[#8590A2] border-solid";
+const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
 
 const Login = memo((props) => {
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
   const storage = useStorage();
@@ -25,17 +25,17 @@ const Login = memo((props) => {
     const { email, password } = values;
     Signin(email, password)
       .then((res) => {
-        Cookies.set("authToken", res.accessToken, {
+        Cookies.set('authToken', res.accessToken, {
           expires: 7,
-          path: "/workspace/id/boards",
+          path: '/',
         });
         storage.setCurrentUser(true);
         storage.setUserData(res.user);
-        toast.success("Login successfully");
-        navigate("/");
+        toast.success('Login successfully');
+        navigate('/');
       })
       .catch((err) => {
-        toast.error("Login not successfully");
+        toast.error('Login not successfully');
       });
   };
 
@@ -61,7 +61,7 @@ const Login = memo((props) => {
                     onChange={props.field.onChange}
                     value={props.field.email}
                     sx={{
-                      "& .MuiInputBase-input": {
+                      '& .MuiInputBase-input': {
                         padding: 1,
                       },
                     }}
@@ -78,7 +78,7 @@ const Login = memo((props) => {
                     type="password"
                     sx={{
                       marginY: 2,
-                      "& .MuiInputBase-input": {
+                      '& .MuiInputBase-input': {
                         padding: 1,
                       },
                     }}

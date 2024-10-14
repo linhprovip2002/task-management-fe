@@ -19,7 +19,7 @@ const DashBoardLayout = ({ children }) => {
   };
 
   if (isLoading) {
-    return <div className='text-center'>Loading...</div>;
+    return <div className="text-center">Loading...</div>;
   }
 
   return (
@@ -51,7 +51,7 @@ const DashBoardLayout = ({ children }) => {
               return (
                 <Collapse
                   size="sm"
-                  className={"rounded-lg"}
+                  className={'rounded-lg'}
                   key={workspace.id}
                   value={false}
                   position="right"

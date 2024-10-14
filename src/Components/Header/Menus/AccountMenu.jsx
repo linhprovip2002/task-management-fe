@@ -13,6 +13,7 @@ import Logout from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
 
 import { EditWorkspaceModal } from '../../Modals';
+import { Link } from 'react-router-dom';
 
 const Slot_Props = {
   paper: {
@@ -41,8 +42,7 @@ const Slot_Props = {
       },
     },
   },
-}
-
+};
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -80,9 +80,12 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar sx={{ width: 26, height: 26 }} /> Profile
-        </MenuItem>
+        <Link to={'/profile'} className="flex w-full">
+          <MenuItem sx={{ width: '100%' }}>
+            <Avatar sx={{ width: 26, height: 26 }} />
+            Profile
+          </MenuItem>
+        </Link>
         <MenuItem onClick={handleClose}>
           <Avatar sx={{ width: 26, height: 26 }} /> My account
         </MenuItem>

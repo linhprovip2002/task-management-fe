@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Avatar, Button } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import { InviteMemberModal } from "../Modals/InviteMemberModal/InviteMemberModal";
+import { useState } from 'react';
+import { Avatar, Button } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import { InviteMemberModal } from '../Modals/InviteMemberModal/InviteMemberModal';
 
 export const BoardInformation = (props) => {
   const [openInviteModal, setOpenInviteModal] = useState(false);
@@ -15,10 +15,7 @@ export const BoardInformation = (props) => {
           <div>
             <div className="flex items-center gap-2 text-xl font-bold">
               <div>Dashboard name</div>
-              <EditIcon
-                fontSize="10"
-                className="p-1 hover:bg-gray-200 hover:cursor-pointer"
-              />
+              <EditIcon fontSize="10" className="p-1 hover:bg-gray-200 hover:cursor-pointer" />
             </div>
             <div>Privacy</div>
           </div>
@@ -27,17 +24,14 @@ export const BoardInformation = (props) => {
           <Button
             variant="contained"
             startIcon={<PersonAddAlt1Icon />}
-            sx={{ height: "fit-content" }}
+            sx={{ height: 'fit-content' }}
             onClick={() => setOpenInviteModal(true)}
           >
             Invite Workspace members
           </Button>
         )}
       </div>
-      <InviteMemberModal
-        open={openInviteModal}
-        handleClose={() => setOpenInviteModal(false)}
-      />
+      <InviteMemberModal open={openInviteModal} handleClose={() => setOpenInviteModal(false)} />
     </>
   );
 };

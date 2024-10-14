@@ -8,17 +8,17 @@ import {
   DialogTitle,
   Divider,
   Modal,
-} from "@mui/material";
-import { deepOrange } from "@mui/material/colors";
-import LockIcon from "@mui/icons-material/Lock";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import EditIcon from "@mui/icons-material/Edit";
-import React, { useEffect, useState } from "react";
-import FormUpdate from "./FormUpdate";
-import InviteWorkspace from "../../../Components/Modals/InviteWorkspace";
-import { useParams } from "react-router-dom";
-import { deleteWorkspace, getWorkspaceById } from "../../../Services/API/ApiWorkSpace/apiWorkSpace";
-import { toast } from "react-toastify";
+} from '@mui/material';
+import { deepOrange } from '@mui/material/colors';
+import LockIcon from '@mui/icons-material/Lock';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import EditIcon from '@mui/icons-material/Edit';
+import React, { useEffect, useState } from 'react';
+import FormUpdate from './FormUpdate';
+import InviteWorkspace from '../../../Components/Modals/InviteWorkspace';
+import { useParams } from 'react-router-dom';
+import { deleteWorkspace, getWorkspaceById } from '../../../Services/API/ApiWorkSpace/apiWorkSpace';
+import { toast } from 'react-toastify';
 const WorkspaceSettings = () => {
   const [workspaceData, setWorkspaceData] = useState({});
 
@@ -39,7 +39,7 @@ const WorkspaceSettings = () => {
 
   const handleDeleteWsp = () => {
     deleteWorkspace(id).then((res) => {
-      toast.success("Deleted Workspace");
+      toast.success('Deleted Workspace');
       setDeletePopup(false);
 
       // chưa handle cập nhật lại workspace ở sidebar
@@ -81,7 +81,7 @@ const WorkspaceSettings = () => {
                     onClick={handleOpenUpdate}
                     className="w-6 h-6 hover:bg-[var(--hover-background)] cursor-pointer flex items-center justify-center ml-2 rounded-md"
                   >
-                    <EditIcon sx={{ fontSize: "16px" }} />
+                    <EditIcon sx={{ fontSize: '16px' }} />
                   </button>
                 </div>
                 <span className="text-xs flex  text-[#44546F]">
@@ -98,9 +98,9 @@ const WorkspaceSettings = () => {
           <Button
             onClick={() => setInvitePopup(true)}
             sx={{
-              textTransform: "none",
-              paddingY: "6px",
-              paddingX: "12px",
+              textTransform: 'none',
+              paddingY: '6px',
+              paddingX: '12px',
             }}
             variant="contained"
             startIcon={<PersonAddIcon fontSize="inherit" />}
@@ -109,7 +109,7 @@ const WorkspaceSettings = () => {
           </Button>
         </div>
       </div>
-      <Divider component={"div"} />
+      <Divider component={'div'} />
       <div onClick={handleOpenCloseDeletePopup} className="py-3">
         <p className="text-sm font-semibold text-[#AE2E24] cursor-pointer hover:underline">Delete this workspace?</p>
       </div>
@@ -124,17 +124,17 @@ const WorkspaceSettings = () => {
       <Modal open={deletePopup} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
             maxWidth: 600,
-            bgcolor: "background.paper",
+            bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
           }}
         >
-          <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
+          <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
             Delete Workspace ?
           </DialogTitle>
           <DialogContent>

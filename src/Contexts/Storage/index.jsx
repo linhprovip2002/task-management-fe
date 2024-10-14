@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { getProfile } from '../../Services/API/Auth';
 // import Cookies from 'js-cookie';
 
 export const StorageContext = createContext();
@@ -15,8 +16,12 @@ function GlobalStates({ children }) {
   };
 
   useEffect(() => {
-    // const authToken = Cookies.get('authToken');
-    // call api get profile
+    getProfile()
+      .then((res) => {
+        setCurrentUser(true);
+        setUserData(res);
+      })
+      .catch((err) => {});
   }, []);
 
   return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;
