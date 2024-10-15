@@ -14,12 +14,15 @@ export async function createBoard(boardData) {
   }
 }
 
-export async function getBoard({ limit = 10, page = 1 } = {}) {
+export async function getBoard(limit, page) {
   try {
-    const response = await request.get(`/board`, {
-      params: { limit, page },
+    const response = await request.get(`/board?limit=${limit}&page=${page}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-
+    console.log('phan trang board', response);
+    
     return response.data.data;
   } catch (error) {
     throw error;
