@@ -1,72 +1,89 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import PeopleIcon from '@mui/icons-material/People';
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import PersonAdd from "@mui/icons-material/PersonAdd";
+import Settings from "@mui/icons-material/Settings";
+import Logout from "@mui/icons-material/Logout";
+import PeopleIcon from "@mui/icons-material/People";
+import Cookies from "js-cookie";
 
-import { EditWorkspaceModal } from '../../Modals';
-import { Link } from 'react-router-dom';
+import { EditWorkspaceModal } from "../../Modals";
+import { Link, useNavigate } from "react-router-dom";
+import routes from "../../../config/routes";
+import { useStorage } from "../../../Contexts";
 
 const Slot_Props = {
   paper: {
     elevation: 0,
     sx: {
-      overflow: 'visible',
-      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+      overflow: "visible",
+      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
       mt: 1.5,
-      '& .MuiAvatar-root': {
+      "& .MuiAvatar-root": {
         width: 32,
         height: 32,
         ml: -0.5,
-        mr: 1,
+        mr: 1
       },
-      '&::before': {
+      "&::before": {
         content: '""',
-        display: 'block',
-        position: 'absolute',
+        display: "block",
+        position: "absolute",
         top: 0,
         right: 14,
         width: 10,
         height: 10,
-        bgcolor: 'background.paper',
-        transform: 'translateY(-50%) rotate(45deg)',
-        zIndex: 0,
-      },
-    },
-  },
+        bgcolor: "background.paper",
+        transform: "translateY(-50%) rotate(45deg)",
+        zIndex: 0
+      }
+    }
+  }
 };
 
 export default function AccountMenu() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openEditWorkspaceModal, setOpenEditWorkspaceModal] = React.useState(false);
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openEditWorkspaceModal, setOpenEditWorkspaceModal] = useState(false);
+  const { setIsLoggedIn } = useStorage();
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout = async () => {
+    setIsLoggedIn(false);
+    localStorage.clear();
+    Cookies.remove("authToken");
+    navigate(routes.login);
+  };
+
   return (
     <>
-      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
             size="small"
             sx={{ ml: 1 }}
-            aria-controls={open ? 'account-menu' : undefined}
+            aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
+            aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 26, height: 26, backgroundColor: 'orange' }}></Avatar>
+            <Avatar
+              sx={{ width: 26, height: 26, backgroundColor: "orange" }}
+            ></Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -77,11 +94,11 @@ export default function AccountMenu() {
         onClose={handleClose}
         onClick={handleClose}
         slotProps={Slot_Props}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <Link to={'/profile'} className="flex w-full">
-          <MenuItem sx={{ width: '100%' }}>
+        <Link to={routes.profile} className="flex w-full">
+          <MenuItem sx={{ width: "100%" }}>
             <Avatar sx={{ width: 26, height: 26 }} />
             Profile
           </MenuItem>
@@ -114,7 +131,7 @@ export default function AccountMenu() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

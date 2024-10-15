@@ -1,4 +1,3 @@
-// ToastContext.js
 import React, { createContext, useContext, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,11 +25,15 @@ export const ToastProvider = ({ children }) => {
       pauseOnHover: false,
       draggable: true,
       progress: undefined,
-      onClose: closeToast,
+      onClose: closeToast
     });
   };
 
-  return <ToastContext.Provider value={{ showToast, show }}>{children}</ToastContext.Provider>;
+  return (
+    <ToastContext.Provider value={{ showToast, show }}>
+      {children}
+    </ToastContext.Provider>
+  );
 };
 
 export const useToast = () => {
@@ -40,3 +43,5 @@ export const useToast = () => {
   }
   return context;
 };
+
+export * from "./ToastContainer";

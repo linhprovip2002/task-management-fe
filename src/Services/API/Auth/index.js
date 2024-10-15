@@ -1,20 +1,23 @@
-import request from '../request';
+import request from "../request";
 
-export const Signin = async (email, password) => {
+export const SignIn = async (email, password) => {
   try {
-    const res = await request.post('/auth/signin', { email: email, password: password });
+    const res = await request.post("/auth/signin", {
+      email: email,
+      password: password
+    });
     return res.data;
   } catch (error) {
     throw error;
   }
 };
 
-export const Signup = async (userName, email, password) => {
+export const SignUp = async (userName, email, password) => {
   try {
-    const res = await request.post('/auth/signup', {
+    const res = await request.post("/auth/signup", {
       name: userName,
       email,
-      password,
+      password
     });
     return res.data;
   } catch (error) {
@@ -24,7 +27,7 @@ export const Signup = async (userName, email, password) => {
 
 export async function getProfile() {
   try {
-    const res = await request.get('/auth/me');
+    const res = await request.get("/auth/me");
     return res.data;
   } catch (error) {
     throw error;
