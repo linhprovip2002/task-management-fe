@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 import { ImageIcon } from '../../Assets/images';
 import { ConvertHiDotsVertical } from '../../Components/HiDotsVertical';
@@ -25,7 +26,9 @@ function ListBoard() {
   const [nameTitle, setNameTitle] = useState('');
   const [isClosedNavBar, setIsCloseNavBar] = useState(false);
   const [isShowBoardCard, setIsShowBoardCard] = useState(false);
+  const [isShowBoardEdit, setIsShowBoardEdit] = useState(false);
   const [isShowAddList, setIsShowAddList] = useState(false);
+  const [activeMonitor, setActiveMonitor] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
   // {
   //   imageSrc: ImageBG,
@@ -39,6 +42,10 @@ function ListBoard() {
 
   const handleShowBoardCard = () => {
     setIsShowBoardCard(!isShowBoardCard);
+  };
+
+  const handleShowBoardEdit = () => {
+    setIsShowBoardEdit(!isShowBoardEdit);
   };
 
   const handleChange = (e, index) => {
@@ -86,6 +93,14 @@ function ListBoard() {
     }
     setIsShowAddList(!isShowAddList);
     setNameTitle('');
+  };
+
+  const handleActiveMonitor = (index) => {
+    if (activeMonitor.includes(index)) {
+      setActiveMonitor(activeMonitor.filter((i) => i !== index));
+    } else {
+      setActiveMonitor([...activeMonitor, index]);
+    }
   };
 
   return (
@@ -262,24 +277,20 @@ function ListBoard() {
                               type="text"
                               value={item.descriptionCard}
                               onChange={(e) => handleChange(e, index)}
-                              className="flex-1 max-w-[190px] mr-2 bg-gray-100 rounded-[8px] text-[16px] font-[500] px-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="flex-1 min-w-0 mr-2 bg-gray-100 rounded-[8px] text-[16px] font-[500] px-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <Tippy
-                              content={<span className="text-[12px] max-w-[150px]">Operation</span>}
-                              arrow={false}
-                              placement="bottom"
-                            >
-                              <div>
-                                <ConvertHiDotsVertical
-                                  indexCard={index}
-                                  onShowAddCard={handleShowAddCard}
-                                  type={'operation'}
-                                  className={
-                                    'p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
-                                  }
-                                />
-                              </div>
-                            </Tippy>
+                            {activeMonitor.includes(index) && <RemoveRedEyeOutlinedIcon className="p-1" />}
+                            <ConvertHiDotsVertical
+                              tippyName="Operation"
+                              name={item.descriptionCard}
+                              onShowAddCard={handleShowAddCard}
+                              onActiveMonitor={() => handleActiveMonitor(index)}
+                              type={'operation'}
+                              listCount={listCount}
+                              className={
+                                'p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
+                              }
+                            />
                           </div>
                           {/* List board */}
                           <div
@@ -293,6 +304,7 @@ function ListBoard() {
                               return (
                                 <ItemList
                                   onShowBoardCard={handleShowBoardCard}
+                                  onShowBoardEdit={handleShowBoardEdit}
                                   key={index}
                                   imageSrc={card.imageSrc}
                                   descriptionCard={card.descriptionCard}
@@ -382,6 +394,7 @@ function ListBoard() {
         </div>
       </div>
       {isShowBoardCard && <BoardCard onShowBoardCard={handleShowBoardCard} />}
+      {isShowBoardEdit && <BoardCard onShowBoardCard={handleShowBoardCard} />}
     </>
   );
 }
