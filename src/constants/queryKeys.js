@@ -3,5 +3,6 @@ export const EQueryKeys = {
   GET_USER_BY_ID: "getUserById",
   GET_USER: "getUser",
   //WORKSPACE
-  GET_WORKSPACE_BY_USER: "getWorkspaceByUser"
+  GET_WORKSPACE_BY_USER: "getWorkspaceByUser",
+  GET_WORKSPACE_BY_ID: "getWorkspaceById"
 };
