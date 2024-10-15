@@ -1,28 +1,34 @@
-import { Avatar, Divider } from "@mui/material";
-import { WorkSpaceItems, UserItems } from "./constant";
-import { useLocation, useNavigate } from "react-router-dom";
-import Header from "../../Components/Header/Header";
-import Collapse from "../../Components/Collapse";
+import { Avatar, Divider } from '@mui/material';
+import { WorkSpaceItems, UserItems } from './constant';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Header from '../../Components/Header/Header';
+import Collapse from '../../Components/Collapse';
+import { useGetWorkspaceByUser } from '../../Hooks';
 
 const DashBoardLayout = ({ children }) => {
-  const tempWorkSpace = [1, 2, 3];
   const location = useLocation();
   const navigate = useNavigate();
 
-  const tempUserId = "userId";
-  const workspaceId = "workspaceId";
+  const tempUserId = 'userId';
+  // const workspaceId = "workspaceId";
+
+  const { workspaceInfo, isLoading } = useGetWorkspaceByUser();
 
   const isActiveClassname = (path) => {
-    return location.pathname === path ? "bg-blue-100" : "hover:bg-gray-200";
+    return location.pathname === path ? 'bg-blue-100' : 'hover:bg-gray-200';
   };
+
+  if (isLoading) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   return (
     <>
       <Header />
-      <div className="flex w-full justify-center">
-        <div className="flex w-3/4 gap-8 mt-4">
+      <div className="flex justify-center w-full">
+        <div className="flex w-[80%] gap-8 mt-12">
           <div className="w-1/4 text-sm text-textColor">
-            <div className="flex flex-col gap-4 ml-4 mt-4">
+            <div className="flex flex-col gap-[4px]">
               {UserItems(tempUserId).map((item, index) => {
                 return (
                   <div
@@ -31,7 +37,7 @@ const DashBoardLayout = ({ children }) => {
                     onClick={() => navigate(item.path)}
                   >
                     {item.icon}
-                    <span className="ml-2">{item.title}</span>
+                    <span className="ml-2 font-semibold">{item.title}</span>
                   </div>
                 );
               })}
@@ -39,37 +45,38 @@ const DashBoardLayout = ({ children }) => {
             <div className="my-4">
               <Divider />
             </div>
-            <div className="ml-4 font-bold">Workspaces</div>
+            <div className="ml-4 font-bold mb-3">Workspaces</div>
             {/* Block for each worckspace */}
-            {tempWorkSpace.map((workspace, index) => {
+            {workspaceInfo.map((workspace) => {
               return (
-                <>
-                  <Collapse
-                    value={false}
-                    position="right"
-                    title={
-                      <div className="flex gap-4 items-center text-base">
-                        <Avatar sx={{ width: 28, height: 28 }} />
-                        <div className="text-xl font-bold">Dashboard name</div>
-                      </div>
-                    }
-                  >
-                    <div className="flex flex-col gap-4 ml-4 mt-4">
-                      {WorkSpaceItems(workspaceId).map((item, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className={`hover:cursor-pointer pl-10 py-2 rounded-md ${isActiveClassname(item.path)}`}
-                            onClick={() => navigate(item.path)}
-                          >
-                            {item.icon}
-                            <span className="ml-2">{item.title}</span>
-                          </div>
-                        );
-                      })}
+                <Collapse
+                  size="sm"
+                  className={'rounded-lg'}
+                  key={workspace.id}
+                  value={false}
+                  position="right"
+                  title={
+                    <div className="flex items-center gap-4 text-base">
+                      <Avatar sx={{ width: 28, height: 28 }}>{workspace.title[0]}</Avatar>
+                      <div className="text-sm font-bold">{workspace.title}</div>
                     </div>
-                  </Collapse>
-                </>
+                  }
+                >
+                  <div className="flex flex-col gap-[4px]">
+                    {WorkSpaceItems(workspace.id).map((item, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className={`hover:cursor-pointer pl-10 py-2 rounded-md ${isActiveClassname(item.path)}`}
+                          onClick={() => navigate(item.path)}
+                        >
+                          {item.icon}
+                          <span className="ml-2">{item.title}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Collapse>
               );
             })}
           </div>

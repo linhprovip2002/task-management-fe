@@ -17,7 +17,6 @@ import {
   FilterIcon,
   ShareIconRegular,
 } from '../../Components/Icons';
-import ImageBG from '../../Assets/images/sourceImages/image.png';
 import ItemList from '../../Components/ItemList';
 import { CreateItem } from '../../Components/CreateItem';
 import { BoardCard } from '../../Components/BoardCard';
@@ -157,7 +156,7 @@ function ListBoard() {
         <div
           className="flex-grow"
           style={{
-            backgroundImage: `url(${ImageBG})`,
+            backgroundImage: `url(https://trello.com/assets/707f35bc691220846678.svg)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',

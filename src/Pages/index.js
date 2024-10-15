@@ -11,3 +11,4 @@ export { default as WorkspaceSettings } from './Workspaces/Settings';
 // User
 export { default as UserBoards } from './Users/Boards';
 export { default as ListBoard } from './ListBoard';
+export { default as Profile } from './Profile';

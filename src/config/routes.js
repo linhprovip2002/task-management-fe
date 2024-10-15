@@ -8,6 +8,7 @@ const workspaceRoutes = {
 
 const userRoutes = {
   userBoards: '/user/:id/boards',
+  profile: '/profile',
 };
 
 const routes = {

@@ -1,60 +1,123 @@
 import React, { memo } from 'react';
-import Input from '@mui/joy/Input';
-import { Button, Divider } from '@mui/joy';
-import { Apple, FaceBookColor, GoogleColor } from '../../Components/Icons';
-import { Link } from 'react-router-dom';
+import { Button, Divider, TextField } from '@mui/material';
+import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { Controller, useForm } from 'react-hook-form';
+import { Signin } from '../../Services/API/Auth';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
+import { useStorage } from '../../Contexts/Storage';
+
+const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
 
 const Login = memo((props) => {
+  const form = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+  const storage = useStorage();
+
+  const navigate = useNavigate();
+
+  const handleSubmit = (values) => {
+    const { email, password } = values;
+    Signin(email, password)
+      .then((res) => {
+        Cookies.set('authToken', res.accessToken, {
+          expires: 7,
+          path: '/',
+        });
+        storage.setCurrentUser(true);
+        storage.setUserData(res.user);
+        toast.success('Login successfully');
+        navigate('/');
+      })
+      .catch((err) => {
+        toast.error('Login not successfully');
+      });
+  };
+
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="mt-[50px] w-full flex justify-center">
         <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
           <div>
-            <h3 className="font-semibold">TRELLO</h3>
-            <span className="text-[14px] font-medium">Login to continue</span>
-            <Input
-              sx={{
-                fontSize: 14,
-                borderRadius: 4,
-              }}
-              type="email"
-              placeholder="Your email"
-              className="text-[14px] mb-2"
-            />
+            <div className="mb-4">
+              <div className="flex justify-center">
+                <TrelloIconColor />
+              </div>
+              <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Login to continue</h5>
+            </div>
 
-            <Input
-              sx={{
-                fontSize: 14,
-                borderRadius: 4,
-              }}
-              placeholder="Password"
-              type="password"
-              className="text-[14px] mb-2"
-            />
-            <Button sx={{ borderRadius: 4 }} className="w-full" variant="solid">
-              Continue
-            </Button>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col">
+              <Controller
+                name="email"
+                control={form.control}
+                render={(props) => (
+                  <TextField
+                    type="email"
+                    onChange={props.field.onChange}
+                    value={props.field.email}
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="Input your email"
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={form.control}
+                render={(props) => (
+                  <TextField
+                    onChange={props.field.onChange}
+                    type="password"
+                    sx={{
+                      marginY: 2,
+                      '& .MuiInputBase-input': {
+                        padding: 1,
+                      },
+                    }}
+                    placeholder="Input your password"
+                  />
+                )}
+              />
+
+              <Button type="submit" variant="contained">
+                Continue
+              </Button>
+            </form>
             <div className="mt-6">
               <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
             </div>
 
             <div>
-              <div className="h-10 w-full flex justify-center items-center gap-2 border-solid border-2 border-gray-300 cursor-pointer hover:bg-slate-50 mb-4">
-                <GoogleColor />
+              <div
+                className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
+              >
+                <GoogleColor width={24} height={24} />
                 <span className="text-[14px] font-bold">Google</span>
               </div>
-              <div className="h-10 w-full flex justify-center items-center gap-2 border-solid border-2 border-gray-300 cursor-pointer hover:bg-slate-50 mb-4">
-                <FaceBookColor />
+              <div
+                className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
+              >
+                <FaceBookColor width={24} height={24} />
                 <span className="text-[14px] font-bold">Facebook</span>
               </div>
 
-              <div className="h-10 w-full flex justify-center items-center gap-2 border-solid border-2 border-gray-300 cursor-pointer hover:bg-slate-50 mb-4">
-                <Apple />
+              <div
+                className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
+              >
+                <Apple width={24} height={24} />
                 <span className="text-[14px] font-bold">Apple</span>
               </div>
             </div>
             <div className="my-4">
-              <Divider variant="inset" component="li" />
+              <Divider component="div" />
             </div>
             <div className="flex">
               <Link className="text-[#0c66e4] text-[14px] hover:underline">You can't login ?</Link>
