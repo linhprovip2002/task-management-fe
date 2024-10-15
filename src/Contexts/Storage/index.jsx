@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getProfile } from "../../Services/API/Auth";
+import { useGetUserProfile } from "../../Hooks";
+import Cookies from "js-cookie";
 
 export const StorageContext = createContext();
 
@@ -17,14 +18,15 @@ function GlobalStates({ children }) {
     setDefaultWorkspace
   };
 
+  const { userProfile } = useGetUserProfile();
+
   useEffect(() => {
-    getProfile()
-      .then((res) => {
-        setIsLoggedIn(true);
-        setUserData(res);
-      })
-      .catch((err) => {});
-  }, []);
+    setIsLoggedIn(
+      (userProfile && Object.keys(userProfile).length > 0) ||
+        Cookies.get("authToken")
+    );
+    setUserData(userProfile);
+  }, [userProfile]);
 
   return (
     <StorageContext.Provider value={states}>{children}</StorageContext.Provider>
