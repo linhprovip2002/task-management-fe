@@ -1,144 +1,138 @@
-import React, { memo } from "react";
+import { memo, useState } from "react";
 import { Button, Divider, TextField } from "@mui/material";
-import {
-  Apple,
-  FaceBookColor,
-  GoogleColor,
-  TrelloIconColor
-} from "../../Components/Icons";
+import { TrelloIconColor } from "../../Components/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
-import { Signin } from "../../Services/API/Auth";
+import { SignIn } from "../../Services/API/Auth";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import { useStorage } from "../../Contexts/Storage";
+import routes, { workspaceRoutes } from "../../config/routes";
+import { loginLogoList } from "./constants/logo";
+import Loading from "../../Components/Loading";
 
-const borderStyle = "border-[1px] border-[#8590A2] border-solid";
-
-const Login = memo((props) => {
-  const form = useForm({
+const Login = memo(() => {
+  const storage = useStorage();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const { handleSubmit, control } = useForm({
     defaultValues: {
       email: "",
       password: ""
     }
   });
 
-  const navigate = useNavigate();
-
-  const handleSubmit = (values) => {
+  const onLogin = (values) => {
     const { email, password } = values;
-    Signin(email, password)
+    setIsLoading(true);
+    SignIn(email, password)
       .then((res) => {
-        toast.success("Login successfully");
         Cookies.set("authToken", res.accessToken, {
           expires: 7,
-          path: "/workspace/id/boards"
+          path: "/"
         });
-        navigate("/");
+        storage.setIsLoggedIn(true);
+        storage.setUserData(res.user);
+        toast.success("Login successfully");
+        navigate(workspaceRoutes.workspaceHome);
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Login not successfully");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="mt-[50px] w-full flex justify-center">
-        <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
-          <div>
-            <div className="mb-4">
-              <div className="flex justify-center">
-                <TrelloIconColor />
-              </div>
-              <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
-                Login to continue
-              </h5>
+    <div className="flex items-center justify-center w-screen h-screen">
+      <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
+        <div>
+          <div className="mb-4">
+            <div className="flex justify-center">
+              <TrelloIconColor />
             </div>
+            <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
+              Login to continue
+            </h5>
+          </div>
 
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="flex flex-col"
+          <form
+            onSubmit={handleSubmit(onLogin)}
+            className="flex flex-col gap-4"
+          >
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  type="email"
+                  onChange={field.onChange}
+                  value={field.email}
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      padding: 1
+                    }
+                  }}
+                  placeholder="Input your email"
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  onChange={field.onChange}
+                  value={field.password}
+                  type="password"
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      padding: 1
+                    }
+                  }}
+                  placeholder="Input your password"
+                />
+              )}
+            />
+            <Button type="submit" variant="contained">
+              Continue
+            </Button>
+          </form>
+
+          <div className="mt-6 text-[14px] font-bold text-slate-400">
+            Others:
+          </div>
+
+          {loginLogoList.map((item, index) => (
+            <div
+              key={index}
+              className="h-10 w-full flex justify-center items-center gap-2 border-[1px] border-[#8590A2] border-solid cursor-pointer hover:bg-slate-50 mb-4 rounded-sm"
             >
-              <Controller
-                name="email"
-                control={form.control}
-                render={(props) => (
-                  <TextField
-                    type="email"
-                    onChange={props.field.onChange}
-                    value={props.field.email}
-                    sx={{
-                      "& .MuiInputBase-input": {
-                        padding: 1
-                      }
-                    }}
-                    placeholder="Input your email"
-                  />
-                )}
-              />
-              <Controller
-                name="password"
-                control={form.control}
-                render={(props) => (
-                  <TextField
-                    onChange={props.field.onChange}
-                    type="password"
-                    sx={{
-                      marginY: 2,
-                      "& .MuiInputBase-input": {
-                        padding: 1
-                      }
-                    }}
-                    placeholder="Input your password"
-                  />
-                )}
-              />
+              {item.logo}
+              <span className="text-[14px] font-bold">{item.name}</span>
+            </div>
+          ))}
 
-              <Button type="submit" variant="contained">
-                Continue
-              </Button>
-            </form>
-            <div className="mt-6">
-              <span className="mb-4 text-[14px] font-bold text-slate-400">
-                Others:
-              </span>
-            </div>
+          <div className="my-4">
+            <Divider />
+          </div>
 
-            <div>
-              <div
-                className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
-              >
-                <GoogleColor width={24} height={24} />
-                <span className="text-[14px] font-bold">Google</span>
-              </div>
-              <div
-                className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
-              >
-                <FaceBookColor width={24} height={24} />
-                <span className="text-[14px] font-bold">Facebook</span>
-              </div>
-
-              <div
-                className={`h-10 w-full flex justify-center items-center gap-2 ${borderStyle} cursor-pointer hover:bg-slate-50 mb-4 rounded-sm`}
-              >
-                <Apple width={24} height={24} />
-                <span className="text-[14px] font-bold">Apple</span>
-              </div>
-            </div>
-            <div className="my-4">
-              <Divider component="div" />
-            </div>
-            <div className="flex">
-              <Link className="text-[#0c66e4] text-[14px] hover:underline">
-                You can't login ?
-              </Link>
-              <p className="text-[14px] text-[#42526E] mx-2">•</p>
-              <Link
-                to="/signup"
-                className="text-[#0c66e4] text-[14px] hover:underline"
-              >
-                Create account
-              </Link>
-            </div>
+          <div className="flex">
+            <Link className="text-[#0c66e4] text-[14px] hover:underline">
+              You can't login ?
+            </Link>
+            <p className="text-[14px] text-[#42526E] mx-2">•</p>
+            <Link
+              to={routes.signup}
+              className="text-[#0c66e4] text-[14px] hover:underline"
+            >
+              Create account
+            </Link>
           </div>
         </div>
       </div>

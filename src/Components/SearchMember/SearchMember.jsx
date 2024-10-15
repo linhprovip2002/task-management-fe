@@ -1,19 +1,19 @@
-import { Autocomplete } from "@mui/material";
-import { TextField } from "@mui/material";
-import { useState } from "react";
-import { useDebounce, useGetUser } from "../../Hooks";
+import { Autocomplete } from '@mui/material';
+import { TextField } from '@mui/material';
+import { useState } from 'react';
+import { useDebounce, useGetUser } from '../../Hooks';
 
 export const SearchMember = (
   { isShowDescription, register, onChange, multiple } = {
     isShowDescription: true,
-    multiple: true
-  }
+    multiple: true,
+  },
 ) => {
-  const [searchMember, setSearchMember] = useState("");
+  const [searchMember, setSearchMember] = useState('');
   const debounceSearchMember = useDebounce(searchMember, 500);
 
   const { userInfo, isLoading } = useGetUser({
-    name: debounceSearchMember
+    name: debounceSearchMember,
   });
 
   if (isLoading) {
@@ -34,15 +34,9 @@ export const SearchMember = (
         onInputChange={(_, newInputValue) => {
           setSearchMember(newInputValue);
         }}
-        renderInput={(params) => (
-          <TextField {...params} placeholder="Find members" />
-        )}
+        renderInput={(params) => <TextField {...params} placeholder="Find members" />}
       />
-      {isShowDescription && (
-        <div>
-          Add members to your Workspace so they can collaborate on boards.
-        </div>
-      )}
+      {isShowDescription && <div>Add members to your Workspace so they can collaborate on boards.</div>}
     </div>
   );
 };

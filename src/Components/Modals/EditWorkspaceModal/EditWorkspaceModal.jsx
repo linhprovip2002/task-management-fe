@@ -14,7 +14,7 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
     defaultValues: CreateWorkspaceDefaultValues
   });
 
-  const mutation = useMutation({
+  const { mutate: mutateCreate } = useMutation({
     mutationFn: (workspaceData) =>
       workspaceServices.createWorkspace(workspaceData),
     onSuccess: () => {
@@ -28,8 +28,8 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
     }
   });
 
-  const onSubmit = (workspaceData) => {
-    mutation.mutate(workspaceData);
+  const onSubmit = async (workspaceData) => {
+    mutateCreate(workspaceData);
   };
 
   return (
@@ -42,10 +42,10 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
         }}
       >
         <form
-          className={`w-3/4 h-3/4 flex bg-white ${CenterModel}`}
+          className={`w-3/4 flex bg-white ${CenterModel}`}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex-1 px-20 pt-20 flex flex-col gap-4">
+          <div className="flex flex-col flex-1 gap-4 px-20 py-20">
             <div>
               <div className="text-xl font-bold">Let's build a Workspace</div>
               <div className="text-lg">
@@ -87,7 +87,14 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
               Create Workspace
             </Button>
           </div>
-          <div className="bg-blue-100 flex-1">1 cái ảnh ở đây</div>
+          <div className="relative">
+            <img src="/Workspaces/CreateWS_2.svg" alt="Create Workspace" />
+            <img
+              src="/Workspaces/CreateWS_1.svg"
+              alt="Create Workspace"
+              className="absolute top-1/4 left-1/4"
+            />
+          </div>
         </form>
       </Modal>
     </>

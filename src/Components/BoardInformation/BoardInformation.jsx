@@ -9,12 +9,12 @@ export const BoardInformation = (props) => {
 
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-4 text-sm">
           <Avatar />
           <div>
             <div className="flex items-center gap-2 text-xl font-bold">
-              <div>Dashboard name</div>
+              <div>{props.name}</div>
               <EditIcon
                 fontSize="10"
                 className="p-1 hover:bg-gray-200 hover:cursor-pointer"

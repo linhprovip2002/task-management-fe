@@ -14,4 +14,17 @@ const useGetWorkspaceByUser = (options = {}) => {
   return { workspaceInfo: data?.data, isLoading, isError, refetch };
 };
 
-export default useGetWorkspaceByUser;
+const useGetWorkspaceById = (id) => {
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID, id],
+    queryFn: () => workspaceServices.getWorkspaceById(id),
+    ...{
+      refetchOnWindowFocus: false,
+      enabled: !!id
+    }
+  });
+
+  return { workspaceInfo: data, isLoading, isError, refetch };
+};
+
+export { useGetWorkspaceByUser, useGetWorkspaceById };

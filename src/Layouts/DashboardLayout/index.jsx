@@ -1,25 +1,25 @@
-import { Avatar, Divider } from '@mui/material';
-import { WorkSpaceItems, UserItems } from './constant';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Header from '../../Components/Header/Header';
-import Collapse from '../../Components/Collapse';
-import { useGetWorkspaceByUser } from '../../Hooks';
+import { Avatar, Divider } from "@mui/material";
+import { WorkSpaceItems, UserItems } from "./constant";
+import { useLocation, useNavigate } from "react-router-dom";
+import Header from "../../Components/Header/Header";
+import Collapse from "../../Components/Collapse";
+import { useGetWorkspaceByUser } from "../../Hooks";
+import Loading from "../../Components/Loading";
+import { useStorage } from "../../Contexts";
 
 const DashBoardLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  const tempUserId = 'userId';
-  // const workspaceId = "workspaceId";
+  const { userData } = useStorage();
 
   const { workspaceInfo, isLoading } = useGetWorkspaceByUser();
 
   const isActiveClassname = (path) => {
-    return location.pathname === path ? 'bg-blue-100' : 'hover:bg-gray-200';
+    return location.pathname === path ? "bg-blue-100" : "hover:bg-gray-200";
   };
 
   if (isLoading) {
-    return <div className='text-center'>Loading...</div>;
+    return <Loading />;
   }
 
   return (
@@ -28,8 +28,8 @@ const DashBoardLayout = ({ children }) => {
       <div className="flex justify-center w-full">
         <div className="flex w-[80%] gap-8 mt-12">
           <div className="w-1/4 text-sm text-textColor">
-            <div className="flex flex-col gap-4 ml-4">
-              {UserItems(tempUserId).map((item, index) => {
+            <div className="flex flex-col gap-[4px]">
+              {UserItems(userData.id).map((item, index) => {
                 return (
                   <div
                     key={index}
@@ -37,7 +37,7 @@ const DashBoardLayout = ({ children }) => {
                     onClick={() => navigate(item.path)}
                   >
                     {item.icon}
-                    <span className="ml-2">{item.title}</span>
+                    <span className="ml-2 font-semibold">{item.title}</span>
                   </div>
                 );
               })}
@@ -45,22 +45,26 @@ const DashBoardLayout = ({ children }) => {
             <div className="my-4">
               <Divider />
             </div>
-            <div className="ml-4 font-bold">Workspaces</div>
+            <div className="mb-3 ml-4 font-bold">Workspaces</div>
             {/* Block for each worckspace */}
             {workspaceInfo.map((workspace) => {
               return (
                 <Collapse
+                  size="sm"
+                  className={"rounded-lg"}
                   key={workspace.id}
                   value={false}
                   position="right"
                   title={
                     <div className="flex items-center gap-4 text-base">
-                      <Avatar sx={{ width: 28, height: 28 }}>{workspace.title[0]}</Avatar>
-                      <div className="text-xl font-bold">{workspace.title}</div>
+                      <Avatar sx={{ width: 28, height: 28 }}>
+                        {workspace.title[0]}
+                      </Avatar>
+                      <div className="text-sm font-bold">{workspace.title}</div>
                     </div>
                   }
                 >
-                  <div className="flex flex-col gap-4 ml-4">
+                  <div className="flex flex-col gap-[4px]">
                     {WorkSpaceItems(workspace.id).map((item, index) => {
                       return (
                         <div

@@ -22,10 +22,7 @@ class UserServices {
   async getUserById(id) {
     const response = await request({
       method: "GET",
-      baseURL,
-      params: {
-        ...(id && { id })
-      }
+      baseURL: `${baseURL}/${id}`
     });
     return response.data;
   }

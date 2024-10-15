@@ -10,11 +10,11 @@ export default function Profile() {
     <div>
       <div>
         <div className="max-w-[875px] pl-[48px] pr-8 py-[26px] flex">
-          <div className="py-5 flex">
-            <div className="flex justify-center items-center w-12 h-12 rounded-full mr-4">
+          <div className="flex py-5">
+            <div className="flex items-center justify-center w-12 h-12 mr-4 rounded-full">
               <img
                 alt=""
-                className="w-full h-full object-cover rounded-full"
+                className="object-cover w-full h-full rounded-full"
                 src="https://trello-members.s3.amazonaws.com/6411cb0b756e170127733b34/3cb3638a4c4bac4f4213caa087029bb6/170.png"
               />
             </div>
@@ -28,7 +28,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <ul className="mx-12 border-b-2 border-gray-200 border-solid flex">
+      <ul className="flex mx-12 border-b-2 border-gray-200 border-solid">
         <li className={tabItemStyles}>Profile and visibility</li>
         <li className={tabItemStyles}>Activity</li>
         <li className={tabItemStyles}>Cards</li>
@@ -86,7 +86,7 @@ export default function Profile() {
           <Divider component={"div"} />
 
           <div className="flex flex-col ">
-            <div className="flex my-3 justify-between">
+            <div className="flex justify-between my-3">
               <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">
                 Username
               </label>
@@ -110,7 +110,7 @@ export default function Profile() {
           </div>
 
           <div className="flex flex-col ">
-            <div className="flex my-3 justify-between">
+            <div className="flex justify-between my-3">
               <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">
                 Bio
               </label>
