@@ -17,7 +17,7 @@ const Home = () => {
               <TrelloLogoIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
               <p className="ml-3 font-medium">Boards</p>
             </div>
-            
+
             <div className="flex items-center text-[14px] color-[#44546f] p-2 rounded-md hover:bg-hoverBackground cursor-pointer py-3">
               <ShowChartIcon style={{ color: '#44546f', width: '18px', height: '18px' }} />
               <p className="ml-3 font-medium">Home</p>

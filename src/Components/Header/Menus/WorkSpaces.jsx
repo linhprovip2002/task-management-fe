@@ -40,7 +40,7 @@ export default function Workspaces() {
           className="text-sm flex items-center font-semibold ml-1 text-[#44546f] hover:bg-slate-200 p-2 rounded-md"
         >
           Workspaces
-          <ExpandMoreIcon sx={{color: '#44546f'}}/>
+          <ExpandMoreIcon sx={{ color: '#44546f' }} />
         </button>
       </HeadlessTippy>
     </div>

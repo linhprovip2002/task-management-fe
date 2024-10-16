@@ -8,7 +8,6 @@ import FormUpdate from './FormUpdate';
 import InviteWorkspace from '../../../Components/Modals/InviteWorkspace';
 import { useGetWorkspaceByUser } from '../../../Hooks';
 
-
 const WorkspaceSettings = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [invitePopup, setInvitePopup] = useState(false);
@@ -36,7 +35,7 @@ const WorkspaceSettings = () => {
                   bgcolor: deepOrange[500],
                   borderRadius: 2,
                   width: 60,
-                  height: 60
+                  height: 60,
                 }}
               >
                 {workspaceInfo.title?.[0]}

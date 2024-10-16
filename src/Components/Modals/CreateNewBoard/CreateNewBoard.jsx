@@ -11,11 +11,10 @@ import { createBoard } from '../../../Services/API/ApiBoard/apiBoard';
 import CloseIcon from '@mui/icons-material/Close';
 // import { useParams } from 'react-router-dom';
 
-
 export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
   const [selectedBg, setSelectedBg] = useState(''); // Lưu màu background
   const [selectedImg, setSelectedImg] = useState(''); // Lưu hình ảnh đã chọn
-  const { workspaceInfo } = useGetWorkspaceByUser();  
+  const { workspaceInfo } = useGetWorkspaceByUser();
 
   // const { id } = useParams();
 
@@ -83,8 +82,8 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
 
   const handleImageClick = (chooseImg) => {
     setSelectedImg(chooseImg); // Cập nhật hình ảnh khi người dùng chọn
-    setSelectedBg(null)
-  }
+    setSelectedBg(null);
+  };
 
   return (
     <>
@@ -97,14 +96,17 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
 
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <form onSubmit={handleSubmit(onSubmit)} className="justify-center w-[320px] h-[80vh] p-4 bg-white rounded-lg overflow-y-auto">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="justify-center w-[320px] h-[80vh] p-4 bg-white rounded-lg overflow-y-auto"
+          >
             <div className="fixed flex text-sm justify-center top-0 left-0 items-center right-0 h-[38px] bg-white font-bold text-center text-textColor">
               Create board
               <button onClick={handleClose} className="absolute right-2">
-                <CloseIcon fontSize='small'/>
+                <CloseIcon fontSize="small" />
               </button>
             </div>
-            <div className='mt-[38px]'>
+            <div className="mt-[38px]">
               {/* Hình ảnh bảng */}
               <div className="flex justify-center my-2 ">
                 <div
@@ -116,7 +118,6 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center center',
                   }}
-
                 >
                   <img src="https://trello.com/assets/14cda5dc635d1f13bc48.svg" alt="svg" width="186" height="103" />
                 </div>
@@ -127,22 +128,19 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                 <p className="my-2 font-semibold">Background</p>
                 <div className="grid grid-cols-4 gap-2">
                   {listBgImage.map((bgImg, index) => (
-                    <div
-                    key={index}
-                    className="relative"
-                    >
+                    <div key={index} className="relative">
                       <div
-                        style={{ 
+                        style={{
                           backgroundImage: `url(${bgImg.image})`,
                           backgroundSize: 'cover',
-                          backgroundRepeat: 'no-repeat', 
+                          backgroundRepeat: 'no-repeat',
                           backgroundPosition: 'center center',
                         }}
                         className={` ${customBgImg} ${selectedImg === bgImg.name ? `${bgImg.image}` : ''}`}
                         onClick={() => handleImageClick(bgImg.image)}
-                        >
+                      >
                         {selectedImg === bgImg.image && <CheckIcon className="text-white" />}
-                      </div>  
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -223,7 +221,6 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                   Create
                 </Button>
               </div>
-              
             </div>
           </form>
         </Box>

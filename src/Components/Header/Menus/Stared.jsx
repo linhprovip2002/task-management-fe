@@ -49,7 +49,7 @@ export default function Stared() {
           className="text-sm flex items-center font-semibold text-[#44546f] hover:bg-slate-200 p-2 rounded-md"
         >
           Stared
-          <ExpandMoreIcon sx={{color: '#44546f'}}/>
+          <ExpandMoreIcon sx={{ color: '#44546f' }} />
         </button>
       </HeadlessTippy>
     </div>

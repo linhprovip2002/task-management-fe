@@ -5,9 +5,7 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-
 export default function CustomIcons({ currpage, handlePageChange, count }) {
-
   return (
     <Stack spacing={2}>
       <Pagination
@@ -15,13 +13,8 @@ export default function CustomIcons({ currpage, handlePageChange, count }) {
         currpage={currpage}
         color="primary"
         onChange={handlePageChange}
-        sx={{justifyContent: 'center'}}
-        renderItem={(item) => (
-          <PaginationItem
-            slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-            {...item}
-          />
-        )}
+        sx={{ justifyContent: 'center' }}
+        renderItem={(item) => <PaginationItem slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }} {...item} />}
       />
     </Stack>
   );

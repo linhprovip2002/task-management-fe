@@ -49,7 +49,7 @@ export default function Recent() {
           className="text-sm flex items-center font-semibold mx-1 text-[#44546f] hover:bg-slate-200 p-2 rounded-md active:bg-slate-200"
         >
           Recent
-          <ExpandMoreIcon sx={{color: '#44546f'}}/>
+          <ExpandMoreIcon sx={{ color: '#44546f' }} />
         </button>
       </HeadlessTippy>
     </div>

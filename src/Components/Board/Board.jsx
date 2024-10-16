@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 export const Board = ({ board }) => {
   return (
     <>
-      <Link to={`/listboard`} className="w-[12rem] h-[110px] rounded-lg border-blue-300 bg-slate-200 hover:brightness-95 brightness-80 hover:cursor-pointer">
+      <Link
+        to={`/listboard`}
+        className="w-[12rem] h-[110px] rounded-lg border-blue-300 bg-slate-200 hover:brightness-95 brightness-80 hover:cursor-pointer"
+      >
         <div
           className="w-[12rem] rounded-lg h-[110px]"
           style={{
@@ -15,7 +18,7 @@ export const Board = ({ board }) => {
             backgroundPosition: 'center center',
           }}
         >
-          <p className='justify-start p-2 ml-1 font-bold text-white flext text-md'>{board.title}</p>
+          <p className="justify-start p-2 ml-1 font-bold text-white flext text-md">{board.title}</p>
         </div>
       </Link>
     </>

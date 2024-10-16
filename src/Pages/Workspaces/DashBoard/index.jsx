@@ -20,7 +20,7 @@ const DashBoard = () => {
 
   useEffect(() => {
     getBoard(countCurr, currentpage)
-      .then((res) => {        
+      .then((res) => {
         setListBoard(res.data);
         setTotalPage(Math.ceil(res.total / countCurr));
       })
