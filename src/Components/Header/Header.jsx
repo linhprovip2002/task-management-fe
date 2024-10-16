@@ -38,12 +38,12 @@ const Header = () => {
         {/* Left Section: Logo and Menu */}
         <div className="flex items-center gap-4">
           <AppsIcon
-            style={{ color: "#44546f", hover: "#091e420f" }}
-            className="cursor-pointer hover:bg-hoverBackground"
+            style={{ color: "#44546f", hover: "#091e420f"}}
+            className="cursor-pointer "
           />
           <Link
             to={routes.workspaceHome}
-            className="flex items-center gap-2 cursor-pointer hover:bg-hoverBackground"
+            className="flex items-center gap-2 cursor-pointer "
           >
             <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-4 h-4" />
             <span className="text-lg font-bold">Trello</span>
