@@ -6,9 +6,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import React, { useState } from 'react';
 import FormUpdate from './FormUpdate';
 import InviteWorkspace from '../../../Components/Modals/InviteWorkspace';
+import { useGetWorkspaceByUser } from '../../../Hooks';
+
+
 const WorkspaceSettings = () => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [invitePopup, setInvitePopup] = useState(false);
+  const { workspaceInfo } = useGetWorkspaceByUser();
 
   const handleOpenUpdate = () => {
     setOpenUpdate(true);
