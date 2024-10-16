@@ -18,7 +18,7 @@ const WorkspaceSettings = () => {
   };
 
   return (
-    <div className="workSpaceSetting px-8">
+    <div className="px-8 workSpaceSetting">
       {/* header  */}
       <div className="flex justify-between pb-8">
         {/* left  */}
@@ -27,8 +27,15 @@ const WorkspaceSettings = () => {
         ) : (
           <div>
             <div className="flex gap-[10px] items-center text-[var(--text-color)]">
-              <Avatar sx={{ bgcolor: deepOrange[500], borderRadius: 1, width: 60, height: 60 }} variant="square">
-                N
+              <Avatar
+                sx={{
+                  bgcolor: deepOrange[500],
+                  borderRadius: 2,
+                  width: 60,
+                  height: 60
+                }}
+              >
+                {workspaceInfo.title?.[0]}
               </Avatar>
               <div>
                 <div className="flex items-center">

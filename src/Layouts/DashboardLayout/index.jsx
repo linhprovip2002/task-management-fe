@@ -57,7 +57,7 @@ const DashBoardLayout = ({ children }) => {
                   position="right"
                   title={
                     <div className="flex items-center gap-4 text-base">
-                      <Avatar sx={{ width: 28, height: 28 }}>
+                      <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>
                         {workspace.title[0]}
                       </Avatar>
                       <div className="text-sm font-bold">{workspace.title}</div>

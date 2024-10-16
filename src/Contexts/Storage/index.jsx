@@ -18,12 +18,12 @@ function GlobalStates({ children }) {
     setDefaultWorkspace
   };
 
-  const { userProfile } = useGetUserProfile();
+  const { userProfile } = useGetUserProfile(isLoggedIn);
 
   useEffect(() => {
     setIsLoggedIn(
       (userProfile && Object.keys(userProfile).length > 0) ||
-        Cookies.get("authToken")
+        !!Cookies.get("authToken")
     );
     setUserData(userProfile);
   }, [userProfile]);
