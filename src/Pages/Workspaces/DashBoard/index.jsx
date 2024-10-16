@@ -5,45 +5,29 @@ import { CreateNewBoard } from '../../../Components/Modals/CreateNewBoard/Create
 import { useEffect, useState } from 'react';
 import { getBoard } from '../../../Services/API/ApiBoard/apiBoard';
 import { BoardInformation } from '../../../Components/BoardInformation/BoardInformation';
-import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import CustomIcons from '../../../Components/Pagination/Pagination';
 
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);
   const [open, setOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentpage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const countCurr = 10;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  console.log('total pages: ' + totalPage);
-  
-
-  // const handleGetBoard = () => {
-  //   getBoard(currentPage, count)
-  //     .then((res) => {
-  //       setListBoard(res);
-  //       setTotalPage(Math.ceil(res.count / count));
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
   useEffect(() => {
-    getBoard(countCurr, currentPage)
-      .then((res) => {
-        console.log('res', res);
-        
-        setListBoard(res);
+    getBoard(countCurr, currentpage)
+      .then((res) => {        
+        setListBoard(res.data);
         setTotalPage(Math.ceil(res.total / countCurr));
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [currentPage, countCurr]);
+  }, [currentpage, countCurr]);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -56,7 +40,7 @@ const DashBoard = () => {
         <Divider />
       </div>
       <div>
-        <div className="flex items-center my-2 text-textColor">
+        <div className="flex items-center mb-2 text-textColor">
           <PersonIcon />
           <span className="ml-2 text-xl font-bold">Your Boards</span>
         </div>
@@ -68,7 +52,7 @@ const DashBoard = () => {
         </div>
         <div className="flex justify-center my-6">
           <Stack spacing={2}>
-            <Pagination currentPage={currentPage} handlePageChange={handlePageChange} count={totalPage} size="large" />
+            <CustomIcons currentpage={currentpage} handlePageChange={handlePageChange} count={totalPage} size="large" />
           </Stack>
         </div>
       </div>

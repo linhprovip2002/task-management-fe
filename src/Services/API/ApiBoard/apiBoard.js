@@ -14,16 +14,31 @@ export async function createBoard(boardData) {
   }
 }
 
+// get All board
 export async function getBoard(limit, page) {
   try {
     const response = await request.get(`/board?limit=${limit}&page=${page}`, {
       headers: {
         'Content-Type': 'application/json',
       },
+    });    
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// get board theo id
+export async function getBoardId(id) {
+  try {
+    const response = await request.get(`/board/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-    console.log('phan trang board', response);
+    console.log('board id: ' + response.data);
     
-    return response.data.data;
+    return response.data;
   } catch (error) {
     throw error;
   }
