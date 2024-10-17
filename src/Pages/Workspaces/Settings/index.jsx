@@ -72,11 +72,10 @@ const WorkspaceSettings = () => {
               <Avatar
                 sx={{
                   bgcolor: deepOrange[500],
-                  borderRadius: 1,
+                  borderRadius: 2,
                   width: 60,
                   height: 60
                 }}
-                variant="square"
               >
                 {workspaceInfo.title?.[0]}
               </Avatar>

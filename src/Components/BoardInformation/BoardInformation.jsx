@@ -3,9 +3,16 @@ import { Avatar, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { InviteMemberModal } from "../Modals/InviteMemberModal/InviteMemberModal";
+import { useParams } from "react-router-dom";
+import { useGetWorkspaceById } from "../../Hooks";
 
 export const BoardInformation = (props) => {
+  const { id } = useParams();
+  const { workspaceInfo } = useGetWorkspaceById(id);
+
   const [openInviteModal, setOpenInviteModal] = useState(false);
+
+  console.log("workspaceInfo", workspaceInfo);
 
   return (
     <>
@@ -14,7 +21,7 @@ export const BoardInformation = (props) => {
           <Avatar />
           <div>
             <div className="flex items-center gap-2 text-xl font-bold">
-              <div>{props.name}</div>
+              <div>{workspaceInfo?.title}</div>
               <EditIcon
                 fontSize="10"
                 className="p-1 hover:bg-gray-200 hover:cursor-pointer"

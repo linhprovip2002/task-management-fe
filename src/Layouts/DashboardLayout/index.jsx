@@ -47,40 +47,44 @@ const DashBoardLayout = ({ children }) => {
             </div>
             <div className="ml-4 font-bold mb-3">Workspaces</div>
             {/* Block for each worckspace */}
-            {workspaceInfo.map((workspace) => {
-              return (
-                <Collapse
-                  size="sm"
-                  className={"rounded-lg"}
-                  key={workspace.id}
-                  value={false}
-                  position="right"
-                  title={
-                    <div className="flex items-center gap-4 text-base">
-                      <Avatar sx={{ width: 28, height: 28 }}>
-                        {workspace.title[0]}
-                      </Avatar>
-                      <div className="text-sm font-bold">{workspace.title}</div>
-                    </div>
-                  }
-                >
-                  <div className="flex flex-col gap-[4px]">
-                    {WorkSpaceItems(workspace.id).map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className={`hover:cursor-pointer pl-10 py-2 rounded-md ${isActiveClassname(item.path)}`}
-                          onClick={() => navigate(item.path)}
-                        >
-                          {item.icon}
-                          <span className="ml-2">{item.title}</span>
+            <div className="max-h-[70vh] overflow-y-auto">
+              {workspaceInfo.map((workspace) => {
+                return (
+                  <Collapse
+                    size="sm"
+                    className={"rounded-lg"}
+                    key={workspace.id}
+                    value={false}
+                    position="right"
+                    title={
+                      <div className="flex items-center gap-4 text-base">
+                        <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>
+                          {workspace.title[0]}
+                        </Avatar>
+                        <div className="text-sm font-bold">
+                          {workspace.title}
                         </div>
-                      );
-                    })}
-                  </div>
-                </Collapse>
-              );
-            })}
+                      </div>
+                    }
+                  >
+                    <div className="flex flex-col gap-[4px]">
+                      {WorkSpaceItems(workspace.id).map((item, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className={`hover:cursor-pointer pl-10 py-2 rounded-md ${isActiveClassname(item.path)}`}
+                            onClick={() => navigate(item.path)}
+                          >
+                            {item.icon}
+                            <span className="ml-2">{item.title}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </Collapse>
+                );
+              })}
+            </div>
           </div>
           <div className="w-full mt-4">{children}</div>
         </div>

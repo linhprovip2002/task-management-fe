@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const request = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     Accept: "application/json, text/plain, */*",
     "Content-Type": "application/json"
