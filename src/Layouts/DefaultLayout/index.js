@@ -1,22 +1,17 @@
-import PropTypes from 'prop-types';
-// import classNames from 'classnames/bind';
-
-// import styles from './DefaultLayot.module.scss';
-import Header from '../../Components/Header/Header';
-
-// const cx = classNames.bind(styles);
+import PropTypes from "prop-types";
+import Header from "../../Components/Header/Header";
 
 function DefaultLayout({ children }) {
   return (
     <>
-      <div>
-        <Header />
-        <div>{children}</div>
-      </div>
+      <Header />
+      <div>{children}</div>
     </>
   );
 }
+
 DefaultLayout.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };
+
 export default DefaultLayout;
