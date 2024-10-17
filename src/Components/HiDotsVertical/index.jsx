@@ -10,7 +10,7 @@ import { ItemMenu } from '../ItemMenu';
 
 export const ConvertHiDotsVertical = ({
   tippyName,
-  name,
+  data,
   className,
   type,
   listCount,
@@ -22,7 +22,7 @@ export const ConvertHiDotsVertical = ({
   const [activeCollectTable, setActiveCollectTable] = useState(0);
   const [activeCollectOperation, setActiveCollectOperation] = useState(null);
   const [titleName, settitleName] = useState('Sort by alphabetical order');
-  const [nameList, setNameList] = useState(name);
+  const [nameList, setNameList] = useState(data);
   const nameOperations = [
     'Add card',
     'Copy list',
@@ -79,16 +79,26 @@ export const ConvertHiDotsVertical = ({
 
   return (
     <div>
-      <Tippy content={<span className="text-[12px] max-w-[150px]">{tippyName}</span>} arrow={false} placement="bottom">
+      {tippyName ? (
+        <Tippy
+          content={<span className="text-[12px] max-w-[150px]">{tippyName}</span>}
+          arrow={false}
+          placement="bottom"
+        >
+          <div className={className} onClick={toggleCollape}>
+            <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
+          </div>
+        </Tippy>
+      ) : (
         <div className={className} onClick={toggleCollape}>
           <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
         </div>
-      </Tippy>
+      )}
 
       {type === 'navbarTable' && (
         <>
           {isCollapsed && (
-            <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50">
+            <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
               <div className="text-center p-2 mx-8">Your tables</div>
               <div className="mx-2 py-1">Arrange</div>
               <div
@@ -126,7 +136,7 @@ export const ConvertHiDotsVertical = ({
       {type === 'navbarBoard' && (
         <>
           {isCollapsed && (
-            <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50">
+            <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
               <div className="text-center p-2 mx-8">KTPM</div>
               <div onClick={handleLeaveBoard} className="flex items-center justify-between px-4 py-2 hover:bg-gray-100">
                 <div className="">Leave the board</div>
@@ -153,7 +163,7 @@ export const ConvertHiDotsVertical = ({
       {type === 'operation' && (
         <>
           {isCollapsed && (
-            <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50">
+            <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
               <div className="text-center p-2 mx-8">Operation</div>
               {nameOperations.map((name, index) => (
                 <div

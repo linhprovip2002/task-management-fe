@@ -2,12 +2,13 @@ import { useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
 
 import { ImageIcon } from '../../Assets/images';
 import { ConvertHiDotsVertical } from '../../Components/HiDotsVertical';
 import {
   ArrowDown,
-  StarIcon,
   TwoUserIcon,
   MissileIcon,
   LightningIcon,
@@ -20,6 +21,7 @@ import {
 import ItemList from '../../Components/ItemList';
 import { CreateItem } from '../../Components/CreateItem';
 import { BoardCard } from '../../Components/BoardCard';
+import { EditCard } from '../../Components/EditCard';
 
 function ListBoard() {
   const [nameTitle, setNameTitle] = useState('');
@@ -28,7 +30,10 @@ function ListBoard() {
   const [isShowBoardEdit, setIsShowBoardEdit] = useState(false);
   const [isShowAddList, setIsShowAddList] = useState(false);
   const [activeMonitor, setActiveMonitor] = useState([]);
+  const [dataCard, setDataCard] = useState();
+  const [dataList, setDataList] = useState();
   const [activeIndex, setActiveIndex] = useState(null);
+  const [activeStar, setActiveStar] = useState(false);
   // {
   //   imageSrc: ImageBG,
   //   descriptionCard: 'phomai phomai phomai phomai phomaiphomai phomai phomai phomai phomai',
@@ -38,13 +43,21 @@ function ListBoard() {
   // },
 
   const [listCount, setListCount] = useState([]);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
 
-  const handleShowBoardCard = () => {
+  const handleShowBoardCard = (data) => {
     setIsShowBoardCard(!isShowBoardCard);
+    if (isShowBoardEdit) {
+      setIsShowBoardEdit(!isShowBoardEdit);
+    }
+    setDataList(data);
   };
 
-  const handleShowBoardEdit = () => {
+  const handleShowBoardEdit = (e, data) => {
     setIsShowBoardEdit(!isShowBoardEdit);
+    const rect = e.currentTarget.getBoundingClientRect();
+    setPosition({ top: rect.bottom + 8, left: rect.left });
+    setDataCard(data);
   };
 
   const handleChange = (e, index) => {
@@ -102,12 +115,16 @@ function ListBoard() {
     }
   };
 
+  const handleActiveStar = () => {
+    setActiveStar(!activeStar);
+  };
+
   return (
     <>
       <div className="w-[100wh] h-[91vh] flex">
         <div
           onClick={isClosedNavBar ? handleClosedNavBar : undefined}
-          className={`${isClosedNavBar ? 'max-w-[20px] w-full relative hover:bg-gray-200 border-r-[1px] border-gray-300' : 'max-w-[260px] w-full'} bg-gray-100`}
+          className={`${isClosedNavBar ? 'max-w-[20px] w-full relative hover:bg-gray-200' : 'max-w-[260px] w-full'} border-r-[1px] border-gray-300 bg-gray-100 shadow-[0_3px_10px_rgba(0,0,0,0.3)]`}
         >
           {isClosedNavBar ? (
             <div
@@ -131,7 +148,9 @@ function ListBoard() {
                 <div className="flex-1 text-[16px] font-medium py-2 pl-4 ">Your tables</div>
                 <ConvertHiDotsVertical
                   type={'navbarTable'}
-                  className={'mr-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300'}
+                  className={
+                    'p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300'
+                  }
                 />
               </div>
               <div className="relative flex items-center pl-4 py-2 bg-gray-200 cursor-pointer group">
@@ -145,8 +164,11 @@ function ListBoard() {
                     'p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300'
                   }
                 />
-                <div className="absolute right-0 mr-3 p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <StarIcon className={'hover:w-[18px] hover:h-[18px]'} width={16} height={16} />
+                <div
+                  onClick={handleActiveStar}
+                  className={`absolute right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? 'opacity-100' : 'group-hover:opacity-100'} group-hover:opacity-100 transition-opacity duration-300`}
+                >
+                  {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
                 </div>
               </div>
             </>
@@ -174,8 +196,11 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
-                  <StarIcon width={16} height={16} />
+                <div
+                  onClick={handleActiveStar}
+                  className="rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
+                >
+                  {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
                 </div>
               </Tippy>
               <Tippy
@@ -281,7 +306,7 @@ function ListBoard() {
                             {activeMonitor.includes(index) && <RemoveRedEyeOutlinedIcon className="p-1" />}
                             <ConvertHiDotsVertical
                               tippyName="Operation"
-                              name={item.descriptionCard}
+                              data={item.descriptionCard}
                               onShowAddCard={handleShowAddCard}
                               onActiveMonitor={() => handleActiveMonitor(index)}
                               type={'operation'}
@@ -302,6 +327,8 @@ function ListBoard() {
                             {item.cardCounts.map((card, index) => {
                               return (
                                 <ItemList
+                                  dataList={item}
+                                  dataCard={card}
                                   onShowBoardCard={handleShowBoardCard}
                                   onShowBoardEdit={handleShowBoardEdit}
                                   key={index}
@@ -392,8 +419,15 @@ function ListBoard() {
           </div>
         </div>
       </div>
-      {isShowBoardCard && <BoardCard onShowBoardCard={handleShowBoardCard} />}
-      {isShowBoardEdit && <BoardCard onShowBoardCard={handleShowBoardCard} />}
+      {isShowBoardCard && <BoardCard data={dataList} onShowBoardCard={handleShowBoardCard} />}
+      {isShowBoardEdit && (
+        <EditCard
+          position={position}
+          data={dataCard}
+          onShowBoardCard={handleShowBoardCard}
+          onShowBoardEdit={handleShowBoardEdit}
+        />
+      )}
     </>
   );
 }
