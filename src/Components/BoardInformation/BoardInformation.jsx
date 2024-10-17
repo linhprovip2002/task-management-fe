@@ -12,8 +12,6 @@ export const BoardInformation = (props) => {
 
   const [openInviteModal, setOpenInviteModal] = useState(false);
 
-  console.log("workspaceInfo", workspaceInfo);
-
   return (
     <>
       <div className="flex items-center justify-between">
