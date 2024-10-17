@@ -36,7 +36,7 @@ const DashBoard = () => {
   return (
     <div>
       <BoardInformation />
-      <div className="my-8">
+      <div className="my-6">
         <Divider />
       </div>
       <div>
@@ -54,6 +54,11 @@ const DashBoard = () => {
           <Stack spacing={2}>
             <CustomIcons currentpage={currentpage} handlePageChange={handlePageChange} count={totalPage} size="large" />
           </Stack>
+        </div>
+        <div className="mt-2 mb-6">
+          <button className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor">
+            View close the boards
+          </button>
         </div>
       </div>
     </div>
