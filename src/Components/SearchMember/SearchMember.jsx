@@ -1,7 +1,7 @@
-import { Autocomplete } from '@mui/material';
-import { TextField } from '@mui/material';
-import { useState } from 'react';
-import { useDebounce, useGetUser } from '../../Hooks';
+import { Autocomplete } from "@mui/material";
+import { TextField } from "@mui/material";
+import { useState } from "react";
+import { useDebounce, useGetUser } from "../../Hooks";
 
 export const SearchMember = (
   { isShowDescription, register, onChange, multiple } = {
@@ -9,7 +9,7 @@ export const SearchMember = (
     multiple: true,
   },
 ) => {
-  const [searchMember, setSearchMember] = useState('');
+  const [searchMember, setSearchMember] = useState("");
   const debounceSearchMember = useDebounce(searchMember, 500);
 
   const { userInfo, isLoading } = useGetUser({

@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import HeadlessTippy from '@tippyjs/react/headless'; // HeadlessTippy cho tùy chỉnh hoàn toàn
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import React, { useState } from "react";
+import HeadlessTippy from "@tippyjs/react/headless"; // HeadlessTippy cho tùy chỉnh hoàn toàn
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export default function Recent() {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { label: 'Khong gian hien tai' },
-    { label: 'Cut' },
-    { label: 'Copy' },
-    { label: 'Paste' },
-    { label: 'Copy' },
-    { label: 'Paste' },
-    { label: 'Copy' },
-    { label: 'Paste' },
+    { label: "Khong gian hien tai" },
+    { label: "Cut" },
+    { label: "Copy" },
+    { label: "Paste" },
+    { label: "Copy" },
+    { label: "Paste" },
+    { label: "Copy" },
+    { label: "Paste" },
   ];
 
   return (
@@ -50,7 +50,7 @@ export default function Recent() {
           className="text-sm flex items-center font-semibold mx-1 text-[#44546f] hover:bg-slate-200 p-2 rounded-md active:bg-slate-200"
         >
           Recent
-          <ExpandMoreIcon sx={{ color: '#44546f' }} />
+          <ExpandMoreIcon sx={{ color: "#44546f" }} />
         </button>
       </HeadlessTippy>
     </div>
