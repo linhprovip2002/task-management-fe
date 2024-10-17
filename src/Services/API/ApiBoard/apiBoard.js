@@ -14,13 +14,45 @@ export async function createBoard(boardData) {
   }
 }
 
-export async function getBoard({ limit = 10, page = 1 } = {}) {
+// get All board
+export async function getBoard(limit, page) {
   try {
-    const response = await request.get(`/board`, {
-      params: { limit, page },
-    });
+    const response = await request.get(`/board?limit=${limit}&page=${page}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });    
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
 
-    return response.data.data;
+// get board theo id
+export async function getBoardId(id) {
+  try {
+    const response = await request.get(`/board/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('board id: ' + response.data);
+    
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// delete board theo di 
+export async function deleteBoardId(id) {
+  try {
+    const response = await request.delete(`/board/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
   } catch (error) {
     throw error;
   }

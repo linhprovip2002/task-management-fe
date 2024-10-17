@@ -55,7 +55,7 @@ export default function Collapse({
             <KeyboardArrowUpIcon />
           </div>
         )}
-        <div className="flex-1 truncate text-xl font-bold" onClick={(e) => disableTitleClick && e.stopPropagation()}>
+        <div className="flex-1 text-xl font-bold truncate" onClick={(e) => disableTitleClick && e.stopPropagation()}>
           {title}
         </div>
         {description && <p className="w-fit truncate text-[14px]">{description}</p>}

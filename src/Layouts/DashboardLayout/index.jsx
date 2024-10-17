@@ -1,11 +1,11 @@
-import { Avatar, Divider } from "@mui/material";
-import { WorkSpaceItems, UserItems } from "./constant";
-import { useLocation, useNavigate } from "react-router-dom";
-import Header from "../../Components/Header/Header";
-import Collapse from "../../Components/Collapse";
-import { useGetWorkspaceByUser } from "../../Hooks";
-import Loading from "../../Components/Loading";
-import { useStorage } from "../../Contexts";
+import { Avatar, Divider } from '@mui/material';
+import { WorkSpaceItems, UserItems } from './constant';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Header from '../../Components/Header/Header';
+import Collapse from '../../Components/Collapse';
+import { useGetWorkspaceByUser } from '../../Hooks';
+import Loading from '../../Components/Loading';
+import { useStorage } from '../../Contexts';
 
 const DashBoardLayout = ({ children }) => {
   const location = useLocation();
@@ -15,7 +15,7 @@ const DashBoardLayout = ({ children }) => {
   const { workspaceInfo, isLoading } = useGetWorkspaceByUser();
 
   const isActiveClassname = (path) => {
-    return location.pathname === path ? "bg-blue-100" : "hover:bg-gray-200";
+    return location.pathname === path ? 'bg-blue-100' : 'hover:bg-gray-200';
   };
 
   if (isLoading) {
@@ -33,7 +33,7 @@ const DashBoardLayout = ({ children }) => {
                 return (
                   <div
                     key={index}
-                    className={`hover:cursor-pointer p-2 rounded-md ${isActiveClassname(item.path)}`}
+                    className={`hover:cursor-pointer flex items-center p-2 rounded-md ${isActiveClassname(item.path)}`}
                     onClick={() => navigate(item.path)}
                   >
                     {item.icon}
@@ -45,21 +45,19 @@ const DashBoardLayout = ({ children }) => {
             <div className="my-4">
               <Divider />
             </div>
-            <div className="ml-4 font-bold mb-3">Workspaces</div>
+            <div className="mb-3 ml-4 font-bold">Workspaces</div>
             {/* Block for each worckspace */}
             {workspaceInfo.map((workspace) => {
               return (
                 <Collapse
                   size="sm"
-                  className={"rounded-lg"}
+                  className={'rounded-lg'}
                   key={workspace.id}
                   value={false}
                   position="right"
                   title={
                     <div className="flex items-center gap-4 text-base">
-                      <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>
-                        {workspace.title[0]}
-                      </Avatar>
+                      <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>{workspace.title[0]}</Avatar>
                       <div className="text-sm font-bold">{workspace.title}</div>
                     </div>
                   }

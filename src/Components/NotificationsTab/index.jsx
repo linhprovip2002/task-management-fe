@@ -51,7 +51,7 @@ const NotificationsTab = React.forwardRef((props, ref) => {
             </HeadlessTippy>
           </div>
         </div>
-        <div onClick={handleReadAll} className="py-2 pl-3 pr-4 flex justify-end">
+        <div onClick={handleReadAll} className="flex justify-end py-2 pl-3 pr-4">
           <span className="text-[var(--light-gray)] text-[12px] hover:underline cursor-pointer">Mark all as read</span>
         </div>
       </div>

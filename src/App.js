@@ -1,11 +1,11 @@
-import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
-import { DefaultLayout } from "./Layouts";
-import { publicRoutes, privateRoutes } from "./routes";
-import "@fontsource/inter";
-import { CustomToastContainer } from "./Contexts/Toast";
-import { useStorage } from "./Contexts";
-import { useEffect } from "react";
-import routes from "./config/routes";
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import { DefaultLayout } from './Layouts';
+import { publicRoutes, privateRoutes } from './routes';
+import '@fontsource/inter';
+import { CustomToastContainer } from './Contexts/Toast';
+import { useStorage } from './Contexts';
+import { useEffect } from 'react';
+import routes from './config/routes';
 
 function App() {
   const { isLoggedIn, setIsLoggedIn } = useStorage();
@@ -24,6 +24,7 @@ function App() {
       setIsLoggedIn(true);
     }
     window.scrollTo(0, 0);
+    // eslint-disable-next-line
   }, [location, isLoggedIn]);
 
   return (

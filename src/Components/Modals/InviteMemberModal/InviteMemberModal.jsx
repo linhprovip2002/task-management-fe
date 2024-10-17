@@ -52,9 +52,9 @@ export const InviteMemberModal = ({ open, handleClose }) => {
         className={`bg-white p-8 flex flex-col gap-4 ${CenterModel} w-1/4 rounded-xl`}
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex justify-between items-center">
-          <div className="font-bold text-2xl">Invite to Workspace</div>
-          <div onClick={() => handleClose()} className="hover:cursor-pointer hover:bg-slate-200 rounded-full p-1">
+        <div className="flex items-center justify-between">
+          <div className="text-2xl font-bold">Invite to Workspace</div>
+          <div onClick={() => handleClose()} className="p-1 rounded-full hover:cursor-pointer hover:bg-slate-200">
             <CloseIcon />
           </div>
         </div>

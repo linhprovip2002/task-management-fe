@@ -1,10 +1,10 @@
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from 'react-toastify';
 
 export const CustomToastContainer = () => {
   return (
     <ToastContainer
       style={{
-        fontSize: 14
+        fontSize: 14,
       }}
       position="bottom-right"
       autoClose={2500}
