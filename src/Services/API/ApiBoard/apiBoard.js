@@ -43,3 +43,17 @@ export async function getBoardId(id) {
     throw error;
   }
 }
+
+// delete board theo di 
+export async function deleteBoardId(id) {
+  try {
+    const response = await request.delete(`/board/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
