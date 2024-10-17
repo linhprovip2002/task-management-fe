@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useGetUserProfile } from '../../Hooks';
-import Cookies from 'js-cookie';
+import { createContext, useContext, useEffect, useState } from "react";
+import { useGetUserProfile } from "../../Hooks";
+import Cookies from "js-cookie";
 
 export const StorageContext = createContext();
 
@@ -21,7 +21,7 @@ function GlobalStates({ children }) {
   const { userProfile } = useGetUserProfile(isLoggedIn);
 
   useEffect(() => {
-    setIsLoggedIn((userProfile && Object.keys(userProfile).length > 0) || !!Cookies.get('authToken'));
+    setIsLoggedIn((userProfile && Object.keys(userProfile).length > 0) || !!Cookies.get("authToken"));
     setUserData(userProfile);
   }, [userProfile]);
 
@@ -34,7 +34,7 @@ export const useStorage = () => {
   const context = useContext(StorageContext);
 
   if (!context) {
-    throw new Error('useEditCompanyContext must be used within a EditCompanyProvider');
+    throw new Error("useEditCompanyContext must be used within a EditCompanyProvider");
   }
 
   return context;
