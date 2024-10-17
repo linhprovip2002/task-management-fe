@@ -1,12 +1,12 @@
-import { Divider } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import { Board } from '../../../Components/Board/Board';
-import { CreateNewBoard } from '../../../Components/Modals/CreateNewBoard/CreateNewBoard';
-import { useEffect, useState } from 'react';
-import { getBoard } from '../../../Services/API/ApiBoard/apiBoard';
-import { BoardInformation } from '../../../Components/BoardInformation/BoardInformation';
-import Stack from '@mui/material/Stack';
-import CustomIcons from '../../../Components/Pagination/Pagination';
+import { Divider } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import { Board } from "../../../Components/Board/Board";
+import { CreateNewBoard } from "../../../Components/Modals/CreateNewBoard/CreateNewBoard";
+import { useEffect, useState } from "react";
+import { getBoard } from "../../../Services/API/ApiBoard/apiBoard";
+import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
+import Stack from "@mui/material/Stack";
+import CustomIcons from "../../../Components/Pagination/Pagination";
 
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);

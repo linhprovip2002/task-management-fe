@@ -1,10 +1,10 @@
-import { Switch } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import React, { useState } from 'react';
-import NotificationsItem from './NotificationItem';
-import Wrapper from '../Wrapper';
-import NotifySetting from '../NotifySetting';
-import HeadlessTippy from '@tippyjs/react/headless';
+import { Switch } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import React, { useState } from "react";
+import NotificationsItem from "./NotificationItem";
+import Wrapper from "../Wrapper";
+import NotifySetting from "../NotifySetting";
+import HeadlessTippy from "@tippyjs/react/headless";
 
 const NotificationsTab = React.forwardRef((props, ref) => {
   const [isOpenSetting, setIsOpenSetting] = useState(false);
@@ -28,8 +28,8 @@ const NotificationsTab = React.forwardRef((props, ref) => {
             <Switch
               defaultChecked
               sx={{
-                '& .css-jsexje-MuiSwitch-thumb': {
-                  backgroundColor: '#fff',
+                "& .css-jsexje-MuiSwitch-thumb": {
+                  backgroundColor: "#fff",
                 },
               }}
             />

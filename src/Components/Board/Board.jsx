@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 export const Board = ({ board }) => {
   return (
@@ -12,10 +12,10 @@ export const Board = ({ board }) => {
           className="w-[12rem] rounded-lg h-[110px]"
           style={{
             backgroundColor: board.backgroundColor, // Áp dụng màu nền đã chọn
-            backgroundImage: board.coverUrl ? `url(${board.coverUrl})` : 'none',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center center',
+            backgroundImage: board.coverUrl ? `url(${board.coverUrl})` : "none",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center center",
           }}
         >
           <p className="justify-start p-2 ml-1 font-bold text-white flext text-md">{board.title}</p>

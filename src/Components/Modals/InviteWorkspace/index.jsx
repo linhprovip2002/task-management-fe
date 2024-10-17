@@ -1,12 +1,12 @@
-import CloseIcon from '@mui/icons-material/Close';
-import LinkIcon from '@mui/icons-material/Link';
-import { Button, Modal, TextField } from '@mui/material';
-import HeadlessTippy from '@tippyjs/react/headless';
+import CloseIcon from "@mui/icons-material/Close";
+import LinkIcon from "@mui/icons-material/Link";
+import { Button, Modal, TextField } from "@mui/material";
+import HeadlessTippy from "@tippyjs/react/headless";
 
-import React, { useState } from 'react';
-import UserItem from './UserItem';
+import React, { useState } from "react";
+import UserItem from "./UserItem";
 
-const primaryText = '#172b4d';
+const primaryText = "#172b4d";
 
 export default function InviteWorkspace({ open, onClose }) {
   const [searchPopper, setSearchPopper] = useState(false);
@@ -22,9 +22,9 @@ export default function InviteWorkspace({ open, onClose }) {
         open={open}
         onClose={handleClose}
         sx={{
-          display: 'flex',
-          marginTop: '200px',
-          justifyContent: 'center',
+          display: "flex",
+          marginTop: "200px",
+          justifyContent: "center",
         }}
       >
         <div className="InviteWorkspace w-[600px]">
@@ -32,7 +32,7 @@ export default function InviteWorkspace({ open, onClose }) {
             <div className="flex justify-between mb-4">
               <h1 className={`font-normal text-xl text-[${primaryText}]`}>Invite to Workspace</h1>
               <button onClick={handleClose} className="w-6 h-6">
-                <CloseIcon />
+                <CloseIcon className="cursor-pointer" />
               </button>
             </div>
 
@@ -59,11 +59,11 @@ export default function InviteWorkspace({ open, onClose }) {
                   onBlur={() => setSearchPopper(false)}
                   placeholder="Email address or name"
                   sx={{
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      paddingY: '8px',
-                      paddingX: '12px',
-                      fontSize: '14px',
+                    width: "100%",
+                    "& .MuiInputBase-input": {
+                      paddingY: "8px",
+                      paddingX: "12px",
+                      fontSize: "14px",
                       fontWeight: 400,
                     },
                   }}
@@ -77,10 +77,10 @@ export default function InviteWorkspace({ open, onClose }) {
               </p>
               <Button
                 sx={{
-                  textTransform: 'none',
+                  textTransform: "none",
                   gap: 1,
-                  paddingY: '2px',
-                  paddingX: '12px',
+                  paddingY: "2px",
+                  paddingX: "12px",
                 }}
                 variant="outlined"
               >

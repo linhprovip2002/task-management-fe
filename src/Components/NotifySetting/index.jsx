@@ -1,6 +1,6 @@
-import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import NorthEastIcon from '@mui/icons-material/NorthEast';
+import React from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import NorthEastIcon from "@mui/icons-material/NorthEast";
 function NotifySetting({ onClose }) {
   const handleClose = () => {
     if (onClose) onClose();
@@ -16,7 +16,7 @@ function NotifySetting({ onClose }) {
           onClick={handleClose}
           className="float-right w-8 h-8 rounded-lg hover:bg-[var(--hover-background)] flex items-center justify-center"
         >
-          <CloseIcon fontSize="small" />
+          <CloseIcon fontSize="small" className="cursor-pointer" />
         </button>
       </div>
       <div className="flex flex-col items-start">

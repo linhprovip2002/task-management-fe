@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import HeadlessTippy from '@tippyjs/react/headless'; // HeadlessTippy cho tùy chỉnh hoàn toàn
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useGetWorkspaceByUser } from '../../../Hooks';
+import React, { useState } from "react";
+import HeadlessTippy from "@tippyjs/react/headless"; // HeadlessTippy cho tùy chỉnh hoàn toàn
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useGetWorkspaceByUser } from "../../../Hooks";
 
 export default function Workspaces() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function Workspaces() {
             {...attrs}
           >
             <ul className="p-2 border-2 border-solid rounded-md">
-              {workspaceInfo.map((item, index) => (
+              {workspaceInfo?.map((item, index) => (
                 <li
                   key={index}
                   className="px-4 py-2 text-gray-700 rounded-lg cursor-pointer hover:bg-slate-200"
@@ -40,7 +40,7 @@ export default function Workspaces() {
           className="text-sm flex items-center font-semibold ml-1 text-[#44546f] hover:bg-slate-200 p-2 rounded-md"
         >
           Workspaces
-          <ExpandMoreIcon sx={{ color: '#44546f' }} />
+          <ExpandMoreIcon sx={{ color: "#44546f" }} />
         </button>
       </HeadlessTippy>
     </div>
