@@ -33,7 +33,7 @@ const DashBoardLayout = ({ children }) => {
                 return (
                   <div
                     key={index}
-                    className={`hover:cursor-pointer p-2 rounded-md ${isActiveClassname(item.path)}`}
+                    className={`hover:cursor-pointer flex items-center p-2 rounded-md ${isActiveClassname(item.path)}`}
                     onClick={() => navigate(item.path)}
                   >
                     {item.icon}
