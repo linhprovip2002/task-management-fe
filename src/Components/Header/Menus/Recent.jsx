@@ -14,24 +14,28 @@ export default function Recent() {
     { label: "Paste" },
     { label: "Copy" },
     { label: "Paste" },
+    { label: "Paste" },
+    { label: "Copy" },
+    { label: "Paste" },
+    { label: "Copy" },
+    { label: "Paste" },
   ];
 
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block ">
       {/* Nút để mở menu */}
       <HeadlessTippy
         interactive={true}
         visible={isOpen}
         onClickOutside={() => setIsOpen(false)} // Đóng menu khi nhấp ra ngoài
         placement="bottom-start"
-        sx={{border: '1px solid gray'}}
         render={(attrs) => (
           <div
-            className="w-[300px] bg-white border-solid border-b-2 border-gray-400 rounded-md shadow-lg max-h-60 "
+            className="w-[300px] overflow-y-auto bg-white border-2 border-solid border-gray-400 rounded-md shadow-md max-h-80 "
             tabIndex="-1"
             {...attrs}
           >
-            <ul className="p-2 ">
+            <ul className="p-1">
               {menuItems.map((item, index) => (
                 <li
                   key={index}
