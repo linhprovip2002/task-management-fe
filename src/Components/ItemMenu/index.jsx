@@ -28,7 +28,10 @@ export const ItemMenu = ({
         fontSize="medium"
         className="absolute left-3 top-3 rounded-[4px] hover:bg-gray-100"
       />
-      <CloseIcon onClick={onLeaveBoard} className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 " />
+      <CloseIcon
+        onClick={onLeaveBoard}
+        className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+      />
     </div>
   );
 };

@@ -690,7 +690,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
           </div>
           <CloseIcon
             onClick={onShowBoardCard}
-            className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+            className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
           />
         </div>
       </div>
@@ -754,7 +754,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                 </div>
                 <CloseIcon
                   onClick={handleCloseShowMenuBtnCard}
-                  className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+                  className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
                 />
               </div>
             </div>
@@ -889,7 +889,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
             </div>
             <CloseIcon
               onClick={handleCloseShowMenuBtnCard}
-              className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+              className=" cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
             />
           </div>
         </div>

@@ -103,7 +103,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
             <div className="fixed flex text-sm justify-center top-0 left-0 items-center right-0 h-[38px] bg-white font-bold text-center text-textColor">
               Create board
               <button onClick={handleClose} className="absolute right-2">
-                <CloseIcon fontSize="small" />
+                <CloseIcon fontSize="small" className="cursor-pointer" />
               </button>
             </div>
             <div className="mt-[38px]">

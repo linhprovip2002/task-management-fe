@@ -27,7 +27,7 @@ const MemberMenu = ({ position, handleCloseShowMenuBtnCard }) => {
               </div>
               <div>Cheese</div>
             </div>
-            <CloseIcon className="right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 " />
+            <CloseIcon className="cursor-pointer right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 " />
           </div>
         </div>
         <div className="mt-2">
@@ -43,7 +43,7 @@ const MemberMenu = ({ position, handleCloseShowMenuBtnCard }) => {
         </div>
         <CloseIcon
           onClick={handleCloseShowMenuBtnCard}
-          className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+          className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
         />
       </div>
     </div>

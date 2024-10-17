@@ -110,7 +110,7 @@ export const ConvertHiDotsVertical = ({
               </div>
               <CloseIcon
                 onClick={toggleCollape}
-                className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+                className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
               />
               {isLeaveBoard && (
                 <div className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50">
@@ -144,7 +144,7 @@ export const ConvertHiDotsVertical = ({
               </div>
               <CloseIcon
                 onClick={toggleCollape}
-                className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+                className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
               />
             </div>
           )}
@@ -169,14 +169,14 @@ export const ConvertHiDotsVertical = ({
                 <div
                   onClick={() => handleShow(index)}
                   key={index}
-                  className="p-2 bg-white rounded transition duration-200 hover:bg-gray-100"
+                  className="cursor-pointer p-2 bg-white rounded transition duration-200 hover:bg-gray-100"
                 >
                   {name}
                 </div>
               ))}
               <CloseIcon
                 onClick={toggleCollape}
-                className="absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+                className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
               />
             </div>
           )}

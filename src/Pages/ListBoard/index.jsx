@@ -149,7 +149,7 @@ function ListBoard() {
                 <ConvertHiDotsVertical
                   type={'navbarTable'}
                   className={
-                    'p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300'
+                    'cursor-pointer p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300'
                   }
                 />
               </div>
@@ -161,12 +161,12 @@ function ListBoard() {
                 <ConvertHiDotsVertical
                   type={'navbarBoard'}
                   className={
-                    'p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300'
+                    'cursor-pointer p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300'
                   }
                 />
                 <div
                   onClick={handleActiveStar}
-                  className={`absolute right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? 'opacity-100' : 'group-hover:opacity-100'} group-hover:opacity-100 transition-opacity duration-300`}
+                  className={`absolute cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? 'opacity-100' : 'group-hover:opacity-100'} group-hover:opacity-100 transition-opacity duration-300`}
                 >
                   {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
                 </div>
@@ -198,7 +198,7 @@ function ListBoard() {
               >
                 <div
                   onClick={handleActiveStar}
-                  className="rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
+                  className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
                 >
                   {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
                 </div>
@@ -208,7 +208,7 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
+                <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
                   <TwoUserIcon width={16} height={16} />
                 </div>
               </Tippy>
@@ -218,7 +218,7 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
+                <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
                   <ListIcon width={16} height={16} className={'mr-2 text-white'} />
                   <span className="text-[16px] font-medium text-white">Board</span>
                 </div>
@@ -228,7 +228,7 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="mr-4 p-2 ml-2 rounded-[4px] hover:bg-gray-300 bg-gray-300 cursor-pointer">
+                <div className="cursor-pointer mr-4 p-2 ml-2 rounded-[4px] hover:bg-gray-300 bg-gray-300 cursor-pointer">
                   <ArrowDown width={16} height={16} className={'text-gray-100'} />
                 </div>
               </Tippy>
@@ -239,7 +239,7 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
+                <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
                   <MissileIcon width={16} height={16} />
                 </div>
               </Tippy>
@@ -248,7 +248,7 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
+                <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
                   <LightningIcon width={16} height={16} />
                 </div>
               </Tippy>
@@ -257,7 +257,7 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="flex items-center px-3 py-1 ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
+                <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
                   <FilterIcon width={16} height={16} className={'mr-2'} />
                   <span className="text-[16px] font-medium">Filter</span>
                 </div>
@@ -267,12 +267,12 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
+                <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
                   <ShareIconRegular width={16} height={16} className={'mr-2 text-white'} />
                   <span className="text-[16px] font-medium text-white">Share</span>
                 </div>
               </Tippy>
-              <div className="rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
+              <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
                 <ConvertHiDotsVertical
                   type={''}
                   className={'group-hover:opacity-100 transition-opacity duration-300'}
@@ -312,7 +312,7 @@ function ListBoard() {
                               type={'operation'}
                               listCount={listCount}
                               className={
-                                'p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
+                                'cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
                               }
                             />
                           </div>
@@ -375,7 +375,7 @@ function ListBoard() {
                                     width={32}
                                     height={32}
                                     className={
-                                      'p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
+                                      'cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
                                     }
                                   />
                                 </div>

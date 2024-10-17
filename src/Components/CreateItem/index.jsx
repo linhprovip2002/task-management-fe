@@ -28,7 +28,7 @@ export const CreateItem = ({
         >
           <span className="text-[14px] font-medium text-white">{nameBtn}</span>
         </div>
-        <div className="hover:bg-gray-300 ml-2 p-[8px] rounded-[4px]">
+        <div className="cursor-pointer hover:bg-gray-300 ml-2 p-[8px] rounded-[4px]">
           <CloseIcon onClick={onShow} className=" p-[2px] rounded-[4px]" />
         </div>
       </div>
