@@ -196,7 +196,16 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                     }}
                     onChange={(e, value) => field.onChange(Number(value))} // Chuyển value sang kiểu số
                     renderInput={(params) => (
-                      <TextField {...params} size="small" required label="Workspace" variant="outlined" fullWidth />
+                      <TextField
+                        {...params}
+                        size="small"
+                        error={!!errors.title}
+                        helperText={errors.title ? errors.title.message : ''}
+                        required
+                        label="Workspace"
+                        variant="outlined"
+                        fullWidth
+                      />
                     )}
                     className="my-4"
                   />
