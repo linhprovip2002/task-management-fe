@@ -20,224 +20,224 @@ import {
   Add as AddIcon,
   ModeEdit as ModeEditIcon,
   AccessTime as AccessTimeIcon,
-} from '@mui/icons-material';
-import { useState } from 'react';
-import { Divider } from '@mui/material';
+} from "@mui/icons-material";
+import { useState } from "react";
+import { Divider } from "@mui/material";
 
-import { ButtonBoardCard } from '../ButtonBoardCard';
-import { ItemMenu } from '../ItemMenu';
-import MemberMenu from '../MemberMenuOfBoard';
-import ToDoMenu from '../ToDoMenuOfBoard';
-import Calendar from '../Calendar';
+import { ButtonBoardCard } from "../ButtonBoardCard";
+import { ItemMenu } from "../ItemMenu";
+import MemberMenu from "../MemberMenuOfBoard";
+import ToDoMenu from "../ToDoMenuOfBoard";
+import Calendar from "../Calendar";
 
 export const BoardCard = ({ data, onShowBoardCard }) => {
   const listBtnCard = [
     {
       id: 1,
-      nameBtn: 'Join',
+      nameBtn: "Join",
       Icon: <PersonAddAltIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 2,
-      nameBtn: 'Member',
+      nameBtn: "Member",
       Icon: <Person4OutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 3,
-      nameBtn: 'Label',
+      nameBtn: "Label",
       Icon: <LabelIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 4,
-      nameBtn: 'What to do',
+      nameBtn: "What to do",
       Icon: <CheckBoxOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 5,
-      nameBtn: 'Day',
+      nameBtn: "Day",
       Icon: <AccessTimeOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 6,
-      nameBtn: 'Attached',
+      nameBtn: "Attached",
       Icon: <AttachmentOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 7,
-      nameBtn: 'Cover photo',
+      nameBtn: "Cover photo",
       Icon: <InsertPhotoIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 8,
-      nameBtn: 'Custom Fields',
+      nameBtn: "Custom Fields",
       Icon: <Crop169Icon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 9,
-      nameBtn: 'Move',
+      nameBtn: "Move",
       Icon: <ArrowForwardOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 10,
-      nameBtn: 'Copy',
+      nameBtn: "Copy",
       Icon: <ContentCopyOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 11,
-      nameBtn: 'Create a template',
+      nameBtn: "Create a template",
       Icon: <SaveAsOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 12,
-      nameBtn: 'Storage',
+      nameBtn: "Storage",
       Icon: <BackupTableOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 13,
-      nameBtn: 'Share',
+      nameBtn: "Share",
       Icon: <ShareOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
   ];
   const listLabelAdd = [
     {
       id: 2,
-      title: 'Back End',
-      color: 'bg-yellow-300',
+      title: "Back End",
+      color: "bg-yellow-300",
     },
     {
       id: 3,
-      title: 'Front End',
-      color: 'bg-orange-300',
+      title: "Front End",
+      color: "bg-orange-300",
     },
     {
       id: 4,
-      title: '',
-      color: 'bg-red-300',
+      title: "",
+      color: "bg-red-300",
     },
   ];
   const listColorLabel = [
     {
       id: 1,
-      title: 'light green',
-      color: 'bg-green-300',
+      title: "light green",
+      color: "bg-green-300",
     },
     {
       id: 2,
-      title: 'pale yellow',
-      color: 'bg-yellow-300',
+      title: "pale yellow",
+      color: "bg-yellow-300",
     },
     {
       id: 3,
-      title: 'light orange',
-      color: 'bg-orange-300',
+      title: "light orange",
+      color: "bg-orange-300",
     },
     {
       id: 4,
-      title: 'light red',
-      color: 'bg-red-300',
+      title: "light red",
+      color: "bg-red-300",
     },
 
     {
       id: 5,
-      title: 'green',
-      color: 'bg-green-500',
+      title: "green",
+      color: "bg-green-500",
     },
     {
       id: 6,
-      title: 'yellow',
-      color: 'bg-yellow-500',
+      title: "yellow",
+      color: "bg-yellow-500",
     },
     {
       id: 7,
-      title: 'orange',
-      color: 'bg-orange-500',
+      title: "orange",
+      color: "bg-orange-500",
     },
     {
       id: 8,
-      title: 'red',
-      color: 'bg-red-500',
+      title: "red",
+      color: "bg-red-500",
     },
 
     {
       id: 9,
-      title: 'dark green',
-      color: 'bg-green-700',
+      title: "dark green",
+      color: "bg-green-700",
     },
     {
       id: 10,
-      title: 'dark yellow',
-      color: 'bg-yellow-700',
+      title: "dark yellow",
+      color: "bg-yellow-700",
     },
     {
       id: 11,
-      title: 'dark orange',
-      color: 'bg-orange-700',
+      title: "dark orange",
+      color: "bg-orange-700",
     },
     {
       id: 12,
-      title: 'dark red',
-      color: 'bg-red-700',
+      title: "dark red",
+      color: "bg-red-700",
     },
 
     {
       id: 13,
-      title: 'light blue',
-      color: 'bg-blue-300',
+      title: "light blue",
+      color: "bg-blue-300",
     },
     {
       id: 14,
-      title: 'light pink',
-      color: 'bg-pink-300',
+      title: "light pink",
+      color: "bg-pink-300",
     },
     {
       id: 15,
-      title: 'light black',
-      color: 'bg-gray-300',
+      title: "light black",
+      color: "bg-gray-300",
     },
     {
       id: 16,
-      title: 'light purple',
-      color: 'bg-purple-300',
+      title: "light purple",
+      color: "bg-purple-300",
     },
     {
       id: 17,
-      title: 'blue',
-      color: 'bg-blue-500',
+      title: "blue",
+      color: "bg-blue-500",
     },
     {
       id: 18,
-      title: 'pink',
-      color: 'bg-pink-500',
+      title: "pink",
+      color: "bg-pink-500",
     },
     {
       id: 19,
-      title: 'black',
-      color: 'bg-gray-500',
+      title: "black",
+      color: "bg-gray-500",
     },
     {
       id: 20,
-      title: 'purple',
-      color: 'bg-purple-500',
+      title: "purple",
+      color: "bg-purple-500",
     },
     {
       id: 21,
-      title: 'dark blue',
-      color: 'bg-blue-700',
+      title: "dark blue",
+      color: "bg-blue-700",
     },
     {
       id: 22,
-      title: 'dark pink',
-      color: 'bg-pink-700',
+      title: "dark pink",
+      color: "bg-pink-700",
     },
     {
       id: 23,
-      title: 'dark black',
-      color: 'bg-gray-700',
+      title: "dark black",
+      color: "bg-gray-700",
     },
     {
       id: 24,
-      title: 'dark purple',
-      color: 'bg-purple-700',
+      title: "dark purple",
+      color: "bg-purple-700",
     },
   ];
   const [listLabel, setListLabel] = useState(listLabelAdd);
@@ -245,9 +245,9 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
   const [countMember, setCountMember] = useState([]);
   const [countLabel, setCountLabel] = useState([]);
   const [chooseColorLabel, setChooseColorLabel] = useState(listColorLabel[0]);
-  const [inputTitleLabel, setInputTitleLabel] = useState('');
-  const [inputTitleToDo, setInputTitleToDo] = useState('What to do');
-  const [inputTitleToDoItem, setInputTitleToDoItem] = useState('');
+  const [inputTitleLabel, setInputTitleLabel] = useState("");
+  const [inputTitleToDo, setInputTitleToDo] = useState("What to do");
+  const [inputTitleToDoItem, setInputTitleToDoItem] = useState("");
   const [numberShow, setNumberShow] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [isCreateLabel, setIsCreateLabel] = useState(false);
@@ -289,7 +289,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
     setInputTitleLabel(item.title);
   };
 
-  const handleCreateNewLabel = (dataColor, titleLabel = '') => {
+  const handleCreateNewLabel = (dataColor, titleLabel = "") => {
     const dataLabel = {
       id: dataColor.id,
       title: titleLabel,
@@ -307,7 +307,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
       }
     });
     ShowDetailNewLabel();
-    setInputTitleLabel('');
+    setInputTitleLabel("");
     handleAddLabel(dataLabel);
   };
 
@@ -388,7 +388,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
   };
 
   const handleAddToDoItem = (nameItem, item) => {
-    if (nameItem !== '') {
+    if (nameItem !== "") {
       const updatedList = listToDo.map((i) => {
         if (i.id === item.id) {
           const newDataItem = {
@@ -404,7 +404,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
         return i;
       });
       setListToDo(updatedList);
-      setInputTitleToDoItem('');
+      setInputTitleToDoItem("");
       ShowCreateToDoItem(item);
     }
   };
@@ -430,14 +430,14 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
       setCountMember(countMember.filter((i) => i !== id));
       listBtnCard.forEach((item) => {
         if (item.id === 1) {
-          item.nameBtn = 'Join';
+          item.nameBtn = "Join";
         }
       });
     } else {
       setCountMember([...countMember, id]);
       listBtnCard.forEach((item) => {
         if (item.id === 1) {
-          item.nameBtn = 'Leave';
+          item.nameBtn = "Leave";
         }
       });
     }
@@ -477,7 +477,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                   <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
                     {data.descriptionCard}
                   </div>
-                  {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: '16px' }} />}
+                  {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                 </div>
                 <div className="flex items-center">
                   {countMember.length !== 0 && (
@@ -498,7 +498,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                           onClick={handleShowMenuBtnCard}
                           className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-[12px] bg-gray-200 hover:bg-gray-300"
                         >
-                          <AddIcon style={{ fontSize: '20px' }} />
+                          <AddIcon style={{ fontSize: "20px" }} />
                         </div>
                       </div>
                     </div>
@@ -521,7 +521,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                           onClick={ShowDetailNewLabel}
                           className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-[12px] bg-gray-200 hover:bg-gray-300"
                         >
-                          <AddIcon style={{ fontSize: '20px' }} />
+                          <AddIcon style={{ fontSize: "20px" }} />
                         </div>
                       </div>
                     </div>
@@ -534,8 +534,8 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                       onHandleEvent={handleFollowing}
                       isFollowing={isFollowing}
                       isActive={true}
-                      nameBtn={'Following'}
-                      className={'w-[120px] justify-center bg-gray-200 hover:bg-gray-300'}
+                      nameBtn={"Following"}
+                      className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
                     >
                       <RemoveRedEyeOutlinedIcon className="mr-2 ml-1" fontSize="small" />
                     </ButtonBoardCard>
@@ -567,8 +567,8 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                         <ButtonBoardCard
                           onHandleEvent={() => handleRemoveToDoList(item)}
                           isActive={true}
-                          nameBtn={'Erase'}
-                          className={'w-[60px] justify-center bg-gray-200 hover:bg-gray-300'}
+                          nameBtn={"Erase"}
+                          className={"w-[60px] justify-center bg-gray-200 hover:bg-gray-300"}
                         />
                       </div>
                     </div>
@@ -606,8 +606,8 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                         <ButtonBoardCard
                           onHandleEvent={() => ShowCreateToDoItem(item)}
                           isActive={true}
-                          nameBtn={'Add an item'}
-                          className={'w-[120px] justify-center bg-gray-200 hover:bg-gray-300'}
+                          nameBtn={"Add an item"}
+                          className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
                         />
                       ) : (
                         <div>
@@ -625,32 +625,32 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                               <ButtonBoardCard
                                 onHandleEvent={() => handleAddToDoItem(inputTitleToDoItem, item)}
                                 isActive={true}
-                                nameBtn={'More'}
-                                className={'w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600'}
+                                nameBtn={"More"}
+                                className={"w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600"}
                               />
                               <ButtonBoardCard
                                 onHandleEvent={() => ShowCreateToDoItem(item)}
                                 isActive={true}
-                                nameBtn={'Cancel'}
-                                className={'w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300'}
+                                nameBtn={"Cancel"}
+                                className={"w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300"}
                               />
                             </div>
                             <div className="flex items-center">
                               <ButtonBoardCard
                                 onHandleEvent={ShowCreateToDoItem}
                                 isActive={true}
-                                nameBtn={'Assign'}
-                                className={'w-[80px] justify-center hover:bg-gray-200'}
+                                nameBtn={"Assign"}
+                                className={"w-[80px] justify-center hover:bg-gray-200"}
                               >
-                                <Person4OutlinedIcon style={{ fontSize: '18px', marginRight: '4px' }} />
+                                <Person4OutlinedIcon style={{ fontSize: "18px", marginRight: "4px" }} />
                               </ButtonBoardCard>
                               <ButtonBoardCard
                                 onHandleEvent={ShowCreateToDoItem}
                                 isActive={true}
-                                nameBtn={'Expiration day'}
-                                className={'w-[140px] ml-2 justify-center hover:bg-gray-200'}
+                                nameBtn={"Expiration day"}
+                                className={"w-[140px] ml-2 justify-center hover:bg-gray-200"}
                               >
-                                <AccessTimeIcon style={{ fontSize: '18px', marginRight: '4px' }} />
+                                <AccessTimeIcon style={{ fontSize: "18px", marginRight: "4px" }} />
                               </ButtonBoardCard>
                             </div>
                           </div>
@@ -670,8 +670,8 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                   <div className="text-[16px] mb-2">Work</div>
                   <ButtonBoardCard
                     isActive={true}
-                    nameBtn={'Show details'}
-                    className={'w-[100px] justify-center bg-gray-200 hover:bg-gray-300'}
+                    nameBtn={"Show details"}
+                    className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
                   />
                 </div>
                 <div className="flex items-center text-[12px] mb-2"></div>
@@ -737,7 +737,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                             onClick={() => ShowUpdateLabel(item)}
                             className=" hover:bg-gray-300 p-2 ml-2 rounded-[4px]"
                           >
-                            <ModeEditIcon style={{ fontSize: '16px' }} />
+                            <ModeEditIcon style={{ fontSize: "16px" }} />
                           </div>
                         </span>
                       </li>
@@ -747,7 +747,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                         onHandleEvent={ShowDetailNewLabel}
                         nameBtn="Create new label"
                         isActive={true}
-                        className={'justify-center bg-gray-200 hover:bg-gray-300'}
+                        className={"justify-center bg-gray-200 hover:bg-gray-300"}
                       />
                     </div>
                   </ul>
@@ -761,7 +761,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
           )}
           {isCreateLabel && (
             <div style={{ top: position.top - 100, left: position.left }} className="absolute">
-              <ItemMenu title={'Label'} onLeaveBoard={handleCloseShowMenuBtnCard} onToggleCollape={ShowDetailNewLabel}>
+              <ItemMenu title={"Label"} onLeaveBoard={handleCloseShowMenuBtnCard} onToggleCollape={ShowDetailNewLabel}>
                 <div className="flex items-center justify-center bg-gray-100 h-[60px]">
                   {chooseColorLabel ? (
                     <div className={`${chooseColorLabel.color} w-[80%] h-[32px] p-2 rounded-[4px]`}>
@@ -791,7 +791,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                         <li
                           onClick={() => handleChooseColor(item)}
                           key={index}
-                          className={`w-12 h-8 ${item.color} rounded-[4px] mr-1 mb-1 ${chooseColorLabel.id === item.id && 'border-[3px] border-gray-500 shadow-[0_3px_10px_rgba(0,0,0,0.3)]'}`}
+                          className={`w-12 h-8 ${item.color} rounded-[4px] mr-1 mb-1 ${chooseColorLabel.id === item.id && "border-[3px] border-gray-500 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"}`}
                         ></li>
                       ))}
                     </ul>
@@ -801,7 +801,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                       onHandleEvent={ShowDetailNewLabel}
                       nameBtn="Remove color"
                       isActive={true}
-                      className={'justify-center bg-gray-200 hover:bg-gray-300'}
+                      className={"justify-center bg-gray-200 hover:bg-gray-300"}
                     />
                   </div>
                   <Divider />
@@ -811,7 +811,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                         onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
                         nameBtn="Create new"
                         isActive={true}
-                        className={'w-[100px] bg-blue-500 justify-center text-white hover:opacity-90'}
+                        className={"w-[100px] bg-blue-500 justify-center text-white hover:opacity-90"}
                       />
                     </div>
                   ) : (
@@ -820,13 +820,13 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                         onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
                         nameBtn="Save"
                         isActive={true}
-                        className={'w-[100px] bg-blue-500 justify-center text-white hover:opacity-90'}
+                        className={"w-[100px] bg-blue-500 justify-center text-white hover:opacity-90"}
                       />
                       <ButtonBoardCard
                         onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
                         nameBtn="Remove"
                         isActive={true}
-                        className={'w-[100px] bg-red-500 justify-center text-white hover:opacity-90'}
+                        className={"w-[100px] bg-red-500 justify-center text-white hover:opacity-90"}
                       />
                     </div>
                   )}

@@ -1,13 +1,13 @@
-import { Button, Modal } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { CenterModel } from '../styles';
-import { useForm } from 'react-hook-form';
-import { SearchMember } from '../../SearchMember/SearchMember';
-import { useMutation, QueryClient } from '@tanstack/react-query';
-import { workspaceServices } from '../../../Services';
-import { EQueryKeys, EMemberRole } from '../../../constants';
-import { defaultInviteMemberValues } from './InviteMember.constant';
-import { useParams } from 'react-router-dom';
+import { Button, Modal } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { CenterModel } from "../styles";
+import { useForm } from "react-hook-form";
+import { SearchMember } from "../../SearchMember/SearchMember";
+import { useMutation, QueryClient } from "@tanstack/react-query";
+import { workspaceServices } from "../../../Services";
+import { EQueryKeys, EMemberRole } from "../../../constants";
+import { defaultInviteMemberValues } from "./InviteMember.constant";
+import { useParams } from "react-router-dom";
 
 export const InviteMemberModal = ({ open, handleClose }) => {
   const queryClient = new QueryClient();
@@ -35,10 +35,10 @@ export const InviteMemberModal = ({ open, handleClose }) => {
 
   const handleChange = (_, newValue) => {
     if (!newValue) {
-      setValue('members', '');
+      setValue("members", "");
       return;
     }
-    setValue('members', newValue?.id);
+    setValue("members", newValue?.id);
   };
 
   return (
@@ -59,7 +59,7 @@ export const InviteMemberModal = ({ open, handleClose }) => {
           </div>
         </div>
         <SearchMember onChange={handleChange} multiple={false} />
-        {watch('members') ? (
+        {watch("members") ? (
           <Button variant="contained" type="submit">
             Add
           </Button>

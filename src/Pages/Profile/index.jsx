@@ -1,9 +1,9 @@
-import { Button, Divider, TextField } from '@mui/material';
-import React from 'react';
-import PublicIcon from '@mui/icons-material/Public';
+import { Button, Divider, TextField } from "@mui/material";
+import React from "react";
+import PublicIcon from "@mui/icons-material/Public";
 
 const tabItemStyles =
-  'text-sm w-fit text-[var(--dark-slate-blue)] font-bold pt-2 pb-[9px] cursor-pointer hover:text-[var(--primary)] mr-4';
+  "text-sm w-fit text-[var(--dark-slate-blue)] font-bold pt-2 pb-[9px] cursor-pointer hover:text-[var(--primary)] mr-4";
 
 export default function Profile() {
   return (
@@ -42,7 +42,7 @@ export default function Profile() {
               Manage your personal information
             </h1>
             <p className="bg-[var(--hover-background)] p-4 mb-2 text-sm text-[var(--dark-slate-blue)]">
-              This is an Atlassian account. Edit your personal information and visibility settings through your{' '}
+              This is an Atlassian account. Edit your personal information and visibility settings through your{" "}
               <a
                 className="text-[var(--primary)]"
                 href="https://id.atlassian.com/manage-profile"
@@ -51,7 +51,7 @@ export default function Profile() {
               >
                 Atlassian profile
               </a>
-              . To learn more, view our{' '}
+              . To learn more, view our{" "}
               <a
                 className="text-[var(--primary)]"
                 href="https://www.atlassian.com/legal/cloud-terms-of-service"
@@ -59,8 +59,8 @@ export default function Profile() {
                 rel="noopener noreferrer"
               >
                 Terms of Service
-              </a>{' '}
-              or{' '}
+              </a>{" "}
+              or{" "}
               <a
                 className="text-[var(--primary)]"
                 href="https://www.atlassian.com/legal/privacy-policy"
@@ -74,21 +74,21 @@ export default function Profile() {
           </div>
 
           <h3 className="mb-2 mt-10 text-[20px] font-semibold text-[var(--text-color)]">About</h3>
-          <Divider component={'div'} />
+          <Divider component={"div"} />
 
           <div className="flex flex-col ">
             <div className="flex justify-between my-3">
               <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">Username</label>
               <div className="pt-4 flex items-center text-[var(--dark-slate-blue)]">
-                <PublicIcon color="#44546f" sx={{ width: '16px', height: '16px', mr: 0.5 }} />
+                <PublicIcon color="#44546f" sx={{ width: "16px", height: "16px", mr: 0.5 }} />
                 <div className="text-xs">Always public</div>
               </div>
             </div>
             <TextField
               sx={{
-                '& .MuiInputBase-input': {
-                  paddingY: '8px',
-                  paddingX: '12px',
+                "& .MuiInputBase-input": {
+                  paddingY: "8px",
+                  paddingX: "12px",
                   fontSize: 14,
                 },
               }}
@@ -99,7 +99,7 @@ export default function Profile() {
             <div className="flex justify-between my-3">
               <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">Bio</label>
               <div className="pt-4 flex items-center text-[var(--dark-slate-blue)]">
-                <PublicIcon color="#44546f" sx={{ width: '16px', height: '16px', mr: 0.5 }} />
+                <PublicIcon color="#44546f" sx={{ width: "16px", height: "16px", mr: 0.5 }} />
                 <div className="text-xs">Always public</div>
               </div>
             </div>
@@ -110,10 +110,10 @@ export default function Profile() {
             variant="contained"
             sx={{
               mt: 4,
-              textTransform: 'none',
-              height: '32px',
-              paddingY: '6px',
-              paddingX: '12px',
+              textTransform: "none",
+              height: "32px",
+              paddingY: "6px",
+              paddingX: "12px",
             }}
           >
             Save

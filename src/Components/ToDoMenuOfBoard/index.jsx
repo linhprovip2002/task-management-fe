@@ -1,6 +1,6 @@
-import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import { ButtonBoardCard } from '../ButtonBoardCard';
+import React from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import { ButtonBoardCard } from "../ButtonBoardCard";
 
 const ToDoMenu = ({
   position,
@@ -31,7 +31,7 @@ const ToDoMenu = ({
           onHandleEvent={() => handleCreateNewToDoList(inputTitleToDo)}
           nameBtn="More"
           isActive={true}
-          className={'w-[100px] bg-blue-500 justify-center text-white hover:opacity-90'}
+          className={"w-[100px] bg-blue-500 justify-center text-white hover:opacity-90"}
         />
       </div>
       <CloseIcon

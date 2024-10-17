@@ -1,6 +1,6 @@
-import { BoardInformation } from '../../../Components/BoardInformation/BoardInformation';
-import { Button, Divider } from '@mui/material';
-import LinkIcon from '@mui/icons-material/Link';
+import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
+import { Button, Divider } from "@mui/material";
+import LinkIcon from "@mui/icons-material/Link";
 
 const WorkspaceMembers = () => {
   return (

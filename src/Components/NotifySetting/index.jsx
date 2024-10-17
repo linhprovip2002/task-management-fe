@@ -1,6 +1,6 @@
-import React from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import NorthEastIcon from '@mui/icons-material/NorthEast';
+import React from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import NorthEastIcon from "@mui/icons-material/NorthEast";
 function NotifySetting({ onClose }) {
   const handleClose = () => {
     if (onClose) onClose();

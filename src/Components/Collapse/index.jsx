@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import React, { useEffect, useState } from "react";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 const iconClass = (isCollapse, size, isHide = false) =>
-  `${isCollapse ? '' : 'rotate-180'} ${size === 'md' ? 'text-3xl' : 'text-xl'} ${isHide && 'invisible'} duration-300 flex items-center justify-center`;
+  `${isCollapse ? "" : "rotate-180"} ${size === "md" ? "text-3xl" : "text-xl"} ${isHide && "invisible"} duration-300 flex items-center justify-center`;
 
 const TITLE_CONTAINER_PADDING = {
-  md: 'px-6 py-4',
-  sm: 'px-4 py-3',
+  md: "px-6 py-4",
+  sm: "px-4 py-3",
 };
 
 export default function Collapse({
@@ -15,7 +15,7 @@ export default function Collapse({
   bgWhite,
   value = true,
   className,
-  position = 'left',
+  position = "left",
   setValue,
   onDelete,
   disabled = false,
@@ -23,7 +23,7 @@ export default function Collapse({
   contentClassName,
   subTitle,
   titleContainerClassName,
-  size = 'md',
+  size = "md",
   isChild = false,
   disableToggle = false,
   disableTitleClick = false,
@@ -41,7 +41,7 @@ export default function Collapse({
         className={`flex cursor-pointer items-center justify-between gap-2 leading-[26px] hover:bg-[var(--hover-background)] rounded-lg 
           ${TITLE_CONTAINER_PADDING[size]} 
           ${titleContainerClassName}
-          ${disableToggle ? 'cursor-default' : 'cursor-pointer'}`}
+          ${disableToggle ? "cursor-default" : "cursor-pointer"}`}
         onClick={(e) => {
           if (disabled || disableToggle) {
             return;
@@ -50,7 +50,7 @@ export default function Collapse({
           setValue && setValue(!isCollapse);
         }}
       >
-        {position === 'left' && (
+        {position === "left" && (
           <div className={iconClass(isCollapse, size)}>
             <KeyboardArrowUpIcon />
           </div>
@@ -59,7 +59,7 @@ export default function Collapse({
           {title}
         </div>
         {description && <p className="w-fit truncate text-[14px]">{description}</p>}
-        {position === 'right' && !disabled && (
+        {position === "right" && !disabled && (
           <div className={iconClass(isCollapse, size)}>
             <KeyboardArrowUpIcon />
           </div>
@@ -71,7 +71,7 @@ export default function Collapse({
           grid
           transition-all
           duration-500
-          ${isCollapse ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}
+          ${isCollapse ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}
         `}
       >
         {isCollapse ? (

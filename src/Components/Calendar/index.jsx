@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import React, { useState } from "react";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
-import { ButtonBoardCard } from '../ButtonBoardCard';
+import { ButtonBoardCard } from "../ButtonBoardCard";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -25,13 +25,13 @@ const Calendar = () => {
 
   const daysArray = getDaysInMonth(currentDate);
 
-  const monthYear = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  const monthYear = currentDate.toLocaleString("default", { month: "long", year: "numeric" });
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <ButtonBoardCard
-          className={'w-[18px] h-[24px] hover:bg-gray-300 justify-center'}
+          className={"w-[18px] h-[24px] hover:bg-gray-300 justify-center"}
           isActive={true}
           onHandleEvent={handlePrevMonth}
         >
@@ -39,7 +39,7 @@ const Calendar = () => {
         </ButtonBoardCard>
         <span className="text-xl font-bold">{monthYear}</span>
         <ButtonBoardCard
-          className={'w-[18px] h-[24px] hover:bg-gray-300 justify-center'}
+          className={"w-[18px] h-[24px] hover:bg-gray-300 justify-center"}
           isActive={true}
           onHandleEvent={handleNextMonth}
         >

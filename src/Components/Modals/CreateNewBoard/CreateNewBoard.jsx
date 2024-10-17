@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import CheckIcon from '@mui/icons-material/Check';
-import Modal from '@mui/material/Modal';
-import { Autocomplete, Box, Button } from '@mui/material';
-import { colorData, customBgImg, customStyleNewBoard, listBgImage, style } from './customNewBoard';
-import { listRule } from './customNewBoard';
-import { useGetWorkspaceByUser } from '../../../Hooks';
-import { createBoard } from '../../../Services/API/ApiBoard/apiBoard';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import TextField from "@mui/material/TextField";
+import CheckIcon from "@mui/icons-material/Check";
+import Modal from "@mui/material/Modal";
+import { Autocomplete, Box, Button } from "@mui/material";
+import { colorData, customBgImg, customStyleNewBoard, listBgImage, style } from "./customNewBoard";
+import { listRule } from "./customNewBoard";
+import { useGetWorkspaceByUser } from "../../../Hooks";
+import { createBoard } from "../../../Services/API/ApiBoard/apiBoard";
+import CloseIcon from "@mui/icons-material/Close";
 // import { useParams } from 'react-router-dom';
 
 export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
-  const [selectedBg, setSelectedBg] = useState(''); // Lưu màu background
-  const [selectedImg, setSelectedImg] = useState(''); // Lưu hình ảnh đã chọn
+  const [selectedBg, setSelectedBg] = useState(""); // Lưu màu background
+  const [selectedImg, setSelectedImg] = useState(""); // Lưu hình ảnh đã chọn
   const { workspaceInfo } = useGetWorkspaceByUser();
 
   // const { id } = useParams();
@@ -26,11 +26,11 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      title: '',
+      title: "",
       workspaceId: null,
-      visibility: '', // Người dùng sẽ chọn trạng thái
-      backgroundColor: '',
-      coverUrl: '',
+      visibility: "", // Người dùng sẽ chọn trạng thái
+      backgroundColor: "",
+      coverUrl: "",
       isPrivate: false, // Mặc định là false
       isFavorite: false, // Mặc định là false
       isArchived: false, // Mặc định là false
@@ -46,18 +46,18 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
     let isArchived = false;
 
     // Cập nhật đúng giá trị boolean dựa trên visibility mà người dùng chọn
-    if (visibility === 'isPrivate') {
+    if (visibility === "isPrivate") {
       isPrivate = true;
-    } else if (visibility === 'isFavorite') {
+    } else if (visibility === "isFavorite") {
       isFavorite = true;
-    } else if (visibility === 'isArchived') {
+    } else if (visibility === "isArchived") {
       isArchived = true;
     }
 
     // Tạo dữ liệu bảng
     const boardData = {
       title: title.trim(), // Đảm bảo title là chuỗi và không rỗng
-      description: '', // Add description field if needed
+      description: "", // Add description field if needed
       backgroundColor: selectedBg,
       coverUrl: selectedImg, // Set a cover URL if needed
       isPrivate,
@@ -71,7 +71,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
       reset(); // Reset form sau khi gửi
       handleClose(); // Đóng modal
     } catch (error) {
-      console.error('Failed to create board:', error);
+      console.error("Failed to create board:", error);
     }
   };
 
@@ -113,10 +113,10 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                   className="w-[12rem] h-[110px] rounded-lg flex justify-center"
                   style={{
                     backgroundColor: selectedBg, // Áp dụng màu nền đã chọn
-                    backgroundImage: selectedImg ? `url(${selectedImg})` : 'none',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center center',
+                    backgroundImage: selectedImg ? `url(${selectedImg})` : "none",
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center center",
                   }}
                 >
                   <img src="https://trello.com/assets/14cda5dc635d1f13bc48.svg" alt="svg" width="186" height="103" />
@@ -132,11 +132,11 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                       <div
                         style={{
                           backgroundImage: `url(${bgImg.image})`,
-                          backgroundSize: 'cover',
-                          backgroundRepeat: 'no-repeat',
-                          backgroundPosition: 'center center',
+                          backgroundSize: "cover",
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "center center",
                         }}
-                        className={` ${customBgImg} ${selectedImg === bgImg.name ? `${bgImg.image}` : ''}`}
+                        className={` ${customBgImg} ${selectedImg === bgImg.name ? `${bgImg.image}` : ""}`}
                         onClick={() => handleImageClick(bgImg.image)}
                       >
                         {selectedImg === bgImg.image && <CheckIcon className="text-white" />}
@@ -152,7 +152,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                   {colorData.map((color, index) => (
                     <div
                       key={index}
-                      className={`${color.class} ${customStyleNewBoard} ${selectedBg === color.name ? `ring-2 ${color.class}` : ''}`}
+                      className={`${color.class} ${customStyleNewBoard} ${selectedBg === color.name ? `ring-2 ${color.class}` : ""}`}
                       onClick={() => handleBackgroundClick(color.name)}
                     >
                       {selectedBg === color.name && <CheckIcon className="text-white" />}
@@ -165,7 +165,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
               <Controller
                 name="title"
                 control={control}
-                rules={{ required: 'Board title is required' }}
+                rules={{ required: "Board title is required" }}
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -176,7 +176,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                     fullWidth
                     required
                     error={!!errors.title}
-                    helperText={errors.title ? errors.title.message : ''}
+                    helperText={errors.title ? errors.title.message : ""}
                     className="my-4"
                   />
                 )}
@@ -192,7 +192,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                     options={workspaceInfo.map((workspace) => workspace.id)}
                     getOptionLabel={(option) => {
                       const workspace = workspaceInfo.find((workspace) => workspace.id === option);
-                      return workspace ? String(workspace.id) : '';
+                      return workspace ? String(workspace.id) : "";
                     }}
                     onChange={(e, value) => field.onChange(Number(value))} // Chuyển value sang kiểu số
                     renderInput={(params) => (
@@ -205,7 +205,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
 
               {/* Autocomplete Visibility */}
               <Autocomplete
-                {...register('visibility')}
+                {...register("visibility")}
                 options={listRule} // Các lựa chọn là isPrivate, isFavorite, isArchived
                 getOptionLabel={(option) => option.label} // Hiển thị nhãn của option
                 isOptionEqualToValue={(option, value) => option.value === value} // So sánh đúng giữa option và value

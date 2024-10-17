@@ -1,5 +1,5 @@
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 import {
   Person4Outlined as Person4OutlinedIcon,
   Label as LabelIcon,
@@ -8,11 +8,11 @@ import {
   ContentCopyOutlined as ContentCopyOutlinedIcon,
   SaveAsOutlined as SaveAsOutlinedIcon,
   BackupTableOutlined as BackupTableOutlinedIcon,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
 
-import { AttachmentIcon, DescriptionIcon } from '../../Components/Icons';
-import { ButtonBoardCard } from '../ButtonBoardCard';
-import { useState } from 'react';
+import { AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
+import { ButtonBoardCard } from "../ButtonBoardCard";
+import { useState } from "react";
 
 export const EditCard = ({
   position,
@@ -27,42 +27,42 @@ export const EditCard = ({
   const listBtnCard = [
     {
       id: 1,
-      nameBtn: 'Open Card',
+      nameBtn: "Open Card",
       Icon: <SaveAsOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 2,
-      nameBtn: 'Edit label',
+      nameBtn: "Edit label",
       Icon: <LabelIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 3,
-      nameBtn: 'Change Membership',
+      nameBtn: "Change Membership",
       Icon: <Person4OutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 4,
-      nameBtn: 'Change cover',
+      nameBtn: "Change cover",
       Icon: <SaveAsOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 5,
-      nameBtn: 'Edit date',
+      nameBtn: "Edit date",
       Icon: <AccessTimeOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 6,
-      nameBtn: 'Move',
+      nameBtn: "Move",
       Icon: <ArrowForwardOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 7,
-      nameBtn: 'Copy',
+      nameBtn: "Copy",
       Icon: <ContentCopyOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
     {
       id: 8,
-      nameBtn: 'Storage',
+      nameBtn: "Storage",
       Icon: <BackupTableOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
     },
   ];
@@ -113,7 +113,7 @@ export const EditCard = ({
                     placement="bottom"
                   >
                     <div className="pb-2">
-                      <DescriptionIcon className={'p-[4px] '} />
+                      <DescriptionIcon className={"p-[4px] "} />
                     </div>
                   </Tippy>
                 )}
@@ -124,7 +124,7 @@ export const EditCard = ({
                     placement="bottom"
                   >
                     <div className="flex items-center pb-2">
-                      <AttachmentIcon className={'p-[4px] ml-[2px]'} />
+                      <AttachmentIcon className={"p-[4px] ml-[2px]"} />
                       <div className="text-[12px] font-[400] text-black-500 py-[4px]">{attachmentCount}</div>
                     </div>
                   </Tippy>
@@ -146,7 +146,7 @@ export const EditCard = ({
               onHandleEvent={() => handleClickBtn(item)}
               isActive={true}
               nameBtn={item.nameBtn}
-              className={'bg-white hover:bg-gray-300 mb-1'}
+              className={"bg-white hover:bg-gray-300 mb-1"}
             >
               {item.Icon}
             </ButtonBoardCard>
@@ -161,8 +161,8 @@ export const EditCard = ({
         >
           <ButtonBoardCard
             isActive={true}
-            nameBtn={'Save'}
-            className={'text-white font-[500] bg-blue-500 hover:bg-gray-300 mb-1'}
+            nameBtn={"Save"}
+            className={"text-white font-[500] bg-blue-500 hover:bg-gray-300 mb-1"}
           />
         </div>
       </div>

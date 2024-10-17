@@ -1,12 +1,12 @@
-import Modal from '@mui/material/Modal';
-import { CenterModel } from '../styles';
-import { Button, TextField } from '@mui/material';
-import { CreateWorkspaceDefaultValues } from './constants';
-import { useForm } from 'react-hook-form';
-import { useMutation, QueryClient } from '@tanstack/react-query';
-import { workspaceServices } from '../../../Services';
-import { EQueryKeys } from '../../../constants';
-import { SearchMember } from '../../SearchMember/SearchMember';
+import Modal from "@mui/material/Modal";
+import { CenterModel } from "../styles";
+import { Button, TextField } from "@mui/material";
+import { CreateWorkspaceDefaultValues } from "./constants";
+import { useForm } from "react-hook-form";
+import { useMutation, QueryClient } from "@tanstack/react-query";
+import { workspaceServices } from "../../../Services";
+import { EQueryKeys } from "../../../constants";
+import { SearchMember } from "../../SearchMember/SearchMember";
 
 export const EditWorkspaceModal = ({ open, handleClose }) => {
   const queryClient = new QueryClient();
@@ -50,13 +50,13 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
             </div>
             <div className="flex flex-col gap-1">
               <div className="font-bold">Workspace name</div>
-              <TextField {...register('title')} placeholder="Workspace name" className="w-full" variant="outlined" />
+              <TextField {...register("title")} placeholder="Workspace name" className="w-full" variant="outlined" />
               <div>This is the name of your company, team or organization.</div>
             </div>
             <div className="flex flex-col gap-1">
               <div className="font-bold">Workspace description (Optional)</div>
               <TextField
-                {...register('description')}
+                {...register("description")}
                 id="filled-multiline-static"
                 multiline
                 rows={5}

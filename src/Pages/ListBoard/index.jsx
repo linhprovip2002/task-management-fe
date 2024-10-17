@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
+import { useState } from "react";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
-import { ImageIcon } from '../../Assets/images';
-import { ConvertHiDotsVertical } from '../../Components/HiDotsVertical';
+import { ImageIcon } from "../../Assets/images";
+import { ConvertHiDotsVertical } from "../../Components/HiDotsVertical";
 import {
   ArrowDown,
   TwoUserIcon,
@@ -17,14 +17,14 @@ import {
   ListIcon,
   FilterIcon,
   ShareIconRegular,
-} from '../../Components/Icons';
-import ItemList from '../../Components/ItemList';
-import { CreateItem } from '../../Components/CreateItem';
-import { BoardCard } from '../../Components/BoardCard';
-import { EditCard } from '../../Components/EditCard';
+} from "../../Components/Icons";
+import ItemList from "../../Components/ItemList";
+import { CreateItem } from "../../Components/CreateItem";
+import { BoardCard } from "../../Components/BoardCard";
+import { EditCard } from "../../Components/EditCard";
 
 function ListBoard() {
-  const [nameTitle, setNameTitle] = useState('');
+  const [nameTitle, setNameTitle] = useState("");
   const [isClosedNavBar, setIsCloseNavBar] = useState(false);
   const [isShowBoardCard, setIsShowBoardCard] = useState(false);
   const [isShowBoardEdit, setIsShowBoardEdit] = useState(false);
@@ -92,7 +92,7 @@ function ListBoard() {
     }
     newList[index].isShowAddCard = !newList[index].isShowAddCard;
     setListCount(newList);
-    setNameTitle('');
+    setNameTitle("");
   };
 
   const handleAddList = (newData) => {
@@ -104,7 +104,7 @@ function ListBoard() {
       setListCount((prev) => [...prev, newListItem]);
     }
     setIsShowAddList(!isShowAddList);
-    setNameTitle('');
+    setNameTitle("");
   };
 
   const handleActiveMonitor = (index) => {
@@ -124,14 +124,14 @@ function ListBoard() {
       <div className="w-[100wh] h-[91vh] flex">
         <div
           onClick={isClosedNavBar ? handleClosedNavBar : undefined}
-          className={`${isClosedNavBar ? 'max-w-[20px] w-full relative hover:bg-gray-200' : 'max-w-[260px] w-full'} border-r-[1px] border-gray-300 bg-gray-100 shadow-[0_3px_10px_rgba(0,0,0,0.3)]`}
+          className={`${isClosedNavBar ? "max-w-[20px] w-full relative hover:bg-gray-200" : "max-w-[260px] w-full"} border-r-[1px] border-gray-300 bg-gray-100 shadow-[0_3px_10px_rgba(0,0,0,0.3)]`}
         >
           {isClosedNavBar ? (
             <div
               onClick={handleClosedNavBar}
               className="absolute top-3 left-2 p-1 rounded-[50%] bg-gray-300 hover:bg-gray-200 cursor-pointer"
             >
-              <ArrowDown width={16} height={16} className={'rotate-90 text-gray-100'} />
+              <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
             </div>
           ) : (
             <>
@@ -141,32 +141,32 @@ function ListBoard() {
                 </div>
                 <div className="flex-1 ml-2 text-[18px] font-medium">BKDN</div>
                 <div onClick={handleClosedNavBar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
-                  <ArrowDown width={16} height={16} className={'rotate-90 text-gray-100'} />
+                  <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
                 </div>
               </div>
               <div className="group flex items-center">
                 <div className="flex-1 text-[16px] font-medium py-2 pl-4 ">Your tables</div>
                 <ConvertHiDotsVertical
-                  type={'navbarTable'}
+                  type={"navbarTable"}
                   className={
-                    'cursor-pointer p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300'
+                    "cursor-pointer p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300"
                   }
                 />
               </div>
               <div className="relative flex items-center pl-4 py-2 bg-gray-200 cursor-pointer group">
                 <div className="rounded-[4px] font-bold text-white text-[20px]">
-                  <ImageIcon width={24} height={20} className={'rounded-[2px]'} />
+                  <ImageIcon width={24} height={20} className={"rounded-[2px]"} />
                 </div>
                 <div className=" flex-1 ml-2 text-[18px] font-medium">KTPM</div>
                 <ConvertHiDotsVertical
-                  type={'navbarBoard'}
+                  type={"navbarBoard"}
                   className={
-                    'cursor-pointer p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300'
+                    "cursor-pointer p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300"
                   }
                 />
                 <div
                   onClick={handleActiveStar}
-                  className={`absolute cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? 'opacity-100' : 'group-hover:opacity-100'} group-hover:opacity-100 transition-opacity duration-300`}
+                  className={`absolute cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
                 >
                   {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
                 </div>
@@ -179,9 +179,9 @@ function ListBoard() {
           className="flex-grow"
           style={{
             backgroundImage: `url(https://trello.com/assets/707f35bc691220846678.svg)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         >
           <div className="flex items-center justify-between h-[32px] p-6 bg-gray-100">
@@ -219,7 +219,7 @@ function ListBoard() {
                 placement="bottom"
               >
                 <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
-                  <ListIcon width={16} height={16} className={'mr-2 text-white'} />
+                  <ListIcon width={16} height={16} className={"mr-2 text-white"} />
                   <span className="text-[16px] font-medium text-white">Board</span>
                 </div>
               </Tippy>
@@ -229,7 +229,7 @@ function ListBoard() {
                 placement="bottom"
               >
                 <div className="cursor-pointer mr-4 p-2 ml-2 rounded-[4px] hover:bg-gray-300 bg-gray-300 cursor-pointer">
-                  <ArrowDown width={16} height={16} className={'text-gray-100'} />
+                  <ArrowDown width={16} height={16} className={"text-gray-100"} />
                 </div>
               </Tippy>
             </div>
@@ -258,7 +258,7 @@ function ListBoard() {
                 placement="bottom"
               >
                 <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
-                  <FilterIcon width={16} height={16} className={'mr-2'} />
+                  <FilterIcon width={16} height={16} className={"mr-2"} />
                   <span className="text-[16px] font-medium">Filter</span>
                 </div>
               </Tippy>
@@ -268,14 +268,14 @@ function ListBoard() {
                 placement="bottom"
               >
                 <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
-                  <ShareIconRegular width={16} height={16} className={'mr-2 text-white'} />
+                  <ShareIconRegular width={16} height={16} className={"mr-2 text-white"} />
                   <span className="text-[16px] font-medium text-white">Share</span>
                 </div>
               </Tippy>
               <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
                 <ConvertHiDotsVertical
-                  type={''}
-                  className={'group-hover:opacity-100 transition-opacity duration-300'}
+                  type={""}
+                  className={"group-hover:opacity-100 transition-opacity duration-300"}
                 />
               </div>
             </div>
@@ -285,8 +285,8 @@ function ListBoard() {
           <div className="relative h-[80vh]">
             <div
               style={{
-                scrollbarWidth: 'thin',
-                scrollbarColor: '#fff6 #00000026',
+                scrollbarWidth: "thin",
+                scrollbarColor: "#fff6 #00000026",
               }}
               className="absolute h-full top-0 left-0 right-0 mb-2 pb-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
             >
@@ -309,18 +309,18 @@ function ListBoard() {
                               data={item.descriptionCard}
                               onShowAddCard={handleShowAddCard}
                               onActiveMonitor={() => handleActiveMonitor(index)}
-                              type={'operation'}
+                              type={"operation"}
                               listCount={listCount}
                               className={
-                                'cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
+                                "cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300"
                               }
                             />
                           </div>
                           {/* List board */}
                           <div
                             style={{
-                              scrollbarWidth: 'thin',
-                              scrollbarColor: '#fff6 #00000026',
+                              scrollbarWidth: "thin",
+                              scrollbarColor: "#fff6 #00000026",
                             }}
                             className="flex-1 p-1 overflow-y-auto overflow-x-hidden"
                           >
@@ -345,9 +345,9 @@ function ListBoard() {
                           {item.isShowAddCard && activeIndex === index && (
                             <CreateItem
                               index={index}
-                              nameBtn={'Add card'}
+                              nameBtn={"Add card"}
                               descriptionCard={nameTitle}
-                              placeHolderText={'Enter title or paste link'}
+                              placeHolderText={"Enter title or paste link"}
                               onAdd={handleAddCard}
                               onShow={() => handleShowAddCard(index)}
                               onChangeTitle={handleChangeTitleCard}
@@ -375,7 +375,7 @@ function ListBoard() {
                                     width={32}
                                     height={32}
                                     className={
-                                      'cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300'
+                                      "cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300"
                                     }
                                   />
                                 </div>
@@ -389,7 +389,7 @@ function ListBoard() {
                   <div className="px-[8px]">
                     <div
                       onClick={!isShowAddList ? handleShowAddList : null}
-                      className={`flex items-center w-[248px] rounded-[12px] bg-gray-100 p-[6px] ${!isShowAddList ? 'hover:bg-gray-300' : ''} cursor-pointer`}
+                      className={`flex items-center w-[248px] rounded-[12px] bg-gray-100 p-[6px] ${!isShowAddList ? "hover:bg-gray-300" : ""} cursor-pointer`}
                     >
                       {!isShowAddList ? (
                         <>
@@ -402,9 +402,9 @@ function ListBoard() {
                         <div className="w-full">
                           <CreateItem
                             isList={true}
-                            nameBtn={'Add list'}
+                            nameBtn={"Add list"}
                             descriptionCard={nameTitle}
-                            placeHolderText={'Enter list name...'}
+                            placeHolderText={"Enter list name..."}
                             onAdd={handleAddList}
                             onShow={handleShowAddList}
                             onChangeTitle={handleChangeTitleCard}

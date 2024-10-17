@@ -1,4 +1,4 @@
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 export const CreateItem = ({
   index,
@@ -18,7 +18,7 @@ export const CreateItem = ({
           placeholder={placeHolderText}
           type="text"
           onChange={onChangeTitle}
-          className={`${isList ? 'outline-gray-500 mt-2' : 'pb-6'} flex-1 max-w-full bg-white rounded-[8px] text-[12px] font-[400] p-2  m-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          className={`${isList ? "outline-gray-500 mt-2" : "pb-6"} flex-1 max-w-full bg-white rounded-[8px] text-[12px] font-[400] p-2  m-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500`}
         />
       </div>
       <div className="flex items-center">
