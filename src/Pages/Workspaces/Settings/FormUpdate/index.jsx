@@ -1,11 +1,11 @@
-import { joiResolver } from '@hookform/resolvers/joi';
-import { Button, TextField } from '@mui/material';
-import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import validation from './validation';
-import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
-import { updateWorkspace } from '../../../../Services/API/ApiWorkSpace/apiWorkSpace';
+import { joiResolver } from "@hookform/resolvers/joi";
+import { Button, TextField } from "@mui/material";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import validation from "./validation";
+import PropTypes from "prop-types";
+import { toast } from "react-toastify";
+import { updateWorkspace } from "../../../../Services/API/ApiWorkSpace/apiWorkSpace";
 
 function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
   const handleClose = (e) => {
@@ -18,7 +18,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
       description: data.description,
     },
     resolver: joiResolver(validation),
-    mode: 'onSubmit',
+    mode: "onSubmit",
   });
 
   const handleSubmit = (values) => {
@@ -26,11 +26,11 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
 
     updateWorkspace({ id: data.id, title, description })
       .then((res) => {
-        toast.success('Update workspace sucessfully');
+        toast.success("Update workspace sucessfully");
         return onUpdateSuccess(res);
       })
       .catch((err) => {
-        toast.error('Update workspace unsucessfully');
+        toast.error("Update workspace unsucessfully");
         console.log(err);
       });
   };
@@ -46,12 +46,12 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
             render={({ field, fieldState: { error } }) => (
               <TextField
                 error={Boolean(error)}
-                helperText={error ? error.message : ''}
+                helperText={error ? error.message : ""}
                 {...field}
                 sx={{
-                  '& .MuiOutlinedInput-input': {
-                    paddingY: '8px',
-                    paddingX: '12px',
+                  "& .MuiOutlinedInput-input": {
+                    paddingY: "8px",
+                    paddingX: "12px",
                   },
                 }}
               />
@@ -68,11 +68,11 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
               <TextField
                 error={Boolean(error)}
                 {...field}
-                helperText={error ? error.message : ''}
+                helperText={error ? error.message : ""}
                 sx={{
-                  '& .MuiOutlinedInput-input': {
-                    paddingY: '8px',
-                    paddingX: '12px',
+                  "& .MuiOutlinedInput-input": {
+                    paddingY: "8px",
+                    paddingX: "12px",
                   },
                 }}
               />
@@ -84,9 +84,9 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
           <Button
             type="submit"
             sx={{
-              paddingX: '12px',
-              paddingY: '4px',
-              textTransform: 'none',
+              paddingX: "12px",
+              paddingY: "4px",
+              textTransform: "none",
             }}
             variant="contained"
           >
@@ -94,9 +94,9 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
           </Button>
           <Button
             sx={{
-              paddingX: '12px',
-              paddingY: '4px',
-              textTransform: 'none',
+              paddingX: "12px",
+              paddingY: "4px",
+              textTransform: "none",
             }}
             onClick={handleClose}
             variant="outlined"

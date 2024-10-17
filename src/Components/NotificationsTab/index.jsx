@@ -1,10 +1,10 @@
-import { Switch } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import React, { useState } from 'react';
-import NotificationsItem from './NotificationItem';
-import Wrapper from '../Wrapper';
-import NotifySetting from '../NotifySetting';
-import HeadlessTippy from '@tippyjs/react/headless';
+import { Switch } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import React, { useState } from "react";
+import NotificationsItem from "./NotificationItem";
+import Wrapper from "../Wrapper";
+import NotifySetting from "../NotifySetting";
+import HeadlessTippy from "@tippyjs/react/headless";
 
 const NotificationsTab = React.forwardRef((props, ref) => {
   const [isOpenSetting, setIsOpenSetting] = useState(false);
@@ -28,8 +28,8 @@ const NotificationsTab = React.forwardRef((props, ref) => {
             <Switch
               defaultChecked
               sx={{
-                '& .css-jsexje-MuiSwitch-thumb': {
-                  backgroundColor: '#fff',
+                "& .css-jsexje-MuiSwitch-thumb": {
+                  backgroundColor: "#fff",
                 },
               }}
             />
@@ -51,7 +51,7 @@ const NotificationsTab = React.forwardRef((props, ref) => {
             </HeadlessTippy>
           </div>
         </div>
-        <div onClick={handleReadAll} className="py-2 pl-3 pr-4 flex justify-end">
+        <div onClick={handleReadAll} className="flex justify-end py-2 pl-3 pr-4">
           <span className="text-[var(--light-gray)] text-[12px] hover:underline cursor-pointer">Mark all as read</span>
         </div>
       </div>

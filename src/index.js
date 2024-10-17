@@ -14,8 +14,8 @@ import { BrowserRouter } from "react-router-dom";
 // config font for MUI component
 const theme = createTheme({
   typography: {
-    fontFamily: "var(--font-family)"
-  }
+    fontFamily: "var(--font-family)",
+  },
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -38,7 +38,7 @@ root.render(
         </CssBaseline>
       </QueryClientProvider>
     </ThemeProvider>
-  </>
+  </>,
 );
 
 reportWebVitals();

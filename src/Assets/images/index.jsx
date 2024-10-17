@@ -1,4 +1,4 @@
-import image from './sourceImages/image.png';
+import image from "./sourceImages/image.png";
 
 export const ImageIcon = ({ width = 24, height = 24, className = {} }) => {
   return (
@@ -6,7 +6,7 @@ export const ImageIcon = ({ width = 24, height = 24, className = {} }) => {
       style={{
         width: `${width}px`,
         height: `${height}px`,
-        overflow: 'hidden',
+        overflow: "hidden",
       }}
       className={`relative ${className}`}
     >
@@ -14,9 +14,9 @@ export const ImageIcon = ({ width = 24, height = 24, className = {} }) => {
         src={image}
         alt="Icon"
         style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
         }}
       />
     </div>

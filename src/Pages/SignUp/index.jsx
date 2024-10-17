@@ -1,45 +1,45 @@
-import React, { memo } from 'react';
-import { Button, Divider, TextField } from '@mui/material';
-import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from '../../Components/Icons';
-import { Link, useNavigate } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
-import { SignUp as register } from '../../Services/API/Auth';
+import React, { memo } from "react";
+import { Button, Divider, TextField } from "@mui/material";
+import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from "../../Components/Icons";
+import { Link, useNavigate } from "react-router-dom";
+import { Controller, useForm } from "react-hook-form";
+import { SignUp as register } from "../../Services/API/Auth";
 
-import { joiResolver } from '@hookform/resolvers/joi';
-import { toast } from 'react-toastify';
-import validation from './validation';
+import { joiResolver } from "@hookform/resolvers/joi";
+import { toast } from "react-toastify";
+import validation from "./validation";
 
-const borderStyle = 'border-[1px] border-[#8590A2] border-solid';
+const borderStyle = "border-[1px] border-[#8590A2] border-solid";
 
 function SignUp(props) {
   const navigate = useNavigate();
 
   const form = useForm({
     defaultValues: {
-      userName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      userName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
     resolver: joiResolver(validation),
-    mode: 'onSubmit',
-    reValidateMode: 'onBlur',
+    mode: "onSubmit",
+    reValidateMode: "onBlur",
   });
 
   const handleSubmit = (values) => {
     const { email, password, userName } = values;
     register(userName, email, password)
       .then((res) => {
-        toast.success('Register account successfully');
-        navigate('/');
+        toast.success("Register account successfully");
+        navigate("/");
       })
       .catch((err) => {
-        toast.error('Register account fail');
+        toast.error("Register account fail");
       });
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="flex items-center justify-center w-full h-full">
       <div className="mt-[50px] w-full flex justify-center">
         <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
           <div>
@@ -61,10 +61,10 @@ function SignUp(props) {
                     value={field.userName}
                     onChange={field.onChange}
                     error={Boolean(error)} // Hiển thị lỗi nếu có
-                    helperText={error ? error.message : ''} // Hiển thị thông báo lỗi
+                    helperText={error ? error.message : ""} // Hiển thị thông báo lỗi
                     sx={{
                       marginBottom: 2,
-                      '& .MuiInputBase-input': {
+                      "& .MuiInputBase-input": {
                         padding: 1,
                       },
                     }}
@@ -79,13 +79,13 @@ function SignUp(props) {
                 render={({ field, fieldState: { error } }) => (
                   <TextField
                     error={Boolean(error)}
-                    helperText={error ? error.message : ''}
+                    helperText={error ? error.message : ""}
                     value={field.email}
                     onChange={field.onChange}
                     type="email"
                     sx={{
                       marginBottom: 2,
-                      '& .MuiInputBase-input': {
+                      "& .MuiInputBase-input": {
                         padding: 1,
                       },
                     }}
@@ -100,13 +100,13 @@ function SignUp(props) {
                 render={({ field, fieldState: { error } }) => (
                   <TextField
                     error={Boolean(error)}
-                    helperText={error ? error.message : ''}
+                    helperText={error ? error.message : ""}
                     value={field.password}
                     onChange={field.onChange}
                     type="password"
                     sx={{
                       marginBottom: 2,
-                      '& .MuiInputBase-input': {
+                      "& .MuiInputBase-input": {
                         padding: 1,
                       },
                     }}
@@ -126,7 +126,7 @@ function SignUp(props) {
                     type="password"
                     sx={{
                       marginBottom: 2,
-                      '& .MuiInputBase-input': {
+                      "& .MuiInputBase-input": {
                         padding: 1,
                       },
                     }}
@@ -168,7 +168,7 @@ function SignUp(props) {
               <Divider component="div" />
             </div>
             <div className="flex">
-              <Link to={'/login'} className="text-[#0c66e4] text-[14px] hover:underline">
+              <Link to={"/login"} className="text-[#0c66e4] text-[14px] hover:underline">
                 Already have an Atlassian account? Login
               </Link>
             </div>

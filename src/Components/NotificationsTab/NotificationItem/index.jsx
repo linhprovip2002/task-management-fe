@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import { Avatar, Button } from '@mui/material';
+import React, { useState } from "react";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
+import { Avatar, Button } from "@mui/material";
 
-function NotificationsItem({ isReaded = false, onAfterRead, peddingButton = '' }) {
+function NotificationsItem({ isReaded = false, onAfterRead, peddingButton = "" }) {
   const [isReadedState, setIsReadedState] = useState(isReaded);
   const handleMarkReaded = (e) => {
     setIsReadedState((prev) => !prev);
@@ -31,7 +31,7 @@ function NotificationsItem({ isReaded = false, onAfterRead, peddingButton = '' }
                 {peddingButton && (
                   <div>
                     <Button
-                      sx={{ my: 1, backgroundColor: '#091E420F', color: 'var(--text-color)', textTransform: 'none' }}
+                      sx={{ my: 1, backgroundColor: "#091E420F", color: "var(--text-color)", textTransform: "none" }}
                       size="small"
                       variant="contained"
                     >
