@@ -1,10 +1,10 @@
-import { Divider } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
-import { Board } from "../../../Components/Board/Board";
-import { CreateNewBoard } from "../../../Components/Modals/CreateNewBoard/CreateNewBoard";
-import { useEffect, useState } from "react";
-import { getBoard } from "../../../Services/API/ApiBoard/apiBoard";
-import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
+import { Divider } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import { Board } from '../../../Components/Board/Board';
+import { CreateNewBoard } from '../../../Components/Modals/CreateNewBoard/CreateNewBoard';
+import { useEffect, useState } from 'react';
+import { getBoard } from '../../../Services/API/ApiBoard/apiBoard';
+import { BoardInformation } from '../../../Components/BoardInformation/BoardInformation';
 
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);
@@ -19,7 +19,7 @@ const DashBoard = () => {
         const data = await getBoard({ limit: 10, page: 1 });
         setListBoard(data);
       } catch (error) {
-        console.error("Failed to fetch board data:", error);
+        console.error('Failed to fetch board data:', error);
       }
     };
     fetchBoardData();
@@ -41,11 +41,7 @@ const DashBoard = () => {
           {listBoard.map((board, index) => {
             return <Board key={index} board={board} />;
           })}
-          <CreateNewBoard
-            open={open}
-            handleOpen={handleOpen}
-            handleClose={handleClose}
-          />
+          <CreateNewBoard open={open} handleOpen={handleOpen} handleClose={handleClose} />
         </div>
       </div>
     </div>

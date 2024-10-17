@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Board(props) {
   return (
@@ -10,9 +10,7 @@ function Board(props) {
           <div className="flex ">
             {/* Background */}
             <img
-              src={
-                "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-22.jpg"
-              }
+              src={'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-22.jpg'}
               alt="khong gian 1"
               className="object-cover lg:w-[200px] lg:h-[112px] rounded-md sm:h-[17rem] md:h-[240px] w-full"
             />
