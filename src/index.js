@@ -15,6 +15,15 @@ import { BrowserRouter } from "react-router-dom";
 const theme = createTheme({
   typography: {
     fontFamily: "var(--font-family)"
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          marginTop: '16px'
+        }
+      }
+    }
   }
 });
 
