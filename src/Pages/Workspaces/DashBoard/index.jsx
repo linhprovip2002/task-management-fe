@@ -48,7 +48,13 @@ const DashBoard = () => {
           {listBoard.map((board, index) => {
             return <Board key={index} board={board} />;
           })}
-          <CreateNewBoard open={open} handleOpen={handleOpen} handleClose={handleClose} />
+          <button
+            onClick={handleOpen}
+            className="flex items-center justify-center w-[12rem] h-[110px] rounded-lg bg-slate-200 hover:brightness-95 hover:cursor-pointer"
+          >
+            <p className="text-sm text-textColor">Create new board</p>
+          </button>
+          <CreateNewBoard open={open} handleClose={handleClose} />
         </div>
         <div className="flex justify-center my-6">
           <Stack spacing={2}>

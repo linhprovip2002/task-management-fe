@@ -14,6 +14,9 @@ export default function Stared() {
     { label: "Paste" },
     { label: "Copy" },
     { label: "Paste" },
+    { label: "Paste" },
+    { label: "Copy" },
+    { label: "Paste" },
   ];
 
   return (
@@ -30,7 +33,7 @@ export default function Stared() {
             tabIndex="-1"
             {...attrs}
           >
-            <ul className="p-2 border-2 border-solid rounded-md">
+            <ul className="p-1">
               {menuItems.map((item, index) => (
                 <li
                   key={index}

@@ -11,7 +11,7 @@ import { createBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import CloseIcon from "@mui/icons-material/Close";
 // import { useParams } from 'react-router-dom';
 
-export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
+export const CreateNewBoard = ({ open, handleClose }) => {
   const [selectedBg, setSelectedBg] = useState(""); // Lưu màu background
   const [selectedImg, setSelectedImg] = useState(""); // Lưu hình ảnh đã chọn
   const { workspaceInfo } = useGetWorkspaceByUser();
@@ -87,13 +87,6 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
 
   return (
     <>
-      <button
-        onClick={handleOpen}
-        className="flex items-center justify-center w-[12rem] h-[110px] rounded-lg bg-slate-200 hover:brightness-95 hover:cursor-pointer"
-      >
-        <p className="text-sm text-textColor">Create new board</p>
-      </button>
-
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <form
@@ -219,7 +212,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                 getOptionLabel={(option) => option.label} // Hiển thị nhãn của option
                 isOptionEqualToValue={(option, value) => option.value === value} // So sánh đúng giữa option và value
                 renderInput={(params) => (
-                  <TextField {...params} size="small" label="Visibility" variant="outlined" fullWidth />
+                  <TextField {...params} size="small" required label="Visibility" variant="outlined" fullWidth />
                 )}
                 className="my-4"
               />
