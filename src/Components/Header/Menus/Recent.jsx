@@ -24,13 +24,14 @@ export default function Recent() {
         visible={isOpen}
         onClickOutside={() => setIsOpen(false)} // Đóng menu khi nhấp ra ngoài
         placement="bottom-start"
+        sx={{border: '1px solid gray'}}
         render={(attrs) => (
           <div
-            className="w-[300px] overflow-y-auto bg-white border-solid border-2 border-gray-400 rounded-md shadow-lg max-h-80 "
+            className="w-[300px] bg-white border-solid border-b-2 border-gray-400 rounded-md shadow-lg max-h-60 "
             tabIndex="-1"
             {...attrs}
           >
-            <ul className="p-2 border-2 border-solid rounded-md">
+            <ul className="p-2 ">
               {menuItems.map((item, index) => (
                 <li
                   key={index}
