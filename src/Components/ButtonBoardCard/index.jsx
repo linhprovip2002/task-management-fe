@@ -1,10 +1,14 @@
-export const ButtonBoardCard = ({ isActive = false, className, nameBtn, children }) => {
+import CheckIcon from '@mui/icons-material/Check';
+
+export const ButtonBoardCard = ({ isActive = false, isFollowing, className, nameBtn, onHandleEvent, children }) => {
   return (
     <div
-      className={`${isActive ? className : 'min-w-full'} flex items-center m-1 px-2 py-[6px] bg-gray-200 rounded-[4px] hover:bg-gray-300`}
+      onClick={onHandleEvent}
+      className={`${isActive ? className : 'min-w-full m-1 bg-gray-200 hover:bg-gray-300'} cursor-pointer flex items-center px-2 py-[6px]  rounded-[4px] `}
     >
       {children}
       <div className="text-[14px]">{nameBtn}</div>
+      {isFollowing && <CheckIcon className="ml-1" style={{ fontSize: '16px' }} />}
     </div>
   );
 };

@@ -16,7 +16,7 @@ function NotifySetting({ onClose }) {
           onClick={handleClose}
           className="float-right w-8 h-8 rounded-lg hover:bg-[var(--hover-background)] flex items-center justify-center"
         >
-          <CloseIcon fontSize="small" />
+          <CloseIcon fontSize="small" className="cursor-pointer" />
         </button>
       </div>
       <div className="flex flex-col items-start">

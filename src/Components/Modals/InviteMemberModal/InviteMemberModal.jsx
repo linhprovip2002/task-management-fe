@@ -55,7 +55,7 @@ export const InviteMemberModal = ({ open, handleClose }) => {
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold">Invite to Workspace</div>
           <div onClick={() => handleClose()} className="p-1 rounded-full hover:cursor-pointer hover:bg-slate-200">
-            <CloseIcon />
+            <CloseIcon className="cursor-pointer" />
           </div>
         </div>
         <SearchMember onChange={handleChange} multiple={false} />

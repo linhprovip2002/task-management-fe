@@ -32,7 +32,7 @@ export default function InviteWorkspace({ open, onClose }) {
             <div className="flex justify-between mb-4">
               <h1 className={`font-normal text-xl text-[${primaryText}]`}>Invite to Workspace</h1>
               <button onClick={handleClose} className="w-6 h-6">
-                <CloseIcon />
+                <CloseIcon className="cursor-pointer" />
               </button>
             </div>
 
