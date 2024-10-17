@@ -1,27 +1,53 @@
-import { Fragment } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { DefaultLayout } from "./Layouts";
-import { publicRoutes } from "./routes";
+import { publicRoutes, privateRoutes } from "./routes";
 import "@fontsource/inter";
-import { ToastContainer } from "react-toastify";
+import { CustomToastContainer } from "./Contexts/Toast";
+import { useStorage } from "./Contexts";
+import { useEffect } from "react";
+import routes from "./config/routes";
 
 function App() {
+  const { isLoggedIn, setIsLoggedIn } = useStorage();
+  const navigate = useNavigate();
+  const location = useLocation().pathname;
+
+  console.log({ location });
+
+  useEffect(() => {
+    if (!isLoggedIn && ![routes.login, routes.register].includes(location)) {
+      navigate(routes.login);
+      setIsLoggedIn(false);
+    }
+    if (isLoggedIn && [routes.login, routes.register].includes(location)) {
+      navigate(routes.workspaceHome);
+      setIsLoggedIn(true);
+    }
+    window.scrollTo(0, 0);
+  }, [location, isLoggedIn]);
+
   return (
     <>
-      <BrowserRouter>
-        <div className={`App`}>
-          <Routes>
-            {publicRoutes.map((route, index) => {
+      <Routes>
+        {isLoggedIn
+          ? privateRoutes.map((route, index) => {
               const Page = route.component;
-              let Layout = DefaultLayout;
-
-              if (route.layout) {
-                Layout = route.layout;
-              } else {
-                if (route.layout === null) {
-                  Layout = Fragment;
-                }
-              }
+              const Layout = route.layout || DefaultLayout;
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <Layout>
+                      <Page />
+                    </Layout>
+                  }
+                ></Route>
+              );
+            })
+          : publicRoutes.map((route, index) => {
+              const Page = route.component;
+              const Layout = route.layout || DefaultLayout;
               return (
                 <Route
                   key={index}
@@ -34,23 +60,9 @@ function App() {
                 ></Route>
               );
             })}
-          </Routes>
-        </div>
-      </BrowserRouter>
-      <ToastContainer
-        style={{
-          fontSize: 14,
-        }}
-        position="bottom-right"
-        autoClose={2500}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss={false}
-        pauseOnHover={false}
-        draggable
-      />
+      </Routes>
+
+      <CustomToastContainer />
     </>
   );
 }
