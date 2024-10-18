@@ -1,15 +1,8 @@
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import React from "react";
 
-export const ItemMenu = ({
-  title,
-  description,
-  nameBtn,
-  onLeaveBoard,
-  onToggleCollape,
-  onHandleCopyList,
-  children,
-}) => {
+const ItemMenu = ({ title, description, nameBtn, onLeaveBoard, onToggleCollape, onHandleCopyList, children }) => {
   return (
     <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
       <div className="text-center p-2 mx-8">{title}</div>
@@ -35,3 +28,5 @@ export const ItemMenu = ({
     </div>
   );
 };
+
+export default React.memo(ItemMenu);

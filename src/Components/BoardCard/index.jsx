@@ -25,7 +25,7 @@ import { useState } from "react";
 import { Divider } from "@mui/material";
 
 import { ButtonBoardCard } from "../ButtonBoardCard";
-import { ItemMenu } from "../ItemMenu";
+import ItemMenu from "../ItemMenu";
 import MemberMenu from "../MemberMenuOfBoard";
 import ToDoMenu from "../ToDoMenuOfBoard";
 import Calendar from "../Calendar";

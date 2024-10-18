@@ -5,24 +5,16 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
+import ItemMenu from "../ItemMenu";
 
-import { ItemMenu } from "../ItemMenu";
-
-export const ConvertHiDotsVertical = ({
-  tippyName,
-  data,
-  className,
-  type,
-  listCount,
-  onShowAddCard,
-  onActiveMonitor,
-}) => {
+const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, onShowAddCard, onActiveMonitor }) => {
   const [isCollapsed, setIsCollapse] = useState(false);
   const [isLeaveBoard, setIsLeaveBoard] = useState(false);
   const [activeCollectTable, setActiveCollectTable] = useState(0);
   const [activeCollectOperation, setActiveCollectOperation] = useState(null);
   const [titleName, settitleName] = useState("Sort by alphabetical order");
   const [nameList, setNameList] = useState(data);
+
   const nameOperations = [
     "Add card",
     "Copy list",
@@ -271,3 +263,5 @@ export const ConvertHiDotsVertical = ({
     </div>
   );
 };
+
+export default React.memo(ConvertHiDotsVertical);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -6,7 +6,7 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
 import { ImageIcon } from "../../Assets/images";
-import { ConvertHiDotsVertical } from "../../Components/HiDotsVertical";
+import ConvertHiDotsVertical from "../../Components/HiDotsVertical";
 import {
   ArrowDown,
   TwoUserIcon,
@@ -22,6 +22,8 @@ import ItemList from "../../Components/ItemList";
 import { CreateItem } from "../../Components/CreateItem";
 import { BoardCard } from "../../Components/BoardCard";
 import { EditCard } from "../../Components/EditCard";
+import Sidebar from "../../Components/Sidebar";
+import RightSidebar from "../../Components/RightSidebar";
 
 function ListBoard() {
   const [nameTitle, setNameTitle] = useState("");
@@ -34,13 +36,7 @@ function ListBoard() {
   const [dataList, setDataList] = useState();
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeStar, setActiveStar] = useState(false);
-  // {
-  //   imageSrc: ImageBG,
-  //   descriptionCard: 'phomai phomai phomai phomai phomaiphomai phomai phomai phomai phomai',
-  //   isAttachment: true,
-  //   isDescriptionIcon: true,
-  //   attachmentCount: 1,
-  // },
+  const [rightSidebar, setRightSidebar] = useState(false);
 
   const [listCount, setListCount] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -119,64 +115,65 @@ function ListBoard() {
     setActiveStar(!activeStar);
   };
 
+  const handleToggleRightSidebar = () => {
+    setRightSidebar(!rightSidebar);
+  };
+
+  const handleChangeSidebar = useCallback((isClose) => {
+    return setIsCloseNavBar(!isClose);
+  }, []);
+
   return (
     <>
-      <div className="w-[100wh] h-[91vh] flex">
-        <div
-          onClick={isClosedNavBar ? handleClosedNavBar : undefined}
-          className={`${isClosedNavBar ? "max-w-[20px] w-full relative hover:bg-gray-200" : "max-w-[260px] w-full"} border-r-[1px] border-gray-300 bg-gray-100 shadow-[0_3px_10px_rgba(0,0,0,0.3)]`}
-        >
-          {isClosedNavBar ? (
-            <div
-              onClick={handleClosedNavBar}
-              className="absolute top-3 left-2 p-1 rounded-[50%] bg-gray-300 hover:bg-gray-200 cursor-pointer"
-            >
-              <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
+      <div
+        style={{
+          height: "calc(100vh - 56.8px)",
+        }}
+        className="w-[100wh] flex"
+      >
+        <Sidebar isClosedNavBar={isClosedNavBar} onChange={handleChangeSidebar}>
+          <>
+            <div className={`pl-4 py-4 flex items-center`}>
+              <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
+                B
+              </div>
+              <div className="flex-1 ml-2 text-[18px] font-medium">BKDN</div>
+              <div onClick={handleClosedNavBar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
+                <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
+              </div>
             </div>
-          ) : (
-            <>
-              <div className="pl-4 py-4 flex items-center">
-                <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
-                  B
-                </div>
-                <div className="flex-1 ml-2 text-[18px] font-medium">BKDN</div>
-                <div onClick={handleClosedNavBar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
-                  <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
-                </div>
+            <div className="group flex items-center">
+              <div className="flex-1 text-[16px] font-medium py-2 pl-4 ">Your tables</div>
+              <ConvertHiDotsVertical
+                type={"navbarTable"}
+                className={
+                  "cursor-pointer p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300"
+                }
+              />
+            </div>
+            <div className="relative flex items-center pl-4 py-2 bg-gray-200 cursor-pointer group">
+              <div className="rounded-[4px] font-bold text-white text-[20px]">
+                <ImageIcon width={24} height={20} className={"rounded-[2px]"} />
               </div>
-              <div className="group flex items-center">
-                <div className="flex-1 text-[16px] font-medium py-2 pl-4 ">Your tables</div>
-                <ConvertHiDotsVertical
-                  type={"navbarTable"}
-                  className={
-                    "cursor-pointer p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300"
-                  }
-                />
+              <div className=" flex-1 ml-2 text-[18px] font-medium">KTPM</div>
+              <ConvertHiDotsVertical
+                type={"navbarBoard"}
+                className={
+                  "cursor-pointer p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300"
+                }
+              />
+              <div
+                onClick={handleActiveStar}
+                className={`absolute cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
+              >
+                {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
               </div>
-              <div className="relative flex items-center pl-4 py-2 bg-gray-200 cursor-pointer group">
-                <div className="rounded-[4px] font-bold text-white text-[20px]">
-                  <ImageIcon width={24} height={20} className={"rounded-[2px]"} />
-                </div>
-                <div className=" flex-1 ml-2 text-[18px] font-medium">KTPM</div>
-                <ConvertHiDotsVertical
-                  type={"navbarBoard"}
-                  className={
-                    "cursor-pointer p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300"
-                  }
-                />
-                <div
-                  onClick={handleActiveStar}
-                  className={`absolute cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
-                >
-                  {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        </Sidebar>
         {/* list board */}
         <div
-          className="flex-grow"
+          className="flex-grow flex flex-col overflow-x-hidden"
           style={{
             backgroundImage: `url(https://trello.com/assets/707f35bc691220846678.svg)`,
             backgroundSize: "cover",
@@ -184,7 +181,7 @@ function ListBoard() {
             backgroundRepeat: "no-repeat",
           }}
         >
-          <div className="flex items-center justify-between h-[32px] p-6 bg-gray-100">
+          <div className="flex items-center justify-between h-[32px] p-6 bg-gray-100 relative">
             <div className="flex items-center">
               <div className="text-black p-2 font-bold text-[20px]">KTPM</div>
               <Tippy
@@ -228,57 +225,63 @@ function ListBoard() {
                 arrow={false}
                 placement="bottom"
               >
-                <div className="cursor-pointer mr-4 p-2 ml-2 rounded-[4px] hover:bg-gray-300 bg-gray-300 cursor-pointer">
+                <div className="mr-4 p-2 ml-2 rounded-[4px] hover:bg-gray-300 bg-gray-300 cursor-pointer">
                   <ArrowDown width={16} height={16} className={"text-gray-100"} />
                 </div>
               </Tippy>
             </div>
             <div className="flex items-center">
-              <Tippy
-                content={<span className="text-[12px] max-w-[150px]">Additional utilities</span>}
-                arrow={false}
-                placement="bottom"
+              <div className={`flex items-center ${rightSidebar && "mr-[290px]"}`}>
+                <Tippy
+                  content={<span className="text-[12px] max-w-[150px]">Additional utilities</span>}
+                  arrow={false}
+                  placement="bottom"
+                >
+                  <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
+                    <MissileIcon width={16} height={16} />
+                  </div>
+                </Tippy>
+                <Tippy
+                  content={<span className="text-[12px] max-w-[150px]">Automation</span>}
+                  arrow={false}
+                  placement="bottom"
+                >
+                  <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
+                    <LightningIcon width={16} height={16} />
+                  </div>
+                </Tippy>
+                <Tippy
+                  content={<span className="text-[12px] max-w-[150px]">Table filter tags</span>}
+                  arrow={false}
+                  placement="bottom"
+                >
+                  <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
+                    <FilterIcon width={16} height={16} className={"mr-2"} />
+                    <span className="text-[16px] font-medium">Filter</span>
+                  </div>
+                </Tippy>
+                <Tippy
+                  content={<span className="text-[12px] max-w-[150px]">Share Board</span>}
+                  arrow={false}
+                  placement="bottom"
+                >
+                  <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
+                    <ShareIconRegular width={16} height={16} className={"mr-2 text-white"} />
+                    <span className="text-[16px] font-medium text-white">Share</span>
+                  </div>
+                </Tippy>
+              </div>
+              <div
+                onClick={handleToggleRightSidebar}
+                className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
               >
-                <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
-                  <MissileIcon width={16} height={16} />
-                </div>
-              </Tippy>
-              <Tippy
-                content={<span className="text-[12px] max-w-[150px]">Automation</span>}
-                arrow={false}
-                placement="bottom"
-              >
-                <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
-                  <LightningIcon width={16} height={16} />
-                </div>
-              </Tippy>
-              <Tippy
-                content={<span className="text-[12px] max-w-[150px]">Table filter tags</span>}
-                arrow={false}
-                placement="bottom"
-              >
-                <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
-                  <FilterIcon width={16} height={16} className={"mr-2"} />
-                  <span className="text-[16px] font-medium">Filter</span>
-                </div>
-              </Tippy>
-              <Tippy
-                content={<span className="text-[12px] max-w-[150px]">Share Board</span>}
-                arrow={false}
-                placement="bottom"
-              >
-                <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
-                  <ShareIconRegular width={16} height={16} className={"mr-2 text-white"} />
-                  <span className="text-[16px] font-medium text-white">Share</span>
-                </div>
-              </Tippy>
-              <div className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300">
                 <ConvertHiDotsVertical
-                  type={""}
+                  type={"menuHeader"}
                   className={"group-hover:opacity-100 transition-opacity duration-300"}
                 />
               </div>
             </div>
+            <RightSidebar onClose={handleToggleRightSidebar} isOpen={rightSidebar} />
           </div>
 
           {/* list */}
