@@ -5,12 +5,20 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 export default function Stared() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleItemClick = (event) => {
+    event.stopPropagation();
+    // Xử lý logic khi click vào item ở đây
+  };
+
   const menuItems = [
     { label: "Khong gian hien tai" },
     { label: "Cut" },
     { label: "Copy" },
     { label: "Paste" },
     { label: "Copy" },
+    { label: "Paste" },
+    { label: "Copy" },
+    { label: "Paste" },
     { label: "Paste" },
     { label: "Copy" },
     { label: "Paste" },
@@ -30,12 +38,12 @@ export default function Stared() {
             tabIndex="-1"
             {...attrs}
           >
-            <ul className="p-2 border-2 border-solid rounded-md">
+            <ul className="p-1">
               {menuItems.map((item, index) => (
                 <li
                   key={index}
                   className="px-4 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleItemClick}
                 >
                   {item.label}
                 </li>
@@ -46,7 +54,7 @@ export default function Stared() {
       >
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-sm flex items-center font-semibold text-[#44546f] hover:bg-slate-200 p-2 rounded-md"
+          className="text-sm flex items-center font-semibold mx-1 text-[#44546f] hover:bg-slate-200 px-2 py-1 rounded-[4px] active:bg-slate-200"
         >
           Stared
           <ExpandMoreIcon sx={{ color: "#44546f" }} />

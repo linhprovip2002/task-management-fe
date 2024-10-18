@@ -11,7 +11,7 @@ import { createBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import CloseIcon from "@mui/icons-material/Close";
 // import { useParams } from 'react-router-dom';
 
-export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
+export const CreateNewBoard = ({ open, handleClose }) => {
   const [selectedBg, setSelectedBg] = useState(""); // Lưu màu background
   const [selectedImg, setSelectedImg] = useState(""); // Lưu hình ảnh đã chọn
   const { workspaceInfo } = useGetWorkspaceByUser();
@@ -87,26 +87,19 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
 
   return (
     <>
-      <button
-        onClick={handleOpen}
-        className="flex items-center justify-center w-[12rem] h-[110px] rounded-lg bg-slate-200 hover:brightness-95 hover:cursor-pointer"
-      >
-        <p className="text-sm text-textColor">Create new board</p>
-      </button>
-
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
+          <div className="sticky flex text-sm justify-center rounded-t-lg top-0  items-center  h-[38px] bg-white font-bold text-center text-textColor">
+            Create board
+            <button onClick={handleClose} className="absolute right-2">
+              <CloseIcon fontSize="small" className="cursor-pointer" />
+            </button>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="justify-center w-[320px] h-[80vh] p-4 bg-white rounded-lg overflow-y-auto"
+            className="justify-center w-[320px] max-h-[540px] px-4 pb-4 bg-white rounded-lg overflow-y-auto"
           >
-            <div className="fixed flex text-sm justify-center top-0 left-0 items-center right-0 h-[38px] bg-white font-bold text-center text-textColor">
-              Create board
-              <button onClick={handleClose} className="absolute right-2">
-                <CloseIcon fontSize="small" className="cursor-pointer" />
-              </button>
-            </div>
-            <div className="mt-[38px]">
+            <div className="">
               {/* Hình ảnh bảng */}
               <div className="flex justify-center my-2 ">
                 <div
@@ -196,7 +189,16 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                     }}
                     onChange={(e, value) => field.onChange(Number(value))} // Chuyển value sang kiểu số
                     renderInput={(params) => (
-                      <TextField {...params} size="small" required label="Workspace" variant="outlined" fullWidth />
+                      <TextField
+                        {...params}
+                        size="small"
+                        error={!!errors.title}
+                        helperText={errors.title ? errors.title.message : ""}
+                        required
+                        label="Workspace"
+                        variant="outlined"
+                        fullWidth
+                      />
                     )}
                     className="my-4"
                   />
@@ -210,7 +212,7 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
                 getOptionLabel={(option) => option.label} // Hiển thị nhãn của option
                 isOptionEqualToValue={(option, value) => option.value === value} // So sánh đúng giữa option và value
                 renderInput={(params) => (
-                  <TextField {...params} size="small" label="Visibility" variant="outlined" fullWidth />
+                  <TextField {...params} size="small" required label="Visibility" variant="outlined" fullWidth />
                 )}
                 className="my-4"
               />
