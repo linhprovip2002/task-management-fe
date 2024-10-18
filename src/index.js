@@ -16,6 +16,13 @@ const theme = createTheme({
   typography: {
     fontFamily: "var(--font-family)",
   },
+  components: {
+    MuiButtonBase: {
+      root: {
+        textTransform: "none",
+      }
+    }
+  }
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
