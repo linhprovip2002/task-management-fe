@@ -49,7 +49,7 @@ export default function Stared() {
       >
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-sm flex items-center font-semibold text-[#44546f] hover:bg-slate-200 p-2 rounded-md"
+          className="text-sm flex items-center font-semibold mx-1 text-[#44546f] hover:bg-slate-200 px-2 py-1 rounded-[4px] active:bg-slate-200"
         >
           Stared
           <ExpandMoreIcon sx={{ color: "#44546f" }} />

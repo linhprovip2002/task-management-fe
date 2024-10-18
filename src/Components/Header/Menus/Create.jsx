@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import HeadlessTippy from "@tippyjs/react/headless"; // HeadlessTippy cho tùy chỉnh hoàn toàn
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TrelloLogoIcon from "../../TrelloLogoIcon/TrelloLogoIcon";
 import { Button } from "@mui/material";
 import { CreateNewBoard } from "../../Modals/CreateNewBoard/CreateNewBoard";
@@ -48,16 +47,13 @@ export default function Create() {
           <Button
             variant="contained" size="small"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center"
+            // className="flex items-center"
           >
             Create
-            <ExpandMoreIcon sx={{ color: "white" }} />
           </Button>
         </HeadlessTippy>
       </div>
-      {open && <CreateNewBoard open={open} handleClose={handleClose} />
-     
-      }
+      {open && <CreateNewBoard open={open} handleClose={handleClose} />}
     </>
   );
 }

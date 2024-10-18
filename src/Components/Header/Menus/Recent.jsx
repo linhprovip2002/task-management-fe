@@ -51,7 +51,7 @@ export default function Recent() {
       >
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-sm flex items-center font-semibold mx-1 text-[#44546f] hover:bg-slate-200 p-2 rounded-md active:bg-slate-200"
+          className="text-sm flex items-center font-semibold mx-1 text-[#44546f] hover:bg-slate-200 px-2 py-1 rounded-[4px] active:bg-slate-200"
         >
           Recent
           <ExpandMoreIcon sx={{ color: "#44546f" }} />
