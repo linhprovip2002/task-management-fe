@@ -89,17 +89,17 @@ export const CreateNewBoard = ({ open, handleClose }) => {
     <>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
+          <div className="sticky flex text-sm justify-center rounded-t-lg top-0  items-center  h-[38px] bg-white font-bold text-center text-textColor">
+            Create board
+            <button onClick={handleClose} className="absolute right-2">
+              <CloseIcon fontSize="small" className="cursor-pointer" />
+            </button>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="justify-center w-[320px] h-[80vh] p-4 bg-white rounded-lg overflow-y-auto"
+            className="justify-center w-[320px] max-h-[540px] px-4 pb-4 bg-white rounded-lg overflow-y-auto"
           >
-            <div className="fixed flex text-sm justify-center top-0 left-0 items-center right-0 h-[38px] bg-white font-bold text-center text-textColor">
-              Create board
-              <button onClick={handleClose} className="absolute right-2">
-                <CloseIcon fontSize="small" className="cursor-pointer" />
-              </button>
-            </div>
-            <div className="mt-[38px]">
+            <div className="">
               {/* Hình ảnh bảng */}
               <div className="flex justify-center my-2 ">
                 <div
@@ -193,7 +193,7 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                         {...params}
                         size="small"
                         error={!!errors.title}
-                        helperText={errors.title ? errors.title.message : ''}
+                        helperText={errors.title ? errors.title.message : ""}
                         required
                         label="Workspace"
                         variant="outlined"

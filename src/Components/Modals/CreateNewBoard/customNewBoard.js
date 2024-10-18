@@ -10,6 +10,7 @@ export const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   bgcolor: 'background.paper',
+  borderRadius: '8px',
 };
 
 // export const colorData = ['yellow', 'orange', 'pink', 'purple', 'green', 'gray'];
