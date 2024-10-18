@@ -7,6 +7,11 @@ export default function Workspaces() {
   const [isOpen, setIsOpen] = useState(false);
   const { workspaceInfo } = useGetWorkspaceByUser();
 
+  const handleItemClick = (event) => {
+    event.stopPropagation();
+    // Xử lý logic khi click vào item ở đây
+  };
+
   return (
     <div className="relative inline-block">
       {/* Nút để mở menu */}
@@ -26,7 +31,7 @@ export default function Workspaces() {
                 <li
                   key={index}
                   className="px-4 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleItemClick}
                 >
                   {item.title}
                 </li>

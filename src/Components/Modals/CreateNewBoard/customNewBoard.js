@@ -32,6 +32,8 @@ export const listBgImage = [
   {name: 'anh5', image: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-26.jpg'},
   {name: 'anh6', image: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-35.jpg'},
   {name: 'anh7', image: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-36.jpg'},
+  {name: 'anh8', image: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-21.jpg'},
+  {name: 'anh9', image: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-20.jpg'},
 ]
 
 export const listRule = [

@@ -5,6 +5,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 export default function Stared() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleItemClick = (event) => {
+    event.stopPropagation();
+    // Xử lý logic khi click vào item ở đây
+  };
+
   const menuItems = [
     { label: "Khong gian hien tai" },
     { label: "Cut" },
@@ -38,7 +43,7 @@ export default function Stared() {
                 <li
                   key={index}
                   className="px-4 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                  onClick={() => setIsOpen(false)}
+                  onClick={handleItemClick}
                 >
                   {item.label}
                 </li>
