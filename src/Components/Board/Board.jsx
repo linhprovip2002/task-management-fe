@@ -5,8 +5,8 @@ export const Board = ({ board }) => {
   return (
     <>
       <Link
-        to={`/listboard`}
-        className="w-[12rem] h-[110px] rounded-lg border-blue-300 bg-slate-200 hover:brightness-95 brightness-80 hover:cursor-pointer"
+        to={`/board/${board.id}`} // Điều hướng đến trang board chi tiết
+        className="w-[12rem] h-[110px] rounded-lg border-blue-300 bg-slate-200 hover:brightness-95 brightness-85 hover:cursor-pointer"
       >
         <div
           className="w-[12rem] rounded-lg h-[110px]"

@@ -62,7 +62,7 @@ const items = [
     icon: <ShareIcon sx={{ fontSize: sizeIcon }} />,
   },
   {
-    title: "Leave this board",
+    title: "Close board",
     icon: <LogoutIcon sx={{ fontSize: sizeIcon }} />,
   },
 ];
@@ -88,7 +88,7 @@ export default function RightSidebar({ isOpen, onClose }) {
           <Divider component={"div"} />
         </div>
 
-        <div className="px-3 pt-3 pb-2 flex flex-col gap-1">
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-2">
           {items.map((item, index) => {
             return (
               <div key={index}>

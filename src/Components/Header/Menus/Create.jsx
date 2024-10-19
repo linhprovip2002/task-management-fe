@@ -3,13 +3,29 @@ import HeadlessTippy from "@tippyjs/react/headless"; // HeadlessTippy cho tùy c
 import TrelloLogoIcon from "../../TrelloLogoIcon/TrelloLogoIcon";
 import { Button } from "@mui/material";
 import { CreateNewBoard } from "../../Modals/CreateNewBoard/CreateNewBoard";
+import { useStorage } from "../../../Contexts";
+import { getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
+// import { useParams } from "react-router-dom";
 
 export default function Create() {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false); // create new board
+  
+  const { setListBoard} = useStorage();
+  // const { id } = useParams();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleGetAllBoard = async (id) => {
+    try {
+      const res = await getWorkspaceById(id);
+      
+      setListBoard(res.data.boards);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -53,7 +69,7 @@ export default function Create() {
           </Button>
         </HeadlessTippy>
       </div>
-      {open && <CreateNewBoard open={open} handleClose={handleClose} />}
+      {open && <CreateNewBoard open={open} handleGetAllBoard={handleGetAllBoard} handleClose={handleClose} />}
     </>
   );
 }
