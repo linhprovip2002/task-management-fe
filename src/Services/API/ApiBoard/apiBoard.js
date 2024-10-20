@@ -2,12 +2,7 @@ import request from "../request";
 
 export async function createBoard(boardData) {
   try {
-    const response = await request.post("/board", boardData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
+    const response = await request.post("/board", boardData);
     return response.data;
   } catch (error) {
     throw error;
@@ -17,11 +12,7 @@ export async function createBoard(boardData) {
 // get All board
 export async function getBoard(limit, page) {
   try {
-    const response = await request.get(`/board?limit=${limit}&page=${page}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await request.get(`/board?limit=${limit}&page=${page}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -31,13 +22,7 @@ export async function getBoard(limit, page) {
 // get board theo id
 export async function getBoardId(id) {
   try {
-    const response = await request.get(`/board/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    console.log("board id: " + response.data);
-
+    const response = await request.get(`/board/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -47,11 +32,7 @@ export async function getBoardId(id) {
 // delete board theo di
 export async function deleteBoardId(id) {
   try {
-    const response = await request.delete(`/board/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await request.delete(`/board/${id}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -59,9 +40,5 @@ export async function deleteBoardId(id) {
 }
 
 export function getWorkspaceById(id) {
-  return request.get(`/workspace/${id}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return request.get(`/workspace/${id}`);
 }

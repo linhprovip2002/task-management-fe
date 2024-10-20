@@ -18,7 +18,6 @@ const DashBoard = () => {
   const handleGetAllBoard = async (id) => {
     try {
       const res = await getWorkspaceById(id);
-
       setListBoard(res.data.boards);
     } catch (err) {
       console.log(err);

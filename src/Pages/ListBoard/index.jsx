@@ -8,8 +8,8 @@ import Sidebar from "../../Components/Sidebar";
 import BoardInSidebar from "../../Components/BoardInSidebar";
 import HeaderBoard from "../../Components/HeaderBoard";
 import ListInBoard from "../../Components/ListInBoard";
-import { CreateList } from "../../Services/API/ApiListOfBoard/ApiList";
-import { createCardByIdList } from "../../Services/API/ApiCard/ApiCard";
+import { CreateList } from "../../Services/API/ApiListOfBoard";
+import { createCardByIdList } from "../../Services/API/ApiCard";
 
 function ListBoard() {
   const [nameTitle, setNameTitle] = useState("");

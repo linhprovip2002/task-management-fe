@@ -20,12 +20,12 @@ function BoardInSidebar({ dataBoard, isStar, onChange }) {
       <ConvertHiDotsVertical
         type={"navbarBoard"}
         className={
-          "cursor-pointer p-2 mr-8 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300"
+          "cursor-pointer p-2 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300"
         }
       />
       <div
         onClick={handleChange}
-        className={`absolute cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${isStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
+        className={`cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${isStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
       >
         {isStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
       </div>
