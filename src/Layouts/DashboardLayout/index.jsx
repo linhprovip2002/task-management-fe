@@ -25,7 +25,8 @@ const DashBoardLayout = ({ children }) => {
     if (workspaceInfo?.length) {
       navigate(`/workspace/${workspaceInfo[0].id}/home`);
     }
-  }, [workspaceInfo, navigate]);
+    // eslint-disable-next-line
+  }, [workspaceInfo]);
 
   return (
     <>
@@ -64,8 +65,14 @@ const DashBoardLayout = ({ children }) => {
                       position="right"
                       title={
                         <div className="flex items-center gap-4 text-base">
-                          <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>{workspace.title[0]}</Avatar>
-                          <div className="text-sm font-bold">{workspace.title}</div>
+                          <Avatar
+                            sx={{ width: 28, height: 28, borderRadius: 1 }}
+                          >
+                            {workspace.title[0]}
+                          </Avatar>
+                          <div className="text-sm font-bold">
+                            {workspace.title}
+                          </div>
                         </div>
                       }
                     >
@@ -88,9 +95,14 @@ const DashBoardLayout = ({ children }) => {
                 })
               ) : (
                 <div className="ml-4 flex flex-col gap-3">
-                  <div className="text-base text-textColor">No workspace to show</div>
+                  <div className="text-base text-textColor">
+                    No workspace to show
+                  </div>
                   <div className="w-full">
-                    <Button onClick={() => setToggleModal(true)} variant="contained">
+                    <Button
+                      onClick={() => setToggleModal(true)}
+                      variant="contained"
+                    >
                       Create your first workspace
                     </Button>
                   </div>
@@ -101,7 +113,12 @@ const DashBoardLayout = ({ children }) => {
           <div className="w-full">{children}</div>
         </div>
       </div>
-      {toggleModal && <EditWorkspaceModal open={toggleModal} handleClose={() => setToggleModal(false)} />}
+      {toggleModal && (
+        <EditWorkspaceModal
+          open={toggleModal}
+          handleClose={() => setToggleModal(false)}
+        />
+      )}
       {isLoading && <Loading />}
     </>
   );
