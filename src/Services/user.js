@@ -1,6 +1,6 @@
 import request from "./API/request";
 
-const baseURL = process.env.REACT_APP_API_URL + "/users";
+const baseURL = process.env.REACT_APP_API_URL + "/user";
 
 class UserServices {
   createUser(userData) {}

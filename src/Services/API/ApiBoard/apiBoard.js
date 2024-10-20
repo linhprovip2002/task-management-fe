@@ -9,10 +9,18 @@ export async function createBoard(boardData) {
   }
 }
 
+export function getWorkspaceById(id) {
+  return request.get(`/workspace/${id}`);
+}
+
 // get All board
 export async function getBoard(limit, page) {
   try {
-    const response = await request.get(`/board?limit=${limit}&page=${page}`);
+    const response = await request.get(`/board?limit=${limit}&page=${page}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -37,8 +45,4 @@ export async function deleteBoardId(id) {
   } catch (error) {
     throw error;
   }
-}
-
-export function getWorkspaceById(id) {
-  return request.get(`/workspace/${id}`);
 }

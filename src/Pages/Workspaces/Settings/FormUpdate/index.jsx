@@ -15,10 +15,10 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
   const form = useForm({
     defaultValues: {
       title: data.title,
-      description: data.description,
+      description: data.description
     },
     resolver: joiResolver(validation),
-    mode: "onSubmit",
+    mode: "onSubmit"
   });
 
   const handleSubmit = (values) => {
@@ -31,14 +31,17 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
       })
       .catch((err) => {
         toast.error("Update workspace unsucessfully");
-        console.log(err);
+        console.error(err);
       });
   };
 
   return (
     <div className="w-[250px]">
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="text-[var(--dark-slate-blue)] text-sm mb-2">
-        <div className="flex flex-col mb-2">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="text-[var(--dark-slate-blue)] text-sm mb-2 flex flex-col gap-3"
+      >
+        <div className="flex flex-col gap-2">
           <label className="font-semibold">Name</label>
           <Controller
             control={form.control}
@@ -51,15 +54,15 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
                 sx={{
                   "& .MuiOutlinedInput-input": {
                     paddingY: "8px",
-                    paddingX: "12px",
-                  },
+                    paddingX: "12px"
+                  }
                 }}
               />
             )}
           />
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <label className="font-semibold">Description</label>
           <Controller
             control={form.control}
@@ -72,21 +75,21 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
                 sx={{
                   "& .MuiOutlinedInput-input": {
                     paddingY: "8px",
-                    paddingX: "12px",
-                  },
+                    paddingX: "12px"
+                  }
                 }}
               />
             )}
           />
         </div>
-        {/* action  */}
-        <div className="flex gap-2 mt-2">
+
+        <div className="flex gap-2">
           <Button
             type="submit"
             sx={{
               paddingX: "12px",
               paddingY: "4px",
-              textTransform: "none",
+              textTransform: "none"
             }}
             variant="contained"
           >
@@ -96,7 +99,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
             sx={{
               paddingX: "12px",
               paddingY: "4px",
-              textTransform: "none",
+              textTransform: "none"
             }}
             onClick={handleClose}
             variant="outlined"
@@ -111,7 +114,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
 FormUpdate.propTypes = {
   data: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  onUpdateSuccess: PropTypes.func,
+  onUpdateSuccess: PropTypes.func
 };
 
 export default React.memo(FormUpdate);
