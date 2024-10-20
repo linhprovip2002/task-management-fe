@@ -8,7 +8,7 @@ import { BoardInformation } from "../../../Components/BoardInformation/BoardInfo
 import { useParams } from "react-router-dom";
 
 const DashBoard = () => {
-  const [listBoard] = useState([]);
+  const [listBoard, setListBoard] = useState([]);
   const [open, setOpen] = useState(false);
   const { id } = useParams();
 
@@ -18,7 +18,6 @@ const DashBoard = () => {
   const handleGetAllBoard = async (id) => {
     try {
       const res = await getWorkspaceById(id);
-
       setListBoard(res.data.boards);
     } catch (err) {
       console.log(err);

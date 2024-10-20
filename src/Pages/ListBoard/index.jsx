@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import ConvertHiDotsVertical from "../../Components/HiDotsVertical";
 import { ArrowDown } from "../../Components/Icons";
@@ -8,9 +8,8 @@ import Sidebar from "../../Components/Sidebar";
 import BoardInSidebar from "../../Components/BoardInSidebar";
 import HeaderBoard from "../../Components/HeaderBoard";
 import ListInBoard from "../../Components/ListInBoard";
-import { getBoardId } from "../../Services/API/ApiBoard/apiBoard";
-import { CreateList } from "../../Services/API/ApiListOfBoard/ApiList";
-import { createCardByIdList, getAllCardByIdList } from "../../Services/API/ApiCard/ApiCard";
+import { CreateList } from "../../Services/API/ApiListOfBoard";
+import { createCardByIdList } from "../../Services/API/ApiCard";
 
 function ListBoard() {
   const [nameTitle, setNameTitle] = useState("");
@@ -24,10 +23,9 @@ function ListBoard() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeStar, setActiveStar] = useState(false);
   const [listCount, setListCount] = useState([]);
-  const [dataBoard, setDataBoard] = useState([]);
+  const [dataBoard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
-  const prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
       // try {

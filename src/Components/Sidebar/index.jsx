@@ -15,7 +15,7 @@ function Sidebar({ position, isClosedNavBar, onChange, children }) {
       {isClosedNavBar ? (
         <div
           onClick={handleChange}
-          className="absolute top-3 left-2 p-1 w-6 h-6 flex items-center justify-center rounded-full bg-gray-300 hover:bg-gray-200 cursor-pointer"
+          className="absolute top-3 left-2 p-1 w-6 h-6 flex items-center justify-center rounded-full bg-gray-300 hover:bg-gray-200 cursor-pointer z-50"
         >
           <ChevronRightIcon />
         </div>
