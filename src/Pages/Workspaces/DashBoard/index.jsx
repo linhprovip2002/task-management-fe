@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
 import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
 import { useParams } from "react-router-dom";
-// import Stack from "@mui/material/Stack";
-// import CustomIcons from "../../../Components/Pagination/Pagination";
 // import { useGetWorkspaceByUser } from "../../../Hooks";
 
 
@@ -15,9 +13,6 @@ import { useParams } from "react-router-dom";
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);
   const [open, setOpen] = useState(false);
-  // const [currentpage, setCurrentPage] = useState(1);
-  // const [totalPage, setTotalPage] = useState(0);
-  // const countcurr = 10;
 
   // const { workspaceInfo } = useGetWorkspaceByUser();
   const { id } = useParams();
@@ -37,10 +32,6 @@ const DashBoard = () => {
       console.log(err);
     }
   };
-
-  // const handlePageChange = (event, value) => {
-  //   setCurrentPage(value);
-  // };
 
   useEffect(() => {
     handleGetAllBoard(id);

@@ -15,7 +15,7 @@ export async function createBoard(boardData) {
 }
 
 // get All board
-export function getBoard(limit, page) {
+export function getAllBoards(limit, page) {
   return request.get(`/board?limit=${limit}&page=${page}`, {
     headers: {
       'Content-Type': 'application/json',
