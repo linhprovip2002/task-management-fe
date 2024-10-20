@@ -6,11 +6,17 @@ import { useEffect, useState } from "react";
 import { getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
 import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
 import { useParams } from "react-router-dom";
+import { useGetWorkspaceByUser } from "../../../Hooks";
+import Loading from "../../../Components/Loading";
 
 const DashBoard = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [listBoard, setListBoard] = useState([]);
   const [open, setOpen] = useState(false);
   const { id } = useParams();
+
+  const { workspaceInfo, isLoading: isLoadingWorkspace } =
+    useGetWorkspaceByUser();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -18,7 +24,6 @@ const DashBoard = () => {
   const handleGetAllBoard = async (id) => {
     try {
       const res = await getWorkspaceById(id);
-
       setListBoard(res.data.boards);
     } catch (err) {
       console.log(err);
@@ -29,8 +34,17 @@ const DashBoard = () => {
     handleGetAllBoard(id);
   }, [id]);
 
+  if (!workspaceInfo?.length) {
+    return (
+      <div className="text-xl font-semibold">
+        LOOK LIKE YOU DON'T HAVE ANY WORKSPACE YET!
+      </div>
+    );
+  }
+
   return (
     <div>
+      {(isLoading || isLoadingWorkspace) && <Loading />}
       <BoardInformation />
       <div className="my-6">
         <Divider />
@@ -41,7 +55,7 @@ const DashBoard = () => {
           <span className="ml-2 text-xl font-bold">Your Boards</span>
         </div>
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {listBoard.map((board, index) => {
+          {listBoard?.map((board, index) => {
             return <Board key={index} board={board} />;
           })}
           <button
@@ -50,7 +64,11 @@ const DashBoard = () => {
           >
             <p className="text-sm text-textColor">Create new board</p>
           </button>
-          <CreateNewBoard open={open} handleGetAllBoard={handleGetAllBoard} handleClose={handleClose} />
+          <CreateNewBoard
+            open={open}
+            handleGetAllBoard={handleGetAllBoard}
+            handleClose={handleClose}
+          />
         </div>
 
         <div className="my-12">

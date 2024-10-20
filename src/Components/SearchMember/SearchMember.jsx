@@ -2,22 +2,29 @@ import { Autocomplete } from "@mui/material";
 import { TextField } from "@mui/material";
 import { useState } from "react";
 import { useDebounce, useGetUser } from "../../Hooks";
+import { useEffect } from "react";
+import Loading from "../Loading";
 
 export const SearchMember = (
   { isShowDescription, register, onChange, multiple } = {
     isShowDescription: true,
-    multiple: true,
-  },
+    multiple: true
+  }
 ) => {
   const [searchMember, setSearchMember] = useState("");
+  const [searchOptions, setSearchOptions] = useState([]);
   const debounceSearchMember = useDebounce(searchMember, 500);
 
   const { userInfo, isLoading } = useGetUser({
-    name: debounceSearchMember,
+    name: debounceSearchMember
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  useEffect(() => {
+    if (userInfo?.data) setSearchOptions(userInfo.data);
+  }, [JSON.stringify(userInfo)]);
+
+  if (!searchOptions.length && isLoading) {
+    return <Loading />;
   }
 
   return (
@@ -27,16 +34,22 @@ export const SearchMember = (
         {...register}
         onChange={onChange}
         multiple={multiple}
-        options={userInfo.data}
+        options={searchOptions}
         getOptionLabel={(option) => option.name}
         getOptionKey={(option) => option.id}
         filterSelectedOptions
         onInputChange={(_, newInputValue) => {
           setSearchMember(newInputValue);
         }}
-        renderInput={(params) => <TextField {...params} placeholder="Find members" />}
+        renderInput={(params) => (
+          <TextField {...params} placeholder="Find members" />
+        )}
       />
-      {isShowDescription && <div>Add members to your Workspace so they can collaborate on boards.</div>}
+      {isShowDescription && (
+        <div>
+          Add members to your Workspace so they can collaborate on boards.
+        </div>
+      )}
     </div>
   );
 };
