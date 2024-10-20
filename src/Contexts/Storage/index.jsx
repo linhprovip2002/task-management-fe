@@ -10,7 +10,6 @@ function GlobalStates({ children }) {
   const [defaultWorkspace, setDefaultWorkspace] = useState({});
   const [listBoard, setListBoard] = useState([]);
 
-
   const states = {
     isLoggedIn: isLoggedIn,
     setIsLoggedIn: setIsLoggedIn, // Đẵ đăng nhập hay chưa
@@ -19,7 +18,7 @@ function GlobalStates({ children }) {
     defaultWorkspace,
     setDefaultWorkspace,
     listBoard,
-    setListBoard
+    setListBoard,
   };
 
   const { userProfile } = useGetUserProfile(isLoggedIn);
