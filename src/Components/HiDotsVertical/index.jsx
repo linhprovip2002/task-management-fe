@@ -6,14 +6,29 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import ItemMenu from "../ItemMenu";
+import { CreateList } from "../../Services/API/ApiListOfBoard/ApiList";
+import { createCardByIdList } from "../../Services/API/ApiCard/ApiCard";
+import DropItemChoose from "../DropItemChoose";
 
-const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, onShowAddCard, onActiveMonitor }) => {
+const ConvertHiDotsVertical = ({
+  tippyName,
+  data,
+  dataBoard,
+  className,
+  type,
+  listCount,
+  onShowAddCard,
+  onActiveMonitor,
+  onCopyList,
+}) => {
   const [isCollapsed, setIsCollapse] = useState(false);
   const [isLeaveBoard, setIsLeaveBoard] = useState(false);
+  const [isChooseMoveList, setIsChooseMoveList] = useState(false);
   const [activeCollectTable, setActiveCollectTable] = useState(0);
   const [activeCollectOperation, setActiveCollectOperation] = useState(null);
   const [titleName, settitleName] = useState("Sort by alphabetical order");
-  const [nameList, setNameList] = useState(data);
+  const [nameList, setNameList] = useState(data && data.title);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const nameOperations = [
     "Add card",
@@ -43,18 +58,53 @@ const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, on
     setIsLeaveBoard(!isLeaveBoard);
   };
 
-  const handleCopyList = () => {
-    console.log(nameList);
+  const handleChooseMoveList = (e) => {
+    setIsChooseMoveList(!isChooseMoveList);
+    const rect = e.currentTarget.getBoundingClientRect();
+    setPosition({ top: rect.bottom + 8, left: rect.left });
   };
 
-  const handleShow = (index) => {
+  const handleCopyList = async () => {
+    const dataList = {
+      title: nameList.trim(),
+      description: data.description,
+      boardId: dataBoard.id,
+    };
+    const dataCopyList = {
+      ...data,
+      title: nameList.trim(),
+    };
+    try {
+      const list = await CreateList(dataList);
+      data.cards.map(async (card) => {
+        const dataCard = {
+          title: card.title,
+          description: card.description || "",
+          coverUrl: card.coverUrl || "",
+          priority: card.priority || "",
+          tagId: card.tagId || "",
+          listId: list.id,
+        };
+        await createCardByIdList(dataCard);
+      });
+    } catch (error) {
+      console.error("Failed to create copy list:", error);
+    }
+    onCopyList(dataCopyList);
+    handleLeaveBoard();
+  };
+
+  const handleShow = (index, idList) => {
     toggleCollape();
     setActiveCollectOperation(index);
     handleLeaveBoard();
 
     switch (index) {
       case 0:
-        onShowAddCard(index);
+        onShowAddCard(idList);
+        break;
+      case 3:
+        handleMoveAllCard(idList);
         break;
       case 5:
         onActiveMonitor();
@@ -67,6 +117,12 @@ const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, on
   const handleActive = (index, title) => {
     setActiveCollectTable(index);
     settitleName(title);
+  };
+
+  const handleMoveAllCard = async (idList) => {
+    console.log(idList);
+    console.log(data);
+    console.log(dataBoard);
   };
 
   return (
@@ -159,7 +215,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, on
               <div className="text-center p-2 mx-8">Operation</div>
               {nameOperations.map((name, index) => (
                 <div
-                  onClick={() => handleShow(index)}
+                  onClick={() => handleShow(index, data.id)}
                   key={index}
                   className="cursor-pointer p-2 bg-white rounded transition duration-200 hover:bg-gray-100"
                 >
@@ -195,21 +251,28 @@ const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, on
           {isLeaveBoard && activeCollectOperation === 2 && (
             <ItemMenu
               title={nameOperations[activeCollectOperation]}
-              description={"Name"}
+              // description={"Name"}
               nameBtn={"Move"}
               onLeaveBoard={handleLeaveBoard}
               onToggleCollape={toggleCollape}
               onHandleCopyList={handleCopyList}
             >
-              <div className="w-full px-4">
-                <textarea
-                  value={nameList}
-                  onChange={(e) => {
-                    setNameList(e.target.value);
-                  }}
-                  className="w-full border-2 border-gray-300 rounded-[4px] p-2"
-                />
-              </div>
+              <DropItemChoose
+                info={"Information Board"}
+                position={position}
+                titleName={titleName}
+                isChoose={isChooseMoveList}
+                activeCollectTable={activeCollectTable}
+                onChoose={handleChooseMoveList}
+              />
+              <DropItemChoose
+                info={"Location"}
+                position={position}
+                titleName={titleName}
+                isChoose={isChooseMoveList}
+                activeCollectTable={activeCollectTable}
+                onChoose={handleChooseMoveList}
+              />
             </ItemMenu>
           )}
           {isLeaveBoard && activeCollectOperation === 3 && (
@@ -220,11 +283,11 @@ const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, on
             >
               {listCount.map((item, index) => (
                 <div
-                  onClick={item.descriptionCard === nameList ? undefined : () => handleShow(index)}
+                  onClick={item.title === nameList ? undefined : () => handleShow(index, item.id)}
                   key={index}
-                  className={`p-2 bg-white rounded transition duration-200 ${item.descriptionCard === nameList ? "cursor-not-allowed opacity-50" : "hover:bg-gray-100 cursor-pointer"} `}
+                  className={`p-2 bg-white rounded transition duration-200 ${item.title === nameList ? "cursor-not-allowed opacity-50" : "hover:bg-gray-100 cursor-pointer"} `}
                 >
-                  {item.descriptionCard}
+                  {item.title}
                 </div>
               ))}
             </ItemMenu>
@@ -237,7 +300,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className, type, listCount, on
             >
               {collectTypeSort.map((nameType, index) => (
                 <div
-                  onClick={() => handleShow(index)}
+                  onClick={() => handleShow(index, data.id)}
                   key={index}
                   className="p-2 bg-white rounded transition duration-200 hover:bg-gray-100 cursor-pointer"
                 >

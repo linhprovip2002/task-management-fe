@@ -1,10 +1,10 @@
-import request from '../request';
+import request from "../request";
 
 export async function createBoard(boardData) {
   try {
-    const response = await request.post('/board', boardData, {
+    const response = await request.post("/board", boardData, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -15,37 +15,45 @@ export async function createBoard(boardData) {
 }
 
 // get All board
-export function getBoard(limit, page) {
-  return request.get(`/board?limit=${limit}&page=${page}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-}
-
-// trả về danh sách board theo workspaceId
-export function getWorkspaceById(id) {
-  return request.get(`/workspace/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+export async function getBoard(limit, page) {
+  try {
+    const response = await request.get(`/board?limit=${limit}&page=${page}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // get board theo id
 export async function getBoardId(id) {
-  return request.get(`/board/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    const response = await request.get(`/board/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("board id: " + response.data);
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }
 
-// delete board theo di 
+// delete board theo di
 export async function deleteBoardId(id) {
-  return request.delete(`/board/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  try {
+    const response = await request.delete(`/board/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }

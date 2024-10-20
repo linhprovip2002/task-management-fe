@@ -7,7 +7,6 @@ function ItemList({
   dataList,
   dataCard,
   imageSrc,
-  descriptionCard,
   isDescriptionIcon = false,
   isAttachment = false,
   attachmentCount,
@@ -23,7 +22,7 @@ function ItemList({
           </div>
         )}
         <div className="flex flex-col  mx-[12px]">
-          <div className="text-[16px] font-[400] text-black-500 py-[4px] whitespace-normal">{descriptionCard}</div>
+          <div className="text-[16px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
           <div className="flex items-center">
             {isDescriptionIcon && (
               <Tippy

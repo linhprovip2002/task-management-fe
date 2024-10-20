@@ -8,7 +8,7 @@ import { BoardInformation } from "../../../Components/BoardInformation/BoardInfo
 import { useParams } from "react-router-dom";
 
 const DashBoard = () => {
-  const [listBoard, setListBoard] = useState([]);
+  const [listBoard] = useState([]);
   const [open, setOpen] = useState(false);
   const { id } = useParams();
 

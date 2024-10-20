@@ -67,7 +67,7 @@ export const EditCard = ({
     },
   ];
 
-  const [inputTitle, setInputTitle] = useState(data.descriptionCard);
+  const [inputTitle, setInputTitle] = useState(data.title);
   const handleChange = (e) => {
     setInputTitle(e.target.value);
   };
