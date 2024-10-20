@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 
 export const CreateItem = ({
-  index,
+  idList,
   isList = false,
   descriptionCard,
   nameBtn,
@@ -23,7 +23,7 @@ export const CreateItem = ({
       </div>
       <div className="flex items-center">
         <div
-          onClick={() => onAdd({ descriptionCard: descriptionCard }, index)}
+          onClick={() => onAdd({ title: descriptionCard }, idList)}
           className="max-w-20 px-3 py-2 my-2 ml-1 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300"
         >
           <span className="text-[14px] font-medium text-white">{nameBtn}</span>
