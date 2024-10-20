@@ -18,8 +18,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useParams } from "react-router-dom";
 import { CenterModel } from "../styles";
 import Loading from "../../Loading";
+import { useQueryClient } from "@tanstack/react-query";
+import { EQueryKeys } from "../../../constants";
 
-export const CreateNewBoard = ({ open, handleClose, handleGetAllBoard }) => {
+export const CreateNewBoard = ({ open, handleClose }) => {
+  const queryClient = useQueryClient();
   const { workspaceInfo, isLoading: isLoadingWorkspace } =
     useGetWorkspaceByUser();
 
@@ -61,10 +64,10 @@ export const CreateNewBoard = ({ open, handleClose, handleGetAllBoard }) => {
       workspaceId: +workspaceId
     };
     try {
-      await createBoard(boardData); // Gửi dữ liệu lên API
+      await createBoard(boardData);
       reset(defaultBoardValues);
-      handleClose(); // Đóng modal
-      handleGetAllBoard(currentWspId); // Lấy lại danh sách bảng
+      handleClose();
+      queryClient.invalidateQueries([EQueryKeys.GET_WORKSPACE_BY_ID]);
     } catch (error) {
       console.error("Failed to create board:", error);
     }

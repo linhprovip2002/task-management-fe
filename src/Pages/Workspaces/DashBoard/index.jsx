@@ -3,17 +3,18 @@ import PersonIcon from "@mui/icons-material/Person";
 import { Board } from "../../../Components/Board/Board";
 import { CreateNewBoard } from "../../../Components/Modals/CreateNewBoard/CreateNewBoard";
 import { useEffect, useState } from "react";
-import { getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
 import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
 import { useParams } from "react-router-dom";
-import { useGetWorkspaceByUser } from "../../../Hooks";
+import { useGetWorkspaceByUser, useGetWorkspaceById } from "../../../Hooks";
 import Loading from "../../../Components/Loading";
 
 const DashBoard = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [listBoard, setListBoard] = useState([]);
   const [open, setOpen] = useState(false);
   const { id } = useParams();
+
+  const { workspaceDetails, isLoading: isLoadingCurrentWorkspace } =
+    useGetWorkspaceById(id);
 
   const { workspaceInfo, isLoading: isLoadingWorkspace } =
     useGetWorkspaceByUser();
@@ -21,18 +22,10 @@ const DashBoard = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleGetAllBoard = async (id) => {
-    try {
-      const res = await getWorkspaceById(id);
-      setListBoard(res.data.boards);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    handleGetAllBoard(id);
-  }, [id]);
+    if (workspaceDetails?.boards?.length) setListBoard(workspaceDetails.boards);
+    // eslint-disable-next-line
+  }, [JSON.stringify(workspaceDetails?.boards)]);
 
   if (!workspaceInfo?.length) {
     return (
@@ -44,7 +37,7 @@ const DashBoard = () => {
 
   return (
     <div>
-      {(isLoading || isLoadingWorkspace) && <Loading />}
+      {(isLoadingWorkspace || isLoadingCurrentWorkspace) && <Loading />}
       <BoardInformation />
       <div className="my-6">
         <Divider />
@@ -64,11 +57,7 @@ const DashBoard = () => {
           >
             <p className="text-sm text-textColor">Create new board</p>
           </button>
-          <CreateNewBoard
-            open={open}
-            handleGetAllBoard={handleGetAllBoard}
-            handleClose={handleClose}
-          />
+          <CreateNewBoard open={open} handleClose={handleClose} />
         </div>
 
         <div className="my-12">

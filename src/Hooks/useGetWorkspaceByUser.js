@@ -24,7 +24,7 @@ const useGetWorkspaceById = (id) => {
     }
   });
 
-  return { workspaceInfo: data, isLoading, isError, refetch };
+  return { workspaceDetails: data, isLoading, isError, refetch };
 };
 
 export { useGetWorkspaceByUser, useGetWorkspaceById };
