@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 export const StorageContext = createContext();
 
 function GlobalStates({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [userData, setUserData] = useState({});
   const [defaultWorkspace, setDefaultWorkspace] = useState({});
   const [listBoard, setListBoard] = useState([]);

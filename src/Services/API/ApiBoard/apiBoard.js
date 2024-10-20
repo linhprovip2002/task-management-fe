@@ -57,3 +57,11 @@ export async function deleteBoardId(id) {
     throw error;
   }
 }
+
+export function getWorkspaceById(id) {
+  return request.get(`/workspace/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}

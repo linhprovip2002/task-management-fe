@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import ConvertHiDotsVertical from "../../Components/HiDotsVertical";
 import { ArrowDown } from "../../Components/Icons";
@@ -8,9 +8,8 @@ import Sidebar from "../../Components/Sidebar";
 import BoardInSidebar from "../../Components/BoardInSidebar";
 import HeaderBoard from "../../Components/HeaderBoard";
 import ListInBoard from "../../Components/ListInBoard";
-import { getBoardId } from "../../Services/API/ApiBoard/apiBoard";
 import { CreateList } from "../../Services/API/ApiListOfBoard/ApiList";
-import { createCardByIdList, getAllCardByIdList } from "../../Services/API/ApiCard/ApiCard";
+import { createCardByIdList } from "../../Services/API/ApiCard/ApiCard";
 
 function ListBoard() {
   const [nameTitle, setNameTitle] = useState("");
@@ -24,29 +23,11 @@ function ListBoard() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeStar, setActiveStar] = useState(false);
   const [listCount, setListCount] = useState([]);
-  const [dataBoard, setDataBoard] = useState([]);
+  const [dataBoard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
-  const prevListCountRef = useRef();
   useEffect(() => {
-    const fetchBoardData = async () => {
-      // try {
-      //   const res = await getBoardId(128);
-      //   setDataBoard(res);
-      //   const lists = res.lists;
-      //   const listWithCardsPromises = lists.map(async (list) => {
-      //     const cards = await getAllCardByIdList(list.id);
-      //     return { ...list, cards };
-      //   });
-      //   const updatedLists = await Promise.all(listWithCardsPromises);
-      //   if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
-      //     setListCount(updatedLists);
-      //   }
-      //   prevListCountRef.current = updatedLists;
-      // } catch (err) {
-      //   console.error("Error fetching board data: ", err);
-      // }
-    };
+    const fetchBoardData = async () => {};
 
     fetchBoardData();
   }, [listCount]);
