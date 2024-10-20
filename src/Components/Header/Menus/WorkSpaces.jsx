@@ -7,6 +7,11 @@ export default function Workspaces() {
   const [isOpen, setIsOpen] = useState(false);
   const { workspaceInfo } = useGetWorkspaceByUser();
 
+  const handleItemClick = (event) => {
+    event.stopPropagation();
+    // Xử lý logic khi click vào item ở đây
+  };
+
   return (
     <div className="relative inline-block">
       {/* Nút để mở menu */}
@@ -17,16 +22,16 @@ export default function Workspaces() {
         placement="bottom-start"
         render={(attrs) => (
           <div
-            className="w-[300px] overflow-y-auto bg-white border-2 border-solid border-gray-400 rounded-md shadow-md max-h-80 "
-            tabIndex="-1"
-            {...attrs}
+          className="w-[300px] overflow-y-auto bg-white border-2 border-solid border-gray-400 rounded-md shadow-md max-h-80 "
+          tabIndex="-1"
+          {...attrs}
           >
-            <ul className="p-2 border-2 border-solid rounded-md">
+            <ul className="p-1">
               {workspaceInfo?.map((item, index) => (
                 <li
                   key={index}
-                  className="px-4 py-2 text-gray-700 rounded-lg cursor-pointer hover:bg-slate-200"
-                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
+                  onClick={handleItemClick}
                 >
                   {item.title}
                 </li>
@@ -37,7 +42,7 @@ export default function Workspaces() {
       >
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-sm flex items-center font-semibold ml-1 text-[#44546f] hover:bg-slate-200 p-2 rounded-md"
+          className="text-sm flex items-center font-semibold mx-1 text-[#44546f] hover:bg-slate-200 px-2 py-1 rounded-[4px] active:bg-slate-200"
         >
           Workspaces
           <ExpandMoreIcon sx={{ color: "#44546f" }} />

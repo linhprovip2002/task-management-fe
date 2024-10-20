@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import CheckIcon from "@mui/icons-material/Check";
@@ -9,33 +9,43 @@ import { listRule } from "./customNewBoard";
 import { useGetWorkspaceByUser } from "../../../Hooks";
 import { createBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import CloseIcon from "@mui/icons-material/Close";
-// import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
-export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
-  const [selectedBg, setSelectedBg] = useState(""); // Lưu màu background
-  const [selectedImg, setSelectedImg] = useState(""); // Lưu hình ảnh đã chọn
+
+
+
+export const CreateNewBoard = ({ open, handleClose, handleGetAllBoard }) => {
+  const [selectedBg, setSelectedBg] = useState("");
+  const [selectedImg, setSelectedImg] = useState(listBgImage[0]?.image || ""); // Lưu hình ảnh đã chọn
   const { workspaceInfo } = useGetWorkspaceByUser();
 
-  // const { id } = useParams();
-
+  const { id: currentWspId } = useParams();
+  
   const {
     handleSubmit,
     control,
     reset,
     register,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
       title: "",
-      workspaceId: null,
-      visibility: "", // Người dùng sẽ chọn trạng thái
+      workspaceId: currentWspId || null,
+      visibility: "",
       backgroundColor: "",
       coverUrl: "",
-      isPrivate: false, // Mặc định là false
-      isFavorite: false, // Mặc định là false
-      isArchived: false, // Mặc định là false
+      isPrivate: true,
+      isFavorite: true,
+      isArchived: true,
     },
   });
+
+  useEffect(() => {
+    if (currentWspId) {
+      setValue("workspaceId", currentWspId);
+    }
+  }, [currentWspId, setValue]);
 
   const onSubmit = async (data) => {
     const { title, visibility, workspaceId } = data;
@@ -56,57 +66,51 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
 
     // Tạo dữ liệu bảng
     const boardData = {
-      title: title.trim(), // Đảm bảo title là chuỗi và không rỗng
+      title: title.trim(),
       description: "", // Add description field if needed
       backgroundColor: selectedBg,
-      coverUrl: selectedImg, // Set a cover URL if needed
+      coverUrl: selectedImg,
       isPrivate,
       isFavorite,
       isArchived,
-      workspaceId: Number(workspaceId), // Chuyển đổi thành số
+      workspaceId: Number(workspaceId),
     };
 
     try {
       await createBoard(boardData); // Gửi dữ liệu lên API
       reset(); // Reset form sau khi gửi
       handleClose(); // Đóng modal
+      handleGetAllBoard(currentWspId); // Lấy lại danh sách bảng
     } catch (error) {
       console.error("Failed to create board:", error);
     }
   };
 
   const handleBackgroundClick = (chooseColor) => {
-    setSelectedBg(chooseColor); // Cập nhật màu nền khi người dùng chọn
-    setSelectedImg(null); // Reset hình ảnh khi người dùng chọn màu nền
+    setSelectedBg(chooseColor);
+    setSelectedImg(null);
   };
 
   const handleImageClick = (chooseImg) => {
-    setSelectedImg(chooseImg); // Cập nhật hình ảnh khi người dùng chọn
+    setSelectedImg(chooseImg);
     setSelectedBg(null);
   };
 
   return (
     <>
-      <button
-        onClick={handleOpen}
-        className="flex items-center justify-center w-[12rem] h-[110px] rounded-lg bg-slate-200 hover:brightness-95 hover:cursor-pointer"
-      >
-        <p className="text-sm text-textColor">Create new board</p>
-      </button>
-
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
+          <div className="sticky flex text-sm justify-center rounded-t-lg top-0  items-center  h-[38px] bg-white font-bold text-center text-textColor">
+            Create board
+            <button onClick={handleClose} className="absolute right-2">
+              <CloseIcon fontSize="small" className="cursor-pointer" />
+            </button>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="justify-center w-[320px] h-[80vh] p-4 bg-white rounded-lg overflow-y-auto"
+            className="justify-center w-[320px] max-h-[540px] px-4 pb-4 bg-white rounded-lg overflow-y-auto"
           >
-            <div className="fixed flex text-sm justify-center top-0 left-0 items-center right-0 h-[38px] bg-white font-bold text-center text-textColor">
-              Create board
-              <button onClick={handleClose} className="absolute right-2">
-                <CloseIcon fontSize="small" className="cursor-pointer" />
-              </button>
-            </div>
-            <div className="mt-[38px]">
+            <div className="">
               {/* Hình ảnh bảng */}
               <div className="flex justify-center my-2 ">
                 <div
@@ -186,19 +190,34 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
               <Controller
                 name="workspaceId"
                 control={control}
+                defaultValue={currentWspId}
                 render={({ field }) => (
                   <Autocomplete
                     {...field}
                     options={workspaceInfo.map((workspace) => workspace.id)}
+                    // getoptionselected={(option, value) => option === value}
                     getOptionLabel={(option) => {
                       const workspace = workspaceInfo.find((workspace) => workspace.id === option);
                       return workspace ? String(workspace.id) : "";
                     }}
-                    onChange={(e, value) => field.onChange(Number(value))} // Chuyển value sang kiểu số
+                    onChange={(e, value) => {
+                      field.onChange(Number(value));
+                    }}
                     renderInput={(params) => (
-                      <TextField {...params} size="small" required label="Workspace" variant="outlined" fullWidth />
+                      <TextField
+                        {...params}
+                        size="small"
+                        error={!!errors.title}
+                        helperText={errors.title ? errors.title.message : ""}
+                        required
+                        label="Workspace"
+                        defaultValues={currentWspId}
+                        variant="outlined"
+                        fullWidth
+                      />
                     )}
                     className="my-4"
+                    defaultValue={currentWspId}
                   />
                 )}
               />
@@ -207,10 +226,16 @@ export const CreateNewBoard = ({ open, handleOpen, handleClose }) => {
               <Autocomplete
                 {...register("visibility")}
                 options={listRule} // Các lựa chọn là isPrivate, isFavorite, isArchived
-                getOptionLabel={(option) => option.label} // Hiển thị nhãn của option
-                isOptionEqualToValue={(option, value) => option.value === value} // So sánh đúng giữa option và value
+                getOptionLabel={(option) => {
+                  return option.label;
+                }} // Hiển thị nhãn của option
+                // isOptionEqualToValue={(option, value) => option.value === value} // So sánh đúng giữa option và value
+                // getoptionselected={(option, value) => option.value === value.value}
+                onChange={(e, v) => {
+                  setValue("visibility", v.value);
+                }}
                 renderInput={(params) => (
-                  <TextField {...params} size="small" label="Visibility" variant="outlined" fullWidth />
+                  <TextField {...params} size="small" required label="Visibility" variant="outlined" fullWidth />
                 )}
                 className="my-4"
               />

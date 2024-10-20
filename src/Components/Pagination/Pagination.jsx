@@ -5,12 +5,12 @@ import Stack from "@mui/material/Stack";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-export default function CustomIcons({ currpage, handlePageChange, count }) {
+export default function CustomIcons({ countcurr, handlePageChange, count }) {
   return (
     <Stack spacing={2}>
       <Pagination
         count={count}
-        currpage={currpage}
+        countcurr={countcurr}
         color="primary"
         onChange={handlePageChange}
         sx={{ justifyContent: "center" }}

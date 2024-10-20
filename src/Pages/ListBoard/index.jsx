@@ -30,24 +30,22 @@ function ListBoard() {
   const prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
-      try {
-        const res = await getBoardId(128);
-        setDataBoard(res);
-        const lists = res.lists;
-
-        const listWithCardsPromises = lists.map(async (list) => {
-          const cards = await getAllCardByIdList(list.id);
-          return { ...list, cards };
-        });
-
-        const updatedLists = await Promise.all(listWithCardsPromises);
-        if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
-          setListCount(updatedLists);
-        }
-        prevListCountRef.current = updatedLists;
-      } catch (err) {
-        console.error("Error fetching board data: ", err);
-      }
+      // try {
+      //   const res = await getBoardId(128);
+      //   setDataBoard(res);
+      //   const lists = res.lists;
+      //   const listWithCardsPromises = lists.map(async (list) => {
+      //     const cards = await getAllCardByIdList(list.id);
+      //     return { ...list, cards };
+      //   });
+      //   const updatedLists = await Promise.all(listWithCardsPromises);
+      //   if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
+      //     setListCount(updatedLists);
+      //   }
+      //   prevListCountRef.current = updatedLists;
+      // } catch (err) {
+      //   console.error("Error fetching board data: ", err);
+      // }
     };
 
     fetchBoardData();
@@ -177,10 +175,15 @@ function ListBoard() {
 
   return (
     <>
-      <div className="w-[100wh] h-[91vh] flex">
+      <div
+        style={{
+          height: "calc(100vh - 56.8px)",
+        }}
+        className="w-[100wh] flex"
+      >
         <Sidebar isClosedNavBar={isClosedNavBar} onChange={handleChangeSidebar}>
           <>
-            <div className="pl-4 py-4 flex items-center">
+            <div className={`pl-4 py-4 flex items-center`}>
               <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
                 B
               </div>
@@ -203,7 +206,7 @@ function ListBoard() {
         </Sidebar>
         {/* list board */}
         <div
-          className="flex-grow"
+          className="flex-grow flex flex-col overflow-x-hidden"
           style={{
             backgroundImage: `url(https://trello.com/assets/707f35bc691220846678.svg)`,
             backgroundSize: "cover",

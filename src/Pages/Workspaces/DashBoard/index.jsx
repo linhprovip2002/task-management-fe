@@ -3,40 +3,36 @@ import PersonIcon from "@mui/icons-material/Person";
 import { Board } from "../../../Components/Board/Board";
 import { CreateNewBoard } from "../../../Components/Modals/CreateNewBoard/CreateNewBoard";
 import { useEffect, useState } from "react";
-import { getBoard } from "../../../Services/API/ApiBoard/apiBoard";
+import { getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
 import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
-import Stack from "@mui/material/Stack";
-import CustomIcons from "../../../Components/Pagination/Pagination";
+import { useParams } from "react-router-dom";
 
 const DashBoard = () => {
   const [listBoard, setListBoard] = useState([]);
   const [open, setOpen] = useState(false);
-  const [currentpage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
-  const countCurr = 10;
+  const { id } = useParams();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  useEffect(() => {
-    getBoard(countCurr, currentpage)
-      .then((res) => {
-        setListBoard(res.data);
-        setTotalPage(Math.ceil(res.total / countCurr));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [currentpage, countCurr]);
+  const handleGetAllBoard = async (id) => {
+    try {
+      const res = await getWorkspaceById(id);
 
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
+      setListBoard(res.data.boards);
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  useEffect(() => {
+    handleGetAllBoard(id);
+  }, [id]);
 
   return (
     <div>
       <BoardInformation />
-      <div className="my-8">
+      <div className="my-6">
         <Divider />
       </div>
       <div>
@@ -48,12 +44,19 @@ const DashBoard = () => {
           {listBoard.map((board, index) => {
             return <Board key={index} board={board} />;
           })}
-          <CreateNewBoard open={open} handleOpen={handleOpen} handleClose={handleClose} />
+          <button
+            onClick={handleOpen}
+            className="flex items-center justify-center w-[12rem] h-[110px] rounded-lg bg-slate-200 hover:brightness-95 hover:cursor-pointer"
+          >
+            <p className="text-sm text-textColor">Create new board</p>
+          </button>
+          <CreateNewBoard open={open} handleGetAllBoard={handleGetAllBoard} handleClose={handleClose} />
         </div>
-        <div className="flex justify-center my-6">
-          <Stack spacing={2}>
-            <CustomIcons currentpage={currentpage} handlePageChange={handlePageChange} count={totalPage} size="large" />
-          </Stack>
+
+        <div className="my-12">
+          <button className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor">
+            View close the boards
+          </button>
         </div>
       </div>
     </div>
