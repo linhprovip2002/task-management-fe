@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import HeadlessTippy from "@tippyjs/react/headless"; // HeadlessTippy cho tùy chỉnh hoàn toàn
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useGetWorkspaceByUser } from "../../../Hooks";
+import { Link } from "react-router-dom";
 
 export default function Workspaces() {
   const [isOpen, setIsOpen] = useState(false);
   const { workspaceInfo } = useGetWorkspaceByUser();
-
-  const handleItemClick = (event) => {
-    event.stopPropagation();
-    // Xử lý logic khi click vào item ở đây
-  };
 
   return (
     <div className="relative inline-block">
@@ -22,19 +18,15 @@ export default function Workspaces() {
         placement="bottom-start"
         render={(attrs) => (
           <div
-          className="w-[300px] overflow-y-auto bg-white border-2 border-solid border-gray-400 rounded-md shadow-md max-h-80 "
-          tabIndex="-1"
-          {...attrs}
+            className="w-[300px] overflow-y-auto bg-white border-2 border-solid border-gray-400 rounded-md shadow-md max-h-80 "
+            tabIndex="-1"
+            {...attrs}
           >
             <ul className="p-1">
               {workspaceInfo?.map((item, index) => (
-                <li
-                  key={index}
-                  className="px-4 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                  onClick={handleItemClick}
-                >
-                  {item.title}
-                </li>
+                <Link to={`/workspace/${item.id}/home`} key={index}>
+                  <li className="px-4 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200">{item.title}</li>
+                </Link>
               ))}
             </ul>
           </div>

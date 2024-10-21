@@ -24,16 +24,11 @@ function GlobalStates({ children }) {
   const { userProfile } = useGetUserProfile(isLoggedIn);
 
   useEffect(() => {
-    setIsLoggedIn(
-      (userProfile && Object.keys(userProfile).length > 0) ||
-        !!Cookies.get("authToken")
-    );
+    setIsLoggedIn((userProfile && Object.keys(userProfile).length > 0) || !!Cookies.get("authToken"));
     setUserData(userProfile);
   }, [userProfile]);
 
-  return (
-    <StorageContext.Provider value={states}>{children}</StorageContext.Provider>
-  );
+  return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;
 }
 
 export default GlobalStates;
@@ -42,9 +37,7 @@ export const useStorage = () => {
   const context = useContext(StorageContext);
 
   if (!context) {
-    throw new Error(
-      "useEditCompanyContext must be used within a EditCompanyProvider"
-    );
+    throw new Error("useEditCompanyContext must be used within a EditCompanyProvider");
   }
 
   return context;

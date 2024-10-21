@@ -15,12 +15,10 @@ export const Board = ({ board }) => {
             backgroundImage: board.coverUrl ? `url(${board.coverUrl})` : "none",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            backgroundPosition: "center center"
+            backgroundPosition: "center center",
           }}
         >
-          <p className="justify-start p-2 ml-1 font-bold text-white flext text-md">
-            {board.title}
-          </p>
+          <p className="justify-start p-2 ml-1 font-bold text-white flext text-md">{board.title}</p>
         </div>
       </Link>
     </>

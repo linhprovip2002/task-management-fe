@@ -198,6 +198,9 @@ const ConvertHiDotsVertical = ({
           )}
           {isLeaveBoard && (
             <ItemMenu
+              onClick={(e) => {
+                console.log("Handle leave");
+              }}
               title={"Do you want to leave the board?"}
               description={"You will be removed from all cards in this table"}
               nameBtn={"Leave"}
