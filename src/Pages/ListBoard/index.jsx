@@ -30,22 +30,22 @@ function ListBoard() {
   const prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
-      // try {
-      //   const res = await getBoardId(128);
-      //   setDataBoard(res);
-      //   const lists = res.lists;
-      //   const listWithCardsPromises = lists.map(async (list) => {
-      //     const cards = await getAllCardByIdList(list.id);
-      //     return { ...list, cards };
-      //   });
-      //   const updatedLists = await Promise.all(listWithCardsPromises);
-      //   if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
-      //     setListCount(updatedLists);
-      //   }
-      //   prevListCountRef.current = updatedLists;
-      // } catch (err) {
-      //   console.error("Error fetching board data: ", err);
-      // }
+      try {
+        const res = await getBoardId(128);
+        setDataBoard(res);
+        const lists = res.lists;
+        const listWithCardsPromises = lists.map(async (list) => {
+          const cards = await getAllCardByIdList(list.id);
+          return { ...list, cards };
+        });
+        const updatedLists = await Promise.all(listWithCardsPromises);
+        if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
+          setListCount(updatedLists);
+        }
+        prevListCountRef.current = updatedLists;
+      } catch (err) {
+        console.error("Error fetching board data: ", err);
+      }
     };
 
     fetchBoardData();
