@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { refreshAccessToken } from "./refreshToken";
 
 const request = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -8,6 +9,8 @@ const request = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+let isRefreshing = false; // Cờ để kiểm tra xem đã redirect hay chưa
 
 // Add a request interceptor
 request.interceptors.request.use(
@@ -30,13 +33,33 @@ request.interceptors.request.use(
 // Add a response interceptor
 request.interceptors.response.use(
   function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
     return response;
   },
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
+  async function (error) {
+    const originalRequest = error.config;
+
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const newAccessToken = await refreshAccessToken();
+
+      if (newAccessToken !== null) {
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return axios(originalRequest);
+      } else {
+        // Đảm bảo chỉ redirect đến login một lần duy nhất
+        if (!isRefreshing) {
+          isRefreshing = true;
+          Cookies.remove("authToken");
+          Cookies.remove("refreshToken");
+
+          // Chỉ redirect một lần
+          window.location.replace("/login");
+        }
+        return Promise.reject(error);
+      }
+    }
+
     return Promise.reject(error);
   },
 );
