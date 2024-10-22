@@ -119,11 +119,7 @@ const ConvertHiDotsVertical = ({
     settitleName(title);
   };
 
-  const handleMoveAllCard = async (idList) => {
-    console.log(idList);
-    console.log(data);
-    console.log(dataBoard);
-  };
+  const handleMoveAllCard = async (idList) => {};
 
   return (
     <div>
@@ -199,6 +195,7 @@ const ConvertHiDotsVertical = ({
           {isLeaveBoard && (
             <ItemMenu
               onClick={(e) => {
+                //! Gọi API leave board và reload lại danh sách board  -> trở về trang workspace
                 console.log("Handle leave");
               }}
               title={"Do you want to leave the board?"}

@@ -40,7 +40,7 @@ const WorkspaceSettings = () => {
   const handleDeleteWsp = () => {
     deleteWorkspace(id).then((res) => {
       toast.success("Deleted Workspace");
-      //! chưa handle cập nhật lại workspace ở sidebar
+      //TODO chưa handle cập nhật lại workspace ở sidebar
     });
   };
 

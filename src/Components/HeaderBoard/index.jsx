@@ -18,14 +18,12 @@ import RightSidebar from "../../Components/RightSidebar";
 function HeaderBoard({ dataBoard, onChangeStar, isStar }) {
   const [rightSidebar, setRightSidebar] = useState(false);
   const handleChangeStar = () => {
-    console.log(isStar);
     if (onChangeStar) {
       onChangeStar(isStar);
     }
   };
 
   const handleToggleRightSidebar = () => {
-    console.log(rightSidebar);
     setRightSidebar(!rightSidebar);
   };
 

@@ -17,6 +17,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SettingMenu from "./SettingMenu";
+import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -84,11 +85,14 @@ export default function RightSidebar({ isOpen, onClose }) {
   const [menuItems, setMenuItems] = useState([items]);
   const [deleteDialog, setDeleteDialog] = useState(false);
 
+  const navigate = useNavigate();
+
+  // TODO Xử lý đóng right menu
   const handleClose = (e) => {
     if (onClose) {
       onClose(e);
 
-      //* Nếu người dùng vào menu con nhưng chưa back thì reset lại menu ban đầu
+      // TODO Nếu người dùng vào menu con nhưng chưa back thì reset lại menu ban đầu
       if (menuItems.length > 1) {
         setTimeout(() => {
           setMenuItems([items]);
@@ -97,6 +101,7 @@ export default function RightSidebar({ isOpen, onClose }) {
     }
   };
 
+  // TODO Quay lại cấp cha của menu đa cấp
   const handleBack = () => {
     if (menuItems.length > 1) {
       setMenuItems((prev) => {
@@ -108,6 +113,8 @@ export default function RightSidebar({ isOpen, onClose }) {
     }
   };
 
+  //#region  render menuItem
+  //TODO render ra giao diện của cấp menu hiện tại
   const renderItems = () => {
     const component = menuItems[menuItems.length - 1].component;
     if (component) return component;
@@ -133,6 +140,17 @@ export default function RightSidebar({ isOpen, onClose }) {
       );
     });
   };
+  //#endregion
+
+  //#region Handle leave
+  const handleLeaveBoard = () => {
+    //TODO Gọi API leave board
+    //TODO Gọi lại API get board từ useQuery để reload lại giao diện
+    //TODO Lấy id của workspace từ context để trở về trang workspace
+
+    return navigate("/workspace/20/home");
+  };
+  //#endregion
 
   return (
     <div className={cx(["drawer", "absolute top-0 right-0 z-[999]"], { open: isOpen })}>
@@ -164,6 +182,7 @@ export default function RightSidebar({ isOpen, onClose }) {
         <div className="px-3 pt-3 pb-2 flex flex-col gap-1">{renderItems()}</div>
       </div>
 
+      {/* //TODO Start Bật lên popup rời khỏi board  */}
       <Dialog
         open={deleteDialog}
         onClose={() => {
@@ -178,6 +197,7 @@ export default function RightSidebar({ isOpen, onClose }) {
             You can find and reopen closed boards at the bottom of your boards page.
           </DialogContentText>
         </DialogContent>
+
         <DialogActions>
           <Button
             onClick={() => {
@@ -186,18 +206,12 @@ export default function RightSidebar({ isOpen, onClose }) {
           >
             Disagree
           </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              setDeleteDialog(false);
-            }}
-            autoFocus
-          >
+          <Button variant="contained" color="error" onClick={handleLeaveBoard} autoFocus>
             Close
           </Button>
         </DialogActions>
       </Dialog>
+      {/* //TODO End Bật lên popup rời khỏi board  */}
     </div>
   );
 }
