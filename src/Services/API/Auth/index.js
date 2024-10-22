@@ -4,7 +4,7 @@ export const SignIn = async (email, password) => {
   try {
     const res = await request.post("/auth/signin", {
       email: email,
-      password: password
+      password: password,
     });
     return res.data;
   } catch (error) {
@@ -17,7 +17,7 @@ export const SignUp = async (userName, email, password) => {
     const res = await request.post("/auth/signup", {
       name: userName,
       email,
-      password
+      password,
     });
     return res.data;
   } catch (error) {
@@ -30,6 +30,6 @@ export async function getProfile() {
     const res = await request.get("/auth/me");
     return res.data;
   } catch (error) {
-    throw error;
+    console.error(error);
   }
 }

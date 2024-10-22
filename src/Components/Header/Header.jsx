@@ -13,10 +13,13 @@ import Popper from "@mui/material/Popper";
 import { Link } from "react-router-dom";
 import routes from "../../config/routes";
 import Create from "./Menus/Create";
+import { useStorage } from "../../Contexts";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const storage = useStorage();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,7 +35,7 @@ const Header = () => {
         {/* Left Section: Logo and Menu */}
         <div className="flex items-center gap-4">
           <div className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground">
-            <AppsIcon style={{ color: "#44546f", hover: "#091e420f"}} className="m-1" />
+            <AppsIcon style={{ color: "#44546f", hover: "#091e420f" }} className="m-1" />
           </div>
           <Link to={routes.workspaceHome} className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground">
             <div className="flex items-center gap-2 m-1">
@@ -41,13 +44,12 @@ const Header = () => {
             </div>
           </Link>
           <div className="items-center hidden space-x-4 xl:flex">
-            <WorkSpaces />
+            {storage.isLoggedIn && <WorkSpaces />}
             <Recent />
             <Stared />
             <Create />
             {/* <Button variant="contained" size="small">
             </Button> */}
-            
           </div>
         </div>
         {/* Right Section: Search and Account */}

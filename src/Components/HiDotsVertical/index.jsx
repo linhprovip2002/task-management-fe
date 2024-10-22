@@ -6,8 +6,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import ItemMenu from "../ItemMenu";
-import { CreateList } from "../../Services/API/ApiListOfBoard/ApiList";
-import { createCardByIdList } from "../../Services/API/ApiCard/ApiCard";
+import { CreateList } from "../../Services/API/ApiListOfBoard";
+import { createCardByIdList } from "../../Services/API/ApiCard";
 import DropItemChoose from "../DropItemChoose";
 
 const ConvertHiDotsVertical = ({

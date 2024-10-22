@@ -3,29 +3,13 @@ import HeadlessTippy from "@tippyjs/react/headless"; // HeadlessTippy cho tùy c
 import TrelloLogoIcon from "../../TrelloLogoIcon/TrelloLogoIcon";
 import { Button } from "@mui/material";
 import { CreateNewBoard } from "../../Modals/CreateNewBoard/CreateNewBoard";
-import { useStorage } from "../../../Contexts";
-import { getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
-// import { useParams } from "react-router-dom";
 
 export default function Create() {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false); // create new board
-  
-  const { setListBoard} = useStorage();
-  // const { id } = useParams();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const handleGetAllBoard = async (id) => {
-    try {
-      const res = await getWorkspaceById(id);
-      
-      setListBoard(res.data.boards);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <>
@@ -52,16 +36,19 @@ export default function Create() {
                       <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-4 h-4 mb-1 mr-1" />
                       Create Board
                     </div>
-                    <p className="text-xs text-gray-400">A board is made up of cards ordered on lists. Use it to manage projects, track information, or organize anything.</p>
+                    <p className="text-xs text-gray-400">
+                      A board is made up of cards ordered on lists. Use it to manage projects, track information, or
+                      organize anything.
+                    </p>
                   </div>
                 </li>
-          
               </ul>
             </div>
           )}
         >
           <Button
-            variant="contained" size="small"
+            variant="contained"
+            size="small"
             onClick={() => setIsOpen(!isOpen)}
             // className="flex items-center"
           >
@@ -69,7 +56,7 @@ export default function Create() {
           </Button>
         </HeadlessTippy>
       </div>
-      {open && <CreateNewBoard open={open} handleGetAllBoard={handleGetAllBoard} handleClose={handleClose} />}
+      {open && <CreateNewBoard open={open} handleGetAllBoard={() => {}} handleClose={handleClose} />}
     </>
   );
 }

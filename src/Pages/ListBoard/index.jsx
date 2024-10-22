@@ -8,9 +8,9 @@ import Sidebar from "../../Components/Sidebar";
 import BoardInSidebar from "../../Components/BoardInSidebar";
 import HeaderBoard from "../../Components/HeaderBoard";
 import ListInBoard from "../../Components/ListInBoard";
+import { CreateList } from "../../Services/API/ApiListOfBoard";
+import { createCardByIdList, getAllCardByIdList } from "../../Services/API/ApiCard";
 import { getBoardId } from "../../Services/API/ApiBoard/apiBoard";
-import { CreateList } from "../../Services/API/ApiListOfBoard/ApiList";
-import { createCardByIdList, getAllCardByIdList } from "../../Services/API/ApiCard/ApiCard";
 
 function ListBoard() {
   const [nameTitle, setNameTitle] = useState("");
@@ -26,8 +26,7 @@ function ListBoard() {
   const [listCount, setListCount] = useState([]);
   const [dataBoard, setDataBoard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
-
-  const prevListCountRef = useRef();
+  let prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
       try {

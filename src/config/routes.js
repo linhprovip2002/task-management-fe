@@ -18,7 +18,7 @@ const routes = {
   dashboard: "/dashboard",
   home: "home",
   signup: "/signup",
-  listboard: "/listboard",
+  listboard: "/board/:id",
   ...userRoutes,
   ...workspaceRoutes
 };

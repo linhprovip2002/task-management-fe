@@ -71,8 +71,12 @@ export const EditWorkspaceModal = ({ open, handleClose }) => {
             </Button>
           </div>
           <div className="relative">
-            <img src="/Workspaces/CreateWS_2.svg" alt="Create Workspace" />
-            <img src="/Workspaces/CreateWS_1.svg" alt="Create Workspace" className="absolute top-1/4 left-1/4" />
+            <img src="/Workspaces/CreateWS_2.svg" alt="Create Workspace" className="h-full" />
+            <img
+              src="/Workspaces/CreateWS_1.svg"
+              alt="Create Workspace"
+              className="absolute top-0 container scale-50"
+            />
           </div>
         </form>
       </Modal>
