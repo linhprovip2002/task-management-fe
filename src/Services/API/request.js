@@ -6,8 +6,8 @@ const request = axios.create({
   // baseURL: "http://localhost:3001/api",
   headers: {
     Accept: "application/json, text/plain, */*",
-    "Content-Type": "application/json"
-  }
+    "Content-Type": "application/json",
+  },
 });
 
 // Add a request interceptor
@@ -25,7 +25,7 @@ request.interceptors.request.use(
   function (error) {
     // Do something with request error
     return Promise.reject(error);
-  }
+  },
 );
 
 // Add a response interceptor
@@ -39,14 +39,12 @@ request.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     return Promise.reject(error);
-  }
+  },
 );
 
 export const setHeaderConfigAxios = (token) => {
   if (token) {
-    request.defaults.headers.common["Authorization"] = token
-      ? "Bearer " + token
-      : "";
+    request.defaults.headers.common["Authorization"] = token ? "Bearer " + token : "";
   } else {
     delete request.defaults.headers.common["Authorization"];
   }

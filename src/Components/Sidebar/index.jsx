@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowDown } from "../Icons";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 function Sidebar({ position, isClosedNavBar, onChange, children }) {
   const handleChange = () => {
@@ -15,9 +15,9 @@ function Sidebar({ position, isClosedNavBar, onChange, children }) {
       {isClosedNavBar ? (
         <div
           onClick={handleChange}
-          className="absolute top-3 left-2 p-1 rounded-[50%] bg-gray-300 hover:bg-gray-200 cursor-pointer"
+          className="absolute top-3 left-2 p-1 w-6 h-6 flex items-center justify-center rounded-full bg-gray-300 hover:bg-gray-200 cursor-pointer z-50"
         >
-          <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
+          <ChevronRightIcon />
         </div>
       ) : (
         <>{children}</>

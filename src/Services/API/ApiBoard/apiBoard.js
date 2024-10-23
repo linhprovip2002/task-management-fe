@@ -1,51 +1,48 @@
-import request from '../request';
+import request from "../request";
 
 export async function createBoard(boardData) {
   try {
-    const response = await request.post('/board', boardData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
+    const response = await request.post("/board", boardData);
     return response.data;
   } catch (error) {
     throw error;
   }
 }
 
-// get All board
-export function getAllBoards(limit, page) {
-  return request.get(`/board?limit=${limit}&page=${page}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+export function getWorkspaceById(id) {
+  return request.get(`/workspace/${id}`);
 }
 
-// trả về danh sách board theo workspaceId
-export function getWorkspaceById(id) {
-  return request.get(`/workspace/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+// get All board
+export async function getBoard(limit, page) {
+  try {
+    const response = await request.get(`/board?limit=${limit}&page=${page}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // get board theo id
 export async function getBoardId(id) {
-  return request.get(`/board/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    const response = await request.get(`/board/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }
 
-// delete board theo di 
+// delete board theo di
 export async function deleteBoardId(id) {
-  return request.delete(`/board/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  try {
+    const response = await request.delete(`/board/${id}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }

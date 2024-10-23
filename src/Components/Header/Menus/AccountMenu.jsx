@@ -14,7 +14,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import Cookies from "js-cookie";
 
 import { EditWorkspaceModal } from "../../Modals";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import routes from "../../../config/routes";
 import { useStorage } from "../../../Contexts";
 
@@ -48,7 +48,6 @@ const Slot_Props = {
 };
 
 export default function AccountMenu() {
-  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openEditWorkspaceModal, setOpenEditWorkspaceModal] = useState(false);
   const { setIsLoggedIn } = useStorage();
@@ -66,7 +65,8 @@ export default function AccountMenu() {
     setIsLoggedIn(false);
     localStorage.clear();
     Cookies.remove("authToken");
-    navigate(routes.login);
+    Cookies.remove("refreshToken");
+    window.location.replace("/login");
   };
 
   return (
