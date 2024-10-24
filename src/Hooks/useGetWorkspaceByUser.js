@@ -7,8 +7,8 @@ const useGetWorkspaceByUser = (options = {}) => {
     queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER],
     queryFn: () => workspaceServices.getWorkspaceByUser(options),
     ...{
-      refetchOnWindowFocus: false
-    }
+      refetchOnWindowFocus: false,
+    },
   });
 
   return { workspaceInfo: data?.data, isLoading, isError, refetch, isFetching };
@@ -20,8 +20,8 @@ const useGetWorkspaceById = (id) => {
     queryFn: () => workspaceServices.getWorkspaceById(id),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!id
-    }
+      enabled: !!id && !isNaN(Number(id)),
+    },
   });
 
   return { workspaceDetails: data, isLoading, isError, refetch };

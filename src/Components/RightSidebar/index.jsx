@@ -18,6 +18,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SettingMenu from "./SettingMenu";
 import { useNavigate } from "react-router-dom";
+// import { useQueryClient } from "@tanstack/react-query";
+// import { EQueryKeys } from "../../constants";
 
 const cx = classNames.bind(styles);
 
@@ -85,6 +87,7 @@ export default function RightSidebar({ isOpen, onClose }) {
   const [menuItems, setMenuItems] = useState([items]);
   const [deleteDialog, setDeleteDialog] = useState(false);
 
+  // const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   // TODO Xử lý đóng right menu
@@ -146,6 +149,9 @@ export default function RightSidebar({ isOpen, onClose }) {
   const handleLeaveBoard = () => {
     //TODO Gọi API leave board
     //TODO Gọi lại API get board từ useQuery để reload lại giao diện
+    // queryClient.invalidateQueries({
+    //   queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+    // });
     //TODO Lấy id của workspace từ context để trở về trang workspace
 
     return navigate("/workspace/20/home");

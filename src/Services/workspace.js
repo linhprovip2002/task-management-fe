@@ -8,7 +8,7 @@ class WorkspaceServices {
       method: "POST",
       baseURL,
 
-      data: JSON.stringify(workspaceData)
+      data: JSON.stringify(workspaceData),
     });
     return response.data;
   }
@@ -19,8 +19,8 @@ class WorkspaceServices {
       baseURL,
       params: {
         ...(limit && { limit }),
-        ...(page && { page })
-      }
+        ...(page && { page }),
+      },
     });
     return response.data;
   }
@@ -29,7 +29,7 @@ class WorkspaceServices {
   async getWorkspaceById(id) {
     const response = await request({
       method: "GET",
-      baseURL: `${baseURL}/${id}`
+      baseURL: `${baseURL}/${id}`,
     });
     return response.data;
   }
@@ -44,7 +44,7 @@ class WorkspaceServices {
     const response = await request({
       method: "POST",
       baseURL: `${baseURL}/add-member`,
-      data: JSON.stringify({ userId, workspaceId, role })
+      data: JSON.stringify({ userId, workspaceId, role }),
     });
     return response.data;
   }
@@ -53,7 +53,7 @@ class WorkspaceServices {
     const response = await request({
       method: "DELETE",
       baseURL: `${baseURL}/remove-member`,
-      data: JSON.stringify({ memberId })
+      data: JSON.stringify({ memberId }),
     });
     return response.data;
   }
@@ -62,7 +62,7 @@ class WorkspaceServices {
     const response = await request({
       method: "PATCH",
       baseURL: `${baseURL}/update-member`,
-      data: JSON.stringify({ memberId, updatedData })
+      data: JSON.stringify({ memberId, updatedData }),
     });
     return response.data;
   }

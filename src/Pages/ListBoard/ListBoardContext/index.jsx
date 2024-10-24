@@ -29,7 +29,6 @@ function ListBoardProvider({ children, boardId }) {
   useEffect(() => {
     const fetchBoardData = async () => {
       try {
-        console.log(boardId);
         const res = await getBoardId(boardId);
         setDataBoard(res);
         const lists = res.lists;
