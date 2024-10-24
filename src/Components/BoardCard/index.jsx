@@ -29,73 +29,75 @@ import ItemMenu from "../ItemMenu";
 import MemberMenu from "../MemberMenuOfBoard";
 import ToDoMenu from "../ToDoMenuOfBoard";
 import Calendar from "../Calendar";
+import UploadFile from "../Modals/UploadFile";
 
 export const BoardCard = ({ data, onShowBoardCard }) => {
   const listBtnCard = [
     {
       id: 1,
       nameBtn: "Join",
-      Icon: <PersonAddAltIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 2,
       nameBtn: "Member",
-      Icon: <Person4OutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <Person4OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 3,
       nameBtn: "Label",
-      Icon: <LabelIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <LabelIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 4,
       nameBtn: "What to do",
-      Icon: <CheckBoxOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <CheckBoxOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 5,
       nameBtn: "Day",
-      Icon: <AccessTimeOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <AccessTimeOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 6,
       nameBtn: "Attached",
-      Icon: <AttachmentOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <AttachmentOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+      onClick: () => setOpenUpload(true),
     },
     {
       id: 7,
       nameBtn: "Cover photo",
-      Icon: <InsertPhotoIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <InsertPhotoIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 8,
       nameBtn: "Custom Fields",
-      Icon: <Crop169Icon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <Crop169Icon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 9,
       nameBtn: "Move",
-      Icon: <ArrowForwardOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <ArrowForwardOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 10,
       nameBtn: "Copy",
-      Icon: <ContentCopyOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <ContentCopyOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 11,
       nameBtn: "Create a template",
-      Icon: <SaveAsOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <SaveAsOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 12,
       nameBtn: "Storage",
-      Icon: <BackupTableOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <BackupTableOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
     {
       id: 13,
       nameBtn: "Share",
-      Icon: <ShareOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+      Icon: <ShareOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
     },
   ];
   const listLabelAdd = [
@@ -255,6 +257,12 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [isJoin, setIsJoin] = useState(false);
+
+  const [openUpload, setOpenUpload] = useState(false);
+
+  const handleClose = () => setOpenUpload(false);
+
+
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
@@ -457,12 +465,15 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
       case 5:
         handleShowMenuBtnCard(e);
         break;
+      case 6:
+        // handleUploadFile();
+        break;
       default:
         break;
     }
   };
   return (
-    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-50">
+    <div className="absolute top-0 left-0 z-50 flex items-center justify-center w-full h-full overflow-auto bg-black bg-opacity-50">
       <div className="mt-20 mb-10">
         <div className="relative flex justify-between min-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
           <div className="flex-1 p-2">
@@ -470,7 +481,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
               <div>
                 <FeaturedPlayListIcon fontSize="small" />
               </div>
-              <div className="ml-4 flex-1">
+              <div className="flex-1 ml-4">
                 <div className="text-[16px] mb-2">KTPM</div>
                 <div className="flex items-center text-[12px] mb-6">
                   <span className="mr-2 font-normal">in the list</span>
@@ -537,7 +548,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                       nameBtn={"Following"}
                       className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
                     >
-                      <RemoveRedEyeOutlinedIcon className="mr-2 ml-1" fontSize="small" />
+                      <RemoveRedEyeOutlinedIcon className="ml-1 mr-2" fontSize="small" />
                     </ButtonBoardCard>
                   </div>
                 </div>
@@ -547,7 +558,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
               <div>
                 <SubjectIcon fontSize="small" />
               </div>
-              <div className="ml-4 flex-1">
+              <div className="flex-1 ml-4">
                 <div className="text-[16px] mb-2">Describe</div>
                 <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-[14px] mb-2 p-2 pb-6 rounded-[4px]">
                   <div>Add more detailed description...</div>
@@ -561,7 +572,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                     <div>
                       <CheckBoxOutlinedIcon fontSize="small" />
                     </div>
-                    <div className="ml-4 flex-1">
+                    <div className="flex-1 ml-4">
                       <div className="flex justify-between">
                         <div className="text-[16px] mb-2">{item.title}</div>
                         <ButtonBoardCard
@@ -601,7 +612,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                         </span>
                       </li>
                     ))}
-                    <div className="ml-2 mb-8">
+                    <div className="mb-8 ml-2">
                       {!item.isCreateItem ? (
                         <ButtonBoardCard
                           onHandleEvent={() => ShowCreateToDoItem(item)}
@@ -665,7 +676,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
               <div>
                 <FormatListBulletedIcon fontSize="small" />
               </div>
-              <div className="ml-4 flex-1">
+              <div className="flex-1 ml-4">
                 <div className="flex justify-between">
                   <div className="text-[16px] mb-2">Work</div>
                   <ButtonBoardCard
@@ -680,7 +691,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
             </div>
           </div>
           <div className="min-w-[180px]">
-            <div className="relative flex items-center flex-col mt-16 mb-4 mx-2">
+            <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
               {listBtnCard.map((item, index) => (
                 <ButtonBoardCard onHandleEvent={(e) => handleClickBtn(e, item)} key={index} nameBtn={item.nameBtn}>
                   {item.Icon}
@@ -704,7 +715,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
               style={{ top: position.top, left: position.left }}
               className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
             >
-              <div className="text-center p-2 mx-8">Label</div>
+              <div className="p-2 mx-8 text-center">Label</div>
               <div className="mx-2">
                 <div className="mx-1 border-2 border-gray-500 rounded-lg">
                   <input
@@ -785,7 +796,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                   </div>
                   <div className="mt-2">
                     <div className="py-2 bg-white">Select a color</div>
-                    <ul className="flex items-center justify-center flex-wrap">
+                    <ul className="flex flex-wrap items-center justify-center">
                       {/* <li className="w-12 h-8 bg-red-500 rounded-[4px] mr-1 mb-1 "></li> */}
                       {listColorLabel.map((item, index) => (
                         <li
@@ -852,16 +863,16 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
           style={{ top: position.top - 200, left: position.left }}
           className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
         >
-          <div className="text-center p-2 mx-8">Day</div>
+          <div className="p-2 mx-8 text-center">Day</div>
           <div className="mx-2">
-            <div className="py-2 px-1">
+            <div className="px-1 py-2">
               <Calendar />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Start date</label>
                 <input
                   type="text"
                   value="N/T/NNNN"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
               </div>
 
@@ -870,20 +881,20 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
                 <input
                   type="text"
                   value="18/10/2024"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
                 <input
                   type="text"
                   value="19:33"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
               </div>
 
-              <button className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
+              <button className="w-full px-4 py-2 font-bold text-white bg-blue-600 rounded hover:bg-blue-700">
                 Set Reminder
               </button>
 
-              <button className="w-full mt-4 bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700">
+              <button className="w-full px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-700">
                 Save
               </button>
             </div>
@@ -894,6 +905,15 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
           </div>
         </div>
       )}
+      {/* {isShowMenuBtnCard && numberShow === 6 && (
+        <div>
+          
+        </div>
+      )} */}
+      <div>
+        {/* <ModalUploadFile open={openUpload} handleClose={handleClose} /> */}
+        <UploadFile open={openUpload} handleClose={handleClose} />
+      </div>
     </div>
   );
 };
