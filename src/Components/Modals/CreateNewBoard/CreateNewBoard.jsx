@@ -15,7 +15,7 @@ import { listRuleOptions } from "./constants/createNewBoard.constant";
 import { useGetWorkspaceByUser } from "../../../Hooks";
 import { createBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import CloseIcon from "@mui/icons-material/Close";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { CenterModel } from "../styles";
 import Loading from "../../Loading";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,6 +24,7 @@ import { EQueryKeys } from "../../../constants";
 export const CreateNewBoard = ({ open, handleClose }) => {
   const queryClient = useQueryClient();
   const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBg, setSelectedBg] = useState("");
@@ -63,10 +64,11 @@ export const CreateNewBoard = ({ open, handleClose }) => {
       workspaceId: +workspaceId,
     };
     try {
-      await createBoard(boardData);
+      const newboard = await createBoard(boardData);
       reset(defaultBoardValues);
-      handleClose();
       queryClient.invalidateQueries([EQueryKeys.GET_WORKSPACE_BY_ID]);
+      navigate(`/board/${newboard.id}`);
+      handleClose();
     } catch (error) {
       console.error("Failed to create board:", error);
     }

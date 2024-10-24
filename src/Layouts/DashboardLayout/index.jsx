@@ -8,21 +8,23 @@ import { useGetWorkspaceByUser } from "../../Hooks";
 import Loading from "../../Components/Loading";
 import { useStorage } from "../../Contexts";
 import { EditWorkspaceModal } from "../../Components/Modals";
+import { useParams } from "react-router-dom";
 
 const DashBoardLayout = ({ children }) => {
   const [toggleModal, setToggleModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { userData } = useStorage();
+  const { id } = useParams();
 
-  const { workspaceInfo, isLoading } = useGetWorkspaceByUser();
+  const { workspaceInfo, isLoading, isFetching } = useGetWorkspaceByUser();
 
   const isActiveClassname = (path) => {
     return location.pathname === path ? "bg-blue-100" : "hover:bg-gray-200";
   };
 
   useEffect(() => {
-    if (workspaceInfo?.length) {
+    if (workspaceInfo?.length && id === ":id") {
       navigate(`/workspace/${workspaceInfo[0].id}/home`);
     }
     // eslint-disable-next-line
@@ -61,7 +63,7 @@ const DashBoardLayout = ({ children }) => {
                       size="sm"
                       className={"rounded-lg"}
                       key={workspace.id}
-                      value={false}
+                      value={workspace.id === id}
                       position="right"
                       title={
                         <div className="flex items-center gap-4 text-base">
@@ -103,7 +105,7 @@ const DashBoardLayout = ({ children }) => {
         </div>
       </div>
       {toggleModal && <EditWorkspaceModal open={toggleModal} handleClose={() => setToggleModal(false)} />}
-      {isLoading && <Loading />}
+      {(isLoading || isFetching) && <Loading />}
     </>
   );
 };

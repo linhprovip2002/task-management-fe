@@ -2,15 +2,17 @@ import { Avatar, Box, Button, ClickAwayListener, Divider, Fade, Popper, TextFiel
 import LockIcon from "@mui/icons-material/Lock";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EditIcon from "@mui/icons-material/Edit";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormUpdate from "./FormUpdate";
-import InviteWorkspace from "../../../Components/Modals/InviteWorkspace";
 import { useParams } from "react-router-dom";
 import { deleteWorkspace } from "../../../Services/API/ApiWorkSpace/apiWorkSpace";
 import { toast } from "react-toastify";
 import { useGetWorkspaceById } from "../../../Hooks";
 import Loading from "../../../Components/Loading";
 import { Close } from "@mui/icons-material";
+import { InviteMemberModal } from "../../../Components/Modals/InviteMemberModal/InviteMemberModal";
+import { useQueryClient } from "@tanstack/react-query";
+import { EQueryKeys } from "../../../constants";
 
 const WorkspaceSettings = () => {
   const { id } = useParams();
@@ -24,6 +26,8 @@ const WorkspaceSettings = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [confirmDelete, setConfirmDelete] = useState("");
+
+  const queryClient = useQueryClient();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -40,7 +44,10 @@ const WorkspaceSettings = () => {
   const handleDeleteWsp = () => {
     deleteWorkspace(id).then((res) => {
       toast.success("Deleted Workspace");
-      //TODO chưa handle cập nhật lại workspace ở sidebar
+
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER],
+      });
     });
   };
 
@@ -49,9 +56,13 @@ const WorkspaceSettings = () => {
     handleCloseUpdate();
   };
 
-  const canDelete = confirmDelete === workspaceData.title;
+  useEffect(() => {
+    setWorkspaceData(workspaceDetails);
+  }, [workspaceDetails]);
 
   if (isLoading) return <Loading />;
+
+  const canDelete = confirmDelete === workspaceData?.title;
 
   return (
     <div className="px-8 workSpaceSetting">
@@ -116,12 +127,7 @@ const WorkspaceSettings = () => {
           Delete this workspace?
         </p>
       </div>
-      <InviteWorkspace
-        open={invitePopup}
-        onClose={() => {
-          setInvitePopup(false);
-        }}
-      />
+      <InviteMemberModal open={invitePopup} handleClose={() => setInvitePopup(false)} />
 
       <Popper placement="bottom-start" id={id} open={openDelete} anchorEl={anchorEl} transition>
         {({ TransitionProps }) => (
@@ -153,7 +159,7 @@ const WorkspaceSettings = () => {
 
                   <div className="px-3 pb-3 flex flex-col">
                     <h3 className="text-[var(--text-color)] text-base mb-2 font-semibold">
-                      {`Enter the workspace name "${workspaceData.title}" to delete`}
+                      {`Enter the workspace name "${workspaceData?.title}" to delete`}
                     </h3>
                     <div className="text-[#44546f] font-semibold text-xs">Things to know:</div>
                     <ul className="list-disc">

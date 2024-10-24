@@ -14,9 +14,11 @@ import PeopleIcon from "@mui/icons-material/People";
 import Cookies from "js-cookie";
 
 import { EditWorkspaceModal } from "../../Modals";
-import { Link } from "react-router-dom";
+import { Link, Routes, useNavigate } from "react-router-dom";
 import routes from "../../../config/routes";
 import { useStorage } from "../../../Contexts";
+import { useGetUserProfile } from "../../../Hooks";
+import Loading from "../../Loading";
 
 const Slot_Props = {
   paper: {
@@ -29,7 +31,7 @@ const Slot_Props = {
         width: 32,
         height: 32,
         ml: -0.5,
-        mr: 1,
+        mr: 1
       },
       "&::before": {
         content: '""',
@@ -41,16 +43,19 @@ const Slot_Props = {
         height: 10,
         bgcolor: "background.paper",
         transform: "translateY(-50%) rotate(45deg)",
-        zIndex: 0,
-      },
-    },
-  },
+        zIndex: 0
+      }
+    }
+  }
 };
 
 export default function AccountMenu() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openEditWorkspaceModal, setOpenEditWorkspaceModal] = useState(false);
-  const { setIsLoggedIn } = useStorage();
+  const { setIsLoggedIn, isLoggedIn } = useStorage();
+
+  const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -66,8 +71,10 @@ export default function AccountMenu() {
     localStorage.clear();
     Cookies.remove("authToken");
     Cookies.remove("refreshToken");
-    window.location.replace("/login");
+    navigate(Routes.login);
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -81,7 +88,9 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 26, height: 26, backgroundColor: "orange" }}></Avatar>
+            <Avatar sx={{ width: 26, height: 26, backgroundColor: "orange" }}>
+              {userProfile?.avatarUrl || userProfile.name[0]}
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>

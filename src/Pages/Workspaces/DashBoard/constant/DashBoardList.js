@@ -1,6 +1,6 @@
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import GridViewIcon from "@mui/icons-material/GridView";
+// import FavoriteIcon from "@mui/icons-material/Favorite";
+// import GridViewIcon from "@mui/icons-material/GridView";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SettingsIcon from "@mui/icons-material/Settings";
 
@@ -10,16 +10,16 @@ export const WorkSpaceItems = [
     title: "Boards",
     path: "/dashboard"
   },
-  {
-    icon: <FavoriteIcon />,
-    title: "Highlights",
-    path: "/highlights"
-  },
-  {
-    icon: <GridViewIcon />,
-    title: "Views",
-    path: "/views"
-  },
+  // {
+  //   icon: <FavoriteIcon />,
+  //   title: "Highlights",
+  //   path: "/highlights"
+  // },
+  // {
+  //   icon: <GridViewIcon />,
+  //   title: "Views",
+  //   path: "/views"
+  // },
   {
     icon: <PeopleAltIcon />,
     title: "Members",

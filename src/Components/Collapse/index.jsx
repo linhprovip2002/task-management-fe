@@ -6,7 +6,7 @@ const iconClass = (isCollapse, size, isHide = false) =>
 
 const TITLE_CONTAINER_PADDING = {
   md: "px-6 py-4",
-  sm: "px-4 py-3",
+  sm: "px-4 py-3"
 };
 
 export default function Collapse({
@@ -27,7 +27,7 @@ export default function Collapse({
   isChild = false,
   disableToggle = false,
   disableTitleClick = false,
-  isHideIcon = false,
+  isHideIcon = false
 }) {
   const [isCollapse, setIsCollapse] = useState(value);
 
@@ -55,17 +55,26 @@ export default function Collapse({
             <KeyboardArrowUpIcon />
           </div>
         )}
-        <div className="flex-1 text-xl font-bold truncate" onClick={(e) => disableTitleClick && e.stopPropagation()}>
+        <div
+          className="flex-1 text-xl font-bold truncate"
+          onClick={(e) => disableTitleClick && e.stopPropagation()}
+        >
           {title}
         </div>
-        {description && <p className="w-fit truncate text-[14px]">{description}</p>}
+        {description && (
+          <p className="w-fit truncate text-[14px]">{description}</p>
+        )}
         {position === "right" && !disabled && (
           <div className={iconClass(isCollapse, size)}>
             <KeyboardArrowUpIcon />
           </div>
         )}
       </div>
-      {!!subTitle && <div className="flex-1 truncate px-6 pb-4 text-[18px] font-bold">{subTitle}</div>}
+      {!!subTitle && (
+        <div className="flex-1 truncate px-6 pb-4 text-[18px] font-bold">
+          {subTitle}
+        </div>
+      )}
       <div
         className={`
           grid

@@ -11,14 +11,14 @@ function GlobalStates({ children }) {
   const [listBoard, setListBoard] = useState([]);
 
   const states = {
-    isLoggedIn: isLoggedIn,
-    setIsLoggedIn: setIsLoggedIn, // Đẵ đăng nhập hay chưa
-    userData, // dữ liệu người dùng sau khi đăng nhập
+    isLoggedIn,
+    setIsLoggedIn,
+    userData,
     setUserData,
     defaultWorkspace,
     setDefaultWorkspace,
     listBoard,
-    setListBoard,
+    setListBoard
   };
 
   const { userProfile } = useGetUserProfile(isLoggedIn);
