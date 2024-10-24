@@ -14,18 +14,13 @@ import {
 import ConvertHiDotsVertical from "../../Components/HiDotsVertical";
 import TippyDetail from "../TippyDetail";
 import RightSidebar from "../../Components/RightSidebar";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
-function HeaderBoard({ dataBoard, onChangeStar, isStar }) {
+function HeaderBoard() {
+  const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
   const [rightSidebar, setRightSidebar] = useState(false);
-  const handleChangeStar = () => {
-    console.log(isStar);
-    if (onChangeStar) {
-      onChangeStar(isStar);
-    }
-  };
 
   const handleToggleRightSidebar = () => {
-    console.log(rightSidebar);
     setRightSidebar(!rightSidebar);
   };
 
@@ -35,10 +30,10 @@ function HeaderBoard({ dataBoard, onChangeStar, isStar }) {
         <div className="text-black p-2 font-bold text-[20px]">{dataBoard.title}</div>
         <TippyDetail title={"Star or unstar this tables. Starred tables will appear at the top of the tables list."}>
           <div
-            onClick={handleChangeStar}
+            onClick={handleActiveStar}
             className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
           >
-            {isStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
+            {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
           </div>
         </TippyDetail>
         <TippyDetail title={"Viewability"}>

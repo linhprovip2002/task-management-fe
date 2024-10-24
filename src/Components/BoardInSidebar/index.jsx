@@ -4,19 +4,17 @@ import React from "react";
 
 import { ImageIcon } from "../../Assets/images";
 import ConvertHiDotsVertical from "../../Components/HiDotsVertical";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
-function BoardInSidebar({ dataBoard, isStar, onChange }) {
-  const handleChange = () => {
-    if (onChange) {
-      onChange(isStar);
-    }
-  };
+function BoardInSidebar() {
+  const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
+
   return (
     <div className="relative flex items-center pl-4 py-2 bg-gray-200 cursor-pointer group">
       <div className="rounded-[4px] font-bold text-white text-[20px]">
         <ImageIcon width={24} height={20} className={"rounded-[2px]"} />
       </div>
-      <div className=" flex-1 ml-2 text-[18px] font-medium">{dataBoard.title}</div>
+      <div className=" flex-1 ml-2 text-[18px] font-medium">{dataBoard.title || "No title"}</div>
       <ConvertHiDotsVertical
         type={"navbarBoard"}
         className={
@@ -24,10 +22,10 @@ function BoardInSidebar({ dataBoard, isStar, onChange }) {
         }
       />
       <div
-        onClick={handleChange}
-        className={`cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${isStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
+        onClick={handleActiveStar}
+        className={`cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
       >
-        {isStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
+        {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
       </div>
     </div>
   );

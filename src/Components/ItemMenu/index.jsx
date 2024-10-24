@@ -11,7 +11,7 @@ const ItemMenu = ({ title, description, nameBtn, onLeaveBoard, onToggleCollape, 
       {nameBtn && (
         <div
           onClick={onHandleCopyList}
-          className="text-center m-2 px-3 py-1 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300"
+          className="cursor-pointer text-center m-2 px-3 py-1 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300"
         >
           <span className="font-medium text-white">{nameBtn}</span>
         </div>
