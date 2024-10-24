@@ -11,11 +11,24 @@ const request = axios.create({
 });
 
 let isRefreshing = false; // Cờ để kiểm tra xem đã redirect hay chưa
+let failedQueue = []; // Hàng đợi cho các yêu cầu thất bại trong khi refresh token
+
+// Hàm xử lý các yêu cầu bị chặn khi refresh token
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
 
 // Add a request interceptor
 request.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
     const accessToken = Cookies.get("authToken") || "";
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -25,7 +38,6 @@ request.interceptors.request.use(
     return config;
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error);
   },
 );
@@ -38,23 +50,44 @@ request.interceptors.response.use(
   async function (error) {
     const originalRequest = error.config;
 
+    // Kiểm tra nếu nhận lỗi 401 và không phải là yêu cầu retry
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axios(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       const newAccessToken = await refreshAccessToken();
 
       if (newAccessToken !== null) {
+        processQueue(null, newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        isRefreshing = false;
         return axios(originalRequest);
       } else {
-        // Đảm bảo chỉ redirect đến login một lần duy nhất
+        processQueue(new Error("Failed to refresh token"), null);
+        isRefreshing = false;
+
         if (!isRefreshing) {
           isRefreshing = true;
           Cookies.remove("authToken");
           Cookies.remove("refreshToken");
 
-          // Chỉ redirect một lần
-          window.location.replace("/login");
+          // Thêm kiểm tra nếu chưa redirect
+          if (!window.location.href.includes("/login")) {
+            window.location.replace("/login");
+          }
         }
         return Promise.reject(error);
       }
