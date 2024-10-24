@@ -3,30 +3,37 @@ import CloseIcon from "@mui/icons-material/Close";
 import { CenterModel } from "../styles";
 import { useForm } from "react-hook-form";
 import { SearchMember } from "../../SearchMember/SearchMember";
-import { useMutation, QueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { workspaceServices } from "../../../Services";
 import { EQueryKeys, EMemberRole } from "../../../constants";
 import { defaultInviteMemberValues } from "./InviteMember.constant";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const InviteMemberModal = ({ open, handleClose }) => {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const { id: workspaceId } = useParams();
   const { handleSubmit, watch, reset, setValue } = useForm({
-    defaultValues: defaultInviteMemberValues,
+    defaultValues: defaultInviteMemberValues
   });
 
   const mutation = useMutation({
-    mutationFn: (userId) => workspaceServices.addWorkspaceMember(userId, workspaceId, EMemberRole.MEMBER),
+    mutationFn: (userId) =>
+      workspaceServices.addWorkspaceMember(
+        userId,
+        workspaceId,
+        EMemberRole.MEMBER
+      ),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER],
-      });
+      toast.success("Add member successfully");
     },
     onSettled: () => {
       handleClose();
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER]
+      });
       reset(defaultInviteMemberValues);
-    },
+    }
   });
 
   const onSubmit = (data) => {
@@ -54,7 +61,10 @@ export const InviteMemberModal = ({ open, handleClose }) => {
       >
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold">Invite to Workspace</div>
-          <div onClick={() => handleClose()} className="p-1 rounded-full hover:cursor-pointer hover:bg-slate-200">
+          <div
+            onClick={() => handleClose()}
+            className="p-1 rounded-full hover:cursor-pointer hover:bg-slate-200"
+          >
             <CloseIcon className="cursor-pointer" />
           </div>
         </div>

@@ -4,247 +4,41 @@ import {
   Subject as SubjectIcon,
   FormatListBulleted as FormatListBulletedIcon,
   RemoveRedEyeOutlined as RemoveRedEyeOutlinedIcon,
-  PersonAddAlt as PersonAddAltIcon,
   Person4Outlined as Person4OutlinedIcon,
-  Label as LabelIcon,
   CheckBoxOutlined as CheckBoxOutlinedIcon,
-  AccessTimeOutlined as AccessTimeOutlinedIcon,
-  AttachmentOutlined as AttachmentOutlinedIcon,
-  InsertPhoto as InsertPhotoIcon,
-  Crop169 as Crop169Icon,
-  ArrowForwardOutlined as ArrowForwardOutlinedIcon,
-  ContentCopyOutlined as ContentCopyOutlinedIcon,
-  SaveAsOutlined as SaveAsOutlinedIcon,
-  BackupTableOutlined as BackupTableOutlinedIcon,
-  ShareOutlined as ShareOutlinedIcon,
   Add as AddIcon,
-  ModeEdit as ModeEditIcon,
   AccessTime as AccessTimeIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
-import { Divider } from "@mui/material";
 
+import { listColorLabel } from "./constans/list.constans";
 import { ButtonBoardCard } from "../ButtonBoardCard";
-import ItemMenu from "../ItemMenu";
 import MemberMenu from "../MemberMenuOfBoard";
 import ToDoMenu from "../ToDoMenuOfBoard";
 import Calendar from "../Calendar";
-import UploadFile from "../Modals/UploadFile";
+import { listLabelAdd } from "./constans/list.constans";
+import { listBtnCard } from "./constans/list.constans";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
+import ItemPerson from "../ItemPerson";
+import { useStorage } from "../../Contexts";
+import AddLabelInCard from "./AddLabelInCard";
+import CreateLabel from "./CreateLabel";
 
-export const BoardCard = ({ data, onShowBoardCard }) => {
-  const listBtnCard = [
-    {
-      id: 1,
-      nameBtn: "Join",
-      Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 2,
-      nameBtn: "Member",
-      Icon: <Person4OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 3,
-      nameBtn: "Label",
-      Icon: <LabelIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 4,
-      nameBtn: "What to do",
-      Icon: <CheckBoxOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 5,
-      nameBtn: "Day",
-      Icon: <AccessTimeOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 6,
-      nameBtn: "Attached",
-      Icon: <AttachmentOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-      onClick: () => setOpenUpload(true),
-    },
-    {
-      id: 7,
-      nameBtn: "Cover photo",
-      Icon: <InsertPhotoIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 8,
-      nameBtn: "Custom Fields",
-      Icon: <Crop169Icon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 9,
-      nameBtn: "Move",
-      Icon: <ArrowForwardOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 10,
-      nameBtn: "Copy",
-      Icon: <ContentCopyOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 11,
-      nameBtn: "Create a template",
-      Icon: <SaveAsOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 12,
-      nameBtn: "Storage",
-      Icon: <BackupTableOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-    {
-      id: 13,
-      nameBtn: "Share",
-      Icon: <ShareOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-    },
-  ];
-  const listLabelAdd = [
-    {
-      id: 2,
-      title: "Back End",
-      color: "bg-yellow-300",
-    },
-    {
-      id: 3,
-      title: "Front End",
-      color: "bg-orange-300",
-    },
-    {
-      id: 4,
-      title: "",
-      color: "bg-red-300",
-    },
-  ];
-  const listColorLabel = [
-    {
-      id: 1,
-      title: "light green",
-      color: "bg-green-300",
-    },
-    {
-      id: 2,
-      title: "pale yellow",
-      color: "bg-yellow-300",
-    },
-    {
-      id: 3,
-      title: "light orange",
-      color: "bg-orange-300",
-    },
-    {
-      id: 4,
-      title: "light red",
-      color: "bg-red-300",
-    },
-
-    {
-      id: 5,
-      title: "green",
-      color: "bg-green-500",
-    },
-    {
-      id: 6,
-      title: "yellow",
-      color: "bg-yellow-500",
-    },
-    {
-      id: 7,
-      title: "orange",
-      color: "bg-orange-500",
-    },
-    {
-      id: 8,
-      title: "red",
-      color: "bg-red-500",
-    },
-
-    {
-      id: 9,
-      title: "dark green",
-      color: "bg-green-700",
-    },
-    {
-      id: 10,
-      title: "dark yellow",
-      color: "bg-yellow-700",
-    },
-    {
-      id: 11,
-      title: "dark orange",
-      color: "bg-orange-700",
-    },
-    {
-      id: 12,
-      title: "dark red",
-      color: "bg-red-700",
-    },
-
-    {
-      id: 13,
-      title: "light blue",
-      color: "bg-blue-300",
-    },
-    {
-      id: 14,
-      title: "light pink",
-      color: "bg-pink-300",
-    },
-    {
-      id: 15,
-      title: "light black",
-      color: "bg-gray-300",
-    },
-    {
-      id: 16,
-      title: "light purple",
-      color: "bg-purple-300",
-    },
-    {
-      id: 17,
-      title: "blue",
-      color: "bg-blue-500",
-    },
-    {
-      id: 18,
-      title: "pink",
-      color: "bg-pink-500",
-    },
-    {
-      id: 19,
-      title: "black",
-      color: "bg-gray-500",
-    },
-    {
-      id: 20,
-      title: "purple",
-      color: "bg-purple-500",
-    },
-    {
-      id: 21,
-      title: "dark blue",
-      color: "bg-blue-700",
-    },
-    {
-      id: 22,
-      title: "dark pink",
-      color: "bg-pink-700",
-    },
-    {
-      id: 23,
-      title: "dark black",
-      color: "bg-gray-700",
-    },
-    {
-      id: 24,
-      title: "dark purple",
-      color: "bg-purple-700",
-    },
-  ];
+export const BoardCard = () => {
+  const {
+    handleShowBoardCard,
+    membersBoard,
+    setMembersBoard,
+    dataList,
+    dataCard,
+    position,
+    setPosition,
+    setMembersInCard,
+    membersInCard,
+  } = useListBoardContext();
+  const { userData } = useStorage();
   const [listLabel, setListLabel] = useState(listLabelAdd);
   const [listToDo, setListToDo] = useState([]);
-  const [countMember, setCountMember] = useState([]);
   const [countLabel, setCountLabel] = useState([]);
   const [chooseColorLabel, setChooseColorLabel] = useState(listColorLabel[0]);
   const [inputTitleLabel, setInputTitleLabel] = useState("");
@@ -255,15 +49,7 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
   const [isCreateLabel, setIsCreateLabel] = useState(false);
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
   const [isJoin, setIsJoin] = useState(false);
-
-  const [openUpload, setOpenUpload] = useState(false);
-
-  const handleClose = () => setOpenUpload(false);
-
-
-
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
   };
@@ -306,8 +92,10 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
     setListLabel((prev) => {
       if (prev.some((item) => item.id === dataLabel.id)) {
         const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (itemLabel.title !== dataLabel.title) {
-          return prev.map((item) => (item.id === dataLabel.id ? { ...item, title: dataLabel.title } : item));
+        if (itemLabel.title !== dataLabel.title || itemLabel.color !== dataLabel.color) {
+          return prev.map((item) =>
+            item.id === dataLabel.id ? { ...item, color: dataLabel.color, title: dataLabel.title } : item,
+          );
         }
         return prev;
       } else {
@@ -433,31 +221,59 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
     setInputTitleToDoItem(e.target.value);
   };
 
-  const handleAddMember = (id) => {
-    if (countMember.includes(id)) {
-      setCountMember(countMember.filter((i) => i !== id));
-      listBtnCard.forEach((item) => {
-        if (item.id === 1) {
-          item.nameBtn = "Join";
-        }
-      });
-    } else {
-      setCountMember([...countMember, id]);
-      listBtnCard.forEach((item) => {
-        if (item.id === 1) {
-          item.nameBtn = "Leave";
-        }
-      });
+  const handleAddMember = async (item) => {
+    try {
+      const member = await item;
+      console.log(member);
+      if (membersInCard.some((item) => item.id === member.id)) {
+        setMembersInCard(membersInCard.filter((item) => item.id !== member.id));
+        listBtnCard.forEach((item) => {
+          if (item.id === 1) {
+            item.nameBtn = "Join";
+          }
+        });
+      } else {
+        setMembersInCard([...membersInCard, member]);
+        listBtnCard.forEach((item) => {
+          if (item.id === 1) {
+            item.nameBtn = "Leave";
+          }
+        });
+      }
+      if (membersBoard.some((item) => item.id === member.id)) {
+        setMembersBoard(membersBoard.filter((item) => item.id !== member.id));
+      } else {
+        setMembersBoard([...membersBoard, member]);
+      }
+    } catch (error) {
+      console.error("Error handling member:", error);
     }
   };
 
+  // const HandleGetAllUserInCard = async () => {
+  //   try {
+  //     // const res = await getAllUserInCard(dataCard.id);
+  //     // const dataUser = res[0].user;
+  //     // setMembersInCard([dataUser]);
+  //   } catch (err) {
+  //     console.error("Error fetching board data: ", err);
+  //   }
+  // };
+
   const handleClickBtn = (e, item) => {
     setNumberShow(item.id);
+    const user = userData
+      .then((result) => {
+        return result;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     switch (item.id) {
       case 1:
         setIsJoin(!isJoin);
         setIsFollowing(!isJoin);
-        handleAddMember(item.id);
+        handleAddMember(user);
         break;
       case 2:
       case 3:
@@ -481,39 +297,17 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
               <div>
                 <FeaturedPlayListIcon fontSize="small" />
               </div>
-              <div className="flex-1 ml-4">
-                <div className="text-[16px] mb-2">KTPM</div>
+              <div className="ml-4 flex-1">
+                <div className="text-[16px] mb-2">{dataCard.title}</div>
                 <div className="flex items-center text-[12px] mb-6">
                   <span className="mr-2 font-normal">in the list</span>
                   <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
-                    {data.descriptionCard}
+                    {dataList.title}
                   </div>
                   {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                 </div>
                 <div className="flex items-center">
-                  {countMember.length !== 0 && (
-                    <div className="mr-2">
-                      <div className="flex items-center text-[12px] mb-2">
-                        <span className="mr-2">Member</span>
-                      </div>
-                      <div className="relative flex items-center justify-center">
-                        {countMember.map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] bg-gradient-to-b from-green-400 to-blue-500"
-                          >
-                            PM
-                          </div>
-                        ))}
-                        <div
-                          onClick={handleShowMenuBtnCard}
-                          className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-[12px] bg-gray-200 hover:bg-gray-300"
-                        >
-                          <AddIcon style={{ fontSize: "20px" }} />
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {membersInCard.length !== 0 && <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />}
                   {countLabel.length !== 0 && (
                     <div className="mr-2">
                       <div className="flex items-center text-[12px] mb-2">
@@ -700,150 +494,39 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
             </div>
           </div>
           <CloseIcon
-            onClick={onShowBoardCard}
+            onClick={handleShowBoardCard}
             className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
           />
         </div>
       </div>
       {isShowMenuBtnCard && numberShow === 2 && (
-        <MemberMenu position={position} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
+        <MemberMenu onAddMember={handleAddMember} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
       )}
       {isShowMenuBtnCard && numberShow === 3 && (
         <>
           {!isCreateLabel && (
-            <div
-              style={{ top: position.top, left: position.left }}
-              className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
-            >
-              <div className="p-2 mx-8 text-center">Label</div>
-              <div className="mx-2">
-                <div className="mx-1 border-2 border-gray-500 rounded-lg">
-                  <input
-                    type="text"
-                    // value={item.descriptionCard}
-                    // onChange={(e) => handleChange(e, index)}
-                    placeholder="Find the label..."
-                    className="w-full bg-white rounded-lg text-base font-[200] px-2 py-1 cursor-pointer  focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div className="mt-2">
-                  <div className="py-2 bg-white">Label</div>
-                  <ul>
-                    {listLabel.map((item, index) => (
-                      <li key={index} className="flex items-center my-2 cursor-pointer">
-                        <input
-                          checked={countLabel.some((i) => i.id === item.id)}
-                          onChange={() => handleAddLabel(item)}
-                          type="checkbox"
-                          className="w-5 h-5 mx-2 cursor-pointer"
-                        />
-                        <span className="flex items-center w-full">
-                          <div
-                            onClick={() => handleAddLabel(item)}
-                            className={`flex-1 hover:opacity-90 ${item.color} h-[34px] p-2 rounded-[4px] transition-all duration-50`}
-                          >
-                            <font>{item.title}</font>
-                          </div>
-                          <div
-                            onClick={() => ShowUpdateLabel(item)}
-                            className=" hover:bg-gray-300 p-2 ml-2 rounded-[4px]"
-                          >
-                            <ModeEditIcon style={{ fontSize: "16px" }} />
-                          </div>
-                        </span>
-                      </li>
-                    ))}
-                    <div className="mt-4">
-                      <ButtonBoardCard
-                        onHandleEvent={ShowDetailNewLabel}
-                        nameBtn="Create new label"
-                        isActive={true}
-                        className={"justify-center bg-gray-200 hover:bg-gray-300"}
-                      />
-                    </div>
-                  </ul>
-                </div>
-                <CloseIcon
-                  onClick={handleCloseShowMenuBtnCard}
-                  className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
-                />
-              </div>
-            </div>
+            <AddLabelInCard
+              position={position}
+              countLabel={countLabel}
+              listLabel={listLabel}
+              handleAddLabel={handleAddLabel}
+              ShowUpdateLabel={ShowUpdateLabel}
+              ShowDetailNewLabel={ShowDetailNewLabel}
+              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+            />
           )}
           {isCreateLabel && (
-            <div style={{ top: position.top - 100, left: position.left }} className="absolute">
-              <ItemMenu title={"Label"} onLeaveBoard={handleCloseShowMenuBtnCard} onToggleCollape={ShowDetailNewLabel}>
-                <div className="flex items-center justify-center bg-gray-100 h-[60px]">
-                  {chooseColorLabel ? (
-                    <div className={`${chooseColorLabel.color} w-[80%] h-[32px] p-2 rounded-[4px]`}>
-                      <font>{inputTitleLabel}</font>
-                    </div>
-                  ) : (
-                    <div className={`${listColorLabel[0].color} w-[80%] h-[32px] p-2 rounded-[4px]`}>
-                      <font>{inputTitleLabel}</font>
-                    </div>
-                  )}
-                </div>
-                <div className="mx-2">
-                  <div className="py-2 bg-white">Title</div>
-                  <div className="border-2 border-gray-500 rounded-[2px]">
-                    <input
-                      type="text"
-                      value={inputTitleLabel}
-                      onChange={(e) => handleChangeInputLabel(e)}
-                      className="w-full bg-white rounded-[2px] text-base font-[200] px-2 py-1 cursor-pointer  focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div className="mt-2">
-                    <div className="py-2 bg-white">Select a color</div>
-                    <ul className="flex flex-wrap items-center justify-center">
-                      {/* <li className="w-12 h-8 bg-red-500 rounded-[4px] mr-1 mb-1 "></li> */}
-                      {listColorLabel.map((item, index) => (
-                        <li
-                          onClick={() => handleChooseColor(item)}
-                          key={index}
-                          className={`w-12 h-8 ${item.color} rounded-[4px] mr-1 mb-1 ${chooseColorLabel.id === item.id && "border-[3px] border-gray-500 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"}`}
-                        ></li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="my-4">
-                    <ButtonBoardCard
-                      onHandleEvent={ShowDetailNewLabel}
-                      nameBtn="Remove color"
-                      isActive={true}
-                      className={"justify-center bg-gray-200 hover:bg-gray-300"}
-                    />
-                  </div>
-                  <Divider />
-                  {!isUpdateLabel ? (
-                    <div className="mt-4">
-                      <ButtonBoardCard
-                        onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
-                        nameBtn="Create new"
-                        isActive={true}
-                        className={"w-[100px] bg-blue-500 justify-center text-white hover:opacity-90"}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between mt-4">
-                      <ButtonBoardCard
-                        onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
-                        nameBtn="Save"
-                        isActive={true}
-                        className={"w-[100px] bg-blue-500 justify-center text-white hover:opacity-90"}
-                      />
-                      <ButtonBoardCard
-                        onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
-                        nameBtn="Remove"
-                        isActive={true}
-                        className={"w-[100px] bg-red-500 justify-center text-white hover:opacity-90"}
-                      />
-                    </div>
-                  )}
-                </div>
-              </ItemMenu>
-            </div>
+            <CreateLabel
+              position={position}
+              isUpdateLabel={isUpdateLabel}
+              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+              ShowDetailNewLabel={ShowDetailNewLabel}
+              chooseColorLabel={chooseColorLabel}
+              handleChangeInputLabel={handleChangeInputLabel}
+              inputTitleLabel={inputTitleLabel}
+              handleChooseColor={handleChooseColor}
+              handleCreateNewLabel={handleCreateNewLabel}
+            />
           )}
         </>
       )}
@@ -910,10 +593,9 @@ export const BoardCard = ({ data, onShowBoardCard }) => {
           
         </div>
       )} */}
-      <div>
-        {/* <ModalUploadFile open={openUpload} handleClose={handleClose} /> */}
+      {/* <div>
         <UploadFile open={openUpload} handleClose={handleClose} />
-      </div>
+      </div> */}
     </div>
   );
 };

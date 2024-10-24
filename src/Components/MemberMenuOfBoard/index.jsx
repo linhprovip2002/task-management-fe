@@ -1,7 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
-const MemberMenu = ({ position, handleCloseShowMenuBtnCard }) => {
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
+import ItemMember from "./ItemMember";
+
+const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
+  const { position, membersInCard, membersBoard } = useListBoardContext();
+  const [inputTitle, setInputTitle] = useState("");
+  const [filteredMembersBoard, setFilteredMembersBoard] = useState([]);
+
+  const HandleAddMemberInCard = (item) => {
+    if (handleCloseShowMenuBtnCard) {
+      handleCloseShowMenuBtnCard();
+      onAddMember(item);
+    }
+  };
+  const handleChange = (e) => {
+    setInputTitle(e.target.value);
+  };
+
+  useEffect(() => {
+    const filtered = membersBoard.filter((member) => {
+      return member.name && member.name.includes(inputTitle);
+    });
+    setFilteredMembersBoard(filtered);
+  }, [inputTitle, membersBoard]);
+
   return (
     <div
       style={{ top: position.top, left: position.left }}
@@ -12,34 +36,33 @@ const MemberMenu = ({ position, handleCloseShowMenuBtnCard }) => {
         <div className="mx-1 border-2 border-gray-500 rounded-lg">
           <input
             type="text"
-            // value={item.descriptionCard}
-            // onChange={(e) => handleChange(e, index)}
+            value={inputTitle}
+            onChange={handleChange}
             placeholder="Search for members"
             className="w-full bg-white rounded-lg text-base font-[200] px-2 py-1 cursor-pointer  focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <div className="mt-2">
-          <div className="py-2 bg-white">Member of the card</div>
-          <div className="flex items-center justify-between cursor-pointer px-1 py-2 bg-white rounded transition duration-200 hover:bg-gray-100">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] bg-gradient-to-b from-green-400 to-blue-500">
-                PM
-              </div>
-              <div>Cheese</div>
-            </div>
-            <CloseIcon className="cursor-pointer right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 " />
-          </div>
+          {membersInCard.length === 0 || (
+            <>
+              <div className="py-2 bg-white">Member of the card</div>
+              {membersInCard.map((item, index) => (
+                <ItemMember key={index} item={item} onHandleAddMember={HandleAddMemberInCard} />
+              ))}
+            </>
+          )}
         </div>
         <div className="mt-2">
-          <div className="py-2 bg-white">Members of the board</div>
-          <div className="flex items-center justify-between cursor-pointer px-1 py-2 bg-white rounded transition duration-200 hover:bg-gray-100">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] bg-gradient-to-b from-green-400 to-blue-500">
-                PQ
-              </div>
-              <div>phomaique</div>
-            </div>
-          </div>
+          {filteredMembersBoard.length === 0 ? (
+            <div className="py-2 bg-white">No members found in the board</div>
+          ) : (
+            <>
+              <div className="py-2 bg-white">Members of the board</div>
+              {filteredMembersBoard.map((item, index) => (
+                <ItemMember key={index} item={item} onHandleAddMember={HandleAddMemberInCard} />
+              ))}
+            </>
+          )}
         </div>
         <CloseIcon
           onClick={handleCloseShowMenuBtnCard}

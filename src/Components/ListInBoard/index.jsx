@@ -6,84 +6,22 @@ import ItemList from "../../Components/ItemList";
 import { CreateItem } from "../../Components/CreateItem";
 import { AddIcon, TemplateCardIcon } from "../../Components/Icons";
 import TippyDetail from "../TippyDetail";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
-function ListInBoard({
-  dataBoard,
-  nameTitle,
-  activeMonitor,
-  activeIdList,
-  isShowAddList,
-  listCount,
-  onShowBoardCard,
-  onShowBoardEdit,
-  onChange,
-  onShowAddCard,
-  onShowAddList,
-  onActiveMonitor,
-  onAddCard,
-  onAddList,
-  onChangeTitleCard,
-  onCopyList,
-}) {
-  const handleShowBoardCard = (data) => {
-    if (onShowBoardCard) {
-      onShowBoardCard(data);
-    }
-  };
-
-  const handleShowBoardEdit = (e, data) => {
-    if (onShowBoardEdit) {
-      onShowBoardEdit(e, data);
-    }
-  };
-
-  const handleShowAddList = () => {
-    if (onShowAddList) {
-      onShowAddList();
-    }
-  };
-
-  const handleChange = (e, idList) => {
-    if (onChange) {
-      onChange(e, idList);
-    }
-  };
-
-  const handleShowAddCard = (idList) => {
-    if (onShowAddCard) {
-      onShowAddCard(idList);
-    }
-  };
-
-  const handleActiveMonitor = (idList) => {
-    if (onActiveMonitor) {
-      onActiveMonitor(idList);
-    }
-  };
-
-  const handleAddCard = (newData, idList) => {
-    if (onAddCard) {
-      onAddCard(newData, idList);
-    }
-  };
-
-  const handleChangeTitleCard = (e) => {
-    if (onChangeTitleCard) {
-      onChangeTitleCard(e);
-    }
-  };
-
-  const handleAddList = (newData) => {
-    if (onAddList) {
-      onAddList(newData);
-    }
-  };
-
-  const handleCopyList = (dataList) => {
-    if (onCopyList) {
-      onCopyList(dataList);
-    }
-  };
+function ListInBoard() {
+  let {
+    nameTitle,
+    activeMonitor,
+    activeIndex,
+    isShowAddList,
+    listCount,
+    handleChange,
+    handleShowAddCard,
+    handleShowAddList,
+    handleAddCard,
+    handleAddList,
+    handleChangeTitleCard,
+  } = useListBoardContext();
 
   return (
     <div className="relative h-[80vh]">
@@ -111,12 +49,7 @@ function ListInBoard({
                       <ConvertHiDotsVertical
                         tippyName="Operation"
                         data={item}
-                        dataBoard={dataBoard}
-                        onShowAddCard={handleShowAddCard}
-                        onActiveMonitor={() => handleActiveMonitor(item.id)}
-                        onCopyList={handleCopyList}
                         type={"operation"}
-                        listCount={listCount}
                         className={
                           "cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300"
                         }
@@ -135,8 +68,6 @@ function ListInBoard({
                           <ItemList
                             dataList={item}
                             dataCard={card}
-                            onShowBoardCard={handleShowBoardCard}
-                            onShowBoardEdit={handleShowBoardEdit}
                             key={index}
                             // imageSrc={card.imageSrc}
                             // descriptionCard={card.descriptionCard}
@@ -148,7 +79,7 @@ function ListInBoard({
                       })}
                     </div>
 
-                    {item.isShowAddCard && activeIdList === item.id && (
+                    {item.isShowAddCard && activeIndex === item.id && (
                       <CreateItem
                         idList={item.id}
                         nameBtn={"Add card"}

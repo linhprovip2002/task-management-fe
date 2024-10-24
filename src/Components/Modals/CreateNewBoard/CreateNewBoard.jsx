@@ -9,21 +9,21 @@ import {
   customBgImg,
   customStyleNewBoard,
   defaultBoardValues,
-  listBgImage
+  listBgImage,
 } from "./constants/createNewBoard.constant";
 import { listRuleOptions, style } from "./constants/createNewBoard.constant";
 import { useGetWorkspaceByUser } from "../../../Hooks";
 import { createBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import CloseIcon from "@mui/icons-material/Close";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../../Loading";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../constants";
 
 export const CreateNewBoard = ({ open, handleClose }) => {
   const queryClient = useQueryClient();
-  const { workspaceInfo, isLoading: isLoadingWorkspace } =
-    useGetWorkspaceByUser();
+  const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBg, setSelectedBg] = useState("");
@@ -37,9 +37,9 @@ export const CreateNewBoard = ({ open, handleClose }) => {
     reset,
     register,
     formState: { errors },
-    setValue
+    setValue,
   } = useForm({
-    defaultValues: defaultBoardValues
+    defaultValues: defaultBoardValues,
   });
 
   useEffect(() => {
@@ -60,13 +60,14 @@ export const CreateNewBoard = ({ open, handleClose }) => {
       isPrivate: visibility === "isPrivate",
       isFavorite: visibility === "isFavorite",
       isArchived: visibility === "isArchived",
-      workspaceId: +workspaceId
+      workspaceId: +workspaceId,
     };
     try {
-      await createBoard(boardData);
+      const newboard = await createBoard(boardData);
       reset(defaultBoardValues);
-      handleClose();
       queryClient.invalidateQueries([EQueryKeys.GET_WORKSPACE_BY_ID]);
+      navigate(`/board/${newboard.id}`);
+      handleClose();
     } catch (error) {
       console.error("Failed to create board:", error);
     }

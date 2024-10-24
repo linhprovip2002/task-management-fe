@@ -36,12 +36,15 @@ export default function Create() {
                 >
                   <div onClick={handleOpen}>
                     <div className="flex items-center ">
-                      <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-4 h-4 mb-1 mr-1" />
+                      <TrelloLogoIcon
+                        style={{ color: "#172b4d" }}
+                        className="w-4 h-4 mb-1 mr-1"
+                      />
                       Create Board
                     </div>
                     <p className="text-xs text-gray-400">
-                      A board is made up of cards ordered on lists. Use it to manage projects, track information, or
-                      organize anything.
+                      A board is made up of cards ordered on lists. Use it to
+                      manage projects, track information, or organize anything.
                     </p>
                   </div>
                 </li>
@@ -59,7 +62,13 @@ export default function Create() {
           </Button>
         </HeadlessTippy>
       </div>
-      {open && <CreateNewBoard open={open} handleClose={handleClose} />}
+      {open && (
+        <CreateNewBoard
+          open={open}
+          handleGetAllBoard={() => {}}
+          handleClose={handleClose}
+        />
+      )}
     </>
   );
 }

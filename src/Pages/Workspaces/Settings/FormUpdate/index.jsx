@@ -15,10 +15,10 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
   const form = useForm({
     defaultValues: {
       title: data.title,
-      description: data.description
+      description: data.description,
     },
     resolver: joiResolver(validation),
-    mode: "onSubmit"
+    mode: "onSubmit",
   });
 
   const handleSubmit = (values) => {
@@ -54,8 +54,8 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
                 sx={{
                   "& .MuiOutlinedInput-input": {
                     paddingY: "8px",
-                    paddingX: "12px"
-                  }
+                    paddingX: "12px",
+                  },
                 }}
               />
             )}
@@ -75,8 +75,8 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
                 sx={{
                   "& .MuiOutlinedInput-input": {
                     paddingY: "8px",
-                    paddingX: "12px"
-                  }
+                    paddingX: "12px",
+                  },
                 }}
               />
             )}
@@ -89,7 +89,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
             sx={{
               paddingX: "12px",
               paddingY: "4px",
-              textTransform: "none"
+              textTransform: "none",
             }}
             variant="contained"
           >
@@ -99,7 +99,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
             sx={{
               paddingX: "12px",
               paddingY: "4px",
-              textTransform: "none"
+              textTransform: "none",
             }}
             onClick={handleClose}
             variant="outlined"
@@ -114,7 +114,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
 FormUpdate.propTypes = {
   data: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
-  onUpdateSuccess: PropTypes.func
+  onUpdateSuccess: PropTypes.func,
 };
 
 export default React.memo(FormUpdate);

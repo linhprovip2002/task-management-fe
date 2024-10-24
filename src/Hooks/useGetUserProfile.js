@@ -7,14 +7,14 @@ export const useGetUserProfile = (isLoggedIn) => {
     data: userProfile,
     isLoading,
     isError,
-    refetch
+    refetch,
   } = useQuery({
-    queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER, isLoggedIn],
-    queryFn: () => getProfile,
+    queryKey: [EQueryKeys.GET_USER, isLoggedIn],
+    queryFn: getProfile,
     ...{
-      refetchOnWindowFocus: true,
-      enabled: !!isLoggedIn
-    }
+      refetchOnWindowFocus: false,
+      enabled: !!isLoggedIn,
+    },
   });
 
   return { userProfile, isLoading, isError, refetch };

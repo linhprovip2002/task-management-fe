@@ -8,21 +8,23 @@ import { useGetWorkspaceByUser } from "../../Hooks";
 import Loading from "../../Components/Loading";
 import { useStorage } from "../../Contexts";
 import { EditWorkspaceModal } from "../../Components/Modals";
+import { useParams } from "react-router-dom";
 
 const DashBoardLayout = ({ children }) => {
   const [toggleModal, setToggleModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { userData } = useStorage();
+  const { id } = useParams();
 
-  const { workspaceInfo, isLoading } = useGetWorkspaceByUser();
+  const { workspaceInfo, isLoading, isFetching } = useGetWorkspaceByUser();
 
   const isActiveClassname = (path) => {
     return location.pathname === path ? "bg-blue-100" : "hover:bg-gray-200";
   };
 
   useEffect(() => {
-    if (workspaceInfo?.length) {
+    if (workspaceInfo?.length && id === ":id") {
       navigate(`/workspace/${workspaceInfo[0].id}/home`);
     }
     // eslint-disable-next-line
@@ -61,18 +63,12 @@ const DashBoardLayout = ({ children }) => {
                       size="sm"
                       className={"rounded-lg"}
                       key={workspace.id}
-                      value={false}
+                      value={workspace.id === id}
                       position="right"
                       title={
                         <div className="flex items-center gap-4 text-base">
-                          <Avatar
-                            sx={{ width: 28, height: 28, borderRadius: 1 }}
-                          >
-                            {workspace.title[0]}
-                          </Avatar>
-                          <div className="text-sm font-bold">
-                            {workspace.title}
-                          </div>
+                          <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>{workspace.title[0]}</Avatar>
+                          <div className="text-sm font-bold">{workspace.title}</div>
                         </div>
                       }
                     >
@@ -95,14 +91,9 @@ const DashBoardLayout = ({ children }) => {
                 })
               ) : (
                 <div className="ml-4 flex flex-col gap-3">
-                  <div className="text-base text-textColor">
-                    No workspace to show
-                  </div>
+                  <div className="text-base text-textColor">No workspace to show</div>
                   <div className="w-full">
-                    <Button
-                      onClick={() => setToggleModal(true)}
-                      variant="contained"
-                    >
+                    <Button onClick={() => setToggleModal(true)} variant="contained">
                       Create your first workspace
                     </Button>
                   </div>
@@ -113,13 +104,8 @@ const DashBoardLayout = ({ children }) => {
           <div className="w-full">{children}</div>
         </div>
       </div>
-      {toggleModal && (
-        <EditWorkspaceModal
-          open={toggleModal}
-          handleClose={() => setToggleModal(false)}
-        />
-      )}
-      {isLoading && <Loading />}
+      {toggleModal && <EditWorkspaceModal open={toggleModal} handleClose={() => setToggleModal(false)} />}
+      {(isLoading || isFetching) && <Loading />}
     </>
   );
 };

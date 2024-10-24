@@ -13,9 +13,10 @@ const DashBoard = () => {
   const [open, setOpen] = useState(false);
   const { id } = useParams();
 
-  const { workspaceDetails, isLoading: isLoadingCurrentWorkspace } = useGetWorkspaceById(id);
-
-  const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
+  const { workspaceDetails, isLoading: isLoadingCurrentWorkspace } =
+    useGetWorkspaceById(id);
+  const { workspaceInfo, isLoading: isLoadingWorkspace } =
+    useGetWorkspaceByUser();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -26,7 +27,11 @@ const DashBoard = () => {
   }, [JSON.stringify(workspaceDetails?.boards)]);
 
   if (!workspaceInfo?.length) {
-    return <div className="text-xl font-semibold">LOOK LIKE YOU DON'T HAVE ANY WORKSPACE YET!</div>;
+    return (
+      <div className="text-xl font-semibold">
+        LOOK LIKE YOU DON'T HAVE ANY WORKSPACE YET!
+      </div>
+    );
   }
 
 
@@ -56,7 +61,7 @@ const DashBoard = () => {
         </div>
         <div className="my-12">
           <button className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor">
-            View close the boards
+            View closed boards
           </button>
         </div>
       </div>

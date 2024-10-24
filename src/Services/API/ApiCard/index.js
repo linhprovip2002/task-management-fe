@@ -2,11 +2,7 @@ import request from "../request";
 
 export async function createCardByIdList(dataCard) {
   try {
-    const response = await request.post(`/card`, dataCard, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await request.post(`/card`, dataCard);
     return response.data;
   } catch (error) {
     throw error;
@@ -14,14 +10,9 @@ export async function createCardByIdList(dataCard) {
 }
 
 export async function getAllCardByIdList(id) {
-  try {
-    const response = await request.get(`/list/${id}/cards`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  return await request.get(`/board/{boardId}/list/${id}/cards`);
+}
+
+export async function getAllUserByIdCard(id) {
+  return await request.get(`/card/${id}/members`);
 }
