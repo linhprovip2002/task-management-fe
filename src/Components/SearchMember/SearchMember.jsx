@@ -8,15 +8,15 @@ import Loading from "../Loading";
 export const SearchMember = (
   { isShowDescription, register, onChange, multiple } = {
     isShowDescription: true,
-    multiple: true,
-  },
+    multiple: true
+  }
 ) => {
   const [searchMember, setSearchMember] = useState("");
   const [searchOptions, setSearchOptions] = useState([]);
   const debounceSearchMember = useDebounce(searchMember, 500);
 
   const { userInfo, isLoading } = useGetUser({
-    name: debounceSearchMember,
+    name: debounceSearchMember
   });
 
   useEffect(() => {
@@ -24,13 +24,10 @@ export const SearchMember = (
     // eslint-disable-next-line
   }, [JSON.stringify(userInfo)]);
 
-  if (!searchOptions.length && isLoading) {
-    return <Loading />;
-  }
-
   return (
     <div className="flex flex-col gap-1">
       <div className="font-bold">Workspace members</div>
+      {!searchOptions.length && isLoading && <Loading />}
       <Autocomplete
         {...register}
         onChange={onChange}
@@ -42,9 +39,15 @@ export const SearchMember = (
         onInputChange={(_, newInputValue) => {
           setSearchMember(newInputValue);
         }}
-        renderInput={(params) => <TextField {...params} placeholder="Find members" />}
+        renderInput={(params) => (
+          <TextField {...params} placeholder="Find members" />
+        )}
       />
-      {isShowDescription && <div>Add members to your Workspace so they can collaborate on boards.</div>}
+      {isShowDescription && (
+        <div>
+          Add members to your Workspace so they can collaborate on boards.
+        </div>
+      )}
     </div>
   );
 };

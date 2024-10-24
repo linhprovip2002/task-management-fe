@@ -6,5 +6,6 @@ export const EQueryKeys = {
   GET_PROFILE_BY_USER: "getProfileByUser",
   //WORKSPACE
   GET_WORKSPACE_BY_USER: "getWorkspaceByUser",
-  GET_WORKSPACE_BY_ID: "getWorkspaceById"
+  GET_WORKSPACE_BY_ID: "getWorkspaceById",
+  GET_WORKSPACE_MEMBER: "getWorkspaceMember"
 };

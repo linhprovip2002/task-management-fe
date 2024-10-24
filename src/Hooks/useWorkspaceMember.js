@@ -4,7 +4,7 @@ import { EQueryKeys } from "../constants";
 
 export const useGetWorkspaceMember = (options = {}) => {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER],
+    queryKey: [EQueryKeys.GET_WORKSPACE_MEMBER],
     queryFn: () => workspaceServices.getWorkspaceByUser(options),
     ...{
       refetchOnWindowFocus: false

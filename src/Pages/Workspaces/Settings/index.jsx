@@ -1,14 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  Modal
-} from "@mui/material";
+import { Avatar, Button, Divider } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,6 +10,7 @@ import { deleteWorkspace } from "../../../Services/API/ApiWorkSpace/apiWorkSpace
 import { toast } from "react-toastify";
 import { useGetWorkspaceById } from "../../../Hooks";
 import Loading from "../../../Components/Loading";
+import { InviteMemberModal } from "../../../Components/Modals/InviteMemberModal/InviteMemberModal";
 
 const WorkspaceSettings = () => {
   const { id } = useParams();
@@ -122,49 +113,10 @@ const WorkspaceSettings = () => {
           Delete this workspace?
         </p>
       </div>
-      <InviteWorkspace
+      <InviteMemberModal
         open={invitePopup}
-        onClose={() => {
-          setInvitePopup(false);
-        }}
+        handleClose={() => setInvitePopup(false)}
       />
-
-      <Modal
-        open={deletePopup}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            maxWidth: 600,
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4
-          }}
-        >
-          <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-            Delete Workspace ?
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              This is permanent and can't be undone. Board members will not be
-              able to interact with closed boards.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleOpenCloseDeletePopup} variant="outlined">
-              Cancel
-            </Button>
-            <Button variant="contained" color="error" onClick={handleDeleteWsp}>
-              Delete
-            </Button>
-          </DialogActions>
-        </Box>
-      </Modal>
     </div>
   );
 };

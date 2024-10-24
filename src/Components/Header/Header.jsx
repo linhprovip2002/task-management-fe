@@ -1,9 +1,14 @@
 import AppsIcon from "@mui/icons-material/Apps";
 import TrelloLogoIcon from "../TrelloLogoIcon/TrelloLogoIcon";
 import WorkSpaces from "./Menus/WorkSpaces";
-import Recent from "./Menus/Recent";
 import Stared from "./Menus/Stared";
-import { Box, ClickAwayListener, Fade, TextField, Tooltip } from "@mui/material";
+import {
+  Box,
+  ClickAwayListener,
+  Fade,
+  TextField,
+  Tooltip
+} from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountMenu from "./Menus/AccountMenu";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -32,27 +37,31 @@ const Header = () => {
   return (
     <>
       <header className="flex flex-col items-center gap-4 justify-between w-full px-4 py-2 border-b-[1px] border-gray-300 bg-white md:flex-row">
-        {/* Left Section: Logo and Menu */}
         <div className="flex items-center gap-4">
           <div className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground">
-            <AppsIcon style={{ color: "#44546f", hover: "#091e420f" }} className="m-1" />
+            <AppsIcon
+              style={{ color: "#44546f", hover: "#091e420f" }}
+              className="m-1"
+            />
           </div>
-          <Link to={routes.workspaceHome} className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground">
+          <Link
+            to={routes.workspaceHome}
+            className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground"
+          >
             <div className="flex items-center gap-2 m-1">
-              <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-4 h-4" />
+              <TrelloLogoIcon
+                style={{ color: "#172b4d" }}
+                className="w-4 h-4"
+              />
               <span className="text-lg font-bold">Trello</span>
             </div>
           </Link>
           <div className="items-center hidden space-x-4 xl:flex">
             {storage.isLoggedIn && <WorkSpaces />}
-            <Recent />
             <Stared />
             <Create />
-            {/* <Button variant="contained" size="small">
-            </Button> */}
           </div>
         </div>
-        {/* Right Section: Search and Account */}
         <div className="flex items-center gap-4">
           <div className="flex items-center w-full space-x-2 md:w-auto">
             <TextField
@@ -65,12 +74,26 @@ const Header = () => {
             />
           </div>
           <div className="flex items-center w-full md:w-auto">
-            <button className="relative" aria-describedby={id} type="button" onClick={handleClick}>
+            <button
+              className="relative"
+              aria-describedby={id}
+              type="button"
+              onClick={handleClick}
+            >
               <Tooltip title="Notifications">
-                <NotificationsNoneIcon sx={{ color: "primary.secondary" }} className="cursor-pointer" />
+                <NotificationsNoneIcon
+                  sx={{ color: "primary.secondary" }}
+                  className="cursor-pointer"
+                />
               </Tooltip>
             </button>
-            <Popper placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
+            <Popper
+              placement="bottom-end"
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              transition
+            >
               {({ TransitionProps }) => (
                 <Fade {...TransitionProps} timeout={350}>
                   <Box>
@@ -85,7 +108,6 @@ const Header = () => {
                 </Fade>
               )}
             </Popper>
-            <HelpOutlineIcon sx={{ color: "primary.secondary", marginLeft: "8px" }} className="cursor-pointer" />
             <AccountMenu />
           </div>
         </div>

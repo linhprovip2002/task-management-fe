@@ -3,15 +3,15 @@ import { workspaceServices } from "../Services";
 import { EQueryKeys } from "../constants";
 
 const useGetWorkspaceByUser = (options = {}) => {
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER],
     queryFn: () => workspaceServices.getWorkspaceByUser(options),
     ...{
-      refetchOnWindowFocus: false,
-    },
+      refetchOnWindowFocus: false
+    }
   });
 
-  return { workspaceInfo: data?.data, isLoading, isError, refetch };
+  return { workspaceInfo: data?.data, isLoading, isError, refetch, isFetching };
 };
 
 const useGetWorkspaceById = (id) => {
@@ -20,8 +20,8 @@ const useGetWorkspaceById = (id) => {
     queryFn: () => workspaceServices.getWorkspaceById(id),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!id,
-    },
+      enabled: !!id
+    }
   });
 
   return { workspaceDetails: data, isLoading, isError, refetch };
