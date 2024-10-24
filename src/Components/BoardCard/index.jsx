@@ -250,30 +250,13 @@ export const BoardCard = () => {
     }
   };
 
-  // const HandleGetAllUserInCard = async () => {
-  //   try {
-  //     // const res = await getAllUserInCard(dataCard.id);
-  //     // const dataUser = res[0].user;
-  //     // setMembersInCard([dataUser]);
-  //   } catch (err) {
-  //     console.error("Error fetching board data: ", err);
-  //   }
-  // };
-
   const handleClickBtn = (e, item) => {
     setNumberShow(item.id);
-    const user = userData
-      .then((result) => {
-        return result;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
     switch (item.id) {
       case 1:
         setIsJoin(!isJoin);
         setIsFollowing(!isJoin);
-        handleAddMember(user);
+        handleAddMember(userData);
         break;
       case 2:
       case 3:
