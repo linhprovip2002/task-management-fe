@@ -1,8 +1,6 @@
 import AppsIcon from "@mui/icons-material/Apps";
 import TrelloLogoIcon from "../TrelloLogoIcon/TrelloLogoIcon";
 import WorkSpaces from "./Menus/WorkSpaces";
-import Recent from "./Menus/Recent";
-import Stared from "./Menus/Stared";
 import { Box, ClickAwayListener, Fade, TextField, Tooltip } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountMenu from "./Menus/AccountMenu";
@@ -45,8 +43,6 @@ const Header = () => {
           </Link>
           <div className="items-center hidden space-x-4 xl:flex">
             {storage.isLoggedIn && <WorkSpaces />}
-            <Recent />
-            <Stared />
             <Create />
             {/* <Button variant="contained" size="small">
             </Button> */}
