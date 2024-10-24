@@ -2,20 +2,16 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
-function ItemList({
-  dataList,
-  dataCard,
-  imageSrc,
-  isDescriptionIcon = false,
-  isAttachment = false,
-  attachmentCount,
-  onShowBoardCard,
-  onShowBoardEdit,
-}) {
+function ItemList({ dataList, dataCard, imageSrc, isDescriptionIcon = false, isAttachment = false, attachmentCount }) {
+  let { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   return (
     <div className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer">
-      <div onClick={() => onShowBoardCard(dataList)} className="flex flex-col justify-center min-h-[40px]">
+      <div
+        onClick={() => handleShowBoardCard(dataList, dataCard)}
+        className="flex flex-col justify-center min-h-[40px]"
+      >
         {imageSrc && (
           <div className="w-full min-h-[20px]">
             <img src={imageSrc} alt="" className="w-full h-full object-cover rounded-tl-[8px] rounded-tr-[8px]" />
@@ -52,7 +48,7 @@ function ItemList({
       </div>
       <Tippy content={<span className="text-[12px] max-w-[150px]">Edit card</span>} arrow={false} placement="bottom">
         <div
-          onClick={(e) => onShowBoardEdit(e, dataCard)}
+          onClick={(e) => handleShowBoardEdit(e, dataCard)}
           className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
         >
           <EditIcon width={16} height={16} />

@@ -1,73 +1,16 @@
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
-import {
-  Person4Outlined as Person4OutlinedIcon,
-  Label as LabelIcon,
-  AccessTimeOutlined as AccessTimeOutlinedIcon,
-  ArrowForwardOutlined as ArrowForwardOutlinedIcon,
-  ContentCopyOutlined as ContentCopyOutlinedIcon,
-  SaveAsOutlined as SaveAsOutlinedIcon,
-  BackupTableOutlined as BackupTableOutlinedIcon,
-} from "@mui/icons-material";
+import { useState } from "react";
+import { listBtnCard } from "./constans";
 
 import { AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { ButtonBoardCard } from "../ButtonBoardCard";
-import { useState } from "react";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
-export const EditCard = ({
-  position,
-  data,
-  imageSrc,
-  isDescriptionIcon = false,
-  isAttachment = false,
-  attachmentCount,
-  onShowBoardCard,
-  onShowBoardEdit,
-}) => {
-  const listBtnCard = [
-    {
-      id: 1,
-      nameBtn: "Open Card",
-      Icon: <SaveAsOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-    {
-      id: 2,
-      nameBtn: "Edit label",
-      Icon: <LabelIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-    {
-      id: 3,
-      nameBtn: "Change Membership",
-      Icon: <Person4OutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-    {
-      id: 4,
-      nameBtn: "Change cover",
-      Icon: <SaveAsOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-    {
-      id: 5,
-      nameBtn: "Edit date",
-      Icon: <AccessTimeOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-    {
-      id: 6,
-      nameBtn: "Move",
-      Icon: <ArrowForwardOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-    {
-      id: 7,
-      nameBtn: "Copy",
-      Icon: <ContentCopyOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-    {
-      id: 8,
-      nameBtn: "Storage",
-      Icon: <BackupTableOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
-    },
-  ];
+export const EditCard = ({ imageSrc, isDescriptionIcon = false, isAttachment = false, attachmentCount }) => {
+  const { handleShowBoardCard, handleShowBoardEdit, dataCard, position } = useListBoardContext();
 
-  const [inputTitle, setInputTitle] = useState(data.title);
+  const [inputTitle, setInputTitle] = useState(dataCard.title);
   const handleChange = (e) => {
     setInputTitle(e.target.value);
   };
@@ -75,7 +18,7 @@ export const EditCard = ({
   const handleClickBtn = (item) => {
     switch (item.id) {
       case 1:
-        onShowBoardCard(data);
+        handleShowBoardCard(dataCard);
         break;
       default:
         break;
@@ -83,7 +26,7 @@ export const EditCard = ({
   };
   return (
     <div
-      onClick={onShowBoardEdit}
+      onClick={handleShowBoardEdit}
       className="absolute top-0 left-0 flex w-full h-full bg-black bg-opacity-50 overflow-auto z-50"
     >
       <div className="mt-20 mb-10">

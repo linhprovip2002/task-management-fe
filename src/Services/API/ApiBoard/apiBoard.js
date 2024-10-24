@@ -16,11 +16,7 @@ export function getWorkspaceById(id) {
 // get All board
 export async function getBoard(limit, page) {
   try {
-    const response = await request.get(`/board?limit=${limit}&page=${page}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await request.get(`/board?limit=${limit}&page=${page}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -45,4 +41,12 @@ export async function deleteBoardId(id) {
   } catch (error) {
     throw error;
   }
+}
+
+export async function getAllMembersByIdBoard(id) {
+  return await request.get(`/board/${id}/members`);
+}
+
+export async function getAllTagByIdBoard(id) {
+  return await request.get(`/tag/board/${id}`);
 }
