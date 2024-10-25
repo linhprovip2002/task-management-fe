@@ -50,3 +50,7 @@ export async function getAllMembersByIdBoard(id) {
 export async function getAllTagByIdBoard(id) {
   return await request.get(`/tag/board/${id}`);
 }
+
+export async function leaveBoard(boardId) {
+  return await request.delete(`/board/${boardId}/members`);
+}

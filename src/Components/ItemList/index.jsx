@@ -1,10 +1,19 @@
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
+import PropTypes from "prop-types";
 
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
-function ItemList({ dataList, dataCard, imageSrc, isDescriptionIcon = false, isAttachment = false, attachmentCount }) {
+function ItemList({
+  dataList,
+  dataCard,
+  imageSrc,
+  isDescriptionIcon = false,
+  isAttachment = false,
+  attachmentCount,
+  isArchived = false,
+}) {
   let { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   return (
     <div className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer">
@@ -46,16 +55,21 @@ function ItemList({ dataList, dataCard, imageSrc, isDescriptionIcon = false, isA
           </div>
         </div>
       </div>
-      <Tippy content={<span className="text-[12px] max-w-[150px]">Edit card</span>} arrow={false} placement="bottom">
-        <div
-          onClick={(e) => handleShowBoardEdit(e, dataCard)}
-          className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
-        >
-          <EditIcon width={16} height={16} />
-        </div>
-      </Tippy>
+      {isArchived || (
+        <Tippy content={<span className="text-[12px] max-w-[150px]">Edit card</span>} arrow={false} placement="bottom">
+          <div
+            onClick={(e) => handleShowBoardEdit(e, dataCard)}
+            className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
+          >
+            <EditIcon width={16} height={16} />
+          </div>
+        </Tippy>
+      )}
     </div>
   );
 }
 
+ItemList.propTypes = {
+  isArchived: PropTypes.bool,
+};
 export default ItemList;

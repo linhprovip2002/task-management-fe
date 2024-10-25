@@ -17,15 +17,19 @@ import ShareIcon from "@mui/icons-material/Share";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SettingMenu from "./SettingMenu";
-import { useNavigate } from "react-router-dom";
-// import { useQueryClient } from "@tanstack/react-query";
-// import { EQueryKeys } from "../../constants";
+import { useNavigate, useParams } from "react-router-dom";
+import Archived from "./Archived";
+import { leaveBoard } from "../../Services/API/ApiBoard/apiBoard";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { EQueryKeys } from "../../constants";
 
 const cx = classNames.bind(styles);
 
 const sizeIcon = 20;
 
 export default function RightSidebar({ isOpen, onClose }) {
+  const { id } = useParams();
   const items = {
     headerTitle: "Menu",
     data: [
@@ -41,13 +45,16 @@ export default function RightSidebar({ isOpen, onClose }) {
         title: "Archived Items",
         icon: <InventoryIcon sx={{ fontSize: sizeIcon }} />,
         divide: true,
+        children: {
+          headerTitle: "Archived",
+          component: <Archived />,
+        },
       },
       {
         title: "Settings",
         icon: <SettingsIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "Settings",
-          data: [{ title: "Workspace" }, { title: "Permisison" }, { title: "Cover" }, { title: "Collection" }],
           component: <SettingMenu />,
         },
       },
@@ -87,7 +94,7 @@ export default function RightSidebar({ isOpen, onClose }) {
   const [menuItems, setMenuItems] = useState([items]);
   const [deleteDialog, setDeleteDialog] = useState(false);
 
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   // TODO Xử lý đóng right menu
@@ -147,14 +154,20 @@ export default function RightSidebar({ isOpen, onClose }) {
 
   //#region Handle leave
   const handleLeaveBoard = () => {
-    //TODO Gọi API leave board
-    //TODO Gọi lại API get board từ useQuery để reload lại giao diện
-    // queryClient.invalidateQueries({
-    //   queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
-    // });
-    //TODO Lấy id của workspace từ context để trở về trang workspace
+    //* Fetch API
+    leaveBoard(id)
+      .then((res) => {
+        //* Gọi lại API get board từ useQuery để reload lại giao diện
+        queryClient.invalidateQueries({
+          queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+        });
 
-    return navigate("/workspace/20/home");
+        //! Lấy id của workspace từ context để trở về trang workspace (api chưa trả về)
+        return navigate("/workspace/:id/home");
+      })
+      .catch((err) => {
+        toast.error("Leave board not successfully");
+      });
   };
   //#endregion
 

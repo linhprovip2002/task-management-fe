@@ -20,7 +20,13 @@ function ListBoardProvider({ children, boardId }) {
   const [dataList, setDataList] = useState();
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeStar, setActiveStar] = useState(false);
-  const [listCount, setListCount] = useState([]);
+  const [listCount, setListCount] = useState([
+    {
+      id: 1,
+      title: "List",
+      cards: [{ id: 1, title: "Card" }],
+    },
+  ]);
   const [dataBoard, setDataBoard] = useState([]);
   const [membersBoard, setMembersBoard] = useState([]);
   const [membersInCard, setMembersInCard] = useState([]);
@@ -47,7 +53,7 @@ function ListBoardProvider({ children, boardId }) {
       }
     };
 
-    fetchBoardData();
+    // fetchBoardData();
   }, [boardId, listCount]);
 
   useEffect(() => {

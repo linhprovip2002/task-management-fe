@@ -269,7 +269,7 @@ export const BoardCard = () => {
     }
   };
   return (
-    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-50">
+    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
       <div className="mt-20 mb-10">
         <div className="relative flex justify-between min-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
           <div className="flex-1 p-2">
@@ -282,7 +282,7 @@ export const BoardCard = () => {
                 <div className="flex items-center text-[12px] mb-6">
                   <span className="mr-2 font-normal">in the list</span>
                   <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
-                    {dataList.title}
+                    {dataList?.title}
                   </div>
                   {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                 </div>

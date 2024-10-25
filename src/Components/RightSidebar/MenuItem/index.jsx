@@ -16,7 +16,7 @@ function MenuItem({ icon, children, onChange = defFunc }) {
 
 MenuItem.propTypes = {
   icon: PropTypes.node,
-  children: PropTypes.string,
+  children: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
 
