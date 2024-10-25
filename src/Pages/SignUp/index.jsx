@@ -58,6 +58,7 @@ function SignUp(props) {
                 control={form.control}
                 render={({ field, fieldState: { error } }) => (
                   <TextField
+                    type="text"
                     value={field.userName}
                     onChange={field.onChange}
                     error={Boolean(error)} // Hiển thị lỗi nếu có

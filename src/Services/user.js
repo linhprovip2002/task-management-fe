@@ -12,8 +12,8 @@ class UserServices {
       params: {
         ...(limit && { limit }),
         ...(page && { page }),
-        ...(name && { name })
-      }
+        ...(name && { name }),
+      },
     });
     return response.data;
   }
@@ -22,13 +22,25 @@ class UserServices {
   async getUserById(id) {
     const response = await request({
       method: "GET",
-      baseURL: `${baseURL}/${id}`
+      baseURL: `${baseURL}/${id}`,
     });
     return response.data;
   }
 
   // Method to update a user by ID
-  updateUser(userId, updatedData) {}
+  async updateUser({ name, bio, avatarUrl }) {
+    try {
+      // Lọc các giá trị undefined
+      const body = Object.fromEntries(
+        Object.entries({ name, bio, avatarUrl }).filter(([_, value]) => value !== undefined),
+      );
+
+      const response = await request.patch(`/auth/me`, body);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   // Method to delete a user by ID
   deleteUser(userId) {}

@@ -31,7 +31,7 @@ const Slot_Props = {
         width: 32,
         height: 32,
         ml: -0.5,
-        mr: 1
+        mr: 1,
       },
       "&::before": {
         content: '""',
@@ -43,10 +43,10 @@ const Slot_Props = {
         height: 10,
         bgcolor: "background.paper",
         transform: "translateY(-50%) rotate(45deg)",
-        zIndex: 0
-      }
-    }
-  }
+        zIndex: 0,
+      },
+    },
+  },
 };
 
 export default function AccountMenu() {
@@ -89,7 +89,7 @@ export default function AccountMenu() {
             aria-expanded={open ? "true" : undefined}
           >
             <Avatar sx={{ width: 26, height: 26, backgroundColor: "orange" }}>
-              {userProfile?.avatarUrl || userProfile.name[0]}
+              {userProfile?.avatarUrl || userProfile?.name[0]}
             </Avatar>
           </IconButton>
         </Tooltip>
