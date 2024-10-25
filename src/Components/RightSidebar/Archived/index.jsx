@@ -12,6 +12,8 @@ function ArchivedItem() {
   return (
     <div>
       <ItemList
+        isAttachment
+        isDescriptionIcon
         isArchived
         dataCard={{
           id: 1,
