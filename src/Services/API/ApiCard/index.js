@@ -14,9 +14,18 @@ export async function getAllCardByIdList(id) {
 }
 
 export function getCardById(id) {
-  return request.get(`/card/${id}/`)
+  return request.get(`/card/${id}/`);
 }
 
 export async function getAllUserByIdCard(id) {
   return await request.get(`/card/${id}/members`);
+}
+
+export async function deleteCard(cardId) {
+  try {
+    const response = await request.delete(`/card/${cardId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }

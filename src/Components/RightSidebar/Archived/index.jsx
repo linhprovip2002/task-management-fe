@@ -1,14 +1,29 @@
-import { Button, Slide, TextField } from "@mui/material";
+import { Button, CircularProgress, Slide, TextField } from "@mui/material";
 import ItemList from "../../ItemList";
 import HeadlessTippy from "@tippyjs/react/headless";
 import { Close } from "@mui/icons-material";
 import { useState } from "react";
+import { deleteCard } from "../../../Services/API/ApiCard";
+import { toast } from "react-toastify";
 
 function ArchivedItem() {
   const [popperDelete, setPopperDelete] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const handleDeleteCard = () => {
-    console.log("delete");
+    setIsFetching(true);
+    deleteCard(1)
+      .then((res) => {
+        toast.success("Delete card successfully");
+      })
+      .catch((err) => {
+        toast.error("Delete card unsuccessfully");
+      })
+      .finally(() => {
+        setIsFetching(false);
+        setPopperDelete(false);
+      });
   };
+
   return (
     <div>
       <ItemList
@@ -48,6 +63,7 @@ function ArchivedItem() {
                 </div>
 
                 <Button
+                  startIcon={isFetching && <CircularProgress size={20} color="#fff" />}
                   onClick={handleDeleteCard}
                   variant="contained"
                   color="error"
