@@ -13,6 +13,10 @@ export async function getAllCardByIdList(id) {
   return await request.get(`/board/{boardId}/list/${id}/cards`);
 }
 
+export function getCardById(id) {
+  return request.get(`/card/${id}/`)
+}
+
 export async function getAllUserByIdCard(id) {
   return await request.get(`/card/${id}/members`);
 }

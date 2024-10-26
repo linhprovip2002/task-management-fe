@@ -18,67 +18,67 @@ export const listBtnCard = [
   {
     id: 1,
     nameBtn: "Join",
-    Icon: <PersonAddAltIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 2,
     nameBtn: "Member",
-    Icon: <Person4OutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <Person4OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 3,
     nameBtn: "Label",
-    Icon: <LabelIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <LabelIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 4,
     nameBtn: "What to do",
-    Icon: <CheckBoxOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <CheckBoxOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 5,
     nameBtn: "Day",
-    Icon: <AccessTimeOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <AccessTimeOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 6,
     nameBtn: "Attached",
-    Icon: <AttachmentOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <AttachmentOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 7,
     nameBtn: "Cover photo",
-    Icon: <InsertPhotoIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <InsertPhotoIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 8,
     nameBtn: "Custom Fields",
-    Icon: <Crop169Icon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <Crop169Icon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 9,
     nameBtn: "Move",
-    Icon: <ArrowForwardOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <ArrowForwardOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 10,
     nameBtn: "Copy",
-    Icon: <ContentCopyOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <ContentCopyOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 11,
     nameBtn: "Create a template",
-    Icon: <SaveAsOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <SaveAsOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 12,
     nameBtn: "Storage",
-    Icon: <BackupTableOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <BackupTableOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 13,
     nameBtn: "Share",
-    Icon: <ShareOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <ShareOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
 ];
 export const listLabelAdd = [

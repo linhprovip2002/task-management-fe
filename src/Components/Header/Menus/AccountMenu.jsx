@@ -1,156 +1,120 @@
 import { useState } from "react";
-import Box from "@mui/material/Box";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
-import Logout from "@mui/icons-material/Logout";
-import PeopleIcon from "@mui/icons-material/People";
 import Cookies from "js-cookie";
-
 import { EditWorkspaceModal } from "../../Modals";
-import { Link, Routes, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import routes from "../../../config/routes";
 import { useStorage } from "../../../Contexts";
 import { useGetUserProfile } from "../../../Hooks";
 import Loading from "../../Loading";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import HeadlessTippy from "@tippyjs/react/headless";
+import { Divider } from "@mui/material";
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 
-const Slot_Props = {
-  paper: {
-    elevation: 0,
-    sx: {
-      overflow: "visible",
-      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-      mt: 1.5,
-      "& .MuiAvatar-root": {
-        width: 32,
-        height: 32,
-        ml: -0.5,
-        mr: 1
-      },
-      "&::before": {
-        content: '""',
-        display: "block",
-        position: "absolute",
-        top: 0,
-        right: 14,
-        width: 10,
-        height: 10,
-        bgcolor: "background.paper",
-        transform: "translateY(-50%) rotate(45deg)",
-        zIndex: 0
-      }
-    }
-  }
-};
+export const styleCSS = 'block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100';
 
 export default function AccountMenu() {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openEditWorkspaceModal, setOpenEditWorkspaceModal] = useState(false);
   const { setIsLoggedIn, isLoggedIn } = useStorage();
-
   const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
-
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+  
   const handleLogout = async () => {
     setIsLoggedIn(false);
     localStorage.clear();
     Cookies.remove("authToken");
     Cookies.remove("refreshToken");
-    navigate(Routes.login);
+    navigate("/login");
   };
 
   if (isLoading) return <Loading />;
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Tooltip title="Account settings">
-          <IconButton
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 1 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <Avatar sx={{ width: 26, height: 26, backgroundColor: "orange" }}>
-              {userProfile?.avatarUrl || userProfile.name[0]}
-            </Avatar>
-          </IconButton>
-        </Tooltip>
-      </Box>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        slotProps={Slot_Props}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      <HeadlessTippy
+        interactive={true}
+        visible={isMenuOpen} // Điều khiển mở/đóng menu
+        onClickOutside={() => setIsMenuOpen(false)} // Đóng menu khi click ra ngoài
+        render={(attrs) => (
+          <div className="w-64 py-2 bg-white border border-gray-300 border-solid rounded-lg shadow-lg" tabIndex="-1" {...attrs}>
+            <p className="px-4 my-2 font-semibold text-gray-600 text-[12px]">ACCOUNT</p>
+            <div className="flex items-center">
+              <div className="flex items-center px-4 py-2">
+                <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
+                  {userProfile?.avatarUrl || userProfile?.name[0]}
+                </div>
+                <div className="ml-2">
+                  <p className="text-[15px] font-normal">{userProfile?.name}</p>
+                  <p className="text-[12px] font-normal">{userProfile.email}</p>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className={`${styleCSS}`}
+            >
+              Switch account
+            </button>
+            <button
+              className='flex items-center justify-between w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100'
+            >
+              <p>Manage account</p>
+              <OpenInNewIcon sx={{fontSize: '14px'}}/>
+            </button>
+            <Divider />
+            <p className="px-4 my-3 font-semibold text-gray-600 text-[12px]">TRELLO</p>
+            <Link to={routes.profile} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Profile and visibility
+            </Link>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className={`${styleCSS}`}
+            >
+              Cards
+            </button>
+            <div className="my-2 border-t border-gray-200"></div>
+            <button
+              onClick={() => {
+                setOpenEditWorkspaceModal(true);
+                setIsMenuOpen(false);
+              }}
+              className='flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100'
+            >
+              <PeopleAltIcon sx={{fontSize: '15px', marginRight: '8px'}}/>
+              <p>Create Workspace</p>
+            </button>
+            <div className="my-2 border-t border-gray-200"></div>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className={`${styleCSS}`}
+            >
+              Add another account
+            </button>
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className={`${styleCSS}`}
+            >
+              Settings
+            </button>
+            <Divider />
+            <button
+              onClick={handleLogout}
+              className="block w-full px-4 py-2 text-sm text-left text-red-600 hover:bg-gray-100"
+            >
+              Logout
+            </button>
+          </div>
+        )}
       >
-        <Link to={routes.profile} className="flex w-full">
-          <MenuItem sx={{ width: "100%" }}>
-            <Avatar sx={{ width: 26, height: 26 }} />
-            Profile
-          </MenuItem>
-        </Link>
-        <MenuItem onClick={handleClose}>
-          <Avatar sx={{ width: 26, height: 26 }} /> My account
-        </MenuItem>
-        <Divider />
-        <MenuItem
-          onClick={() => {
-            setOpenEditWorkspaceModal(true);
-            handleClose();
-          }}
-        >
-          <ListItemIcon>
-            <PeopleIcon fontSize="small" />
-          </ListItemIcon>
-          Create Workspace
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
-      </Menu>
-      <EditWorkspaceModal
-        open={openEditWorkspaceModal}
-        handleClose={() => {
-          setOpenEditWorkspaceModal(false);
-        }}
-      />
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center ml-4 text-gray-700">
+          <div className="flex items-center justify-center w-6 h-6 bg-orange-400 rounded-full">
+            {userProfile?.avatarUrl || userProfile?.name[0]}
+          </div>
+        </button>
+      </HeadlessTippy>
+
+      <EditWorkspaceModal open={openEditWorkspaceModal} handleClose={() => setOpenEditWorkspaceModal(false)} />
     </>
   );
 }

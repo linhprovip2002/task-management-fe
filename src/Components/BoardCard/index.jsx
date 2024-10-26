@@ -8,6 +8,7 @@ import {
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
+  // AttachmentOutlined,
 } from "@mui/icons-material";
 import { useState } from "react";
 
@@ -23,6 +24,11 @@ import ItemPerson from "../ItemPerson";
 import { useStorage } from "../../Contexts";
 import AddLabelInCard from "./AddLabelInCard";
 import CreateLabel from "./CreateLabel";
+import UploadFile from "../Modals/UploadFile";
+import { toast } from "react-toastify";
+import { apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import Attachment from "./Attachment";
 
 export const BoardCard = () => {
   const {
@@ -50,6 +56,56 @@ export const BoardCard = () => {
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isJoin, setIsJoin] = useState(false);
+  // eslint-disable-next-line
+  const [openPoper, setOpenPoper] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  // handle open, close poper delete image
+  const handleOpenPoper = () => setOpenPoper(true);
+  const handleClosePoper = () => setOpenPoper(false);
+
+  //======= handle upload with API =======
+
+  // Hàm xử lý khi chọn file
+  const handleFileChange = async (event) => {
+    const files = event.target.files;
+    if (files.length === 0) return;
+    toast.info("Uploading...");
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+    try {
+      const response = await apiUploadMultiFile(formData);
+      toast.success("Upload successful!");
+      setUploadedFiles([...response.data, ...uploadedFiles]);
+      return response.data;
+    } catch (error) {
+      toast.error("Upload failed!");
+    }
+  };
+
+  // handle date
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}-${month}-${year}, ${hours}:${minutes}`;
+  };
+
+  // handle delete image
+
+  // handle show and hide images
+  const handleShowImage = () => setShowImage(true);
+  const handleHideImage = () => setShowImage(false);
+  const fileToShow = showImage ? uploadedFiles : uploadedFiles.slice(0, 4);
+  const quantityFile = +(uploadedFiles.length - 4);
+
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
   };
@@ -262,18 +318,11 @@ export const BoardCard = () => {
 
   const handleClickBtn = (e, item) => {
     setNumberShow(item.id);
-    const user = userData
-      .then((result) => {
-        return result;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
     switch (item.id) {
       case 1:
         setIsJoin(!isJoin);
         setIsFollowing(!isJoin);
-        handleAddMember(user);
+        handleAddMember(userData);
         break;
       case 2:
       case 3:
@@ -282,7 +331,7 @@ export const BoardCard = () => {
         handleShowMenuBtnCard(e);
         break;
       case 6:
-        // handleUploadFile();
+        handleShowMenuBtnCard(e);
         break;
       default:
         break;
@@ -297,7 +346,7 @@ export const BoardCard = () => {
               <div>
                 <FeaturedPlayListIcon fontSize="small" />
               </div>
-              <div className="ml-4 flex-1">
+              <div className="flex-1 ml-4">
                 <div className="text-[16px] mb-2">{dataCard.title}</div>
                 <div className="flex items-center text-[12px] mb-6">
                   <span className="mr-2 font-normal">in the list</span>
@@ -359,6 +408,30 @@ export const BoardCard = () => {
                 </div>
               </div>
             </div>
+            {/* SHOW ATTACHMENT */}
+            <div className="px-2">
+              <div className="flex items-center justify-between ">
+                <div className="flex items-center">
+                  <AttachmentIcon />
+                  <p className="ml-3">Attachment</p>
+                </div>
+                <button className="px-4 py-1 bg-gray-300 rounded-sm">Add</button>
+              </div>
+              <div className="p-2 ml-6">
+                <Attachment
+                  uploadedFiles={uploadedFiles}
+                  showImage={showImage}
+                  fileToShow={fileToShow}
+                  open={handleOpenPoper}
+                  handleClose={handleClosePoper}
+                  formatDate={formatDate}
+                  handleShowImage={handleShowImage}
+                  handleHideImage={handleHideImage}
+                  quantityFile={quantityFile}
+                />
+              </div>
+            </div>
+            {/* WHAT TO DO HIEN THI LEN UI */}
             {listToDo &&
               listToDo.map((item, index) => (
                 <div key={index}>
@@ -479,7 +552,7 @@ export const BoardCard = () => {
                     className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
                   />
                 </div>
-                <div className="flex items-center text-[12px] mb-2"></div>
+                <div className="flex items-center text-[12px] mb-2">dfdfdfdfdfdfd</div>
                 <div className="flex items-center text-[12px] mb-2"></div>
               </div>
             </div>
@@ -588,14 +661,13 @@ export const BoardCard = () => {
           </div>
         </div>
       )}
-      {/* {isShowMenuBtnCard && numberShow === 6 && (
-        <div>
-          
-        </div>
-      )} */}
-      {/* <div>
-        <UploadFile open={openUpload} handleClose={handleClose} />
-      </div> */}
+      {isShowMenuBtnCard && numberShow === 6 && (
+        <UploadFile
+          position={position}
+          handleFileChange={handleFileChange}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+        />
+      )}
     </div>
   );
 };
