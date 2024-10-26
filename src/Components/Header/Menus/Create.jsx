@@ -4,9 +4,12 @@ import TrelloLogoIcon from "../../TrelloLogoIcon/TrelloLogoIcon";
 import { Button } from "@mui/material";
 import { CreateNewBoard } from "../../Modals/CreateNewBoard/CreateNewBoard";
 
+
 export default function Create() {
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false); // create new board
+  
+  // const { id } = useParams();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

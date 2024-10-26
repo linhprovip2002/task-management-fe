@@ -34,6 +34,7 @@ const DashBoard = () => {
     );
   }
 
+
   return (
     <div>
       {(isLoadingWorkspace || isLoadingCurrentWorkspace) && <Loading />}
@@ -58,7 +59,6 @@ const DashBoard = () => {
           </button>
           <CreateNewBoard open={open} handleClose={handleClose} />
         </div>
-
         <div className="my-12">
           <button className="p-2 text-sm font-semibold rounded-md bg-hoverBackground text-textColor">
             View closed boards
@@ -69,4 +69,4 @@ const DashBoard = () => {
   );
 };
 
-export default DashBoard;
+export default  DashBoard;

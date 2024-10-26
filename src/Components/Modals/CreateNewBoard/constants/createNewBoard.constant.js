@@ -9,7 +9,9 @@ export const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper"
+  bgcolor: "background.paper",
+  // top: position.top,
+  // left: position.left
 };
 
 // export const colorData = ['yellow', 'orange', 'pink', 'purple', 'green', 'gray'];
@@ -20,51 +22,46 @@ export const colorData = [
   { name: "green", class: "bg-green-500" },
   { name: "yellow", class: "bg-yellow-500" },
   { name: "purple", class: "bg-purple-500" },
-  { name: "gray", class: "bg-gray-500" }
+  { name: "gray", class: "bg-gray-500" },
 ];
 
 export const listBgImage = [
   {
     name: "anh1",
-    image:
-      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-22.jpg"
+    image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-22.jpg",
   },
   {
     name: "anh2",
-    image:
-      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-23.jpg"
+    image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-23.jpg",
   },
   {
     name: "anh3",
-    image:
-      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-24.jpg"
+    image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-24.jpg",
   },
   {
     name: "anh4",
-    image:
-      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-25.jpg"
+    image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-25.jpg",
   },
   {
     name: "anh5",
-    image:
-      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-26.jpg"
+    image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-26.jpg",
   },
   {
     name: "anh6",
-    image:
-      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-35.jpg"
+    image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-35.jpg",
   },
   {
     name: "anh7",
-    image:
-      "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-36.jpg"
-  }
+    image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-36.jpg",
+  },
+  { name: "anh8", image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-21.jpg" },
+  { name: "anh9", image: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/07/anh-thien-nhien-dep-3d-20.jpg" },
 ];
 
 export const listRuleOptions = [
   { label: "Private", value: "isPrivate" },
   { label: "Favorite", value: "isFavorite" },
-  { label: "Archived", value: "isArchived" }
+  { label: "Archived", value: "isArchived" },
 ];
 
 export const defaultBoardValues = {
@@ -75,5 +72,5 @@ export const defaultBoardValues = {
   coverUrl: "",
   isPrivate: false,
   isFavorite: false,
-  isArchived: false
+  isArchived: false,
 };

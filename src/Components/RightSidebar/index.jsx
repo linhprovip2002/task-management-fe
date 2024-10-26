@@ -200,7 +200,7 @@ export default function RightSidebar({ isOpen, onClose }) {
           <Divider component={"div"} />
         </div>
 
-        <div className="px-3 pt-3 pb-2 flex flex-col gap-1">{renderItems()}</div>
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-2">{renderItems()}</div>
       </div>
 
       {/* //TODO  Bật lên popup rời khỏi board  */}

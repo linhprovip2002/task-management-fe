@@ -8,6 +8,7 @@ import {
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
+  // AttachmentOutlined,
 } from "@mui/icons-material";
 import { useState } from "react";
 
@@ -23,6 +24,11 @@ import ItemPerson from "../ItemPerson";
 import { useStorage } from "../../Contexts";
 import AddLabelInCard from "./AddLabelInCard";
 import CreateLabel from "./CreateLabel";
+import UploadFile from "../Modals/UploadFile";
+import { toast } from "react-toastify";
+import { apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import Attachment from "./Attachment";
 
 export const BoardCard = () => {
   const {
@@ -50,6 +56,56 @@ export const BoardCard = () => {
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isJoin, setIsJoin] = useState(false);
+  // eslint-disable-next-line
+  const [openPoper, setOpenPoper] = useState(false);
+  const [showImage, setShowImage] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  // handle open, close poper delete image
+  const handleOpenPoper = () => setOpenPoper(true);
+  const handleClosePoper = () => setOpenPoper(false);
+
+  //======= handle upload with API =======
+
+  // Hàm xử lý khi chọn file
+  const handleFileChange = async (event) => {
+    const files = event.target.files;
+    if (files.length === 0) return;
+    toast.info("Uploading...");
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+    try {
+      const response = await apiUploadMultiFile(formData);
+      toast.success("Upload successful!");
+      setUploadedFiles([...response.data, ...uploadedFiles]);
+      return response.data;
+    } catch (error) {
+      toast.error("Upload failed!");
+    }
+  };
+
+  // handle date
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}-${month}-${year}, ${hours}:${minutes}`;
+  };
+
+  // handle delete image
+
+  // handle show and hide images
+  const handleShowImage = () => setShowImage(true);
+  const handleHideImage = () => setShowImage(false);
+  const fileToShow = showImage ? uploadedFiles : uploadedFiles.slice(0, 4);
+  const quantityFile = +(uploadedFiles.length - 4);
+
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
   };
@@ -264,6 +320,9 @@ export const BoardCard = () => {
       case 5:
         handleShowMenuBtnCard(e);
         break;
+      case 6:
+        handleShowMenuBtnCard(e);
+        break;
       default:
         break;
     }
@@ -277,7 +336,7 @@ export const BoardCard = () => {
               <div>
                 <FeaturedPlayListIcon fontSize="small" />
               </div>
-              <div className="ml-4 flex-1">
+              <div className="flex-1 ml-4">
                 <div className="text-[16px] mb-2">{dataCard.title}</div>
                 <div className="flex items-center text-[12px] mb-6">
                   <span className="mr-2 font-normal">in the list</span>
@@ -322,7 +381,7 @@ export const BoardCard = () => {
                       nameBtn={"Following"}
                       className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
                     >
-                      <RemoveRedEyeOutlinedIcon className="mr-2 ml-1" fontSize="small" />
+                      <RemoveRedEyeOutlinedIcon className="ml-1 mr-2" fontSize="small" />
                     </ButtonBoardCard>
                   </div>
                 </div>
@@ -332,13 +391,37 @@ export const BoardCard = () => {
               <div>
                 <SubjectIcon fontSize="small" />
               </div>
-              <div className="ml-4 flex-1">
+              <div className="flex-1 ml-4">
                 <div className="text-[16px] mb-2">Describe</div>
                 <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-[14px] mb-2 p-2 pb-6 rounded-[4px]">
                   <div>Add more detailed description...</div>
                 </div>
               </div>
             </div>
+            {/* SHOW ATTACHMENT */}
+            <div className="px-2">
+              <div className="flex items-center justify-between ">
+                <div className="flex items-center">
+                  <AttachmentIcon />
+                  <p className="ml-3">Attachment</p>
+                </div>
+                <button className="px-4 py-1 bg-gray-300 rounded-sm">Add</button>
+              </div>
+              <div className="p-2 ml-6">
+                <Attachment
+                  uploadedFiles={uploadedFiles}
+                  showImage={showImage}
+                  fileToShow={fileToShow}
+                  open={handleOpenPoper}
+                  handleClose={handleClosePoper}
+                  formatDate={formatDate}
+                  handleShowImage={handleShowImage}
+                  handleHideImage={handleHideImage}
+                  quantityFile={quantityFile}
+                />
+              </div>
+            </div>
+            {/* WHAT TO DO HIEN THI LEN UI */}
             {listToDo &&
               listToDo.map((item, index) => (
                 <div key={index}>
@@ -346,7 +429,7 @@ export const BoardCard = () => {
                     <div>
                       <CheckBoxOutlinedIcon fontSize="small" />
                     </div>
-                    <div className="ml-4 flex-1">
+                    <div className="flex-1 ml-4">
                       <div className="flex justify-between">
                         <div className="text-[16px] mb-2">{item.title}</div>
                         <ButtonBoardCard
@@ -386,7 +469,7 @@ export const BoardCard = () => {
                         </span>
                       </li>
                     ))}
-                    <div className="ml-2 mb-8">
+                    <div className="mb-8 ml-2">
                       {!item.isCreateItem ? (
                         <ButtonBoardCard
                           onHandleEvent={() => ShowCreateToDoItem(item)}
@@ -450,7 +533,7 @@ export const BoardCard = () => {
               <div>
                 <FormatListBulletedIcon fontSize="small" />
               </div>
-              <div className="ml-4 flex-1">
+              <div className="flex-1 ml-4">
                 <div className="flex justify-between">
                   <div className="text-[16px] mb-2">Work</div>
                   <ButtonBoardCard
@@ -459,13 +542,13 @@ export const BoardCard = () => {
                     className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
                   />
                 </div>
-                <div className="flex items-center text-[12px] mb-2"></div>
+                <div className="flex items-center text-[12px] mb-2">dfdfdfdfdfdfd</div>
                 <div className="flex items-center text-[12px] mb-2"></div>
               </div>
             </div>
           </div>
           <div className="min-w-[180px]">
-            <div className="relative flex items-center flex-col mt-16 mb-4 mx-2">
+            <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
               {listBtnCard.map((item, index) => (
                 <ButtonBoardCard onHandleEvent={(e) => handleClickBtn(e, item)} key={index} nameBtn={item.nameBtn}>
                   {item.Icon}
@@ -526,16 +609,16 @@ export const BoardCard = () => {
           style={{ top: position.top - 200, left: position.left }}
           className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
         >
-          <div className="text-center p-2 mx-8">Day</div>
+          <div className="p-2 mx-8 text-center">Day</div>
           <div className="mx-2">
-            <div className="py-2 px-1">
+            <div className="px-1 py-2">
               <Calendar />
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Start date</label>
                 <input
                   type="text"
                   value="N/T/NNNN"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
               </div>
 
@@ -544,20 +627,20 @@ export const BoardCard = () => {
                 <input
                   type="text"
                   value="18/10/2024"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
                 <input
                   type="text"
                   value="19:33"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
                 />
               </div>
 
-              <button className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
+              <button className="w-full px-4 py-2 font-bold text-white bg-blue-600 rounded hover:bg-blue-700">
                 Set Reminder
               </button>
 
-              <button className="w-full mt-4 bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700">
+              <button className="w-full px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-700">
                 Save
               </button>
             </div>
@@ -567,6 +650,13 @@ export const BoardCard = () => {
             />
           </div>
         </div>
+      )}
+      {isShowMenuBtnCard && numberShow === 6 && (
+        <UploadFile
+          position={position}
+          handleFileChange={handleFileChange}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+        />
       )}
     </div>
   );
