@@ -87,7 +87,7 @@ export default function RightSidebar({ isOpen, onClose }) {
       },
       {
         title: isOwner ? "Close board" : "Leave this board",
-        icon: isOwner ? <LogoutIcon sx={{ fontSize: sizeIcon }} /> : <RemoveIcon sx={{ fontSize: sizeIcon }} />,
+        icon: isOwner ? <RemoveIcon sx={{ fontSize: sizeIcon }} /> : <LogoutIcon sx={{ fontSize: sizeIcon }} />,
         onClick: () => setDeleteDialog(true),
       },
     ],
