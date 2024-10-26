@@ -8,7 +8,7 @@ import { useGetUserProfile } from "../../../Hooks";
 import Loading from "../../Loading";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import HeadlessTippy from "@tippyjs/react/headless";
-import { Divider } from "@mui/material";
+import { Avatar, Divider } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
 export const styleCSS = "block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100";
@@ -19,6 +19,7 @@ export default function AccountMenu() {
   const [openEditWorkspaceModal, setOpenEditWorkspaceModal] = useState(false);
   const { setIsLoggedIn, isLoggedIn } = useStorage();
   const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
+  const { userData } = useStorage();
 
   const handleLogout = async () => {
     setIsLoggedIn(false);
@@ -45,9 +46,13 @@ export default function AccountMenu() {
             <p className="px-4 my-2 font-semibold text-gray-600 text-[12px]">ACCOUNT</p>
             <div className="flex items-center">
               <div className="flex items-center px-4 py-2">
-                <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
-                  {userProfile?.avatarUrl || userProfile?.name[0]}
-                </div>
+                {userData?.avatarUrl ? (
+                  <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
+                ) : (
+                  <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
+                    {userProfile?.name[0] || " "}
+                  </div>
+                )}
                 <div className="ml-2">
                   <p className="text-[15px] font-normal">{userProfile?.name}</p>
                   <p className="text-[12px] font-normal">{userProfile.email}</p>
@@ -98,9 +103,13 @@ export default function AccountMenu() {
         )}
       >
         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center ml-4 text-gray-700">
-          <div className="flex items-center justify-center w-6 h-6 bg-orange-400 rounded-full">
-            {userProfile?.avatarUrl || userProfile?.name[0]}
-          </div>
+          {userData?.avatarUrl ? (
+            <Avatar alt={userData?.name} src={userData?.avatarUrl} />
+          ) : (
+            <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
+              {userProfile?.name[0] || " "}
+            </div>
+          )}
         </button>
       </HeadlessTippy>
 
