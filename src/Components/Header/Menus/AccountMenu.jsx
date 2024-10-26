@@ -43,6 +43,7 @@ export default function AccountMenu() {
             tabIndex="-1"
             {...attrs}
           >
+<<<<<<< HEAD
             <p className="px-4 my-2 font-semibold text-gray-600 text-[12px]">ACCOUNT</p>
             <div className="flex items-center">
               <div className="flex items-center px-4 py-2">
@@ -101,6 +102,23 @@ export default function AccountMenu() {
             </button>
           </div>
         )}
+=======
+            <Avatar sx={{ width: 26, height: 26, backgroundColor: "orange" }}>
+              {userProfile?.avatarUrl || userProfile?.name[0]}
+            </Avatar>
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        slotProps={Slot_Props}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+>>>>>>> c8fdcfe0f70c50c763583120bc0f6071a5f1eef6
       >
         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center ml-4 text-gray-700">
           {userData?.avatarUrl ? (
