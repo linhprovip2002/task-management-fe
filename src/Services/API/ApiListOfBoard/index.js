@@ -6,6 +6,6 @@ export async function getListByBoardID(id) {
 }
 
 export async function CreateList(newData) {
-  const response = await request.post(`/list`, newData);
+  const response = await request.post(`/board/{boardId}/list`, newData);
   return response?.data;
 }

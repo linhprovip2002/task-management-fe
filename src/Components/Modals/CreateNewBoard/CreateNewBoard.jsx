@@ -66,7 +66,7 @@ export const CreateNewBoard = ({ open, handleClose }) => {
       const newboard = await createBoard(boardData);
       reset(defaultBoardValues);
       queryClient.invalidateQueries([EQueryKeys.GET_WORKSPACE_BY_ID]);
-      navigate(`/board/${newboard.id}`);
+      navigate(`/workspace/${workspaceId}/board/${newboard.id}`);
       handleClose();
     } catch (error) {
       console.error("Failed to create board:", error);
@@ -109,15 +109,10 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                     backgroundImage: selectedImg ? `url(${selectedImg})` : "none",
                     backgroundSize: "cover",
                     backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center center"
+                    backgroundPosition: "center center",
                   }}
                 >
-                  <img
-                    src="https://trello.com/assets/14cda5dc635d1f13bc48.svg"
-                    alt="svg"
-                    width="186"
-                    height="103"
-                  />
+                  <img src="https://trello.com/assets/14cda5dc635d1f13bc48.svg" alt="svg" width="186" height="103" />
                 </div>
               </div>
 
@@ -132,14 +127,12 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                           backgroundImage: `url(${bgImg.image})`,
                           backgroundSize: "cover",
                           backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center center"
+                          backgroundPosition: "center center",
                         }}
                         className={` ${customBgImg} ${selectedImg === bgImg.name ? `${bgImg.image}` : ""}`}
                         onClick={() => handleImageClick(bgImg.image)}
                       >
-                        {selectedImg === bgImg.image && (
-                          <CheckIcon className="text-white" />
-                        )}
+                        {selectedImg === bgImg.image && <CheckIcon className="text-white" />}
                       </div>
                     </div>
                   ))}
@@ -155,9 +148,7 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                       className={`${color.class} ${customStyleNewBoard} ${selectedBg === color.name ? `ring-2 ${color.class}` : ""}`}
                       onClick={() => handleBackgroundClick(color.name)}
                     >
-                      {selectedBg === color.name && (
-                        <CheckIcon className="text-white" />
-                      )}
+                      {selectedBg === color.name && <CheckIcon className="text-white" />}
                     </div>
                   ))}
                 </div>
@@ -194,14 +185,7 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                     getOptionLabel={(option) => option.title}
                     getOptionKey={(option) => option.id}
                     renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        size="small"
-                        required
-                        label="Workspace"
-                        variant="outlined"
-                        fullWidth
-                      />
+                      <TextField {...params} size="small" required label="Workspace" variant="outlined" fullWidth />
                     )}
                     className="my-4"
                   />
@@ -215,13 +199,7 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                 getOptionLabel={(option) => option.label}
                 isOptionEqualToValue={(option, value) => option.value === value}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label="Visibility"
-                    variant="outlined"
-                    fullWidth
-                  />
+                  <TextField {...params} size="small" label="Visibility" variant="outlined" fullWidth />
                 )}
                 className="my-4"
               />

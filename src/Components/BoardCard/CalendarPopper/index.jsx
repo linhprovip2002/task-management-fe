@@ -1,0 +1,130 @@
+import React, { useCallback, useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import Calendar from "../../Calendar/index";
+
+const CalendarPopper = ({ position, handleCloseShowMenuBtnCard }) => {
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  const getCurrentDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${day}-${month}-${year}`;
+  };
+
+  const [startDate, setStartDate] = useState("N/T/NNNN");
+  const [isChecked, setIsChecked] = useState(false);
+  const [expirationDate, setExpirationDate] = useState(getCurrentDate());
+  const [previousDate, setPreviousDate] = useState(getCurrentDate());
+  const [expirationTime, setExpirationTime] = useState(getCurrentTime());
+  const [previousTime, setPreviousTime] = useState(getCurrentTime());
+
+  const handleChangeDay = useCallback((choosedDay) => {
+    setExpirationDate(choosedDay);
+  }, []);
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
+
+  const handleChangeTime = (e) => {
+    const newTime = e.target.value;
+    setExpirationTime(newTime);
+  };
+
+  const handleChangeDateExp = (e) => {
+    const newDate = e.target.value;
+    setExpirationDate(newDate);
+  };
+
+  const handleBlurTime = () => {
+    const timePattern = /^(2[0-3]|[01]?[0-9]):[0-5][0-9]$/;
+
+    if (timePattern.test(expirationTime)) {
+      setPreviousTime(expirationTime);
+    } else {
+      setExpirationTime(previousTime);
+    }
+  };
+
+  const handleBlurDateExp = () => {
+    const datePattern = /^\d{2}-\d{2}-\d{4}$/;
+
+    if (datePattern.test(expirationDate)) {
+      setPreviousDate(expirationDate);
+    } else {
+      setExpirationDate(previousDate);
+    }
+  };
+
+  return (
+    <div
+      style={{ top: position.top - 200, left: position.left }}
+      className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
+    >
+      <div className="p-2 mx-8 text-center">Day</div>
+      <div className="mx-2">
+        <div className="px-1 py-2">
+          <Calendar onChange={handleChangeDay} />
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Start date</label>
+            <div className="flex items-center justifyContent-center my-2">
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+                className="block p-2 mr-2 rounded-md shadow-sm"
+              />
+              <input
+                type="text"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className={`block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 ${isChecked ? "" : "opacity-50 cursor-not-allowed"}`}
+                disabled={!isChecked}
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Expiration date</label>
+            <div className="flex items-center justifyContent-center my-2">
+              <input
+                type="text"
+                value={expirationDate}
+                onChange={(e) => handleChangeDateExp(e)}
+                onBlur={handleBlurDateExp}
+                className="block w-full mx-1 p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+              />
+              <input
+                type="text"
+                value={expirationTime}
+                onChange={(e) => handleChangeTime(e)}
+                onBlur={handleBlurTime}
+                className="block w-full mx-1 p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+              />
+            </div>
+          </div>
+
+          <button className="w-full mb-2 px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-500 transition-all duration-0.3s">
+            Save
+          </button>
+          <button className="w-full mb-2 px-4 py-2 font-bold text-white bg-gray-400 rounded hover:bg-gray-700 transition-all duration-0.3s">
+            Remove
+          </button>
+        </div>
+        <CloseIcon
+          onClick={handleCloseShowMenuBtnCard}
+          className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default React.memo(CalendarPopper);

@@ -1,72 +1,151 @@
 import React, { useState } from "react";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import dayjs from "dayjs";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { styled } from "@mui/material/styles";
+import PropTypes from "prop-types";
 
-import { ButtonBoardCard } from "../ButtonBoardCard";
+// Tùy chỉnh lịch
+const CustomDateCalendar = styled("div")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(7, 1fr)",
+  gap: "4px",
+  height: "100%",
+  paddingBottom: "16px",
+  "& .day": {
+    borderRadius: "50%",
+    width: "100%",
+    height: "28px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    backgroundColor: theme.palette.common.white,
+    transition: "background-color 0.3s ease",
+    "&.selected": {
+      backgroundColor: "rgba(0, 123, 255, 0.8)",
+      color: theme.palette.common.white,
+    },
+    "&:hover": {
+      backgroundColor: "rgba(0, 123, 255, 0.3)",
+    },
+    "&.not-current-month": {
+      backgroundColor: "rgba(128, 128, 128, 0.2)",
+      color: "rgba(0, 0, 0, 0.5)",
+    },
+    "&.today": {
+      border: "2px solid rgba(0, 123, 255, 0.5)",
+    },
+  },
+  "& .header": {
+    fontWeight: "bold",
+    textAlign: "center",
+    padding: "8px 0",
+  },
+}));
 
-const Calendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const CustomStack = styled("div")(() => ({
+  maxHeight: "400px",
+  height: "100%",
+  width: "100%",
+}));
 
-  const handleNextMonth = () => {
-    setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+// Tùy chỉnh nút
+const CustomButton = styled("button")(({ theme }) => ({
+  fontSize: "16px",
+  padding: "2px 8px",
+  borderRadius: "4px",
+  border: "none",
+  cursor: "pointer",
+  backgroundColor: theme.palette.common.white,
+  transition: "background-color 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(128, 128, 128, 0.2)",
+  },
+}));
+
+function Calendar({ onChange }) {
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+
+  const handleDateChange = (newValue) => {
+    setSelectedDate(newValue);
+    onChange(newValue.format("DD-MM-YYYY"));
   };
 
-  const handlePrevMonth = () => {
-    setCurrentDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  const getDaysInMonth = () => {
+    const monthStart = currentDate.startOf("month");
+    const monthEnd = currentDate.endOf("month");
+    const days = [];
+
+    // Bắt đầu từ ngày đầu tiên của tuần
+    let currentDay = monthStart.startOf("week").subtract(-1, "day");
+
+    // Chạy cho đến khi hiện tại vượt quá cuối tuần của tháng
+    while (currentDay.isBefore(monthEnd.endOf("week").add(2, "day"), "day")) {
+      days.push(currentDay);
+      currentDay = currentDay.add(1, "day");
+    }
+
+    return days;
   };
 
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-    return daysArray;
-  };
-
-  const daysArray = getDaysInMonth(currentDate);
-
-  const monthYear = currentDate.toLocaleString("default", { month: "long", year: "numeric" });
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <ButtonBoardCard
-          className={"w-[18px] h-[24px] hover:bg-gray-300 justify-center"}
-          isActive={true}
-          onHandleEvent={handlePrevMonth}
-        >
-          <KeyboardArrowLeftIcon />
-        </ButtonBoardCard>
-        <span className="text-xl font-bold">{monthYear}</span>
-        <ButtonBoardCard
-          className={"w-[18px] h-[24px] hover:bg-gray-300 justify-center"}
-          isActive={true}
-          onHandleEvent={handleNextMonth}
-        >
-          <ChevronRightIcon />
-        </ButtonBoardCard>
-      </div>
-
-      <div className="grid grid-cols-7 gap-2">
-        <div className="font-bold text-center">Sun</div>
-        <div className="font-bold text-center">Mon</div>
-        <div className="font-bold text-center">Tue</div>
-        <div className="font-bold text-center">Wed</div>
-        <div className="font-bold text-center">Thu</div>
-        <div className="font-bold text-center">Fri</div>
-        <div className="font-bold text-center">Sat</div>
-
-        {daysArray.map((day) => (
-          <div
-            key={day}
-            className="flex items-center justify-center px-3 py-1 hover:bg-gray-200 rounded-[2px] cursor-pointer"
-          >
+  // Tạo tiêu đề cho các ngày trong tuần
+  const renderWeekDaysHeader = () => {
+    const weekdays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+    return (
+      <div style={{ display: "contents" }}>
+        {weekdays.map((day, index) => (
+          <div key={index} className="header">
             {day}
           </div>
         ))}
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer sx={{ width: "100%" }} components={["DateCalendar"]}>
+        <CustomStack sx={{ width: "100%" }}>
+          <DemoItem sx={{ width: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" }}>
+              <CustomButton onClick={() => setCurrentDate(currentDate.subtract(1, "month"))}>{"<"}</CustomButton>
+              <div>{currentDate.format("MMMM YYYY")}</div>
+              <CustomButton onClick={() => setCurrentDate(currentDate.add(1, "month"))}>{">"}</CustomButton>
+            </div>
+
+            <CustomDateCalendar>
+              {renderWeekDaysHeader()}
+              {getDaysInMonth().map((day) => (
+                <div
+                  key={day.format("YYYY-MM-DD")}
+                  className={`day ${day.isSame(selectedDate, "day") ? "selected" : ""} ${
+                    !day.isSame(currentDate, "month") ? "not-current-month" : ""
+                  } ${day.isSame(dayjs(), "day") ? "today" : ""}`} // Thêm class "today" cho ngày hiện tại
+                  onClick={() => {
+                    if (!day.isSame(currentDate, "month")) {
+                      setCurrentDate(day);
+                      setSelectedDate(day);
+                    } else {
+                      handleDateChange(day);
+                    }
+                  }}
+                >
+                  {day.date()}
+                </div>
+              ))}
+            </CustomDateCalendar>
+          </DemoItem>
+        </CustomStack>
+      </DemoContainer>
+    </LocalizationProvider>
   );
+}
+
+Calendar.propTypes = {
+  onChange: PropTypes.func,
 };
 
-export default Calendar;
+export default React.memo(Calendar);

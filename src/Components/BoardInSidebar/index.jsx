@@ -10,15 +10,15 @@ function BoardInSidebar() {
   const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
 
   return (
-    <div className="relative flex items-center pl-4 py-2 bg-gray-200 cursor-pointer group">
+    <div className="relative flex items-center pl-4 py-1 bg-gray-200 hover:bg-gray-300 cursor-pointer group transition-all duration-200">
       <div className="rounded-[4px] font-bold text-white text-[20px]">
         <ImageIcon width={24} height={20} className={"rounded-[2px]"} />
       </div>
-      <div className=" flex-1 ml-2 text-[18px] font-medium">{dataBoard.title || "No title"}</div>
+      <div className=" flex-1 ml-2 text-[14px] font-medium">{dataBoard.title || "No title"}</div>
       <ConvertHiDotsVertical
         type={"navbarBoard"}
         className={
-          "cursor-pointer p-2 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[2px] transition-opacity duration-300"
+          "cursor-pointer p-2 right-8 opacity-0 group-hover:opacity-100 hover:bg-gray-400 rounded-[2px] transition-opacity duration-300"
         }
       />
       <div

@@ -16,7 +16,6 @@ import { listColorLabel } from "./constans/list.constans";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import MemberMenu from "../MemberMenuOfBoard";
 import ToDoMenu from "../ToDoMenuOfBoard";
-import Calendar from "../Calendar";
 import { listLabelAdd } from "./constans/list.constans";
 import { listBtnCard } from "./constans/list.constans";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
@@ -29,6 +28,7 @@ import { toast } from "react-toastify";
 import { apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
+import CalendarPopper from "./CalendarPopper";
 
 export const BoardCard = () => {
   const {
@@ -605,51 +605,7 @@ export const BoardCard = () => {
       )}
 
       {isShowMenuBtnCard && numberShow === 5 && (
-        <div
-          style={{ top: position.top - 200, left: position.left }}
-          className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
-        >
-          <div className="p-2 mx-8 text-center">Day</div>
-          <div className="mx-2">
-            <div className="px-1 py-2">
-              <Calendar />
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Start date</label>
-                <input
-                  type="text"
-                  value="N/T/NNNN"
-                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Expiration date</label>
-                <input
-                  type="text"
-                  value="18/10/2024"
-                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
-                />
-                <input
-                  type="text"
-                  value="19:33"
-                  className="block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
-                />
-              </div>
-
-              <button className="w-full px-4 py-2 font-bold text-white bg-blue-600 rounded hover:bg-blue-700">
-                Set Reminder
-              </button>
-
-              <button className="w-full px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-700">
-                Save
-              </button>
-            </div>
-            <CloseIcon
-              onClick={handleCloseShowMenuBtnCard}
-              className=" cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
-            />
-          </div>
-        </div>
+        <CalendarPopper position={position} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
       )}
       {isShowMenuBtnCard && numberShow === 6 && (
         <UploadFile

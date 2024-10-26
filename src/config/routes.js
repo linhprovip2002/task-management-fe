@@ -3,12 +3,12 @@ export const workspaceRoutes = {
   workspaceHightlights: "/workspace/:id/highlights",
   workspaceViews: "/workspace/:id/views",
   workspaceMembers: "/workspace/:id/members",
-  workspaceSettings: "/workspace/:id/settings"
+  workspaceSettings: "/workspace/:id/settings",
 };
 
 export const userRoutes = {
   userBoards: "/user/:id/boards",
-  profile: "/user/:id"
+  profile: "/user/:id",
 };
 
 const routes = {
@@ -18,9 +18,9 @@ const routes = {
   dashboard: "/dashboard",
   home: "home",
   signup: "/signup",
-  listboard: "/board/:id",
+  listboard: "/workspace/:idWorkSpace/board/:idBoard",
   ...userRoutes,
-  ...workspaceRoutes
+  ...workspaceRoutes,
 };
 
 export default routes;
