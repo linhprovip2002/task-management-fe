@@ -8,17 +8,16 @@ import { ButtonBoardCard } from "../ButtonBoardCard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
 export const EditCard = ({ imageSrc, isDescriptionIcon = false, isAttachment = false, attachmentCount }) => {
-  const { handleShowBoardCard, handleShowBoardEdit, dataCard, position } = useListBoardContext();
+  const { handleShowBoardCard, handleShowBoardEdit, dataCard, dataList, position } = useListBoardContext();
 
   const [inputTitle, setInputTitle] = useState(dataCard.title);
   const handleChange = (e) => {
     setInputTitle(e.target.value);
   };
-
   const handleClickBtn = (item) => {
     switch (item.id) {
       case 1:
-        handleShowBoardCard(dataCard);
+        handleShowBoardCard(dataList, dataCard);
         break;
       default:
         break;

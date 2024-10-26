@@ -66,14 +66,12 @@ function ListInBoard() {
                       {item.cards?.map((card, index) => {
                         return (
                           <ItemList
+                            key={index}
                             dataList={item}
                             dataCard={card}
-                            key={index}
-                            // imageSrc={card.imageSrc}
-                            // descriptionCard={card.descriptionCard}
-                            // isAttachment={card.isAttachment}
-                            // isDescriptionIcon={card.isDescriptionIcon}
-                            // cardCount={card.cardCount}
+                            imageSrc
+                            isDescriptionIcon
+                            Attachments={[1]}
                           />
                         );
                       })}

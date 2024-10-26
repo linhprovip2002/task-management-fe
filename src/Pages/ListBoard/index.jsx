@@ -11,17 +11,16 @@ import ListBoardProvider from "./ListBoardContext";
 import { useListBoardContext } from "./ListBoardContext";
 
 function ListBoard() {
-  const { id } = useParams();
-
+  const { idWorkSpace, idBoard } = useParams();
   return (
-    <ListBoardProvider boardId={id}>
+    <ListBoardProvider boardId={idBoard} idWorkSpace={idWorkSpace}>
       <ListBoardContent />
     </ListBoardProvider>
   );
 }
 
 function ListBoardContent() {
-  const { handleClosedNavBar, isShowBoardCard, isShowBoardEdit } = useListBoardContext();
+  const { dataBoard, dataWorkspace, handleClosedNavBar, isShowBoardCard, isShowBoardEdit } = useListBoardContext();
 
   return (
     <>
@@ -37,7 +36,7 @@ function ListBoardContent() {
               <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
                 B
               </div>
-              <div className="flex-1 ml-2 text-[18px] font-medium">BKDN</div>
+              <div className="flex-1 ml-2 text-[18px] font-medium">{dataWorkspace.title}</div>
               <div onClick={handleClosedNavBar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
                 <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
               </div>
@@ -58,7 +57,13 @@ function ListBoardContent() {
         <div
           className="flex-grow flex flex-col overflow-x-hidden"
           style={{
-            backgroundImage: `url(https://trello.com/assets/707f35bc691220846678.svg)`,
+            backgroundColor:
+              !dataBoard.coverUrl && dataBoard.backgroundColor ? dataBoard.backgroundColor : "transparent",
+            backgroundImage: dataBoard.coverUrl
+              ? `url(${dataBoard.coverUrl})`
+              : dataBoard.backgroundColor
+                ? "none"
+                : `url(https://trello.com/assets/707f35bc691220846678.svg)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",

@@ -13,10 +13,8 @@ const DashBoard = () => {
   const [open, setOpen] = useState(false);
   const { id } = useParams();
 
-  const { workspaceDetails, isLoading: isLoadingCurrentWorkspace } =
-    useGetWorkspaceById(id);
-  const { workspaceInfo, isLoading: isLoadingWorkspace } =
-    useGetWorkspaceByUser();
+  const { workspaceDetails, isLoading: isLoadingCurrentWorkspace } = useGetWorkspaceById(id);
+  const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -27,13 +25,8 @@ const DashBoard = () => {
   }, [JSON.stringify(workspaceDetails?.boards)]);
 
   if (!workspaceInfo?.length) {
-    return (
-      <div className="text-xl font-semibold">
-        LOOK LIKE YOU DON'T HAVE ANY WORKSPACE YET!
-      </div>
-    );
+    return <div className="text-xl font-semibold">LOOK LIKE YOU DON'T HAVE ANY WORKSPACE YET!</div>;
   }
-
 
   return (
     <div>
@@ -49,7 +42,7 @@ const DashBoard = () => {
         </div>
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {listBoard?.map((board, index) => {
-            return <Board key={index} board={board} />;
+            return <Board key={index} board={board} idWorkSpace={id} />;
           })}
           <button
             onClick={handleOpen}
@@ -69,4 +62,4 @@ const DashBoard = () => {
   );
 };
 
-export default  DashBoard;
+export default DashBoard;

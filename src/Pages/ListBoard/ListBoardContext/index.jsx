@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
 import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
-import { getAllMembersByIdBoard, getBoardId } from "../../../Services/API/ApiBoard/apiBoard";
+import { getAllMembersByIdBoard, getBoardId, getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
 
 const ListBoardContext = createContext();
 
@@ -9,7 +10,7 @@ export const useListBoardContext = () => {
   return useContext(ListBoardContext);
 };
 
-function ListBoardProvider({ children, boardId }) {
+function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [nameTitle, setNameTitle] = useState("");
   const [isClosedNavBar, setIsCloseNavBar] = useState(false);
   const [isShowBoardCard, setIsShowBoardCard] = useState(false);
@@ -22,16 +23,23 @@ function ListBoardProvider({ children, boardId }) {
   const [activeStar, setActiveStar] = useState(false);
   const [listCount, setListCount] = useState([]);
   const [dataBoard, setDataBoard] = useState([]);
+  const [dataWorkspace, setDataWorkspace] = useState([]);
   const [membersBoard, setMembersBoard] = useState([]);
   const [membersInCard, setMembersInCard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const navigate = useNavigate();
   let prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
       try {
-        const res = await getBoardId(boardId);
-        setDataBoard(res);
-        const lists = res.lists;
+        const resWorkspace = await getWorkspaceById(idWorkSpace);
+        if (!resWorkspace || resWorkspace.error) return navigate(`/workspace/${idWorkSpace}/home`);
+        setDataWorkspace(resWorkspace?.data);
+
+        const resBoard = await getBoardId(boardId);
+        if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
+        setDataBoard(resBoard);
+        const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
           let cards = await getAllCardByIdList(list.id);
           cards = cards.data;
@@ -44,11 +52,12 @@ function ListBoardProvider({ children, boardId }) {
         prevListCountRef.current = updatedLists;
       } catch (err) {
         console.error("Error fetching board data: ", err);
+        navigate(`/workspace/${idWorkSpace}/home`);
       }
     };
 
     fetchBoardData();
-  }, [boardId, listCount]);
+  }, [boardId, idWorkSpace, listCount, navigate]);
 
   useEffect(() => {
     const getAllUserInBoard = async () => {
@@ -77,11 +86,12 @@ function ListBoardProvider({ children, boardId }) {
   );
 
   const handleShowBoardEdit = useCallback(
-    (e, data) => {
+    (e, dataList, dataCard) => {
       setIsShowBoardEdit(!isShowBoardEdit);
       const rect = e.currentTarget.getBoundingClientRect();
       setPosition({ top: rect.bottom + 8, left: rect.left });
-      setDataCard(data);
+      setDataList(dataList);
+      setDataCard(dataCard);
     },
     [isShowBoardEdit],
   );
@@ -216,6 +226,7 @@ function ListBoardProvider({ children, boardId }) {
         activeStar,
         handleActiveStar,
         dataBoard,
+        dataWorkspace,
         membersBoard,
         membersInCard,
         setMembersInCard,

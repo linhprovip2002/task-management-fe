@@ -31,9 +31,13 @@ function HeaderBoard() {
         <TippyDetail title={"Star or unstar this tables. Starred tables will appear at the top of the tables list."}>
           <div
             onClick={handleActiveStar}
-            className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
+            className="cursor-pointer rounded-[4px] p-[4px] ml-2 hover:bg-gray-300 transition-opacity duration-300"
           >
-            {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
+            {activeStar ? (
+              <StarRoundedIcon style={{ fontSize: "24px" }} />
+            ) : (
+              <StarOutlineRoundedIcon style={{ fontSize: "24px" }} />
+            )}
           </div>
         </TippyDetail>
         <TippyDetail title={"Viewability"}>

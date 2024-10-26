@@ -1,5 +1,6 @@
 import React from "react";
 import { Add as AddIcon } from "@mui/icons-material";
+import PropTypes from "prop-types";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
 function ItemPerson({ handleShowMenuBtnCard }) {
@@ -28,5 +29,9 @@ function ItemPerson({ handleShowMenuBtnCard }) {
     </div>
   );
 }
+
+ItemPerson.propTypes = {
+  handleShowMenuBtnCard: PropTypes.func,
+};
 
 export default React.memo(ItemPerson);
