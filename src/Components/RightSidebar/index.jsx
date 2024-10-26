@@ -13,6 +13,7 @@ import LabelIcon from "@mui/icons-material/Label";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import RemoveIcon from "@mui/icons-material/Remove";
 import ShareIcon from "@mui/icons-material/Share";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -30,6 +31,7 @@ const sizeIcon = 20;
 
 export default function RightSidebar({ isOpen, onClose }) {
   const { id } = useParams();
+  const isOwner = false;
   const items = {
     headerTitle: "Menu",
     data: [
@@ -84,8 +86,8 @@ export default function RightSidebar({ isOpen, onClose }) {
         icon: <ShareIcon sx={{ fontSize: sizeIcon }} />,
       },
       {
-        title: "Leave this board",
-        icon: <LogoutIcon sx={{ fontSize: sizeIcon }} />,
+        title: isOwner ? "Close board" : "Leave this board",
+        icon: isOwner ? <LogoutIcon sx={{ fontSize: sizeIcon }} /> : <RemoveIcon sx={{ fontSize: sizeIcon }} />,
         onClick: () => setDeleteDialog(true),
       },
     ],
@@ -201,7 +203,7 @@ export default function RightSidebar({ isOpen, onClose }) {
         <div className="px-3 pt-3 pb-2 flex flex-col gap-1">{renderItems()}</div>
       </div>
 
-      {/* //TODO Start Bật lên popup rời khỏi board  */}
+      {/* //TODO  Bật lên popup rời khỏi board  */}
       <Dialog
         open={deleteDialog}
         onClose={() => {
@@ -210,10 +212,12 @@ export default function RightSidebar({ isOpen, onClose }) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Close board?</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{isOwner ? "Close board?" : "Leave board?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You can find and reopen closed boards at the bottom of your boards page.
+            {isOwner
+              ? `You can find and reopen closed boards at the bottom of your boards page.`
+              : `You will be removed from all cards on this board.`}
           </DialogContentText>
         </DialogContent>
 
@@ -226,11 +230,10 @@ export default function RightSidebar({ isOpen, onClose }) {
             Disagree
           </Button>
           <Button variant="contained" color="error" onClick={handleLeaveBoard} autoFocus>
-            Close
+            {isOwner ? "Close" : "Leave"}
           </Button>
         </DialogActions>
       </Dialog>
-      {/* //TODO End Bật lên popup rời khỏi board  */}
     </div>
   );
 }
