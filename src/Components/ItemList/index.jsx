@@ -16,6 +16,7 @@ function ItemList({
   isDescriptionIcon = true,
   Attachments = [],
   Comments = [],
+  Users = [],
   isArchived = false,
 }) {
   let { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();

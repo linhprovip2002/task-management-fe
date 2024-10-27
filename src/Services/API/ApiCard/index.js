@@ -14,7 +14,7 @@ export async function getAllCardByIdList(id) {
 }
 
 export function getCardById(id) {
-  return request.get(`/card/${id}/`)
+  return request.get(`/card/${id}/`);
 }
 
 export async function getAllUserByIdCard(id) {
