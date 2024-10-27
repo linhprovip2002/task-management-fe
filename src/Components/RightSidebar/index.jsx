@@ -156,25 +156,31 @@ export default function RightSidebar({ isOpen, onClose }) {
 
   //#region Handle leave
   const handleLeaveBoard = () => {
-    //* Fetch API
-    leaveBoard(id)
-      .then((res) => {
-        //* Gọi lại API get board từ useQuery để reload lại giao diện
-        queryClient.invalidateQueries({
-          queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
-        });
+    if (isOwner) {
+      //TODO close board
+    } else {
+      //TODO leave board
 
-        //! Lấy id của workspace từ context để trở về trang workspace (api chưa trả về)
-        return navigate("/workspace/:id/home");
-      })
-      .catch((err) => {
-        toast.error("Leave board not successfully");
-      });
+      leaveBoard(id)
+        .then((res) => {
+          //* Gọi lại API get board từ useQuery để reload lại giao diện
+          queryClient.invalidateQueries({
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+          });
+
+          //! Lấy id của workspace từ context để trở về trang workspace (api chưa trả về)
+          return navigate("/workspace/:id/home");
+        })
+        .catch((err) => {
+          toast.error("Leave board not successfully");
+        })
+        .finally(() => setDeleteDialog(false));
+    }
   };
   //#endregion
 
   return (
-    <div className={cx(["drawer", "absolute top-0 right-0 z-[999]"], { open: isOpen })}>
+    <div className={cx(["drawer", "absolute top-0 right-0 z-[300]"], { open: isOpen })}>
       <div className={cx(["w-[339px] flex bg-white border-l border-solid border-gray-300 flex-col h-full"])}>
         <div className="px-3">
           <div className="flex items-center justify-between">
