@@ -11,10 +11,11 @@ import {
   FilterIcon,
   ShareIconRegular,
 } from "../../Components/Icons";
-import ConvertHiDotsVertical from "../../Components/HiDotsVertical";
 import TippyDetail from "../TippyDetail";
 import RightSidebar from "../../Components/RightSidebar";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
+import Tippy from "@tippyjs/react";
+import { HiDotsVertical } from "react-icons/hi";
 
 function HeaderBoard() {
   const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
@@ -85,10 +86,9 @@ function HeaderBoard() {
           onClick={handleToggleRightSidebar}
           className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
         >
-          <ConvertHiDotsVertical
-            type={"menuHeader"}
-            className={"group-hover:opacity-100 transition-opacity duration-300"}
-          />
+          <Tippy content={<span className="text-[12px] max-w-[150px]">menuHeader</span>} placement="bottom">
+            <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
+          </Tippy>
         </div>
       </div>
       <RightSidebar onClose={handleToggleRightSidebar} isOpen={rightSidebar} />
