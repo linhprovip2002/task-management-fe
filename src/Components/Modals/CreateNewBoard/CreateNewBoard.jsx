@@ -185,7 +185,15 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                     getOptionLabel={(option) => option.title}
                     getOptionKey={(option) => option.id}
                     renderInput={(params) => (
-                      <TextField {...params} size="small" required label="Workspace" variant="outlined" fullWidth />
+                      <TextField
+                        {...params}
+                        size="small"
+                        required
+                        label="Workspace"
+                        variant="outlined"
+                        fullWidth
+                        defaultValue={workspaceInfo.currentWspId}
+                      />
                     )}
                     className="my-4"
                   />
@@ -198,8 +206,9 @@ export const CreateNewBoard = ({ open, handleClose }) => {
                 options={listRuleOptions}
                 getOptionLabel={(option) => option.label}
                 isOptionEqualToValue={(option, value) => option.value === value}
+                onChange={(e, value) => setValue("visibility", value.value)}
                 renderInput={(params) => (
-                  <TextField {...params} size="small" label="Visibility" variant="outlined" fullWidth />
+                  <TextField {...params} size="small" label="Visibility" variant="outlined" fullWidth required />
                 )}
                 className="my-4"
               />

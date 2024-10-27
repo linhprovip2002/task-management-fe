@@ -2,7 +2,7 @@ import request from "../request";
 
 export async function createCardByIdList(dataCard) {
   try {
-    const response = await request.post(`/card`, dataCard);
+    const response = await request.post(`/card`, dataCard);    
     return response.data;
   } catch (error) {
     throw error;
@@ -19,4 +19,13 @@ export function getCardById(id) {
 
 export async function getAllUserByIdCard(id) {
   return await request.get(`/card/${id}/members`);
+}
+
+export async function deleteCard(cardId) {
+  try {
+    const response = await request.delete(`/card/${cardId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 }

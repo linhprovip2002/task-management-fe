@@ -9,7 +9,6 @@ import NotificationsTab from "../NotificationsTab";
 import { useState } from "react";
 import Popper from "@mui/material/Popper";
 import { Link } from "react-router-dom";
-import routes from "../../config/routes";
 import Create from "./Menus/Create";
 import { useStorage } from "../../Contexts";
 
@@ -17,7 +16,7 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const storage = useStorage();
+  const { firstWorkspace, isLoggedIn } = useStorage();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,14 +33,17 @@ const Header = () => {
           <div className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground">
             <AppsIcon style={{ color: "#44546f", hover: "#091e420f" }} className="m-1" />
           </div>
-          <Link to={routes.workspaceHome} className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground">
+          <Link
+            to={`/workspace/${firstWorkspace?.id}/home`}
+            className="m-1 rounded-md cursor-pointer hover:bg-hoverBackground"
+          >
             <div className="flex items-center gap-2 m-1">
               <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-4 h-4" />
               <span className="text-lg font-bold">Trello</span>
             </div>
           </Link>
           <div className="items-center hidden space-x-4 xl:flex">
-            {storage.isLoggedIn && <WorkSpaces />}
+            {isLoggedIn && <WorkSpaces />}
             <Stared />
             <Create />
           </div>
@@ -63,7 +65,7 @@ const Header = () => {
                 <NotificationsNoneIcon sx={{ color: "primary.secondary" }} className="cursor-pointer" />
               </Tooltip>
             </button>
-            <Popper placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
+            <Popper sx={{ zIndex: 500 }} placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
               {({ TransitionProps }) => (
                 <Fade {...TransitionProps} timeout={350}>
                   <Box>

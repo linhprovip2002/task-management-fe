@@ -26,7 +26,7 @@ export const EditCard = ({ imageSrc, isDescriptionIcon = false, isAttachment = f
   return (
     <div
       onClick={handleShowBoardEdit}
-      className="absolute top-0 left-0 flex w-full h-full bg-black bg-opacity-50 overflow-auto z-50"
+      className="absolute top-0 left-0 flex w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]"
     >
       <div className="mt-20 mb-10">
         <div

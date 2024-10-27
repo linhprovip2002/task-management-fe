@@ -107,14 +107,16 @@ function ItemList({
           </div>
         </div>
       </div>
-      <Tippy content={<span className="text-[12px] max-w-[150px]">Edit card</span>} arrow={false} placement="bottom">
-        <div
-          onClick={(e) => handleShowBoardEdit(e, dataList, dataCard)}
-          className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
-        >
-          <EditIcon width={16} height={16} />
-        </div>
-      </Tippy>
+      {isArchived || (
+        <Tippy content={<span className="text-[12px] max-w-[150px]">Edit card</span>} arrow={false} placement="bottom">
+          <div
+            onClick={(e) => handleShowBoardEdit(e, dataList, dataCard)}
+            className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
+          >
+            <EditIcon width={16} height={16} />
+          </div>
+        </Tippy>
+      )}
     </div>
   );
 }

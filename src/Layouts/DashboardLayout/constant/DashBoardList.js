@@ -1,12 +1,17 @@
-// import FavoriteIcon from "@mui/icons-material/Favorite";
-// import GridViewIcon from "@mui/icons-material/GridView";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SettingsIcon from "@mui/icons-material/Settings";
-// import HomeIcon from "@mui/icons-material/Home";
 import TrelloLogoIcon from "../../../Components/TrelloLogoIcon/TrelloLogoIcon";
 
+const DASHBOARD_LOGO_SIZE = 16;
+
 const TrelloIcon = (
-  <TrelloLogoIcon style={{ color: "#44546f", width: "24px", height: "24px" }} />
+  <TrelloLogoIcon
+    style={{
+      color: "#44546f",
+      width: DASHBOARD_LOGO_SIZE,
+      height: DASHBOARD_LOGO_SIZE
+    }}
+  />
 );
 
 export const WorkSpaceItems = (workspaceId) => [
@@ -15,23 +20,13 @@ export const WorkSpaceItems = (workspaceId) => [
     title: "Boards",
     path: `/workspace/${workspaceId}/home`
   },
-  // {
-  //   icon: <FavoriteIcon />,
-  //   title: "Highlights",
-  //   path: `/workspace/${workspaceId}/highlights`
-  // },
-  // {
-  //   icon: <GridViewIcon />,
-  //   title: "Views",
-  //   path: `/workspace/${workspaceId}/views`
-  // },
   {
-    icon: <PeopleAltIcon />,
+    icon: <PeopleAltIcon fontSize="small" />,
     title: "Members",
     path: `/workspace/${workspaceId}/members`
   },
   {
-    icon: <SettingsIcon />,
+    icon: <SettingsIcon fontSize="small" />,
     title: "Settings",
     path: `/workspace/${workspaceId}/settings`
   }
@@ -43,9 +38,4 @@ export const UserItems = (id) => [
     title: "Boards",
     path: `/user/${id}/boards`
   }
-  // {
-  //   icon: <HomeIcon />,
-  //   title: 'Home',
-  //   path: '/',
-  // },
 ];

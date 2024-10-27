@@ -197,7 +197,7 @@ export default function Profile() {
             </div>
 
             <Button
-              startIcon={isFetching ? <CircularProgress size={20} color="#fff" /> : <></>}
+              startIcon={isFetching && <CircularProgress size={20} color="#fff" />}
               type="submit"
               variant="contained"
               sx={{

@@ -1,22 +1,25 @@
 import React, { useState, useMemo } from "react";
 import HeadlessTippy from "@tippyjs/react/headless"; // HeadlessTippy cho tùy chỉnh hoàn toàn
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useGetWorkspaceByUser } from "../../../Hooks";
+import { useGetAllBoards } from "../../../Hooks";
 import Loading from "../../Loading";
-import { Avatar } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
+import { useNavigate } from "react-router-dom";
 
 export default function Stared() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleItemClick = (event) => {
-    event.stopPropagation();
+  const handleItemClick = (e, boardId) => {
+    e.stopPropagation();
+    navigate(`/board/${boardId}`);
   };
 
-  const { workspaceInfo, isLoading, isFetching } = useGetWorkspaceByUser();
+  const { boardData, isLoading, isFetching } = useGetAllBoards();
 
-  const starredWorkspace = useMemo(
-    () => workspaceInfo?.filter((workspace) => workspace.isStarred),
-    [workspaceInfo]
+  const starredBoard = useMemo(
+    () => boardData?.data.filter((board) => board.isFavorite),
+    [boardData]
   );
 
   return (
@@ -36,19 +39,34 @@ export default function Stared() {
                 tabIndex="-1"
                 {...attrs}
               >
-                {starredWorkspace.length ? (
-                  starredWorkspace.map((workspace, index) => (
+                {starredBoard.length ? (
+                  starredBoard.map((board, index) => (
                     <div
                       key={index}
                       className="px-2 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                      onClick={handleItemClick}
+                      onClick={(e) => handleItemClick(e, board.id)}
                     >
-                      <div className="flex items-center gap-2 text-base">
-                        <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>
-                          {workspace.title[0]}
-                        </Avatar>
-                        <div className="text-sm font-bold">
-                          {workspace.title}
+                      <div className="flex items-center gap-2 text-base justify-between">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-10 rounded-sm h-8"
+                            style={{
+                              backgroundColor: board.backgroundColor,
+                              backgroundImage: board.coverUrl
+                                ? `url(${board.coverUrl})`
+                                : "none",
+                              backgroundSize: "cover",
+                              backgroundRepeat: "no-repeat",
+                              backgroundPosition: "center center"
+                            }}
+                          />
+                          <div className="text-xs  flex flex-col justify-between">
+                            <div className="font-bold">{board.title}</div>
+                            <div>{board.workspaceName || "Workspace Name"}</div>
+                          </div>
+                        </div>
+                        <div className="text-yellow-400 flex justify-center">
+                          <StarIcon fontSize="small" />
                         </div>
                       </div>
                     </div>

@@ -18,8 +18,8 @@ const Login = memo(() => {
   const { handleSubmit, control } = useForm({
     defaultValues: {
       email: "",
-      password: "",
-    },
+      password: ""
+    }
   });
 
   const onLogin = (values) => {
@@ -29,11 +29,11 @@ const Login = memo(() => {
       .then((res) => {
         Cookies.set("authToken", res.accessToken, {
           expires: 7,
-          path: "/",
+          path: "/"
         });
         Cookies.set("refreshToken", res.refreshToken, {
           expires: 7,
-          path: "/",
+          path: "/"
         });
         storage.setIsLoggedIn(true);
         storage.setUserData(res.user);
@@ -56,10 +56,15 @@ const Login = memo(() => {
             <div className="flex justify-center">
               <TrelloIconColor />
             </div>
-            <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Login to continue</h5>
+            <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
+              Login to continue
+            </h5>
           </div>
 
-          <form onSubmit={handleSubmit(onLogin)} className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit(onLogin)}
+            className="flex flex-col gap-4"
+          >
             <Controller
               name="email"
               control={control}
@@ -70,8 +75,8 @@ const Login = memo(() => {
                   value={field.email}
                   sx={{
                     "& .MuiInputBase-input": {
-                      padding: 1,
-                    },
+                      padding: 1
+                    }
                   }}
                   placeholder="Input your email"
                 />
@@ -87,8 +92,8 @@ const Login = memo(() => {
                   type="password"
                   sx={{
                     "& .MuiInputBase-input": {
-                      padding: 1,
-                    },
+                      padding: 1
+                    }
                   }}
                   placeholder="Input your password"
                 />
@@ -99,7 +104,9 @@ const Login = memo(() => {
             </Button>
           </form>
 
-          <div className="mt-6 text-[14px] font-bold text-slate-400">Others:</div>
+          <div className="mt-6 text-[14px] font-bold text-slate-400">
+            Others:
+          </div>
 
           {loginLogoList.map((item, index) => (
             <div
@@ -116,9 +123,14 @@ const Login = memo(() => {
           </div>
 
           <div className="flex">
-            <Link className="text-[#0c66e4] text-[14px] hover:underline">You can't login ?</Link>
+            <Link className="text-[#0c66e4] text-[14px] hover:underline">
+              You can't login ?
+            </Link>
             <p className="text-[14px] text-[#42526E] mx-2">•</p>
-            <Link to={routes.signup} className="text-[#0c66e4] text-[14px] hover:underline">
+            <Link
+              to={routes.signup}
+              className="text-[#0c66e4] text-[14px] hover:underline"
+            >
               Create account
             </Link>
           </div>
