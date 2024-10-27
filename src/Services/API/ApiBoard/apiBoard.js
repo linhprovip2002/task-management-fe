@@ -14,9 +14,13 @@ export function getWorkspaceById(id) {
 }
 
 // get All board
-export async function getBoard(limit, page) {
+export async function getBoard(options) {
   try {
-    const response = await request.get(`/board?limit=${limit}&page=${page}`);
+    const response = await request.get(`/board`, {
+      params: {
+        ...options
+      }
+    });
     return response.data;
   } catch (error) {
     throw error;

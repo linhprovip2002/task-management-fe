@@ -4,6 +4,7 @@ import { publicRoutes, privateRoutes } from "./routes";
 import "@fontsource/inter";
 import { CustomToastContainer } from "./Contexts/Toast";
 import { RequiredAuth } from "./Components/RequiredAuth";
+import { NotFound } from "./Pages/NotFound404/NotFound";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
             );
           })}
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <CustomToastContainer />
     </>

@@ -12,7 +12,8 @@ export const userRoutes = {
 };
 
 const routes = {
-  root: "/",
+  // root: "/",
+  notFound: "/not-found",
   login: "/login",
   board: "/board",
   dashboard: "/dashboard",

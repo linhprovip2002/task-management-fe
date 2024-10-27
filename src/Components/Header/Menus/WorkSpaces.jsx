@@ -22,7 +22,7 @@ export default function Workspaces() {
         placement="bottom-start"
         render={(attrs) => (
           <div
-            className="w-[300px] bg-white border border-solid border-gray-500 rounded-md shadow-md max-h-80 p-3 flex flex-col gap-2"
+            className="w-[300px] bg-white border border-solid border-gray-500 rounded-md shadow-md max-h-80 overflow-scroll p-3 flex flex-col gap-2"
             tabIndex="-1"
             {...attrs}
           >
@@ -30,10 +30,12 @@ export default function Workspaces() {
               <div
                 key={index}
                 className="px-2 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                onClick={() => navigate(workspace.path)}
+                onClick={() => navigate(`/workspace/${workspace.id}/home`)}
               >
                 <div className="flex items-center gap-2 text-base">
-                  <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>{workspace.title[0]}</Avatar>
+                  <Avatar sx={{ width: 28, height: 28, borderRadius: 1 }}>
+                    {workspace.title[0]}
+                  </Avatar>
                   <div className="text-sm font-bold">{workspace.title}</div>
                 </div>
               </div>
