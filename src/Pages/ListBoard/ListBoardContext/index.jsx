@@ -74,7 +74,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     if (dataCard && dataCard.id) {
       handlePostFiles(dataCard.id, allUrls);
     } else {
-      console.error("dataCard is undefined or does not have an id property");
       //thêm thông báo cho người dùng ở đây nếu cần
     }
   }, [dataCard, allUrls]);
