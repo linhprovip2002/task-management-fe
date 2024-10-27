@@ -63,7 +63,7 @@ const Header = () => {
                 <NotificationsNoneIcon sx={{ color: "primary.secondary" }} className="cursor-pointer" />
               </Tooltip>
             </button>
-            <Popper placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
+            <Popper sx={{ zIndex: 500 }} placement="bottom-end" id={id} open={open} anchorEl={anchorEl} transition>
               {({ TransitionProps }) => (
                 <Fade {...TransitionProps} timeout={350}>
                   <Box>
