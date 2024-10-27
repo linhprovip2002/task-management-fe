@@ -1,4 +1,16 @@
-function List() {
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import React from "react";
+
+import { CreateItem } from "../../../Components/CreateItem";
+import { AddIcon, TemplateCardIcon } from "../../../Components/Icons";
+import ConvertHiDotsVertical from "../../../Components/HiDotsVertical";
+import ItemList from "../../../Components/ItemList";
+import TippyDetail from "../../TippyDetail";
+import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
+
+function List({ item }) {
+  let { nameTitle, activeMonitor, activeIndex, handleChange, handleShowAddCard, handleAddCard, handleChangeTitleCard } =
+    useListBoardContext();
   return (
     <div className="px-[8px]">
       <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
@@ -13,12 +25,6 @@ function List() {
           <ConvertHiDotsVertical
             tippyName="Operation"
             data={item}
-            dataBoard={dataBoard}
-            onShowAddCard={handleShowAddCard}
-            onActiveMonitor={() => handleActiveMonitor(item.id)}
-            onCopyList={handleCopyList}
-            type={"operation"}
-            listCount={listCount}
             className={
               "cursor-pointer p-2 group-hover:opacity-100 hover:bg-gray-300 rounded-[8px] transition-opacity duration-300"
             }
@@ -34,23 +40,12 @@ function List() {
         >
           {item.cards?.map((card, index) => {
             return (
-              <ItemList
-                dataList={item}
-                dataCard={card}
-                onShowBoardCard={handleShowBoardCard}
-                onShowBoardEdit={handleShowBoardEdit}
-                key={index}
-                // imageSrc={card.imageSrc}
-                // descriptionCard={card.descriptionCard}
-                // isAttachment={card.isAttachment}
-                // isDescriptionIcon={card.isDescriptionIcon}
-                // cardCount={card.cardCount}
-              />
+              <ItemList key={index} dataList={item} dataCard={card} imageSrc isDescriptionIcon Attachments={[1]} />
             );
           })}
         </div>
 
-        {item.isShowAddCard && activeIdList === item.id && (
+        {item.isShowAddCard && activeIndex === item.id && (
           <CreateItem
             idList={item.id}
             nameBtn={"Add card"}

@@ -38,3 +38,14 @@ export const itemChooseToMove = [
     isShow: false,
   },
 ];
+
+export const styles = {
+  position: "absolute",
+  top: 0,
+  right: 0,
+  left: -20,
+  zIndex: 1,
+  border: "1px solid",
+  p: 1,
+  bgcolor: "background.paper",
+};

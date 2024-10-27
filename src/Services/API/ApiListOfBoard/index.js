@@ -9,3 +9,7 @@ export async function CreateList(newData) {
   const response = await request.post(`/board/{boardId}/list`, newData);
   return response?.data;
 }
+
+export async function DeleteList(idBoard, idList) {
+  return await request.delete(`/board/${idBoard}/list/${idList}`);
+}
