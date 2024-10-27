@@ -9,6 +9,7 @@ function GlobalStates({ children }) {
   const [userData, setUserData] = useState({});
   const [defaultWorkspace, setDefaultWorkspace] = useState({});
   const [listBoard, setListBoard] = useState([]);
+  const [firstWorkspace, setFirstWorkspace] = useState(null);
 
   const states = {
     isLoggedIn,
@@ -18,17 +19,24 @@ function GlobalStates({ children }) {
     defaultWorkspace,
     setDefaultWorkspace,
     listBoard,
-    setListBoard
+    setListBoard,
+    firstWorkspace,
+    setFirstWorkspace
   };
 
   const { userProfile } = useGetUserProfile(isLoggedIn);
 
   useEffect(() => {
-    setIsLoggedIn((userProfile && Object.keys(userProfile).length > 0) || !!Cookies.get("authToken"));
+    setIsLoggedIn(
+      (userProfile && Object.keys(userProfile).length > 0) ||
+        !!Cookies.get("authToken")
+    );
     setUserData(userProfile);
   }, [userProfile]);
 
-  return <StorageContext.Provider value={states}>{children}</StorageContext.Provider>;
+  return (
+    <StorageContext.Provider value={states}>{children}</StorageContext.Provider>
+  );
 }
 
 export default GlobalStates;
@@ -37,7 +45,9 @@ export const useStorage = () => {
   const context = useContext(StorageContext);
 
   if (!context) {
-    throw new Error("useEditCompanyContext must be used within a EditCompanyProvider");
+    throw new Error(
+      "useEditCompanyContext must be used within a EditCompanyProvider"
+    );
   }
 
   return context;
