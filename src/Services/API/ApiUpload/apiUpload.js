@@ -17,3 +17,10 @@ export function apiUploadMultiFile(formData) {
     }
   });
 }
+
+// api assign file, get file
+export function apiAssignFile(id, urls) {
+  return request.post(`card/${id}/attach-file`, {
+    urls: urls
+  });
+}

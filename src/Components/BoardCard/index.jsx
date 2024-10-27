@@ -8,7 +8,6 @@ import {
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
-  // AttachmentOutlined,
 } from "@mui/icons-material";
 import { useState } from "react";
 
@@ -25,8 +24,6 @@ import { useStorage } from "../../Contexts";
 import AddLabelInCard from "./AddLabelInCard";
 import CreateLabel from "./CreateLabel";
 import UploadFile from "../Modals/UploadFile";
-import { toast } from "react-toastify";
-import { apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 
@@ -41,6 +38,9 @@ export const BoardCard = () => {
     setPosition,
     setMembersInCard,
     membersInCard,
+    uploadedFiles,
+    handleFileChange,
+    postUploadedFiles,
   } = useListBoardContext();
   const { userData } = useStorage();
   const [listLabel, setListLabel] = useState(listLabelAdd);
@@ -59,33 +59,12 @@ export const BoardCard = () => {
   // eslint-disable-next-line
   const [openPoper, setOpenPoper] = useState(false);
   const [showImage, setShowImage] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  // eslint-disable-next-line
+  const [listImages, setListImages] = useState([]);
 
   // handle open, close poper delete image
   const handleOpenPoper = () => setOpenPoper(true);
   const handleClosePoper = () => setOpenPoper(false);
-
-  //======= handle upload with API =======
-
-  // Hàm xử lý khi chọn file
-  const handleFileChange = async (event) => {
-    const files = event.target.files;
-    if (files.length === 0) return;
-    toast.info("Uploading...");
-
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-    try {
-      const response = await apiUploadMultiFile(formData);
-      toast.success("Upload successful!");
-      setUploadedFiles([...response.data, ...uploadedFiles]);
-      return response.data;
-    } catch (error) {
-      toast.error("Upload failed!");
-    }
-  };
 
   // handle date
   const formatDate = (isoString) => {
@@ -97,14 +76,13 @@ export const BoardCard = () => {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${day}-${month}-${year}, ${hours}:${minutes}`;
   };
-
-  // handle delete image
-
   // handle show and hide images
   const handleShowImage = () => setShowImage(true);
   const handleHideImage = () => setShowImage(false);
-  const fileToShow = showImage ? uploadedFiles : uploadedFiles.slice(0, 4);
-  const quantityFile = +(uploadedFiles.length - 4);
+  const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
+  const quantityFile = +(postUploadedFiles.length - 4);
+
+  // handle delete image
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
@@ -306,16 +284,6 @@ export const BoardCard = () => {
     }
   };
 
-  // const HandleGetAllUserInCard = async () => {
-  //   try {
-  //     // const res = await getAllUserInCard(dataCard.id);
-  //     // const dataUser = res[0].user;
-  //     // setMembersInCard([dataUser]);
-  //   } catch (err) {
-  //     console.error("Error fetching board data: ", err);
-  //   }
-  // };
-
   const handleClickBtn = (e, item) => {
     setNumberShow(item.id);
     switch (item.id) {
@@ -338,7 +306,7 @@ export const BoardCard = () => {
     }
   };
   return (
-    <div className="absolute top-0 left-0 z-50 flex items-center justify-center w-full h-full overflow-auto bg-black bg-opacity-50">
+    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
       <div className="mt-20 mb-10">
         <div className="relative flex justify-between min-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
           <div className="flex-1 p-2">
@@ -351,7 +319,7 @@ export const BoardCard = () => {
                 <div className="flex items-center text-[12px] mb-6">
                   <span className="mr-2 font-normal">in the list</span>
                   <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
-                    {dataList.title}
+                    {dataList?.title}
                   </div>
                   {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                 </div>
@@ -420,6 +388,7 @@ export const BoardCard = () => {
               <div className="p-2 ml-6">
                 <Attachment
                   uploadedFiles={uploadedFiles}
+                  postUploadedFiles={postUploadedFiles}
                   showImage={showImage}
                   fileToShow={fileToShow}
                   open={handleOpenPoper}

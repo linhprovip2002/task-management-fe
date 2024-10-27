@@ -2,6 +2,8 @@ import React, { createContext, useContext, useCallback, useEffect, useRef, useSt
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
 import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
 import { getAllMembersByIdBoard, getBoardId } from "../../../Services/API/ApiBoard/apiBoard";
+import { toast } from "react-toastify";
+import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 
 const ListBoardContext = createContext();
 
@@ -25,6 +27,54 @@ function ListBoardProvider({ children, boardId }) {
   const [membersBoard, setMembersBoard] = useState([]);
   const [membersInCard, setMembersInCard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [postUploadedFiles, setPostUploadedFiles] = useState([]);
+  const [allUrls, setAllUrls] = useState([]);
+
+  //======= handle upload with API =======
+  // Hàm xử lý khi chọn file
+  const handleFileChange = async (event) => {
+    const files = event.target.files;
+    if (files.length === 0) return;
+    toast.info("Uploading...");
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+    try {
+      const response = await apiUploadMultiFile(formData);
+      toast.success("Upload successful!");
+      const totalFileUpload = [...response.data, ...uploadedFiles]
+      setUploadedFiles(totalFileUpload);
+      // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
+      const urls = totalFileUpload.map(file => file.url);
+      setAllUrls(urls);
+      return response.data;
+    } catch (error) {
+      toast.error("Upload failed!");
+    }
+  };
+
+  // ============handle get UploadedFiles==============
+  const handlePostFiles = async (id, allUrls) => {
+    try {
+      const response = await apiAssignFile(id, allUrls);
+      setPostUploadedFiles(response.data.files);
+    } catch (error) {
+      console.error("Failed to get uploaded files:", error);
+    }
+  }
+  useEffect(() => {
+    if (dataCard && dataCard.id) {
+      handlePostFiles(dataCard.id, allUrls);
+    } else {
+      console.error("dataCard is undefined or does not have an id property");
+      //thêm thông báo cho người dùng ở đây nếu cần
+    }
+  }, [dataCard, allUrls]);
+  
+
   let prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
@@ -225,6 +275,12 @@ function ListBoardProvider({ children, boardId }) {
         handleChangeTitleCard,
         handleCopyList,
         handleShowAddCard,
+        uploadedFiles,
+        setUploadedFiles,
+        handleFileChange,
+        postUploadedFiles,
+        setPostUploadedFiles,
+        handlePostFiles,
       }}
     >
       {children}
