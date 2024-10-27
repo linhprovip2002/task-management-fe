@@ -3,7 +3,6 @@ import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 const Attachment = ({
-  uploadedFiles,
   quantityFile,
   showImage,
   fileToShow,
@@ -12,6 +11,7 @@ const Attachment = ({
   handleShowImage,
   handleHideImage,
   formatDate,
+  postUploadedFiles
 }) => {
   return (
     <div>
@@ -27,7 +27,7 @@ const Attachment = ({
                 />
               </div>
               <div className="ml-3">
-                <p className="text-gray-700">{item.name}</p>
+                <p className="text-gray-700 text-[13px]">{item.name}</p>
                 <p className="text-[12px] font-normal text-gray-500">Added {formatDate(item.createdAt)}</p>
               </div>
             </div>
@@ -40,7 +40,7 @@ const Attachment = ({
           </div>
         );
       })}
-      {uploadedFiles.length > 4 && (
+      {postUploadedFiles.length > 4 && (
         <div>
           {showImage ? (
             <button onClick={handleHideImage} className="px-4 py-1 bg-gray-300 rounded-sm">

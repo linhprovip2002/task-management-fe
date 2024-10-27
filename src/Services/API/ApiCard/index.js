@@ -2,7 +2,7 @@ import request from "../request";
 
 export async function createCardByIdList(dataCard) {
   try {
-    const response = await request.post(`/card`, dataCard);
+    const response = await request.post(`/card`, dataCard);    
     return response.data;
   } catch (error) {
     throw error;

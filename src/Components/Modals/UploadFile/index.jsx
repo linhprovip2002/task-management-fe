@@ -1,6 +1,5 @@
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import "react-toastify/dist/ReactToastify.css";
 
 const UploadFile = ({ position, handleCloseShowMenuBtnCard, handleFileChange }) => {
   return (

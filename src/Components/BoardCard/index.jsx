@@ -8,7 +8,6 @@ import {
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
-  // AttachmentOutlined,
 } from "@mui/icons-material";
 import { useState } from "react";
 
@@ -24,8 +23,6 @@ import { useStorage } from "../../Contexts";
 import AddLabelInCard from "./AddLabelInCard";
 import CreateLabel from "./CreateLabel";
 import UploadFile from "../Modals/UploadFile";
-import { toast } from "react-toastify";
-import { apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
@@ -41,6 +38,9 @@ export const BoardCard = () => {
     setPosition,
     setMembersInCard,
     membersInCard,
+    uploadedFiles,
+    handleFileChange,
+    postUploadedFiles,
   } = useListBoardContext();
   const { userData } = useStorage();
   const [listLabel, setListLabel] = useState(listLabelAdd);
@@ -59,33 +59,12 @@ export const BoardCard = () => {
   // eslint-disable-next-line
   const [openPoper, setOpenPoper] = useState(false);
   const [showImage, setShowImage] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  // eslint-disable-next-line
+  const [listImages, setListImages] = useState([]);
 
   // handle open, close poper delete image
   const handleOpenPoper = () => setOpenPoper(true);
   const handleClosePoper = () => setOpenPoper(false);
-
-  //======= handle upload with API =======
-
-  // Hàm xử lý khi chọn file
-  const handleFileChange = async (event) => {
-    const files = event.target.files;
-    if (files.length === 0) return;
-    toast.info("Uploading...");
-
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-    try {
-      const response = await apiUploadMultiFile(formData);
-      toast.success("Upload successful!");
-      setUploadedFiles([...response.data, ...uploadedFiles]);
-      return response.data;
-    } catch (error) {
-      toast.error("Upload failed!");
-    }
-  };
 
   // handle date
   const formatDate = (isoString) => {
@@ -97,14 +76,13 @@ export const BoardCard = () => {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${day}-${month}-${year}, ${hours}:${minutes}`;
   };
-
-  // handle delete image
-
   // handle show and hide images
   const handleShowImage = () => setShowImage(true);
   const handleHideImage = () => setShowImage(false);
-  const fileToShow = showImage ? uploadedFiles : uploadedFiles.slice(0, 4);
-  const quantityFile = +(uploadedFiles.length - 4);
+  const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
+  const quantityFile = +(postUploadedFiles.length - 4);
+
+  // handle delete image
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
@@ -410,6 +388,7 @@ export const BoardCard = () => {
               <div className="p-2 ml-6">
                 <Attachment
                   uploadedFiles={uploadedFiles}
+                  postUploadedFiles={postUploadedFiles}
                   showImage={showImage}
                   fileToShow={fileToShow}
                   open={handleOpenPoper}
