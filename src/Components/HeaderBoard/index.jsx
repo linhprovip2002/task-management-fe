@@ -14,7 +14,6 @@ import {
 import TippyDetail from "../TippyDetail";
 import RightSidebar from "../../Components/RightSidebar";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
-import Tippy from "@tippyjs/react";
 import { HiDotsVertical } from "react-icons/hi";
 
 function HeaderBoard() {
