@@ -66,7 +66,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         const dataUser = res.data[0].user;
         setMembersBoard([dataUser]);
       } catch (err) {
-        console.error("Error fetching board data: ", err);
+        console.error("Error get all user data in board: ", err);
       }
     };
 

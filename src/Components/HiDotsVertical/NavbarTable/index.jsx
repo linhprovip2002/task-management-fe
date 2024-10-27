@@ -3,23 +3,30 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { sortActive } from "../constans";
 
-function NavbarTable({ titleName, isLeaveBoard, toggleCollape, handleLeaveBoard, handleActive, activeCollectTable }) {
+function NavbarTable({
+  titleName,
+  isChooseMoveList,
+  toggleCollape,
+  handleLeaveBoard,
+  handleActive,
+  activeCollectTable,
+}) {
   return (
     <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
       <div className="text-center p-2 mx-8">Your tables</div>
       <div className="mx-2 py-1">Arrange</div>
       <div
-        onClick={handleLeaveBoard}
+        onClick={toggleCollape}
         className={`flex items-center justify-between rounded-[4px] mx-2 p-2 hover:ring-1 hover:ring-gray-500 hover:bg-gray-100 cursor-pointer  active:ring-blue-500`}
       >
         <div className="">{titleName}</div>
         <KeyboardArrowDownIcon fontSize="small" />
       </div>
       <CloseIcon
-        onClick={toggleCollape}
+        onClick={handleLeaveBoard}
         className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
       />
-      {isLeaveBoard && (
+      {isChooseMoveList && (
         <div className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50">
           {sortActive.map((item, index) => (
             <div
