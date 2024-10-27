@@ -82,14 +82,14 @@ function HeaderBoard() {
             <span className="text-[16px] font-medium text-white">Share</span>
           </div>
         </TippyDetail>
-        <div
-          onClick={handleToggleRightSidebar}
-          className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
-        >
-          <Tippy content={<span className="text-[12px] max-w-[150px]">menuHeader</span>} placement="bottom">
+        <TippyDetail title={"menuHeader"}>
+          <div
+            onClick={handleToggleRightSidebar}
+            className="cursor-pointer rounded-[4px] p-2 ml-2 hover:bg-gray-300 transition-opacity duration-300"
+          >
             <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
-          </Tippy>
-        </div>
+          </div>
+        </TippyDetail>
       </div>
       <RightSidebar onClose={handleToggleRightSidebar} isOpen={rightSidebar} />
     </div>
