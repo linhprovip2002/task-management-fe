@@ -21,6 +21,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [isShowAddList, setIsShowAddList] = useState(false);
   const [activeMonitor, setActiveMonitor] = useState([]);
   const [dataCard, setDataCard] = useState();
+  const [dataCardDetail, setDataCardDetail] = useState();
   const [dataList, setDataList] = useState();
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeStar, setActiveStar] = useState(false);
@@ -124,13 +125,20 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   }, [boardId]);
 
   const handleShowBoardCard = useCallback(
-    (data, dataCard) => {
+    async (data, dataCard) => {
+      try {
+        const resDataCardDetail = await getWorkspaceById(dataCard.id);
+        setDataCardDetail(resDataCardDetail);
+      } catch (err) {
+        console.error("Error fetching data card detail: ", err);
+        navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+      }
       setIsShowBoardCard(!isShowBoardCard);
       if (isShowBoardEdit) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
-      setDataCard(dataCard);
+      // setDataCard(dataCard);
     },
     [isShowBoardCard, isShowBoardEdit],
   );
