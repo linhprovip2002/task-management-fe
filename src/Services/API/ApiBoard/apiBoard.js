@@ -18,8 +18,8 @@ export async function getBoard(options) {
   try {
     const response = await request.get(`/board`, {
       params: {
-        ...options
-      }
+        ...options,
+      },
     });
     return response.data;
   } catch (error) {
@@ -57,4 +57,8 @@ export async function getAllTagByIdBoard(id) {
 
 export async function leaveBoard(boardId) {
   return await request.delete(`/board/${boardId}/members`);
+}
+
+export async function removeMember(userId, boardId) {
+  return await request.delete(`/board/${boardId}/members/${userId}`);
 }

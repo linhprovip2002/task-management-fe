@@ -45,8 +45,8 @@ class UserServices {
   // Method to delete a user by ID
   deleteUser(userId) {}
 
-  async searchUser(email) {
-    return await request.get(`/user?email=${email}`);
+  async searchUser(searchValue) {
+    return await request.get(`/user?search=${searchValue}`);
   }
 }
 
