@@ -23,9 +23,9 @@ function CreateLabel({
     const getAllLabelOfBoard = async () => {
       try {
         const res = await getAllTagByIdBoard(dataBoard?.id);
-        setListColorLabel(res?.data || []);
+        setListColorLabel(res?.data.data || []);
       } catch (err) {
-        console.error("Error fetching board data: ", err);
+        console.error("Error all label data: ", err);
       }
     };
     getAllLabelOfBoard();

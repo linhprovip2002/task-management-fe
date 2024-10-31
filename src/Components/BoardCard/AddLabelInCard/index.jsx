@@ -43,7 +43,7 @@ function AddLabelInCard({
                     onClick={() => handleAddLabel(item)}
                     className={`flex-1 hover:opacity-90 ${item.color} h-[34px] p-2 rounded-[4px] transition-all duration-50`}
                   >
-                    <font>{item.title}</font>
+                    <font>{item.name}</font>
                   </div>
                   <div onClick={() => ShowUpdateLabel(item)} className=" hover:bg-gray-300 p-2 ml-2 rounded-[4px]">
                     <ModeEditIcon style={{ fontSize: "16px" }} />
