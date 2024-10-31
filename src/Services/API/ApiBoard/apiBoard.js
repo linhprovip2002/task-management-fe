@@ -70,3 +70,7 @@ export async function RemoveTagInCard(boardId, data) {
 export async function leaveBoard(boardId) {
   return await request.delete(`/board/${boardId}/members`);
 }
+
+export async function removeMember(userId, boardId) {
+  return await request.delete(`/board/${boardId}/members/${userId}`);
+}

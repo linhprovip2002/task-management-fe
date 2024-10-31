@@ -20,6 +20,7 @@ const routes = {
   home: "home",
   signup: "/signup",
   listboard: "/workspace/:idWorkSpace/board/:idBoard",
+  test: "/test",
   ...userRoutes,
   ...workspaceRoutes,
 };
