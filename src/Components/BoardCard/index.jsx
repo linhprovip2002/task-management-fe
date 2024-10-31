@@ -76,7 +76,8 @@ export const BoardCard = () => {
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isJoin, setIsJoin] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
-  const [endDateCheck] = useState(() => {
+  const [endDateCheck, setEndDateCheck] = useState(() => {
+    if (dataCard.endDate == null) return null;
     const endDate = new Date(dataCard.endDate);
     const hours = endDate.getUTCHours().toString().padStart(2, "0");
     const minutes = endDate.getUTCMinutes().toString().padStart(2, "0");
@@ -397,7 +398,7 @@ export const BoardCard = () => {
                       </div>
                     </div>
                   )}
-                  {dataCard.endDate != null && (
+                  {endDateCheck != null && (
                     <div className="mr-2 mb-2">
                       <div className="flex items-center text-[12px] mb-2">
                         <span className="mr-2">Expiration date</span>
@@ -617,7 +618,11 @@ export const BoardCard = () => {
         </div>
       </div>
       {isShowMenuBtnCard && numberShow === 2 && (
-        <MemberMenu onAddMember={handleAddMember} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
+        <MemberMenu
+          onAddMember={handleAddMember}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          endDate={setEndDateCheck}
+        />
       )}
       {isShowMenuBtnCard && numberShow === 3 && (
         <>
@@ -659,7 +664,11 @@ export const BoardCard = () => {
       )}
 
       {isShowMenuBtnCard && numberShow === 5 && (
-        <CalendarPopper position={position} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
+        <CalendarPopper
+          position={position}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          endDate={setEndDateCheck}
+        />
       )}
       {isShowMenuBtnCard && numberShow === 6 && (
         <UploadFile

@@ -4,7 +4,7 @@ import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import Calendar from "../../Calendar/index";
 import { updateCard } from "../../../Services/API/ApiCard";
 
-function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
+function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRemove }) {
   const { dataCard, dataList } = useListBoardContext();
   const getCurrentTime = () => {
     const now = new Date();
@@ -84,7 +84,11 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
 
   const handleSaveExpirationDate = async () => {
     try {
+      console.log(expirationTime);
       handleCloseShowMenuBtnCard();
+      const month = expirationDate.split("-")[1];
+      const day = expirationDate.split("-")[2];
+      const [hours, minutes] = expirationTime.split(":");
       const data = {
         title: dataCard.title,
         description: dataCard.description,
@@ -95,6 +99,8 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
         endDate: `${expirationDate}T${expirationTime}`,
         listId: dataList.id,
       };
+      console.log(data.endDate);
+      endDate(`${hours}:${minutes} ${day}thg${month}`);
       const res = await updateCard(dataCard.id, data);
       return res;
     } catch (error) {
@@ -105,6 +111,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
   const handleRemoveExpirationDate = async () => {
     try {
       handleCloseShowMenuBtnCard();
+
       const data = {
         title: dataCard.title,
         description: dataCard.description,
@@ -115,6 +122,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
         endDate: null,
         listId: dataList.id,
       };
+      endDate(data.endDate);
       const res = await updateCard(dataCard.id, data);
       return res;
     } catch (error) {
