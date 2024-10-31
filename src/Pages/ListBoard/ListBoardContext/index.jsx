@@ -38,7 +38,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [isSaving, setIsSaving] = useState(false);
   // const [listComment, setListComment] = useState([]);
 
-
   const navigate = useNavigate();
 
   // const cmdId = dataCard.map((item) => item.comments.id);
@@ -53,8 +52,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     const formData = new FormData();
     let validFiles = true;
     for (let i = 0; i < files.length; i++) {
-      const totalSize = +(10*1024*1024) // 10MB
-      if (files[i].size > totalSize) { 
+      const totalSize = +(10 * 1024 * 1024); // 10MB
+      if (files[i].size > totalSize) {
         toast.error(`File ${files[i].name} is too large to upload.`);
         validFiles = false;
       } else {
@@ -68,10 +67,10 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     try {
       const response = await apiUploadMultiFile(formData);
       toast.success("Upload successful!");
-      const totalFileUpload = [...response.data, ...uploadedFiles]
+      const totalFileUpload = [...response.data, ...uploadedFiles];
       setUploadedFiles(totalFileUpload);
       // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
-      const urls = totalFileUpload.map(file => file.url);
+      const urls = totalFileUpload.map((file) => file.url);
       setAllUrls(urls);
       return response.data;
     } catch (error) {
@@ -87,7 +86,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     } catch (error) {
       console.error("Failed to get uploaded files:", error);
     }
-  }
+  };
   useEffect(() => {
     if (dataCard && dataCard.id) {
       handlePostFiles(dataCard.id, allUrls);
@@ -112,7 +111,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     const params = {
       content: content.trim(),
       files: postUploadedFiles, // Nếu không có file nào, sẽ là mảng rỗng
-      cardId: dataCard.id
+      cardId: dataCard.id,
     };
 
     try {
@@ -121,7 +120,13 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       toast.success("Đăng content thành công!");
       setContent(""); // Xóa nội dung sau khi đăng thành công
       setPostUploadedFiles([]);
-      return response.data
+      // Cập nhật lại danh sách comments sau khi post thành công
+      const newComment = response.data;
+      setDataCard((prevDataCard) => ({
+        ...prevDataCard,
+        comments: [...prevDataCard.comments, newComment],
+      }));
+      return response.data;
     } catch (err) {
       toast.error("Không thể đăng comment");
       console.error("Lỗi khi đăng comment:", err);
@@ -130,18 +135,17 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
   //================HANDLE DELETE COMMENT =================
   const handleDeleteComment = async (cmdId) => {
-  
     try {
       await deleteComment(boardId, cmdId);
       // Cập nhật lại danh sách comments sau khi xóa
-      setDataCard(prevDataCard => ({
+      setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: prevDataCard.comments.filter(comment => comment.id !== cmdId)
-      }))
-    }catch (err) {
+        comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
+      }));
+    } catch (err) {
       console.error("Error deleting comment:", err);
     }
-  }
+  };
 
   //============HANDLE GET COMMENT: KHÔNG ĐƯỢC XÓA ĐOẠN COMMENT NÀY =================
   // useEffect(() => {
@@ -150,7 +154,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   //       const response = await getComment(boardId, dataCard.id);
   //       console.log('boardId', boardId);
   //       console.log('dataCard.id', dataCard.id);
-        
+
   //       setListComment(response.data.content);
   //       return response.data;
   //     } catch (err) {
@@ -391,7 +395,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         isSaving,
         setIsSaving,
         handlePostComment,
-        handleDeleteComment
+        handleDeleteComment,
       }}
     >
       {children}
