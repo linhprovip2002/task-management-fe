@@ -55,16 +55,20 @@ export async function getAllTagByIdBoard(id) {
   return await request.get(`/board/${id}/tag`);
 }
 
-export async function AddTagInCard(boardId, data) {
-  console.log(boardId);
-  console.log(data);
-  return await request.post(`/board/${boardId}/tag/assign`, data);
+export async function AddTagInCard(boardId, cardId, tagId) {
+  return await request.post(`/board/${boardId}/tag/assign`, {
+    cardId: cardId,
+    tagId: tagId,
+  });
 }
 
-export async function RemoveTagInCard(boardId, data) {
-  console.log(boardId);
-  console.log(data);
-  return await request.delete(`/board/${boardId}/tag/remove-on-card`, data);
+export async function RemoveTagInCard(boardId, cardId, tagId) {
+  return await request.delete(`/board/${boardId}/tag/remove-on-card`, {
+    data: {
+      cardId: cardId,
+      tagId: tagId,
+    },
+  });
 }
 
 export async function leaveBoard(boardId) {

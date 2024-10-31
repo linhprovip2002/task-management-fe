@@ -18,10 +18,10 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
     const day = String(now.getDate()).padStart(2, "0");
-    return `${day}-${month}-${year}`;
+    return `${year}-${month}-${day}`;
   };
 
-  const [startDate, setStartDate] = useState("N/T/NNNN");
+  const [startDate, setStartDate] = useState("NNNN/T/N");
   const [isChecked, setIsChecked] = useState(false);
   const [expirationDate, setExpirationDate] = useState(() => {
     if (dataCard.endDate) {
@@ -29,7 +29,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
       const date = dateObj.toISOString().split("T")[0];
       return date;
     } else {
-      getCurrentDate();
+      return getCurrentDate();
     }
   });
   const [previousDate, setPreviousDate] = useState(getCurrentDate());
@@ -39,7 +39,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
       const date = dateObj.toISOString().split("T")[1].slice(0, 5);
       return date;
     } else {
-      getCurrentTime();
+      return getCurrentTime();
     }
   });
   const [previousTime, setPreviousTime] = useState(getCurrentTime());
@@ -73,7 +73,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
   };
 
   const handleBlurDateExp = () => {
-    const datePattern = /^\d{2}-\d{2}-\d{4}$/;
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 
     if (datePattern.test(expirationDate)) {
       setPreviousDate(expirationDate);
@@ -84,6 +84,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
 
   const handleSaveExpirationDate = async () => {
     try {
+      handleCloseShowMenuBtnCard();
       const data = {
         title: dataCard.title,
         description: dataCard.description,
@@ -91,11 +92,10 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
         priority: dataCard.priority,
         tagId: dataCard.tagId,
         startDate: dataCard.startDate,
-        endDate: expirationDate + "T" + expirationTime,
+        endDate: `${expirationDate}T${expirationTime}`,
         listId: dataList.id,
       };
       const res = await updateCard(dataCard.id, data);
-      handleCloseShowMenuBtnCard();
       return res;
     } catch (error) {
       console.error("Error setup expiration date in card detail: ", error);
@@ -104,6 +104,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
 
   const handleRemoveExpirationDate = async () => {
     try {
+      handleCloseShowMenuBtnCard();
       const data = {
         title: dataCard.title,
         description: dataCard.description,
@@ -115,13 +116,11 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
         listId: dataList.id,
       };
       const res = await updateCard(dataCard.id, data);
-      handleCloseShowMenuBtnCard();
       return res;
     } catch (error) {
       console.error("Error setup expiration date in card detail: ", error);
     }
   };
-
   return (
     <div
       style={{ top: position.top - 200, left: position.left }}

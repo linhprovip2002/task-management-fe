@@ -77,16 +77,12 @@ export const BoardCard = () => {
   const [isJoin, setIsJoin] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [endDateCheck] = useState(() => {
-    const formattedDate = new Date("2024-10-31T10:39:32.040Z")
-      .toLocaleString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        day: "2-digit",
-        month: "2-digit",
-      })
-      .replace(",", "")
-      .replace("/", "thg");
-
+    const endDate = new Date(dataCard.endDate);
+    const hours = endDate.getUTCHours().toString().padStart(2, "0");
+    const minutes = endDate.getUTCMinutes().toString().padStart(2, "0");
+    const day = endDate.getUTCDate().toString().padStart(2, "0");
+    const month = (endDate.getUTCMonth() + 1).toString().padStart(2, "0");
+    const formattedDate = `${hours}:${minutes} ${day}thg${month}`;
     return formattedDate;
   });
   // eslint-disable-next-line
@@ -217,39 +213,25 @@ export const BoardCard = () => {
     (item) => {
       const addTagAsync = async () => {
         try {
-          const data = {
-            cardId: dataCard?.id,
-            tagId: item.id,
-          };
-          await AddTagInCard(item.boardId, data);
+          await AddTagInCard(item.boardId, dataCard?.id, item.id);
         } catch (err) {
           console.error("Error add data tag in card detail: ", err);
         }
       };
-
       const removeTagAsync = async () => {
         try {
-          const data = {
-            cardId: dataCard?.id,
-            tagId: item.id,
-          };
-          await RemoveTagInCard(item.boardId, data);
+          await RemoveTagInCard(item.boardId, dataCard?.id, item.id);
         } catch (err) {
           console.error("Error remove data tag in card detail: ", err);
         }
       };
-
       setCountLabel((prevCountLabel) => {
         if (prevCountLabel.some((i) => i.id === item.id)) {
           removeTagAsync();
           return prevCountLabel.filter((i) => i.id !== item.id);
         } else {
-          try {
-            addTagAsync();
-            return [...prevCountLabel, item];
-          } catch (err) {
-            console.error("Error add data tag in card detail: ", err);
-          }
+          addTagAsync();
+          return [...prevCountLabel, item];
         }
       });
     },
@@ -375,7 +357,7 @@ export const BoardCard = () => {
   return (
     <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
       <div className="mt-20 mb-10">
-        <div className="relative flex justify-between max-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
+        <div className="relative flex justify-between w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
           <div className="flex-1 p-2">
             <div className="flex p-2">
               <div>
@@ -423,7 +405,7 @@ export const BoardCard = () => {
                       <li className="flex items-center my-2 cursor-pointer">
                         <input
                           checked={checkCompleteEndDate}
-                          onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                          onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
                           type="checkbox"
                           className="w-5 h-5 cursor-pointer"
                         />

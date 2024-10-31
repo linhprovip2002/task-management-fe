@@ -71,7 +71,7 @@ function Calendar({ onChange }) {
 
   const handleDateChange = (newValue) => {
     setSelectedDate(newValue);
-    onChange(newValue.format("DD-MM-YYYY"));
+    onChange(newValue.format("YYYY-MM-DD"));
   };
 
   const getDaysInMonth = () => {
