@@ -62,3 +62,9 @@ export async function leaveBoard(boardId) {
 export async function removeMember(userId, boardId) {
   return await request.delete(`/board/${boardId}/members/${userId}`);
 }
+
+export async function addMemberIntoBoard(userId, boardId) {
+  return await request.post(`/board/${boardId}/members`, {
+    memberIds: [userId],
+  });
+}

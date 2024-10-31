@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 
 const options = ["Member", "Admin"];
 
-function MemberItem({ data, onDeleted }) {
+function MemberItem({ data, onDeleted, isAdmin = true }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { idBoard } = useParams();
@@ -54,60 +54,64 @@ function MemberItem({ data, onDeleted }) {
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={data?.email} />
-          {confirmDelete || (
-            <Autocomplete
-              disableClearable
-              value={value}
-              onChange={(event, newValue) => {
-                setValue(newValue);
-              }}
-              inputValue={inputValue}
-              onInputChange={(event, newInputValue) => {
-                setInputValue(newInputValue);
-              }}
-              id="controllable-states-demo"
-              options={options}
-              sx={{
-                width: 150,
-                marginRight: 2,
-                "& .MuiAutocomplete": {
-                  paddingY: 0,
-                },
-                "& .MuiOutlinedInput-root": {
-                  paddingY: 0,
-                },
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          )}
-          {!confirmDelete ? (
-            <Button
-              onClick={() => setConfirmDelete(true)}
-              variant="contained"
-              color="error"
-              sx={{ textTransform: "none", paddingY: 0.5 }}
-            >
-              Remove
-            </Button>
-          ) : (
-            <div className="flex gap-3">
-              <Button
-                onClick={() => setConfirmDelete(false)}
-                variant="outlined"
-                sx={{ textTransform: "none", paddingY: 0.5 }}
-              >
-                Cancle
-              </Button>
-              <Button
-                onClick={handleRemoveMember}
-                startIcon={isDeleting && <CircularProgress size={18} color="#fff" />}
-                variant="contained"
-                color="error"
-                sx={{ textTransform: "none", paddingY: 0.5 }}
-              >
-                Confirm
-              </Button>
-            </div>
+          {isAdmin && (
+            <>
+              {confirmDelete || (
+                <Autocomplete
+                  disableClearable
+                  value={value}
+                  onChange={(event, newValue) => {
+                    setValue(newValue);
+                  }}
+                  inputValue={inputValue}
+                  onInputChange={(event, newInputValue) => {
+                    setInputValue(newInputValue);
+                  }}
+                  id="controllable-states-demo"
+                  options={options}
+                  sx={{
+                    width: 150,
+                    marginRight: 2,
+                    "& .MuiAutocomplete": {
+                      paddingY: 0,
+                    },
+                    "& .MuiOutlinedInput-root": {
+                      paddingY: 0,
+                    },
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              )}
+              {!confirmDelete ? (
+                <Button
+                  onClick={() => setConfirmDelete(true)}
+                  variant="contained"
+                  color="error"
+                  sx={{ textTransform: "none", paddingY: 0.5 }}
+                >
+                  Remove
+                </Button>
+              ) : (
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => setConfirmDelete(false)}
+                    variant="outlined"
+                    sx={{ textTransform: "none", paddingY: 0.5 }}
+                  >
+                    Cancle
+                  </Button>
+                  <Button
+                    onClick={handleRemoveMember}
+                    startIcon={isDeleting && <CircularProgress size={18} color="#fff" />}
+                    variant="contained"
+                    color="error"
+                    sx={{ textTransform: "none", paddingY: 0.5 }}
+                  >
+                    Confirm
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </>
       </ListItemButton>
@@ -128,9 +132,6 @@ export default function BoardMemberModal({ open = false, onClose }) {
   const { userData } = useStorage();
 
   const [isLoading, setIsLoading] = useState(false);
-  const handleAddUser = (data) => {
-    console.log(data);
-  };
 
   const handleRemoveSuccess = (idUser) => {
     setMembers((prev) => {
@@ -138,6 +139,16 @@ export default function BoardMemberModal({ open = false, onClose }) {
       newState = newState.filter((user) => user.id !== idUser);
       return newState;
     });
+  };
+
+  const handleAddSuccess = (userData) => {
+    let newMember = { ...userData };
+    delete newMember.isExisted;
+    newMember.role = {
+      id: 3,
+      name: "member",
+    };
+    setMembers((prev) => [...prev, newMember]);
   };
 
   useEffect(() => {
@@ -175,7 +186,10 @@ export default function BoardMemberModal({ open = false, onClose }) {
         return res.data;
       })
       .then((data) => {
-        let members = data.map((item) => item.user);
+        let members = data.map((item) => {
+          item.user.role = item.role;
+          return item.user;
+        });
         members = members.filter((member) => member.id !== userData?.id);
         setMembers(members);
       })
@@ -213,7 +227,7 @@ export default function BoardMemberModal({ open = false, onClose }) {
                 <div className="bg-white w-[600px] p-5">
                   <div className="shadow-lg border border-solid border-slate-200 rounded-md p-5">
                     {searchResult.map((item, index) => (
-                      <UserItem onClick={handleAddUser} data={item} key={index} />
+                      <UserItem onAdded={handleAddSuccess} data={item} key={index} />
                     ))}
                   </div>
                 </div>
