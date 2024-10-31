@@ -29,7 +29,7 @@ const DashBoard = () => {
   }
 
   return (
-    <div>
+    <div> 
       {(isLoadingWorkspace || isLoadingCurrentWorkspace) && <Loading />}
       <BoardInformation />
       <div className="my-6">
