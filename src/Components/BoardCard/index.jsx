@@ -26,6 +26,9 @@ import UploadFile from "../Modals/UploadFile";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
+import { useGetUserProfile } from "../../Hooks";
+import { Avatar, TextField } from "@mui/material";
+import ShowComment from "./ShowComment";
 
 export const BoardCard = () => {
   const {
@@ -41,8 +44,18 @@ export const BoardCard = () => {
     uploadedFiles,
     handleFileChange,
     postUploadedFiles,
+    content,
+    setContent,
+    isSaving,
+    // setIsSaving,
+    handlePostComment,
+    handleDeleteComment,
   } = useListBoardContext();
   const { userData } = useStorage();
+  //eslint-disable-next-line
+  const { setIsLoggedIn, isLoggedIn } = useStorage();
+  //eslint-disable-next-line
+  const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
   const [listLabel, setListLabel] = useState(listLabelAdd);
   const [listToDo, setListToDo] = useState([]);
   const [countLabel, setCountLabel] = useState([]);
@@ -66,6 +79,9 @@ export const BoardCard = () => {
   const handleOpenPoper = () => setOpenPoper(true);
   const handleClosePoper = () => setOpenPoper(false);
 
+  console.log('dataCard', dataCard);
+  
+
   // handle date
   const formatDate = (isoString) => {
     const date = new Date(isoString);
@@ -81,7 +97,7 @@ export const BoardCard = () => {
   const handleHideImage = () => setShowImage(false);
   const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
   const quantityFile = +(postUploadedFiles.length - 4);
-
+  
   // handle delete image
 
   const handleFollowing = () => {
@@ -306,8 +322,8 @@ export const BoardCard = () => {
     }
   };
   return (
-    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
-      <div className="mt-20 mb-10">
+    <div className="absolute top-0 left-0 flex items-center overflow-y-auto justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
+      <div className="mt-40 mb-10">
         <div className="relative flex justify-between min-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
           <div className="flex-1 p-2">
             <div className="flex p-2">
@@ -507,7 +523,7 @@ export const BoardCard = () => {
                   </ul>
                 </div>
               ))}
-
+            {/* SHOW DETAILS */}
             <div className="flex p-2">
               <div>
                 <FormatListBulletedIcon fontSize="small" />
@@ -525,6 +541,48 @@ export const BoardCard = () => {
                 <div className="flex items-center text-[12px] mb-2"></div>
               </div>
             </div>
+            {/* POST COMMENTS */}
+            <div className="flex items-center p-2">
+              <div className="mr-2">
+                {userData?.avatarUrl ? (
+                  <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
+                ) : (
+                  <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
+                    {userProfile?.name[0] || " "}
+                  </div>
+                )}
+              </div>
+              <div>
+                {/* <input
+                  className="p-2 border border-gray-300 rounded-sm focus:border-gray-500 focus:ring-2 focus:ring-blue-500 w-[300px]"
+                  placeholder="Write a comment..."
+                />{" "} */}
+                <TextField
+                  sx={{ width: "420px" }}
+                  id="outlined-basic"
+                  size="small"
+                  label="Write a comment..."
+                  variant="outlined"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="pl-12 pr-2">
+              <button
+                onClick={handlePostComment}
+                disabled={!content.trim() || isSaving}
+                className={`px-4 py-2 rounded text-white ${
+                  content.trim() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"
+                }`}
+              >
+                {isSaving ? "Đang lưu..." : "Save"}
+              </button>
+            </div>
+            {/* SHOW COMMENT */}
+            {dataCard?.comments.map((item) => (
+              <ShowComment item={item} formatDate={formatDate} handleDeleteComment={handleDeleteComment}/>
+            ))}
           </div>
           <div className="min-w-[180px]">
             <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">

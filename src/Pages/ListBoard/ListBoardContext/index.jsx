@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
+import { createCardByIdList, getAllCardByIdList, getCardById } from "../../../Services/API/ApiCard";
 import { getAllMembersByIdBoard, getBoardId, getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
 import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
+import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 
 const ListBoardContext = createContext();
 
@@ -33,8 +34,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
   const [allUrls, setAllUrls] = useState([]);
+  const [content, setContent] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  // const [listComment, setListComment] = useState([]);
+
 
   const navigate = useNavigate();
+
+  // const cmdId = dataCard.map((item) => item.comments.id);
 
   //======= handle upload with API =======
   // Hàm xử lý khi chọn file
@@ -44,16 +51,27 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     toast.info("Uploading...");
 
     const formData = new FormData();
+    let validFiles = true;
     for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
+      const totalSize = +(10*1024*1024) // 10MB
+      if (files[i].size > totalSize) { 
+        toast.error(`File ${files[i].name} is too large to upload.`);
+        validFiles = false;
+      } else {
+        formData.append("files", files[i]);
+      }
     }
+
+    if (!validFiles) return;
+    toast.info("Uploading...");
+
     try {
       const response = await apiUploadMultiFile(formData);
       toast.success("Upload successful!");
-      const totalFileUpload = [...response.data, ...uploadedFiles];
+      const totalFileUpload = [...response.data, ...uploadedFiles]
       setUploadedFiles(totalFileUpload);
       // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
-      const urls = totalFileUpload.map((file) => file.url);
+      const urls = totalFileUpload.map(file => file.url);
       setAllUrls(urls);
       return response.data;
     } catch (error) {
@@ -69,7 +87,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     } catch (error) {
       console.error("Failed to get uploaded files:", error);
     }
-  };
+  }
   useEffect(() => {
     if (dataCard && dataCard.id) {
       handlePostFiles(dataCard.id, allUrls);
@@ -77,6 +95,70 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       //thêm thông báo cho người dùng ở đây nếu cần
     }
   }, [dataCard, allUrls]);
+
+  //=============HANDLE COMMENT API====================
+  const handlePostComment = async () => {
+    if (!content.trim()) {
+      toast.error("content không được để trống");
+      return;
+    }
+
+    if (!dataCard || !dataCard.id) {
+      console.error("dataCard không hợp lệ");
+      return;
+    }
+
+    // Cấu trúc body để gửi lên API
+    const params = {
+      content: content.trim(),
+      files: postUploadedFiles, // Nếu không có file nào, sẽ là mảng rỗng
+      cardId: dataCard.id
+    };
+
+    try {
+      // await postcontent(boardId).send({ text: content });
+      const response = await postComment(boardId, params);
+      toast.success("Đăng content thành công!");
+      setContent(""); // Xóa nội dung sau khi đăng thành công
+      setPostUploadedFiles([]);
+      return response.data
+    } catch (err) {
+      toast.error("Không thể đăng comment");
+      console.error("Lỗi khi đăng comment:", err);
+    }
+  };
+
+  //================HANDLE DELETE COMMENT =================
+  const handleDeleteComment = async (cmdId) => {
+  
+    try {
+      await deleteComment(boardId, cmdId);
+      // Cập nhật lại danh sách comments sau khi xóa
+      setDataCard(prevDataCard => ({
+        ...prevDataCard,
+        comments: prevDataCard.comments.filter(comment => comment.id !== cmdId)
+      }))
+    }catch (err) {
+      console.error("Error deleting comment:", err);
+    }
+  }
+
+  //============HANDLE GET COMMENT: KHÔNG ĐƯỢC XÓA ĐOẠN COMMENT NÀY =================
+  // useEffect(() => {
+  //   const handleGetComment = async () => {
+  //     try {
+  //       const response = await getComment(boardId, dataCard.id);
+  //       console.log('boardId', boardId);
+  //       console.log('dataCard.id', dataCard.id);
+        
+  //       setListComment(response.data.content);
+  //       return response.data;
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //     };
+  //     handleGetComment();
+  //   }, [boardId, dataCard.id, listComment]);
 
   let prevListCountRef = useRef();
   useEffect(() => {
@@ -124,26 +206,38 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   }, [boardId]);
 
   const handleShowBoardCard = useCallback(
-    (data, dataCard) => {
+    async (data, dataCard) => {
+      try {
+        const resDataCardDetail = await getCardById(dataCard.id);
+        setDataCard(resDataCardDetail.data);
+      } catch (err) {
+        console.error("Error fetching data card detail: ", err);
+        navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+      }
       setIsShowBoardCard(!isShowBoardCard);
       if (isShowBoardEdit) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
-      setDataCard(dataCard);
     },
-    [isShowBoardCard, isShowBoardEdit],
+    [isShowBoardCard, isShowBoardEdit, idWorkSpace, boardId, navigate],
   );
 
   const handleShowBoardEdit = useCallback(
-    (e, dataList, dataCard) => {
+    async (e, dataList, dataCard) => {
       setIsShowBoardEdit(!isShowBoardEdit);
       const rect = e.currentTarget.getBoundingClientRect();
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setDataList(dataList);
-      setDataCard(dataCard);
+      try {
+        const resDataCardDetail = await getCardById(dataCard.id);
+        setDataCard(resDataCardDetail.data);
+      } catch (err) {
+        console.error("Error fetching data card detail: ", err);
+        navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+      }
     },
-    [isShowBoardEdit],
+    [isShowBoardEdit, idWorkSpace, boardId, navigate],
   );
 
   const handleShowAddCard = (idList) => {
@@ -292,6 +386,12 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         postUploadedFiles,
         setPostUploadedFiles,
         handlePostFiles,
+        content,
+        setContent,
+        isSaving,
+        setIsSaving,
+        handlePostComment,
+        handleDeleteComment
       }}
     >
       {children}

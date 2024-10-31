@@ -27,7 +27,7 @@ const Attachment = ({
                 />
               </div>
               <div className="ml-3">
-                <p className="text-gray-700 text-[13px]">{item.name}</p>
+                <p className="text-gray-700 text-[13px] truncate max-w-[240px] whitespace-nowrap">{item.name}</p>
                 <p className="text-[12px] font-normal text-gray-500">Added {formatDate(item.createdAt)}</p>
               </div>
             </div>
