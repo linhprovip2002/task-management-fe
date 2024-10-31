@@ -37,6 +37,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
+  // eslint-disable-next-line
   const [allUrls, setAllUrls] = useState([]);
 
   const navigate = useNavigate();
