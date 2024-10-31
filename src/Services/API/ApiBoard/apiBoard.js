@@ -68,3 +68,6 @@ export async function addMemberIntoBoard(userId, boardId) {
     memberIds: [userId],
   });
 }
+export async function updateBoard(boardId, data) {
+  return await request.patch(`/board/${boardId}`, data);
+}

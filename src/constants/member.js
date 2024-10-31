@@ -1,5 +1,5 @@
 export const EMemberRole = {
-  ADMIN: "ADMIN",
-  MEMBER: "MEMBER",
-  GUEST: "GUEST"
+  ADMIN: "admin",
+  MEMBER: "member",
+  GUEST: "guest"
 };
