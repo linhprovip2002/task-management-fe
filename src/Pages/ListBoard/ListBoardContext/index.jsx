@@ -1,29 +1,16 @@
-import React, {
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from "react";
+import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import {
-  createCardByIdList,
-  getAllCardByIdList
-} from "../../../Services/API/ApiCard";
+import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,
   getBoardId,
   getWorkspaceById,
-  updateBoard
+  updateBoard,
 } from "../../../Services/API/ApiBoard/apiBoard";
-import {
-  apiAssignFile,
-  apiUploadMultiFile
-} from "../../../Services/API/ApiUpload/apiUpload";
+import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 
 const ListBoardContext = createContext();
 
@@ -88,26 +75,17 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       console.error("Failed to get uploaded files:", error);
     }
   };
-  useEffect(() => {
-    if (dataCard && dataCard.id) {
-      handlePostFiles(dataCard.id, allUrls);
-    } else {
-      //thêm thông báo cho người dùng ở đây nếu cần
-    }
-  }, [dataCard, allUrls]);
 
   let prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
       try {
         const resWorkspace = await getWorkspaceById(idWorkSpace);
-        if (!resWorkspace || resWorkspace.error)
-          return navigate(`/workspace/${idWorkSpace}/home`);
+        if (!resWorkspace || resWorkspace.error) return navigate(`/workspace/${idWorkSpace}/home`);
         setDataWorkspace(resWorkspace?.data);
 
         const resBoard = await getBoardId(boardId);
-        if (!resBoard || resBoard.error)
-          return navigate(`/workspace/${idWorkSpace}/home`);
+        if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -116,10 +94,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
           return { ...list, cards };
         });
         const updatedLists = await Promise.all(listWithCardsPromises);
-        if (
-          JSON.stringify(updatedLists) !==
-          JSON.stringify(prevListCountRef.current)
-        ) {
+        if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
           setListCount(updatedLists);
         }
         prevListCountRef.current = updatedLists;
@@ -155,7 +130,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setDataList(data);
       setDataCard(dataCard);
     },
-    [isShowBoardCard, isShowBoardEdit]
+    [isShowBoardCard, isShowBoardEdit],
   );
 
   const handleShowBoardEdit = useCallback(
@@ -166,7 +141,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setDataList(dataList);
       setDataCard(dataCard);
     },
-    [isShowBoardEdit]
+    [isShowBoardEdit],
   );
 
   const handleShowAddCard = (idList) => {
@@ -220,7 +195,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         coverUrl: "",
         priority: "medium",
         tagId: "",
-        listId: idList
+        listId: idList,
       };
       try {
         await createCardByIdList(dataSend);
@@ -228,7 +203,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         console.error("Failed to create card by id list:", error);
       }
     },
-    [listCount]
+    [listCount],
   );
 
   const handleAddList = async (newData) => {
@@ -236,7 +211,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       const newListItem = {
         title: newData.title.trim(),
         description: "",
-        boardId: dataBoard.id
+        boardId: dataBoard.id,
       };
 
       try {
@@ -319,7 +294,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         handleFileChange,
         postUploadedFiles,
         setPostUploadedFiles,
-        handlePostFiles
+        handlePostFiles,
       }}
     >
       {children}
