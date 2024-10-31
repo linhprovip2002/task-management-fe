@@ -4,7 +4,12 @@ import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
 import { createCardByIdList, getAllCardByIdList, getAllUserByIdCard, getCardById } from "../../../Services/API/ApiCard";
-import { getAllMembersByIdBoard, getBoardId, getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
+import {
+  getAllMembersByIdBoard,
+  getBoardId,
+  getWorkspaceById,
+  updateBoard,
+} from "../../../Services/API/ApiBoard/apiBoard";
 import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 
 const ListBoardContext = createContext();
@@ -70,13 +75,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       console.error("Failed to get uploaded files:", error);
     }
   };
-  useEffect(() => {
-    if (dataCard && dataCard.id) {
-      handlePostFiles(dataCard.id, allUrls);
-    } else {
-      //thêm thông báo cho người dùng ở đây nếu cần
-    }
-  }, [dataCard, allUrls]);
 
   let prevListCountRef = useRef();
   useEffect(() => {
@@ -255,9 +253,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     }
   };
 
+  // ============handle get Active star==============
+  useEffect(() => {
+    if (dataBoard && dataBoard.id) setActiveStar(dataBoard.isFavorite);
+  }, [dataBoard]);
   const handleActiveStar = useCallback(() => {
-    return setActiveStar(!activeStar);
-  }, [activeStar]);
+    setActiveStar(!activeStar);
+    updateBoard(boardId, { ...dataBoard, isFavorite: !activeStar });
+  }, [activeStar, boardId, dataBoard]);
 
   const handleChangeSidebar = useCallback((isClose) => {
     return setIsCloseNavBar(!isClose);

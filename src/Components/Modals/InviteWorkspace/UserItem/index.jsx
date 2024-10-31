@@ -3,14 +3,35 @@ import { grey } from "@mui/material/colors";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { addMemberIntoBoard } from "../../../../Services/API/ApiBoard/apiBoard";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 function UserItem({ onClick, data, onAdded }) {
   const [isAdding, setIsAdding] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+
   const handleClick = () => {
     if (onClick) return onClick(data);
   };
 
+  const { idBoard } = useParams();
+
   const handleAddMember = () => {
-    setIsAdding(true);
+    if (isAdded === false) {
+      setIsAdding(true);
+      addMemberIntoBoard(data.id, idBoard)
+        .then((res) => {
+          toast.success("Add member successfully");
+          if (onAdded) return onAdded(data);
+        })
+        .catch((err) => {
+          toast.error("Add member unsuccessfully");
+        })
+        .finally(() => {
+          setIsAdding(false);
+          setIsAdded(true);
+        });
+    }
   };
 
   return (
@@ -33,12 +54,13 @@ function UserItem({ onClick, data, onAdded }) {
       ) : (
         <div>
           <Button
+            disabled={isAdded}
             onClick={handleAddMember}
             startIcon={isAdding && <CircularProgress size={18} color="#fff" />}
             variant="contained"
             sx={{ textTransform: "none", paddingY: 0.2 }}
           >
-            Add
+            {isAdded ? "Added" : "Add"}
           </Button>
         </div>
       )}

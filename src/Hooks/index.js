@@ -4,3 +4,4 @@ export { default as useGetUser } from "./useGetUser";
 export * from "./useGetUserProfile";
 export * from "./useGetWorkspaceByUser";
 export * from "./useBoards";
+export * from "./useWorkspaceMember";
