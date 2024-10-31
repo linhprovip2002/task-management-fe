@@ -18,8 +18,8 @@ export async function getBoard(options) {
   try {
     const response = await request.get(`/board`, {
       params: {
-        ...options
-      }
+        ...options,
+      },
     });
     return response.data;
   } catch (error) {
@@ -52,7 +52,19 @@ export async function getAllMembersByIdBoard(id) {
 }
 
 export async function getAllTagByIdBoard(id) {
-  return await request.get(`/tag/board/${id}`);
+  return await request.get(`/board/${id}/tag`);
+}
+
+export async function AddTagInCard(boardId, data) {
+  console.log(boardId);
+  console.log(data);
+  return await request.post(`/board/${boardId}/tag/assign`, data);
+}
+
+export async function RemoveTagInCard(boardId, data) {
+  console.log(boardId);
+  console.log(data);
+  return await request.delete(`/board/${boardId}/tag/remove-on-card`, data);
 }
 
 export async function leaveBoard(boardId) {

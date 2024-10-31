@@ -9,13 +9,13 @@ import {
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
 } from "@mui/icons-material";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import { listColorLabel } from "./constans/list.constans";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import MemberMenu from "../MemberMenuOfBoard";
 import ToDoMenu from "../ToDoMenuOfBoard";
-import { listLabelAdd } from "./constans/list.constans";
 import { listBtnCard } from "./constans/list.constans";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import ItemPerson from "../ItemPerson";
@@ -26,6 +26,7 @@ import UploadFile from "../Modals/UploadFile";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
+import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 
 export const BoardCard = () => {
   const {
@@ -43,9 +44,27 @@ export const BoardCard = () => {
     postUploadedFiles,
   } = useListBoardContext();
   const { userData } = useStorage();
-  const [listLabel, setListLabel] = useState(listLabelAdd);
+  const [listLabel, setListLabel] = useState(() => {
+    var tagsCard = dataCard?.tagCards
+      ?.map((tagCard) => {
+        if (!tagCard || !tagCard.tag) {
+          return null;
+        }
+        return {
+          id: tagCard.tag.id,
+          updatedAt: tagCard.tag.updatedAt || null,
+          createdAt: tagCard.tag.createdAt,
+          deletedAt: tagCard.tag.deletedAt,
+          color: tagCard.tag.color,
+          name: tagCard.tag.name,
+          boardId: tagCard.tag.boardId,
+        };
+      })
+      .filter(Boolean);
+    return tagsCard || [];
+  });
   const [listToDo, setListToDo] = useState([]);
-  const [countLabel, setCountLabel] = useState([]);
+  const [countLabel, setCountLabel] = useState(listLabel);
   const [chooseColorLabel, setChooseColorLabel] = useState(listColorLabel[0]);
   const [inputTitleLabel, setInputTitleLabel] = useState("");
   const [inputTitleToDo, setInputTitleToDo] = useState("What to do");
@@ -56,6 +75,20 @@ export const BoardCard = () => {
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isJoin, setIsJoin] = useState(false);
+  const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
+  const [endDateCheck] = useState(() => {
+    const formattedDate = new Date("2024-10-31T10:39:32.040Z")
+      .toLocaleString("vi-VN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        day: "2-digit",
+        month: "2-digit",
+      })
+      .replace(",", "")
+      .replace("/", "thg");
+
+    return formattedDate;
+  });
   // eslint-disable-next-line
   const [openPoper, setOpenPoper] = useState(false);
   const [showImage, setShowImage] = useState(false);
@@ -103,32 +136,33 @@ export const BoardCard = () => {
     });
   };
 
-  const ShowDetailNewLabel = () => {
+  const ShowDetailNewLabel = useCallback(() => {
     setIsCreateLabel(!isCreateLabel);
     if (isUpdateLabel) {
       setIsUpdateLabel(!isUpdateLabel);
     }
-  };
+  }, [isCreateLabel, isUpdateLabel]);
 
-  const ShowUpdateLabel = (item) => {
-    ShowDetailNewLabel();
-    setIsUpdateLabel(!isUpdateLabel);
-    setChooseColorLabel(item);
-    setInputTitleLabel(item.title);
-  };
-
+  const ShowUpdateLabel = useCallback(
+    (item) => {
+      ShowDetailNewLabel();
+      setIsUpdateLabel(!isUpdateLabel);
+      setChooseColorLabel(item);
+      setInputTitleLabel(item.name);
+    },
+    [isUpdateLabel, ShowDetailNewLabel],
+  );
   const handleCreateNewLabel = (dataColor, titleLabel = "") => {
     const dataLabel = {
-      id: dataColor.id,
-      title: titleLabel,
-      color: dataColor.color,
+      ...dataColor,
+      name: titleLabel,
     };
     setListLabel((prev) => {
       if (prev.some((item) => item.id === dataLabel.id)) {
         const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (itemLabel.title !== dataLabel.title || itemLabel.color !== dataLabel.color) {
+        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
           return prev.map((item) =>
-            item.id === dataLabel.id ? { ...item, color: dataLabel.color, title: dataLabel.title } : item,
+            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
           );
         }
         return prev;
@@ -179,15 +213,48 @@ export const BoardCard = () => {
     if (isCreateLabel) setIsCreateLabel(!isCreateLabel);
   };
 
-  const handleAddLabel = (item) => {
-    setCountLabel((prevCountLabel) => {
-      if (prevCountLabel.some((i) => i.id === item.id)) {
-        return prevCountLabel.filter((i) => i.id !== item.id);
-      } else {
-        return [...prevCountLabel, item];
-      }
-    });
-  };
+  const handleAddLabel = useCallback(
+    (item) => {
+      const addTagAsync = async () => {
+        try {
+          const data = {
+            cardId: dataCard?.id,
+            tagId: item.id,
+          };
+          await AddTagInCard(item.boardId, data);
+        } catch (err) {
+          console.error("Error add data tag in card detail: ", err);
+        }
+      };
+
+      const removeTagAsync = async () => {
+        try {
+          const data = {
+            cardId: dataCard?.id,
+            tagId: item.id,
+          };
+          await RemoveTagInCard(item.boardId, data);
+        } catch (err) {
+          console.error("Error remove data tag in card detail: ", err);
+        }
+      };
+
+      setCountLabel((prevCountLabel) => {
+        if (prevCountLabel.some((i) => i.id === item.id)) {
+          removeTagAsync();
+          return prevCountLabel.filter((i) => i.id !== item.id);
+        } else {
+          try {
+            addTagAsync();
+            return [...prevCountLabel, item];
+          } catch (err) {
+            console.error("Error add data tag in card detail: ", err);
+          }
+        }
+      });
+    },
+    [dataCard],
+  );
 
   const handleCheckDoneToDoItem = (Item, todoItemList) => {
     setListToDo((prev) => {
@@ -308,7 +375,7 @@ export const BoardCard = () => {
   return (
     <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
       <div className="mt-20 mb-10">
-        <div className="relative flex justify-between min-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
+        <div className="relative flex justify-between max-w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
           <div className="flex-1 p-2">
             <div className="flex p-2">
               <div>
@@ -323,10 +390,10 @@ export const BoardCard = () => {
                   </div>
                   {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center flex-wrap">
                   {membersInCard.length !== 0 && <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />}
-                  {countLabel.length !== 0 && (
-                    <div className="mr-2">
+                  {countLabel.length > 0 && (
+                    <div className="mr-2 mb-2">
                       <div className="flex items-center text-[12px] mb-2">
                         <span className="mr-2">Label</span>
                       </div>
@@ -336,7 +403,7 @@ export const BoardCard = () => {
                             key={item.id}
                             className={`${item.color} flex items-center justify-center rounded-[4px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] `}
                           >
-                            {item.title}
+                            {item.name}
                           </div>
                         ))}
                         <div
@@ -346,6 +413,32 @@ export const BoardCard = () => {
                           <AddIcon style={{ fontSize: "20px" }} />
                         </div>
                       </div>
+                    </div>
+                  )}
+                  {dataCard.endDate != null && (
+                    <div className="mr-2 mb-2">
+                      <div className="flex items-center text-[12px] mb-2">
+                        <span className="mr-2">Expiration date</span>
+                      </div>
+                      <li className="flex items-center my-2 cursor-pointer">
+                        <input
+                          checked={checkCompleteEndDate}
+                          onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                          type="checkbox"
+                          className="w-5 h-5 cursor-pointer"
+                        />
+                        <span className="flex items-center w-full">
+                          <div
+                            className={`flex items-center justify-between rounded-[4px] mx-2 p-1 bg-gray-300 hover:bg-gray-100 cursor-pointer`}
+                          >
+                            <div className="">{endDateCheck}</div>
+                            {checkCompleteEndDate && (
+                              <div className="bg-green-500 p-[2px] text-[10px] rounded-[4px] ml-2">complete</div>
+                            )}
+                            <KeyboardArrowDownIcon fontSize="small" />
+                          </div>
+                        </span>
+                      </li>
                     </div>
                   )}
                   <div className="mr-2">
@@ -536,7 +629,7 @@ export const BoardCard = () => {
             </div>
           </div>
           <CloseIcon
-            onClick={handleShowBoardCard}
+            onClick={() => handleShowBoardCard(dataList, dataCard)}
             className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
           />
         </div>

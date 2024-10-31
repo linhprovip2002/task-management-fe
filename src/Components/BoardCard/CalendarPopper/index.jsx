@@ -1,8 +1,11 @@
 import React, { useCallback, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import Calendar from "../../Calendar/index";
+import { updateCard } from "../../../Services/API/ApiCard";
 
-const CalendarPopper = ({ position, handleCloseShowMenuBtnCard }) => {
+function CalendarPopper({ position, handleCloseShowMenuBtnCard }) {
+  const { dataCard, dataList } = useListBoardContext();
   const getCurrentTime = () => {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, "0");
@@ -20,9 +23,25 @@ const CalendarPopper = ({ position, handleCloseShowMenuBtnCard }) => {
 
   const [startDate, setStartDate] = useState("N/T/NNNN");
   const [isChecked, setIsChecked] = useState(false);
-  const [expirationDate, setExpirationDate] = useState(getCurrentDate());
+  const [expirationDate, setExpirationDate] = useState(() => {
+    if (dataCard.endDate) {
+      const dateObj = new Date(dataCard.endDate);
+      const date = dateObj.toISOString().split("T")[0];
+      return date;
+    } else {
+      getCurrentDate();
+    }
+  });
   const [previousDate, setPreviousDate] = useState(getCurrentDate());
-  const [expirationTime, setExpirationTime] = useState(getCurrentTime());
+  const [expirationTime, setExpirationTime] = useState(() => {
+    if (dataCard.endDate) {
+      const dateObj = new Date(dataCard.endDate);
+      const date = dateObj.toISOString().split("T")[1].slice(0, 5);
+      return date;
+    } else {
+      getCurrentTime();
+    }
+  });
   const [previousTime, setPreviousTime] = useState(getCurrentTime());
 
   const handleChangeDay = useCallback((choosedDay) => {
@@ -60,6 +79,46 @@ const CalendarPopper = ({ position, handleCloseShowMenuBtnCard }) => {
       setPreviousDate(expirationDate);
     } else {
       setExpirationDate(previousDate);
+    }
+  };
+
+  const handleSaveExpirationDate = async () => {
+    try {
+      const data = {
+        title: dataCard.title,
+        description: dataCard.description,
+        coverUrl: dataCard.coverUrl,
+        priority: dataCard.priority,
+        tagId: dataCard.tagId,
+        startDate: dataCard.startDate,
+        endDate: expirationDate + "T" + expirationTime,
+        listId: dataList.id,
+      };
+      const res = await updateCard(dataCard.id, data);
+      handleCloseShowMenuBtnCard();
+      return res;
+    } catch (error) {
+      console.error("Error setup expiration date in card detail: ", error);
+    }
+  };
+
+  const handleRemoveExpirationDate = async () => {
+    try {
+      const data = {
+        title: dataCard.title,
+        description: dataCard.description,
+        coverUrl: dataCard.coverUrl,
+        priority: dataCard.priority,
+        tagId: dataCard.tagId,
+        startDate: dataCard.startDate,
+        endDate: null,
+        listId: dataList.id,
+      };
+      const res = await updateCard(dataCard.id, data);
+      handleCloseShowMenuBtnCard();
+      return res;
+    } catch (error) {
+      console.error("Error setup expiration date in card detail: ", error);
     }
   };
 
@@ -111,10 +170,16 @@ const CalendarPopper = ({ position, handleCloseShowMenuBtnCard }) => {
             </div>
           </div>
 
-          <button className="w-full mb-2 px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-500 transition-all duration-0.3s">
+          <button
+            onClick={handleSaveExpirationDate}
+            className="w-full mb-2 px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-500 transition-all duration-0.3s"
+          >
             Save
           </button>
-          <button className="w-full mb-2 px-4 py-2 font-bold text-white bg-gray-400 rounded hover:bg-gray-700 transition-all duration-0.3s">
+          <button
+            onClick={handleRemoveExpirationDate}
+            className="w-full mb-2 px-4 py-2 font-bold text-white bg-gray-400 rounded hover:bg-gray-700 transition-all duration-0.3s"
+          >
             Remove
           </button>
         </div>
@@ -125,6 +190,6 @@ const CalendarPopper = ({ position, handleCloseShowMenuBtnCard }) => {
       </div>
     </div>
   );
-};
+}
 
 export default React.memo(CalendarPopper);

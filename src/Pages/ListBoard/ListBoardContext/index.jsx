@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
+import { createCardByIdList, getAllCardByIdList, getAllUserByIdCard, getCardById } from "../../../Services/API/ApiCard";
 import { getAllMembersByIdBoard, getBoardId, getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
 import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 
@@ -21,7 +21,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [isShowAddList, setIsShowAddList] = useState(false);
   const [activeMonitor, setActiveMonitor] = useState([]);
   const [dataCard, setDataCard] = useState();
-  const [dataCardDetail, setDataCardDetail] = useState();
   const [dataList, setDataList] = useState();
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeStar, setActiveStar] = useState(false);
@@ -89,6 +88,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
+        console.log(resBoard);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -127,8 +127,11 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const handleShowBoardCard = useCallback(
     async (data, dataCard) => {
       try {
-        const resDataCardDetail = await getWorkspaceById(dataCard.id);
-        setDataCardDetail(resDataCardDetail);
+        const resDataCardDetail = await getCardById(dataCard.id);
+        setDataCard(resDataCardDetail.data);
+
+        const resMemberCard = await getAllUserByIdCard(dataCard.id);
+        setMembersInCard(resMemberCard?.data);
       } catch (err) {
         console.error("Error fetching data card detail: ", err);
         navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
@@ -138,20 +141,25 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
-      // setDataCard(dataCard);
     },
-    [isShowBoardCard, isShowBoardEdit],
+    [isShowBoardCard, isShowBoardEdit, idWorkSpace, boardId, navigate],
   );
 
   const handleShowBoardEdit = useCallback(
-    (e, dataList, dataCard) => {
+    async (e, dataList, dataCard) => {
       setIsShowBoardEdit(!isShowBoardEdit);
       const rect = e.currentTarget.getBoundingClientRect();
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setDataList(dataList);
-      setDataCard(dataCard);
+      try {
+        const resDataCardDetail = await getCardById(dataCard.id);
+        setDataCard(resDataCardDetail.data);
+      } catch (err) {
+        console.error("Error fetching data card detail: ", err);
+        navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+      }
     },
-    [isShowBoardEdit],
+    [isShowBoardEdit, idWorkSpace, boardId, navigate],
   );
 
   const handleShowAddCard = (idList) => {

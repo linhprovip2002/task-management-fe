@@ -20,7 +20,6 @@ function ItemList({
   isArchived = false,
 }) {
   let { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
-  console.log(dataCard);
   return (
     <div className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer">
       <div
