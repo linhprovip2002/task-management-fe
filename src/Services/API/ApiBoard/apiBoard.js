@@ -18,8 +18,8 @@ export async function getBoard(options) {
   try {
     const response = await request.get(`/board`, {
       params: {
-        ...options,
-      },
+        ...options
+      }
     });
     return response.data;
   } catch (error) {
@@ -61,4 +61,8 @@ export async function leaveBoard(boardId) {
 
 export async function removeMember(userId, boardId) {
   return await request.delete(`/board/${boardId}/members/${userId}`);
+}
+
+export async function updateBoard(boardId, data) {
+  return await request.patch(`/board/${boardId}`, data);
 }
