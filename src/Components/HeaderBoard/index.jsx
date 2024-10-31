@@ -9,7 +9,7 @@ import {
   LightningIcon,
   ListIcon,
   FilterIcon,
-  ShareIconRegular,
+  ShareIconRegular
 } from "../../Components/Icons";
 import TippyDetail from "../TippyDetail";
 import RightSidebar from "../../Components/RightSidebar";
@@ -27,8 +27,10 @@ function HeaderBoard() {
   return (
     <div className="relative flex items-center justify-between h-[32px] p-6 bg-gray-100">
       <div className="flex items-center">
-        <div className="text-black p-2 font-bold text-[20px]">{dataBoard.title}</div>
-        <TippyDetail title={"Star or unstar this tables. Starred tables will appear at the top of the tables list."}>
+        <div className="text-black p-2 font-bold text-[20px]">
+          {dataBoard.title}
+        </div>
+        <TippyDetail title="Star or unstar this tables. Starred tables will appear at the top of the tables list.">
           <div
             onClick={handleActiveStar}
             className="cursor-pointer rounded-[4px] p-[4px] ml-2 hover:bg-gray-300 transition-opacity duration-300"
@@ -77,7 +79,11 @@ function HeaderBoard() {
         </TippyDetail>
         <TippyDetail title={"Share Board"}>
           <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
-            <ShareIconRegular width={16} height={16} className={"mr-2 text-white"} />
+            <ShareIconRegular
+              width={16}
+              height={16}
+              className={"mr-2 text-white"}
+            />
             <span className="text-[16px] font-medium text-white">Share</span>
           </div>
         </TippyDetail>

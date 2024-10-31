@@ -7,12 +7,9 @@ import { CreateNewBoard } from "../../../Components/Modals/CreateNewBoard/Create
 
 const UserBoards = () => {
   const [open, setOpen] = useState(false);
-  // const { id } = useParams();
   const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
 
   const { workspaceDetails } = useGetWorkspaceById(workspaceInfo[0].id);
-  console.log("workspaceDetails", workspaceDetails);
-  console.log("workspaceInfo", workspaceInfo);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

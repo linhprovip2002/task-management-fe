@@ -62,7 +62,9 @@ export default function Stared() {
                           />
                           <div className="text-xs  flex flex-col justify-between">
                             <div className="font-bold">{board.title}</div>
-                            <div>{board.workspaceName || "Workspace Name"}</div>
+                            <div>
+                              {board.workspace.title || "Workspace Name"}
+                            </div>
                           </div>
                         </div>
                         <div className="text-yellow-400 flex justify-center">
