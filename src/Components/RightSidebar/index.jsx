@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider } from "@mui/material";
 import classNames from "classnames/bind";
@@ -20,7 +20,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SettingMenu from "./SettingMenu";
 import { useNavigate, useParams } from "react-router-dom";
 import Archived from "./Archived";
-import { leaveBoard } from "../../Services/API/ApiBoard/apiBoard";
+import { deleteBoardId, leaveBoard } from "../../Services/API/ApiBoard/apiBoard";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../constants";
@@ -31,7 +31,8 @@ const cx = classNames.bind(styles);
 const sizeIcon = 20;
 
 export default function RightSidebar({ isOpen, onClose }) {
-  const isOwner = false;
+  const { dataBoard } = useListBoardContext();
+  const isOwner = dataBoard?.role?.roleName === "admin";
 
   const items = {
     headerTitle: "Menu",
@@ -99,9 +100,7 @@ export default function RightSidebar({ isOpen, onClose }) {
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { idWorkSpace } = useParams();
-
-  const { dataBoard } = useListBoardContext();
+  const { idWorkSpace, idBoard } = useParams();
 
   // TODO Xử lý đóng right menu
   const handleClose = (e) => {
@@ -156,15 +155,28 @@ export default function RightSidebar({ isOpen, onClose }) {
       );
     });
   };
-  //#endregion
 
   //#region Handle leave
   const handleLeaveBoard = () => {
     if (isOwner) {
       //TODO close board
+      deleteBoardId(idBoard)
+        .then((res) => {
+          queryClient.invalidateQueries({
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+          });
+          toast.success("Close board successfully");
+          return navigate(`/workspace/${idWorkSpace}/home`);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Close board not successfully");
+        })
+        .finally(() => {
+          setDeleteDialog(false);
+        });
     } else {
       //TODO leave board
-
       leaveBoard(dataBoard.id)
         .then((res) => {
           //* Gọi lại API get board từ useQuery để reload lại giao diện
@@ -181,7 +193,11 @@ export default function RightSidebar({ isOpen, onClose }) {
         .finally(() => setDeleteDialog(false));
     }
   };
-  //#endregion
+
+  useEffect(() => {
+    setMenuItems([items]);
+    // eslint-disable-next-line
+  }, [dataBoard]);
 
   return (
     <div className={cx(["drawer", "absolute top-0 right-0 z-[300]"], { open: isOpen })}>

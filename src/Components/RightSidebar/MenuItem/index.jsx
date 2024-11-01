@@ -20,4 +20,4 @@ MenuItem.propTypes = {
   onChange: PropTypes.func,
 };
 
-export default MenuItem;
+export default React.memo(MenuItem);

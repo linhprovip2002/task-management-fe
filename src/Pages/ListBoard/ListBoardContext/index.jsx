@@ -87,7 +87,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
-        console.log(resBoard);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -107,7 +106,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
 
     fetchBoardData();
-  }, [boardId, idWorkSpace, listCount, navigate]);
+  }, [boardId, idWorkSpace, navigate]);
 
   useEffect(() => {
     const getAllUserInBoard = async () => {

@@ -5,7 +5,7 @@ import { Slide } from "@mui/material";
 const styles = {
   permissionHeader: "text-[var(--text-color)] text-[14px] font-semibold py-2 px-3",
 };
-export default function SettingMenu() {
+function SettingMenu() {
   return (
     <Slide in={true} direction="left">
       <div className="flex flex-col">
@@ -30,3 +30,5 @@ export default function SettingMenu() {
     </Slide>
   );
 }
+
+export default React.memo(SettingMenu);

@@ -10,7 +10,7 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import zIndex from "@mui/material/styles/zIndex";
+import React from "react";
 
 function ItemList({
   id,
@@ -150,4 +150,4 @@ function ItemList({
 ItemList.propTypes = {
   isArchived: PropTypes.bool,
 };
-export default ItemList;
+export default React.memo(ItemList);
