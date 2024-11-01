@@ -3,8 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import { createCardByIdList, getAllCardByIdList, getCardById } from "../../../Services/API/ApiCard";
-import { getAllMembersByIdBoard, getBoardId, getWorkspaceById } from "../../../Services/API/ApiBoard/apiBoard";
+import { createCardByIdList, getAllCardByIdList, getAllUserByIdCard, getCardById } from "../../../Services/API/ApiCard";
+import {
+  getAllMembersByIdBoard,
+  getBoardId,
+  getWorkspaceById,
+  updateBoard,
+} from "../../../Services/API/ApiBoard/apiBoard";
 import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 
@@ -87,13 +92,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       console.error("Failed to get uploaded files:", error);
     }
   };
-  useEffect(() => {
-    if (dataCard && dataCard.id) {
-      handlePostFiles(dataCard.id, allUrls);
-    } else {
-      //thêm thông báo cho người dùng ở đây nếu cần
-    }
-  }, [dataCard, allUrls]);
 
   //=============HANDLE COMMENT API====================
   const handlePostComment = async () => {
@@ -174,6 +172,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
+        console.log(resBoard);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -214,6 +213,9 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       try {
         const resDataCardDetail = await getCardById(dataCard.id);
         setDataCard(resDataCardDetail.data);
+
+        const resMemberCard = await getAllUserByIdCard(dataCard.id);
+        setMembersInCard(resMemberCard?.data);
       } catch (err) {
         console.error("Error fetching data card detail: ", err);
         navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
@@ -337,9 +339,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     }
   };
 
+  // ============handle get Active star==============
+  useEffect(() => {
+    if (dataBoard && dataBoard.id) setActiveStar(dataBoard.isFavorite);
+  }, [dataBoard]);
   const handleActiveStar = useCallback(() => {
-    return setActiveStar(!activeStar);
-  }, [activeStar]);
+    setActiveStar(!activeStar);
+    updateBoard(boardId, { ...dataBoard, isFavorite: !activeStar });
+  }, [activeStar, boardId, dataBoard]);
 
   const handleChangeSidebar = useCallback((isClose) => {
     return setIsCloseNavBar(!isClose);

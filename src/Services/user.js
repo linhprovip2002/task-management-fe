@@ -44,6 +44,10 @@ class UserServices {
 
   // Method to delete a user by ID
   deleteUser(userId) {}
+
+  async searchUser(searchValue) {
+    return await request.get(`/user?search=${searchValue}`);
+  }
 }
 
 const userServices = new UserServices();

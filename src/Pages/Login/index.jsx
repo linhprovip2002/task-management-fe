@@ -37,6 +37,7 @@ const Login = memo(() => {
         });
         storage.setIsLoggedIn(true);
         storage.setUserData(res.user);
+        storage.setFirstWorkspace(res.defaultWorkspaceId);
         toast.success("Login successfully");
         navigate(workspaceRoutes.workspaceHome);
       })

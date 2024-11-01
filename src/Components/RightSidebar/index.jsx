@@ -24,14 +24,15 @@ import { leaveBoard } from "../../Services/API/ApiBoard/apiBoard";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../constants";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
 const cx = classNames.bind(styles);
 
 const sizeIcon = 20;
 
 export default function RightSidebar({ isOpen, onClose }) {
-  const { id } = useParams();
   const isOwner = false;
+
   const items = {
     headerTitle: "Menu",
     data: [
@@ -98,6 +99,9 @@ export default function RightSidebar({ isOpen, onClose }) {
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { idWorkSpace } = useParams();
+
+  const { dataBoard } = useListBoardContext();
 
   // TODO Xử lý đóng right menu
   const handleClose = (e) => {
@@ -161,15 +165,15 @@ export default function RightSidebar({ isOpen, onClose }) {
     } else {
       //TODO leave board
 
-      leaveBoard(id)
+      leaveBoard(dataBoard.id)
         .then((res) => {
           //* Gọi lại API get board từ useQuery để reload lại giao diện
           queryClient.invalidateQueries({
             queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
           });
-
-          //! Lấy id của workspace từ context để trở về trang workspace (api chưa trả về)
-          return navigate("/workspace/:id/home");
+          //! chưa load lại được dữ liệu mới ở trang home workspace
+          toast.success("Leave board successfully");
+          return navigate(`/workspace/${idWorkSpace}/home`);
         })
         .catch((err) => {
           toast.error("Leave board not successfully");

@@ -18,8 +18,8 @@ export async function getBoard(options) {
   try {
     const response = await request.get(`/board`, {
       params: {
-        ...options
-      }
+        ...options,
+      },
     });
     return response.data;
   } catch (error) {
@@ -52,9 +52,38 @@ export async function getAllMembersByIdBoard(id) {
 }
 
 export async function getAllTagByIdBoard(id) {
-  return await request.get(`/tag/board/${id}`);
+  return await request.get(`/board/${id}/tag`);
+}
+
+export async function AddTagInCard(boardId, cardId, tagId) {
+  return await request.post(`/board/${boardId}/tag/assign`, {
+    cardId: cardId,
+    tagId: tagId,
+  });
+}
+
+export async function RemoveTagInCard(boardId, cardId, tagId) {
+  return await request.delete(`/board/${boardId}/tag/remove-on-card`, {
+    data: {
+      cardId: cardId,
+      tagId: tagId,
+    },
+  });
 }
 
 export async function leaveBoard(boardId) {
   return await request.delete(`/board/${boardId}/members`);
+}
+
+export async function removeMember(userId, boardId) {
+  return await request.delete(`/board/${boardId}/members/${userId}`);
+}
+
+export async function addMemberIntoBoard(userId, boardId) {
+  return await request.post(`/board/${boardId}/members`, {
+    memberIds: [userId],
+  });
+}
+export async function updateBoard(boardId, data) {
+  return await request.patch(`/board/${boardId}`, data);
 }

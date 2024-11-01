@@ -131,7 +131,6 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
         handleClickAway();
         break;
       default:
-        handleClickAway();
         break;
     }
   };

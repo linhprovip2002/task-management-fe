@@ -2,14 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { workspaceServices } from "../Services";
 import { EQueryKeys } from "../constants";
 
-export const useGetWorkspaceMember = (options = {}) => {
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [EQueryKeys.GET_WORKSPACE_MEMBER],
-    queryFn: () => workspaceServices.getWorkspaceByUser(options),
+export const useGetWorkspaceMember = (workspaceId) => {
+  const { data, isLoading, isError, refetch, isRefetching } = useQuery({
+    queryKey: [EQueryKeys.GET_WORKSPACE_MEMBER, workspaceId],
+    queryFn: () => workspaceServices.getWorkspaceMember(workspaceId),
     ...{
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      enable: !!workspaceId
     }
   });
 
-  return { workspaceInfo: data?.data, isLoading, isError, refetch };
+  return { workspaceMembers: data, isLoading, isError, isRefetching, refetch };
 };
