@@ -201,7 +201,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
 
     fetchBoardData();
-  }, [boardId, idWorkSpace, listCount, navigate]);
+  }, [boardId, idWorkSpace, navigate]);
 
   useEffect(() => {
     const getAllUserInBoard = async () => {
