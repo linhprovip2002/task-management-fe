@@ -1,28 +1,28 @@
 import React from "react";
 import { useStorage } from "../../../Contexts";
 import { Avatar } from "@mui/material";
-import { useGetBoardWorkspace, useGetUserProfile } from "../../../Hooks";
-import Loading from "../../Loading";
+// import {  useGetUserProfile } from "../../../Hooks";
+// import Loading from "../../Loading";
 
 const ShowComment = ({item, formatDate, handleDeleteComment}) => {
   const { userData } = useStorage();
   //eslint-disable-next-line
   const { setIsLoggedIn, isLoggedIn } = useStorage();
   //eslint-disable-next-line
-  const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
-  const { isLoading: isLoadingWorkspace } = useGetBoardWorkspace();
+  // const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
+  // const { isLoading: isLoadingWorkspace } = useGetBoardWorkspace();  
 
   return (
     <>
-      {isLoadingWorkspace && <Loading />}
+      {/* {isLoadingWorkspace && <Loading />} */}
       <div key={item.id}>
-        <div className="flex p-4 my-2 space-x-3 bg-gray-100 rounded-lg">
+        <div className="flex p-2 my-2 space-x-3 bg-gray-100 rounded-md">
           {/* Avatar */}
           {userData?.avatarUrl ? (
             <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
           ) : (
             <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
-              {userProfile?.name[0] || " "}
+              {userData?.name[0] || " "}
             </div>
           )}
 

@@ -10,7 +10,7 @@ import {
   getWorkspaceById,
   updateBoard,
 } from "../../../Services/API/ApiBoard/apiBoard";
-import { apiAssignFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
+import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 
 const ListBoardContext = createContext();
@@ -38,104 +38,114 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
-  const [allUrls, setAllUrls] = useState([]);
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  // const [listComment, setListComment] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
-  // const cmdId = dataCard.map((item) => item.comments.id);
-
-  //======= handle upload with API =======
-  // Hàm xử lý khi chọn file
+ 
   const handleFileChange = async (event) => {
     const files = event.target.files;
-    if (files.length === 0) return;
-    toast.info("Uploading...");
-
-    const formData = new FormData();
-    let validFiles = true;
-    for (let i = 0; i < files.length; i++) {
-      const totalSize = +(10 * 1024 * 1024); // 10MB
-      if (files[i].size > totalSize) {
-        toast.error(`File ${files[i].name} is too large to upload.`);
-        validFiles = false;
+    if (!files.length) return;
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const validFiles = [];
+    Array.from(files).forEach((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`File ${file.name} is too large to upload.`);
       } else {
-        formData.append("files", files[i]);
+        validFiles.push(file);
       }
-    }
-
-    if (!validFiles) return;
-    toast.info("Uploading...");
-
+    });
+    if (!validFiles.length) return;
+    setLoading(true);
+    const loadToastId = toast.loading("Uploading...");
+  
     try {
-      const response = await apiUploadMultiFile(formData);
+      // Tải lên các file song song
+      const uploadPromises = validFiles.map((file) => {
+        const formData = new FormData();
+        formData.append("files", file);
+        return apiUploadMultiFile(formData);
+      });
+  
+      const responses = await Promise.all(uploadPromises);
+      toast.dismiss(loadToastId);
       toast.success("Upload successful!");
-      const totalFileUpload = [...response.data, ...uploadedFiles];
-      setUploadedFiles(totalFileUpload);
-      // Lấy tất cả các URL từ totalFileUpload và lưu trữ chúng trong trạng thái allUrls
-      const urls = totalFileUpload.map((file) => file.url);
-      setAllUrls(urls);
-      return response.data;
+  
+      // Lấy dữ liệu file đã tải lên
+      const uploadedFilesData = responses.flatMap(response => response.data);
+      const uploadedUrls = uploadedFilesData.map((file) => file.url);  
+      // Cập nhật danh sách file đã tải lên
+      setUploadedFiles((prev) => [...prev, ...uploadedFilesData]);
+  
+      // Gọi API để đính kèm (gửi) các URL với dữ liệu thẻ (card)
+      await handlePostFiles(dataCard.id, uploadedUrls);
+      return uploadedFilesData;
     } catch (error) {
-      toast.error("Upload failed!");
+      console.error("Error uploading files:", error);
+      toast.dismiss(loadToastId);
+      toast.error("Failed to upload files.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ============handle get UploadedFiles==============
-  const handlePostFiles = async (id, allUrls) => {
+  // ============HANDLE POST FILE LEN API==============
+  const handlePostFiles = useCallback(async (id, allUrls) => {
     try {
       const response = await apiAssignFile(id, allUrls);
       setPostUploadedFiles(response.data.files);
+      return response.data.files;
     } catch (error) {
       console.error("Failed to get uploaded files:", error);
     }
+  }, [setPostUploadedFiles]);
+
+  const handleDeleteFile = async (fileId) => {
+    try {
+      await apiDeleteFile(dataCard.id, fileId);
+      setDataCard((prev) => ({
+        ...prev,
+        files: prev.files.filter((file) => file.id !== fileId),
+      }));
+      setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
+      toast.success("File deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete file:", error);
+      toast.error("Failed to delete file.");
+    }
   };
 
-  //=============HANDLE COMMENT API====================
   const handlePostComment = async () => {
-    if (!content.trim()) {
-      toast.error("content không được để trống");
-      return;
-    }
-
-    if (!dataCard || !dataCard.id) {
-      console.error("dataCard không hợp lệ");
-      return;
-    }
-
-    // Cấu trúc body để gửi lên API
     const params = {
-      content: content.trim(),
-      files: postUploadedFiles, // Nếu không có file nào, sẽ là mảng rỗng
+      content: content,
+      files: postUploadedFiles,
       cardId: dataCard.id,
     };
-
+    setLoading(true);
+    const loadingToastId = toast.loading("Saving...");
     try {
-      // await postcontent(boardId).send({ text: content });
       const response = await postComment(boardId, params);
-      toast.success("Đăng content thành công!");
-      setContent(""); // Xóa nội dung sau khi đăng thành công
-      setPostUploadedFiles([]);
-      // Cập nhật lại danh sách comments sau khi post thành công
+      toast.dismiss(loadingToastId);
+      toast.success("Create comment successfuly!");
+      setContent("");
       const newComment = response.data;
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
         comments: [...prevDataCard.comments, newComment],
       }));
-      return response.data;
     } catch (err) {
-      toast.error("Không thể đăng comment");
+      toast.dismiss();
+      toast.error("Cannot create comment");
       console.error("Lỗi khi đăng comment:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  //================HANDLE DELETE COMMENT =================
   const handleDeleteComment = async (cmdId) => {
     try {
       await deleteComment(boardId, cmdId);
-      // Cập nhật lại danh sách comments sau khi xóa
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
         comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
@@ -172,7 +182,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
-        console.log(resBoard);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -213,7 +222,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       try {
         const resDataCardDetail = await getCardById(dataCard.id);
         setDataCard(resDataCardDetail.data);
-
+        setPostUploadedFiles([...resDataCardDetail.data.files]);
         const resMemberCard = await getAllUserByIdCard(dataCard.id);
         setMembersInCard(resMemberCard?.data);
       } catch (err) {
@@ -394,15 +403,17 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         uploadedFiles,
         setUploadedFiles,
         handleFileChange,
-        postUploadedFiles,
+        postUploadedFiles: postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
         setPostUploadedFiles,
         handlePostFiles,
+        loading,
         content,
         setContent,
         isSaving,
         setIsSaving,
         handlePostComment,
         handleDeleteComment,
+        handleDeleteFile
       }}
     >
       {children}

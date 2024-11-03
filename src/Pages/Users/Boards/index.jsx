@@ -1,4 +1,4 @@
-import { useGetBoardWorkspace, useGetWorkspaceById, useGetWorkspaceByUser } from "../../../Hooks";
+import { useGetBoardWorkspace, useGetWorkspaceByUser } from "../../../Hooks";
 import Loading from "../../../Components/Loading";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useState } from "react";
@@ -7,9 +7,9 @@ import WorkspaceItem from "./WorkspaceItem";
 const UserBoards = () => {
   const [open, setOpen] = useState(false);
   const { workspaceBoard } = useGetBoardWorkspace();
-  const { workspaceInfo, isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
+  const { isLoading: isLoadingWorkspace } = useGetWorkspaceByUser();
 
-  const { workspaceDetails } = useGetWorkspaceById(workspaceInfo[0].id);
+  // const { workspaceDetails } = useGetWorkspaceById(workspaceInfo[0].id);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

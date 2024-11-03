@@ -22,14 +22,17 @@ import ItemPerson from "../ItemPerson";
 import { useStorage } from "../../Contexts";
 import AddLabelInCard from "./AddLabelInCard";
 import CreateLabel from "./CreateLabel";
-import UploadFile from "../Modals/UploadFile";
+import UploadFile from "./Attachment/UploadFile";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
 import { useGetUserProfile } from "../../Hooks";
-import { Avatar, TextField } from "@mui/material";
+import { Avatar, IconButton, TextField, Tooltip } from "@mui/material";
 import ShowComment from "./ShowComment";
 import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
+import UploadPoper from "./Attachment/UploadPoper";
+import LinkIcon from "@mui/icons-material/Link";
+
 
 export const BoardCard = () => {
   const {
@@ -48,9 +51,10 @@ export const BoardCard = () => {
     content,
     setContent,
     isSaving,
-    // setIsSaving,
     handlePostComment,
     handleDeleteComment,
+    loading,
+    handleDeleteFile,
   } = useListBoardContext();
   const { userData } = useStorage();
   //eslint-disable-next-line
@@ -102,16 +106,38 @@ export const BoardCard = () => {
   });
   // eslint-disable-next-line
   const [openPoper, setOpenPoper] = useState(false);
-  const [showImage, setShowImage] = useState(false);
-  // eslint-disable-next-line
-  const [listImages, setListImages] = useState([]);
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
+  const [openAttach, setOpenAttach] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true); // Hiển thị thanh công cụ khi nhấn vào
+  };
+
+  const handleIconClick = () => {
+    document.getElementById('hiddenFileInput').click();
+  };
+
+  // const handleDiscard = () => {
+  //   setContent("");
+  //   setIsFocused(false); // Ẩn thanh công cụ khi hủy bỏ
+  // };
+
+  const handleOpenAttach = () => setOpenAttach(true);
+  const handleCloseAttach = () => setOpenAttach(false);
 
   // handle open, close poper delete image
   const handleOpenPoper = () => setOpenPoper(true);
   const handleClosePoper = () => setOpenPoper(false);
 
-  console.log('dataCard', dataCard);
-  
+  const handleInputChange = (e) => {
+    setContent(e.target.value);
+    if (e.target.value) {
+      setIsButtonVisible(true);
+    } else {
+      setIsButtonVisible(false);
+    }
+  };
 
   // handle date
   const formatDate = (isoString) => {
@@ -123,13 +149,8 @@ export const BoardCard = () => {
     const minutes = String(date.getMinutes()).padStart(2, "0");
     return `${day}-${month}-${year}, ${hours}:${minutes}`;
   };
-  // handle show and hide images
-  const handleShowImage = () => setShowImage(true);
-  const handleHideImage = () => setShowImage(false);
-  const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
-  const quantityFile = +(postUploadedFiles.length - 4);
-  
-  // handle delete image
+
+  const listComment = dataCard?.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
@@ -374,7 +395,7 @@ export const BoardCard = () => {
   };
   return (
     <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
-      <div className="mt-20 mb-10">
+      <div className="mt-40 mb-10">
         <div className="relative flex justify-between w-[700px] bg-white rounded-[8px] p-2 font-medium text-[12px] z-500">
           <div className="flex-1 p-2">
             <div className="flex p-2">
@@ -476,20 +497,28 @@ export const BoardCard = () => {
                   <AttachmentIcon />
                   <p className="ml-3">Attachment</p>
                 </div>
-                <button className="px-4 py-1 bg-gray-300 rounded-sm">Add</button>
+                <div>
+                  <button onClick={handleOpenAttach} className="px-4 py-1 bg-gray-300 rounded-sm">
+                    Add
+                  </button>
+                  {openAttach && (
+                    <div>
+                      <UploadPoper handleFileChange={handleFileChange} handleCloseAttach={handleCloseAttach} />
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="p-2 ml-6">
                 <Attachment
                   uploadedFiles={uploadedFiles}
                   postUploadedFiles={postUploadedFiles}
-                  showImage={showImage}
-                  fileToShow={fileToShow}
                   open={handleOpenPoper}
                   handleClose={handleClosePoper}
                   formatDate={formatDate}
-                  handleShowImage={handleShowImage}
-                  handleHideImage={handleHideImage}
-                  quantityFile={quantityFile}
+                  loading={loading}
+                  position={position}
+                  setOpenAttach={setOpenAttach}
+                  handleDeleteFile={handleDeleteFile}
                 />
               </div>
             </div>
@@ -614,12 +643,12 @@ export const BoardCard = () => {
                     className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
                   />
                 </div>
-                <div className="flex items-center text-[12px] mb-2">dfdfdfdfdfdfd</div>
+                <div className="flex items-center text-[12px] mb-2"></div>
                 <div className="flex items-center text-[12px] mb-2"></div>
               </div>
             </div>
             {/* POST COMMENTS */}
-            <div className="flex items-center p-2">
+            <div className="flex p-2">
               <div className="mr-2">
                 {userData?.avatarUrl ? (
                   <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
@@ -628,37 +657,61 @@ export const BoardCard = () => {
                     {userProfile?.name[0] || " "}
                   </div>
                 )}
+                <div className="p-2 border border-gray-300 rounded-sm">
+                  {isFocused && (
+                    <div className="flex items-center mb-2 space-x-2">
+                      <Tooltip title="Link">
+                        <IconButton size="small" onClick={handleIconClick}>
+                          <LinkIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <input type="file" id="hiddenFileInput" style={{ display: "none" }} onChange={handleFileChange} />
+                    </div>
+                  )}
+                  <div>
+                    <TextField
+                      sx={{
+                        width: "420px",
+                      }}
+                      id="outlined-basic"
+                      size="small"
+                      label="Write a comment..."
+                      variant="outlined"
+                      rows={isFocused ? 3 : 1}
+                      value={content}
+                      onChange={handleInputChange}
+                      onFocus={handleFocus}
+                    />
+                  </div>
+                </div>
+                <div className="pr-2 mt-2 ">
+                  {isFocused && (
+                    <div>
+                      <button
+                        onClick={handlePostComment}
+                        hidden={!content && isSaving}
+                        className={`px-3 py-[8px] rounded text-white ${
+                          content ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"
+                        }`}
+                      >
+                        {loading ? "Saving..." : "Save"}
+                      </button>
+                      <button
+                        hidden={!content && isSaving}
+                        className={`px-3 py-[8px] ml-2 rounded text-white ${
+                          content ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"
+                        }`}
+                      >
+                        DisCard Change
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                {/* <input
-                  className="p-2 border border-gray-300 rounded-sm focus:border-gray-500 focus:ring-2 focus:ring-blue-500 w-[300px]"
-                  placeholder="Write a comment..."
-                />{" "} */}
-                <TextField
-                  sx={{ width: "420px" }}
-                  id="outlined-basic"
-                  size="small"
-                  label="Write a comment..."
-                  variant="outlined"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="pl-12 pr-2">
-              <button
-                onClick={handlePostComment}
-                disabled={!content.trim() || isSaving}
-                className={`px-4 py-2 rounded text-white ${
-                  content.trim() ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"
-                }`}
-              >
-                {isSaving ? "Đang lưu..." : "Save"}
-              </button>
             </div>
             {/* SHOW COMMENT */}
-            {dataCard?.comments.map((item) => (
-              <ShowComment item={item} formatDate={formatDate} handleDeleteComment={handleDeleteComment}/>
+            {listComment.map((item) => (
+              <ShowComment item={item} formatDate={formatDate} handleDeleteComment={handleDeleteComment} />
             ))}
           </div>
           <div className="min-w-[180px]">
