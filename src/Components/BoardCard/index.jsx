@@ -711,7 +711,7 @@ export const BoardCard = () => {
             </div>
             {/* SHOW COMMENT */}
             {listComment.map((item) => (
-              <ShowComment item={item} formatDate={formatDate} handleDeleteComment={handleDeleteComment} />
+              <ShowComment item={item} key={item.id} formatDate={formatDate} handleDeleteComment={handleDeleteComment} />
             ))}
           </div>
           <div className="min-w-[180px]">
