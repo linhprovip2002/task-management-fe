@@ -8,7 +8,12 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import React from "react";
+
 function ItemList({
+  id,
   dataList,
   dataCard,
   imageSrc,
@@ -19,9 +24,30 @@ function ItemList({
   Users = [],
   isArchived = false,
 }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
+
+  const itemStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    display: "flex",
+    alignItems: "center",
+    paddingLeft: 5,
+    borderRadius: 5,
+    userSelect: "none",
+    cursor: "grab",
+    boxSizing: "border-box",
+    zIndex: 999,
+  };
+
   let { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   return (
-    <div className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer">
+    <div
+      style={itemStyle}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer"
+    >
       <div
         onClick={() => handleShowBoardCard(dataList, dataCard)}
         className="flex flex-col justify-center min-h-[40px]"
@@ -124,4 +150,4 @@ function ItemList({
 ItemList.propTypes = {
   isArchived: PropTypes.bool,
 };
-export default ItemList;
+export default React.memo(ItemList);

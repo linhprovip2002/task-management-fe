@@ -37,6 +37,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
+  // eslint-disable-next-line
   const [allUrls, setAllUrls] = useState([]);
 
   const navigate = useNavigate();
@@ -86,7 +87,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
-        console.log(resBoard);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -106,7 +106,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
 
     fetchBoardData();
-  }, [boardId, idWorkSpace, listCount, navigate]);
+  }, [boardId, idWorkSpace, navigate]);
 
   useEffect(() => {
     const getAllUserInBoard = async () => {
