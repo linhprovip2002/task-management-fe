@@ -4,15 +4,24 @@ import { getBoard, getBoardId } from "../../Services/API/ApiBoard/apiBoard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
 function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
-  let { dataBoard } = useListBoardContext();
+  let { dataBoard, dataList, dataCard } = useListBoardContext();
 
   const [dataAllBoard, setDataAllBoard] = useState([]);
   const [dataPosiontionBoard, setDataPosiontionBoard] = useState([]);
   const [choosedBoard, setchoosedBoard] = useState(dataBoard?.id);
   const [titleBoard, setTitleBoard] = useState(dataBoard?.title);
+  const [titleList] = useState(dataList?.title);
   const [positionBoard, setpositionBoard] = useState(data?.position);
+  const [positionCard] = useState(dataCard?.position);
+  const [clickPosition, setClickPosition] = useState({ top: 0, left: 0 });
 
   const handleChooseMoveList = (e) => {
+    const rect = e.target.getBoundingClientRect();
+    setClickPosition({
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX,
+    });
+
     itemChooseToMove = itemChooseToMove.map((item) => {
       if (item.id === info.id) {
         return (item.isShow = !item.isShow);
@@ -45,6 +54,7 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
       try {
         const res = await getBoard(50, 1);
         setDataAllBoard(res.data);
+        console.log(res);
       } catch (err) {
         console.error("Error fetching board data: ", err);
       }
@@ -73,12 +83,14 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
       >
         {info.id === 0 && <div className="">{titleBoard}</div>}
         {info.id === 1 && <div className="">{positionBoard}</div>}
+        {info.id === 2 && <div className="">{titleList}</div>}
+        {info.id === 3 && <div className="">{positionCard}</div>}
         <KeyboardArrowDownIcon fontSize="small" />
       </div>
 
       {info.isShow && info.id === 0 && (
         <div
-          style={{ top: position.top - 170, left: position.left - 480 }}
+          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
           className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
         >
           {dataAllBoard.map((item, index) => (
@@ -95,7 +107,39 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
 
       {info.isShow && info.id === 1 && (
         <div
-          style={{ top: position.top - 170, left: position.left - 480 }}
+          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
+          className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
+        >
+          {dataPosiontionBoard.map((item, index) => (
+            <div
+              key={index}
+              onClick={() => handleActivePosition(item)}
+              className={`relative p-2 bg-white rounded transition duration-200 after:absolute after:left-0 after:top-0 after:h-full after:w-[2px] after:bg-blue-500 after:opacity-0 ${positionBoard === item.position ? "after:opacity-100 hover:bg-blue-100 bg-blue-200 active:after:opacity-100 text-blue-900" : "hover:after:opacity-100 hover:bg-gray-100 active:after:opacity-100"}`}
+            >
+              {item.position}
+            </div>
+          ))}
+        </div>
+      )}
+      {info.isShow && info.id === 2 && (
+        <div
+          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
+          className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
+        >
+          {dataPosiontionBoard.map((item, index) => (
+            <div
+              key={index}
+              onClick={() => handleActivePosition(item)}
+              className={`relative p-2 bg-white rounded transition duration-200 after:absolute after:left-0 after:top-0 after:h-full after:w-[2px] after:bg-blue-500 after:opacity-0 ${positionBoard === item.position ? "after:opacity-100 hover:bg-blue-100 bg-blue-200 active:after:opacity-100 text-blue-900" : "hover:after:opacity-100 hover:bg-gray-100 active:after:opacity-100"}`}
+            >
+              {item.position}
+            </div>
+          ))}
+        </div>
+      )}
+      {info.isShow && info.id === 3 && (
+        <div
+          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
           className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
         >
           {dataPosiontionBoard.map((item, index) => (

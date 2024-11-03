@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import { createCardByIdList, getAllCardByIdList, getAllUserByIdCard, getCardById } from "../../../Services/API/ApiCard";
+import { createCardByIdList, getAllCardByIdList, getCardById } from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,
   getBoardId,
@@ -124,23 +124,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
   const handleShowBoardCard = useCallback(
     async (data, dataCard) => {
-      try {
-        const resDataCardDetail = await getCardById(dataCard.id);
-        setDataCard(resDataCardDetail.data);
-
-        const resMemberCard = await getAllUserByIdCard(dataCard.id);
-        setMembersInCard(resMemberCard?.data);
-      } catch (err) {
-        console.error("Error fetching data card detail: ", err);
-        navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
-      }
       setIsShowBoardCard(!isShowBoardCard);
       if (isShowBoardEdit) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
+      setDataCard(dataCard);
     },
-    [isShowBoardCard, isShowBoardEdit, idWorkSpace, boardId, navigate],
+    [isShowBoardCard, isShowBoardEdit],
   );
 
   const handleShowBoardEdit = useCallback(

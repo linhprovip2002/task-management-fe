@@ -7,35 +7,46 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
+import { getAllUserByIdCard, getCardById } from "../../Services/API/ApiCard";
+import { useNavigate } from "react-router-dom";
 
-function ItemList({
-  dataList,
-  dataCard,
-  imageSrc,
-  isFollowing = false,
-  isDescriptionIcon = true,
-  Attachments = [],
-  Comments = [],
-  Users = [],
-  isArchived = false,
-}) {
-  let { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
+function ItemList({ dataList, dataCard, isFollowing = false, Attachments = [], Users = [], isArchived = false }) {
+  let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace, setMembersInCard } = useListBoardContext();
+  const navigate = useNavigate();
+  const handleGetDataCardDetail = async (dataList, dataCard) => {
+    try {
+      const resDataCardDetail = await getCardById(dataCard.id);
+      handleShowBoardCard(dataList, resDataCardDetail.data);
+      const resMemberCard = await getAllUserByIdCard(dataCard.id);
+      setMembersInCard(resMemberCard?.data);
+    } catch (err) {
+      console.error("Error fetching data card detail: ", err);
+      navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+    }
+  };
+
   return (
     <div className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer">
       <div
-        onClick={() => handleShowBoardCard(dataList, dataCard)}
+        onClick={() => handleGetDataCardDetail(dataList, dataCard)}
         className="flex flex-col justify-center min-h-[40px]"
       >
-        {imageSrc === "" && (
-          <div className="w-full min-h-[20px]">
-            <img src={imageSrc} alt="" className="w-full h-full object-cover rounded-tl-[8px] rounded-tr-[8px]" />
+        {typeof dataCard.coverUrl === "string" && dataCard.coverUrl.startsWith("http") && (
+          <div className="w-full min-h-[80px]">
+            <img
+              src={dataCard.coverUrl}
+              alt=""
+              className="w-full h-full object-cover rounded-tl-[8px] rounded-tr-[8px]"
+            />
           </div>
         )}
         <div className="flex flex-col mx-[12px]">
           <div className="flex items-center flex-wrap mt-2">
-            <div
-              className={`hover:opacity-90 bg-blue-500 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
-            />
+            {dataCard.tagCards.length > 0 && (
+              <div
+                className={`hover:opacity-90 bg-blue-500 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
+              />
+            )}
           </div>
           <div className="text-[16px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
           <div className="flex items-center justify-between w-full flex-wrap">
@@ -51,7 +62,7 @@ function ItemList({
                   </div>
                 </Tippy>
               )}
-              {isDescriptionIcon && (
+              {dataCard.description && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">The card already has a description</span>}
                   arrow={false}
@@ -62,7 +73,7 @@ function ItemList({
                   </div>
                 </Tippy>
               )}
-              {Comments.length > 0 && (
+              {dataCard.comments.length > 0 && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">Comment</span>}
                   arrow={false}

@@ -39,9 +39,7 @@ function List({ item }) {
           className="flex-1 p-1 overflow-y-auto overflow-x-hidden"
         >
           {item.cards?.map((card, index) => {
-            return (
-              <ItemList key={index} dataList={item} dataCard={card} imageSrc isDescriptionIcon Attachments={[1]} />
-            );
+            return <ItemList key={index} dataList={item} dataCard={card} imageSrc Attachments={[1]} />;
           })}
         </div>
 

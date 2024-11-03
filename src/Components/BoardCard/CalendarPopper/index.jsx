@@ -84,7 +84,6 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRe
 
   const handleSaveExpirationDate = async () => {
     try {
-      console.log(expirationTime);
       handleCloseShowMenuBtnCard();
       const month = expirationDate.split("-")[1];
       const day = expirationDate.split("-")[2];
@@ -99,7 +98,6 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRe
         endDate: `${expirationDate}T${expirationTime}`,
         listId: dataList.id,
       };
-      console.log(data.endDate);
       endDate(`${hours}:${minutes} ${day}thg${month}`);
       const res = await updateCard(dataCard.id, data);
       return res;
