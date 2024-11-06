@@ -8,7 +8,7 @@ function Sidebar({ children }) {
   return (
     <div
       onClick={isClosedNavBar ? () => handleChangeSidebar(isClosedNavBar) : undefined}
-      className={`${isClosedNavBar ? "max-w-[20px] w-full relative hover:bg-gray-200" : "max-w-[260px] w-full"} border-r-[1px] border-gray-300 bg-gray-100 shadow-[0_3px_10px_rgba(0,0,0,0.3)]`}
+      className={`${isClosedNavBar ? "max-w-[20px] w-full relative hover:bg-gray-200" : "max-w-[260px] w-full"} border-r-[1px] border-gray-300 bg-gray-100 shadow-[0_3px_10px_rgba(0,0,0,0.3)] z-100`}
     >
       {isClosedNavBar ? (
         <div

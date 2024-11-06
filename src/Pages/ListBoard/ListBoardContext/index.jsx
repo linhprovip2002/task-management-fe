@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import { createCardByIdList, getAllCardByIdList, getAllUserByIdCard, getCardById } from "../../../Services/API/ApiCard";
+import { createCardByIdList, getAllCardByIdList, getCardById } from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,
   getBoardId,
@@ -43,7 +43,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
- 
+
   const handleFileChange = async (event) => {
     const files = event.target.files;
     if (!files.length) return;
@@ -59,7 +59,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     if (!validFiles.length) return;
     setLoading(true);
     const loadToastId = toast.loading("Uploading...");
-  
+
     try {
       // Tải lên các file song song
       const uploadPromises = validFiles.map((file) => {
@@ -67,17 +67,17 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         formData.append("files", file);
         return apiUploadMultiFile(formData);
       });
-  
+
       const responses = await Promise.all(uploadPromises);
       toast.dismiss(loadToastId);
       toast.success("Upload successful!");
-  
+
       // Lấy dữ liệu file đã tải lên
-      const uploadedFilesData = responses.flatMap(response => response.data);
-      const uploadedUrls = uploadedFilesData.map((file) => file.url);  
+      const uploadedFilesData = responses.flatMap((response) => response.data);
+      const uploadedUrls = uploadedFilesData.map((file) => file.url);
       // Cập nhật danh sách file đã tải lên
       setUploadedFiles((prev) => [...prev, ...uploadedFilesData]);
-  
+
       // Gọi API để đính kèm (gửi) các URL với dữ liệu thẻ (card)
       await handlePostFiles(dataCard.id, uploadedUrls);
       return uploadedFilesData;
@@ -91,15 +91,18 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   };
 
   // ============HANDLE POST FILE LEN API==============
-  const handlePostFiles = useCallback(async (id, allUrls) => {
-    try {
-      const response = await apiAssignFile(id, allUrls);
-      setPostUploadedFiles(response.data.files);
-      return response.data.files;
-    } catch (error) {
-      console.error("Failed to get uploaded files:", error);
-    }
-  }, [setPostUploadedFiles]);
+  const handlePostFiles = useCallback(
+    async (id, allUrls) => {
+      try {
+        const response = await apiAssignFile(id, allUrls);
+        setPostUploadedFiles(response.data.files);
+        return response.data.files;
+      } catch (error) {
+        console.error("Failed to get uploaded files:", error);
+      }
+    },
+    [setPostUploadedFiles],
+  );
 
   const handleDeleteFile = async (fileId) => {
     try {
@@ -219,23 +222,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
   const handleShowBoardCard = useCallback(
     async (data, dataCard) => {
-      try {
-        const resDataCardDetail = await getCardById(dataCard.id);
-        setDataCard(resDataCardDetail.data);
-        setPostUploadedFiles([...resDataCardDetail.data.files]);
-        const resMemberCard = await getAllUserByIdCard(dataCard.id);
-        setMembersInCard(resMemberCard?.data);
-      } catch (err) {
-        console.error("Error fetching data card detail: ", err);
-        navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
-      }
       setIsShowBoardCard(!isShowBoardCard);
       if (isShowBoardEdit) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
+      setDataCard(dataCard);
     },
-    [isShowBoardCard, isShowBoardEdit, idWorkSpace, boardId, navigate],
+    [isShowBoardCard, isShowBoardEdit],
   );
 
   const handleShowBoardEdit = useCallback(
@@ -413,7 +407,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setIsSaving,
         handlePostComment,
         handleDeleteComment,
-        handleDeleteFile
+        handleDeleteFile,
       }}
     >
       {children}

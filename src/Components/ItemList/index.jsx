@@ -4,34 +4,38 @@ import PropTypes from "prop-types";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory";
-
-import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
-import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
-
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React from "react";
 
-function ItemList({
-  id,
-  dataList,
-  dataCard,
-  imageSrc,
-  isFollowing = false,
-  isDescriptionIcon = true,
-  Attachments = [],
-  Comments = [],
-  Users = [],
-  isArchived = false,
-}) {
+import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
+import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
+import { getAllUserByIdCard, getCardById } from "../../Services/API/ApiCard";
+import { useNavigate } from "react-router-dom";
+
+function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [], Users = [], isArchived = false }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
+
+  let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace, setMembersInCard } = useListBoardContext();
+  const navigate = useNavigate();
+  const handleGetDataCardDetail = async (dataList, dataCard) => {
+    try {
+      const resDataCardDetail = await getCardById(dataCard.id);
+      handleShowBoardCard(dataList, resDataCardDetail.data);
+      const resMemberCard = await getAllUserByIdCard(dataCard.id);
+      setMembersInCard(resMemberCard?.data);
+    } catch (err) {
+      console.error("Error fetching data card detail: ", err);
+      navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+    }
+  };
 
   const itemStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
     display: "flex",
+    flex: 1,
     alignItems: "center",
-    paddingLeft: 5,
     borderRadius: 5,
     userSelect: "none",
     cursor: "grab",
@@ -39,7 +43,6 @@ function ItemList({
     zIndex: 999,
   };
 
-  let { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   return (
     <div
       style={itemStyle}
@@ -49,19 +52,25 @@ function ItemList({
       className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer"
     >
       <div
-        onClick={() => handleShowBoardCard(dataList, dataCard)}
-        className="flex flex-col justify-center min-h-[40px]"
+        onClick={() => handleGetDataCardDetail(dataList, dataCard)}
+        className="flex flex-col justify-center min-h-[40px] w-full"
       >
-        {imageSrc === "" && (
-          <div className="w-full min-h-[20px]">
-            <img src={imageSrc} alt="" className="w-full h-full object-cover rounded-tl-[8px] rounded-tr-[8px]" />
+        {typeof dataCard.coverUrl === "string" && dataCard.coverUrl.startsWith("http") && (
+          <div className="w-full min-h-[80px]">
+            <img
+              src={dataCard.coverUrl}
+              alt=""
+              className="w-full h-full object-cover rounded-tl-[8px] rounded-tr-[8px]"
+            />
           </div>
         )}
         <div className="flex flex-col mx-[12px]">
           <div className="flex items-center flex-wrap mt-2">
-            <div
-              className={`hover:opacity-90 bg-blue-500 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
-            />
+            {dataCard.tagCards.length > 0 && (
+              <div
+                className={`hover:opacity-90 bg-blue-500 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
+              />
+            )}
           </div>
           <div className="text-[16px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
           <div className="flex items-center justify-between w-full flex-wrap">
@@ -77,7 +86,7 @@ function ItemList({
                   </div>
                 </Tippy>
               )}
-              {isDescriptionIcon && (
+              {dataCard.description && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">The card already has a description</span>}
                   arrow={false}
@@ -88,7 +97,7 @@ function ItemList({
                   </div>
                 </Tippy>
               )}
-              {Comments.length > 0 && (
+              {dataCard.comments.length > 0 && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">Comment</span>}
                   arrow={false}
