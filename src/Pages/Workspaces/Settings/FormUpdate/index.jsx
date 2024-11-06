@@ -1,6 +1,6 @@
 import { joiResolver } from "@hookform/resolvers/joi";
-import { Button, TextField } from "@mui/material";
-import React from "react";
+import { Button, CircularProgress, TextField } from "@mui/material";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import validation from "./validation";
 import PropTypes from "prop-types";
@@ -11,6 +11,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
   const handleClose = (e) => {
     if (onClose) return onClose(e);
   };
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -24,6 +25,7 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
   const handleSubmit = (values) => {
     const { title, description } = values;
 
+    setIsLoading(true);
     updateWorkspace({ id: data.id, title, description })
       .then((res) => {
         toast.success("Update workspace sucessfully");
@@ -32,7 +34,8 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
       .catch((err) => {
         toast.error("Update workspace unsucessfully");
         console.error(err);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -85,17 +88,6 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
 
         <div className="flex gap-2">
           <Button
-            type="submit"
-            sx={{
-              paddingX: "12px",
-              paddingY: "4px",
-              textTransform: "none",
-            }}
-            variant="contained"
-          >
-            Save
-          </Button>
-          <Button
             sx={{
               paddingX: "12px",
               paddingY: "4px",
@@ -105,6 +97,19 @@ function FormUpdate({ data = {}, onClose, onUpdateSuccess }) {
             variant="outlined"
           >
             Cancle
+          </Button>
+
+          <Button
+            type="submit"
+            sx={{
+              paddingX: "12px",
+              paddingY: "4px",
+              textTransform: "none",
+            }}
+            variant="contained"
+            startIcon={isLoading && <CircularProgress color="white" size={18} />}
+          >
+            Save
           </Button>
         </div>
       </form>

@@ -33,7 +33,6 @@ import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBo
 import UploadPoper from "./Attachment/UploadPoper";
 import LinkIcon from "@mui/icons-material/Link";
 
-
 export const BoardCard = () => {
   const {
     handleShowBoardCard,
@@ -57,11 +56,8 @@ export const BoardCard = () => {
     handleDeleteFile,
   } = useListBoardContext();
   const { userData } = useStorage();
-  //eslint-disable-next-line
-  const { setIsLoggedIn, isLoggedIn } = useStorage();
-  //eslint-disable-next-line
-  const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
-  // const [listLabel, setListLabel] = useState(listLabelAdd);
+  const { isLoggedIn } = useStorage();
+  const { userProfile } = useGetUserProfile(isLoggedIn);
   const [listLabel, setListLabel] = useState(() => {
     var tagsCard = dataCard?.tagCards
       ?.map((tagCard) => {
@@ -104,24 +100,17 @@ export const BoardCard = () => {
     const formattedDate = `${hours}:${minutes} ${day}thg${month}`;
     return formattedDate;
   });
-  // eslint-disable-next-line
   const [openPoper, setOpenPoper] = useState(false);
-  const [isButtonVisible, setIsButtonVisible] = useState(false);
   const [openAttach, setOpenAttach] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
-    setIsFocused(true); // Hiển thị thanh công cụ khi nhấn vào
+    setIsFocused(true);
   };
 
   const handleIconClick = () => {
-    document.getElementById('hiddenFileInput').click();
+    document.getElementById("hiddenFileInput").click();
   };
-
-  // const handleDiscard = () => {
-  //   setContent("");
-  //   setIsFocused(false); // Ẩn thanh công cụ khi hủy bỏ
-  // };
 
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
@@ -132,11 +121,6 @@ export const BoardCard = () => {
 
   const handleInputChange = (e) => {
     setContent(e.target.value);
-    if (e.target.value) {
-      setIsButtonVisible(true);
-    } else {
-      setIsButtonVisible(false);
-    }
   };
 
   // handle date
@@ -711,7 +695,12 @@ export const BoardCard = () => {
             </div>
             {/* SHOW COMMENT */}
             {listComment.map((item) => (
-              <ShowComment item={item} key={item.id} formatDate={formatDate} handleDeleteComment={handleDeleteComment} />
+              <ShowComment
+                item={item}
+                key={item.id}
+                formatDate={formatDate}
+                handleDeleteComment={handleDeleteComment}
+              />
             ))}
           </div>
           <div className="min-w-[180px]">
