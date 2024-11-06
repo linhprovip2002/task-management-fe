@@ -36,7 +36,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [membersBoard, setMembersBoard] = useState([]);
   const [membersInCard, setMembersInCard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);//file  upload len thang server
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -74,11 +74,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
       // Lấy dữ liệu file đã tải lên
       const uploadedFilesData = responses.flatMap((response) => response.data);
+      console.log("uploadedFilesData", uploadedFilesData);
       const uploadedUrls = uploadedFilesData.map((file) => file.url);
+      console.log('uploadedUrls', uploadedUrls);
+      
       // Cập nhật danh sách file đã tải lên
       setUploadedFiles((prev) => [...prev, ...uploadedFilesData]);
 
-      // Gọi API để đính kèm (gửi) các URL với dữ liệu thẻ (card)
+      // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
       await handlePostFiles(dataCard.id, uploadedUrls);
       return uploadedFilesData;
     } catch (error) {
@@ -104,6 +107,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     [setPostUploadedFiles],
   );
 
+  console.log('postUploadedFiles', postUploadedFiles);
+
   const handleDeleteFile = async (fileId) => {
     try {
       await apiDeleteFile(dataCard.id, fileId);
@@ -122,7 +127,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const handlePostComment = async () => {
     const params = {
       content: content,
-      files: postUploadedFiles,
+      // files: postUploadedFiles,
       cardId: dataCard.id,
     };
     setLoading(true);
@@ -157,23 +162,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       console.error("Error deleting comment:", err);
     }
   };
-
-  //============HANDLE GET COMMENT: KHÔNG ĐƯỢC XÓA ĐOẠN COMMENT NÀY =================
-  // useEffect(() => {
-  //   const handleGetComment = async () => {
-  //     try {
-  //       const response = await getComment(boardId, dataCard.id);
-  //       console.log('boardId', boardId);
-  //       console.log('dataCard.id', dataCard.id);
-
-  //       setListComment(response.data.content);
-  //       return response.data;
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //     };
-  //     handleGetComment();
-  //   }, [boardId, dataCard.id, listComment]);
 
   let prevListCountRef = useRef();
   useEffect(() => {

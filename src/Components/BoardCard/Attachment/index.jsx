@@ -1,14 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-// import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-// import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-// import MorePoper from "../ShowComment/MorePoper";
 import ItemAttachment from "./ItemAttachment";
 
-const Attachment = ({ formatDate, postUploadedFiles, handleDeleteFile }) => {
+const Attachment = ({ formatDate, postUploadedFiles, handleDeleteFile, dataCard }) => {
   const [showImage, setShowImage] = useState(false);
   const [openMore, setOpenMore] = useState(null);
   const moreRef = useRef(null);
-
+  console.log('postUploadedFiles', postUploadedFiles);
   const handleOpenMore = (id) => setOpenMore(openMore === id ? null : id);
   const handleCloseMore = () => setOpenMore(null);
 
@@ -31,12 +28,21 @@ const Attachment = ({ formatDate, postUploadedFiles, handleDeleteFile }) => {
   const handleHideImage = () => setShowImage(false);
   const fileToShow = showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4);
   const quantityFile = +(postUploadedFiles.length - 4);
-  const listFile = postUploadedFiles.length;
+  const listFile = postUploadedFiles.length;  
 
   return (
     <div>
       {fileToShow.map((item) => (
-        <ItemAttachment item={item} handleDeleteFile={handleDeleteFile} key={item.id} formatDate={formatDate} moreRef={moreRef} openMore={openMore} handleOpenMore={handleOpenMore} handleCloseMore={handleCloseMore}/>
+        <ItemAttachment
+          item={item}
+          handleDeleteFile={handleDeleteFile}
+          key={item.id}
+          formatDate={formatDate}
+          moreRef={moreRef}
+          openMore={openMore}
+          handleOpenMore={handleOpenMore}
+          handleCloseMore={handleCloseMore}
+        />
       ))}
       {listFile > 4 && (
         <div>

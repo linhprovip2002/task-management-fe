@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import MorePoper from "../../ShowComment/MorePoper";
+import MorePoperAttach from "../../ShowComment/MorePoperAttach";
+import { Link } from "react-router-dom";
 
-const ItemAttachment = ({item, moreRef, handleCloseMore, openMore, handleOpenMore, formatDate, handleDeleteFile}) => {
+const ItemAttachment = ({ item, moreRef, handleCloseMore, openMore, handleOpenMore, formatDate, handleDeleteFile }) => {
+  const [openImg, setOpenImg] = useState(false);
+  console.log(item);
+  const handleImageClick = () => setOpenImg(true);
+  const handleCloseImageClick = () => setOpenImg(false);
   return (
     <div key={item.id} className="flex items-center justify-between my-3">
       <div className="flex items-center">
         <div className="w-[60px] h-[40px]">
-          <img src={item.url} alt="attachment" className="rounded-[4px] cursor-pointer object-cover w-full h-full" />
+          <img
+            onClick={handleImageClick}
+            src={item.url}
+            alt="attachment"
+            className="rounded-[4px] cursor-pointer object-cover w-full h-full"
+          />
         </div>
         <div className="ml-3">
           <p className="text-gray-700 text-[13px] truncate max-w-[240px] whitespace-nowrap">{item.name}</p>
@@ -16,16 +26,27 @@ const ItemAttachment = ({item, moreRef, handleCloseMore, openMore, handleOpenMor
         </div>
       </div>
       <div className="flex items-center">
-        <ArrowOutwardIcon sx={{ cursor: "pointer", width: "14px", height: "14px" }} />
+        <Link className="cursor-pointer" to={item.url} target="_blank">
+          <ArrowOutwardIcon sx={{ cursor: "pointer", width: "14px", height: "14px" }} />
+        </Link>
         <div className="more-poper" ref={moreRef}>
           <button onClick={() => handleOpenMore(item.id)} className="px-1 ml-3 py-[2px] rounded-sm bg-gray-300">
             <MoreHorizIcon />
           </button>
           {openMore === item.id && (
-            <MorePoper handleOpenMore={handleOpenMore} handleCloseMore={handleCloseMore} handleDeleteFile={() => handleDeleteFile(item.id)}/>
+            <MorePoperAttach
+              handleOpenMore={handleOpenMore}
+              handleCloseMore={handleCloseMore}
+              handleDeleteFile={() => handleDeleteFile(item.id)}
+            />
           )}
         </div>
       </div>
+      {openImg && (
+        <div className="text-center absolute m-auto z-50 w-[600px] h-[400px] bg-black bg-opacity-50" onClick={handleCloseImageClick}>
+          <img src={item.url} alt="attachment" className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full" />
+        </div>
+      )}
     </div>
   );
 };

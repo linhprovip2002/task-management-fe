@@ -132,9 +132,7 @@ export const BoardCard = () => {
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
 
-  // handle open, close poper delete image
-  const handleOpenPoper = () => setOpenPoper(true);
-  const handleClosePoper = () => setOpenPoper(false);
+
 
   const handleInputChange = (e) => {
     setContent(e.target.value);
@@ -460,10 +458,10 @@ export const BoardCard = () => {
                     </div>
                     {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                   </div>
-                  <div className="flex items-center flex-wrap">
+                  <div className="flex flex-wrap items-center">
                     {membersInCard.length !== 0 && <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />}
                     {countLabel.length > 0 && (
-                      <div className="mr-2 mb-2">
+                      <div className="mb-2 mr-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Label</span>
                         </div>
@@ -486,7 +484,7 @@ export const BoardCard = () => {
                       </div>
                     )}
                     {endDateCheck != null && (
-                      <div className="mr-2 mb-2">
+                      <div className="mb-2 mr-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Expiration date</span>
                         </div>
@@ -559,14 +557,9 @@ export const BoardCard = () => {
                 </div>
                 <div className="p-2 ml-6">
                   <Attachment
-                    uploadedFiles={uploadedFiles}
                     postUploadedFiles={postUploadedFiles}
-                    open={handleOpenPoper}
-                    handleClose={handleClosePoper}
                     formatDate={formatDate}
                     loading={loading}
-                    position={position}
-                    setOpenAttach={setOpenAttach}
                     handleDeleteFile={handleDeleteFile}
                   />
                 </div>
@@ -692,12 +685,15 @@ export const BoardCard = () => {
                       className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
                     />
                   </div>
-                  <div className="flex items-center text-[12px] mb-2">dfdfdfdfdfdfd</div>
+                  <div className="flex items-center text-[12px] mb-2"></div>
                   <div className="flex items-center text-[12px] mb-2"></div>
                 </div>
               </div>
               {/* POST COMMENTS */}
               <div className="flex p-2">
+                <div>
+
+                </div>
                 <div className="mr-2">
                   {userData?.avatarUrl ? (
                     <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
