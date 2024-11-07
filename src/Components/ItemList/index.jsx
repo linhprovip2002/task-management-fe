@@ -14,7 +14,10 @@ import { getAllUserByIdCard, getCardById } from "../../Services/API/ApiCard";
 import { useNavigate } from "react-router-dom";
 
 function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [], Users = [], isArchived = false }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: id,
+    data: { ...dataCard, type: "card" },
+  });
 
   let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace, setMembersInCard } = useListBoardContext();
   const navigate = useNavigate();
@@ -31,7 +34,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
   };
 
   const itemStyle = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
     transition,
     display: "flex",
     flex: 1,

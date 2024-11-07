@@ -7,19 +7,30 @@ import ConvertHiDotsVertical from "../../../Components/HiDotsVertical";
 import ItemList from "../../../Components/ItemList";
 import TippyDetail from "../../TippyDetail";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
-import { useDroppable } from "@dnd-kit/core";
-import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 
-function List({ item = [], id }) {
-  const { setNodeRef } = useDroppable({ id });
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
+function List({ item = {}, id }) {
   const cards = item.cards || [];
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: id,
+    data: { ...item, type: "column" },
+  });
+  const dndKitColumStyles = {
+    transform: CSS.Translate.toString(transform),
+    height: "100%",
+    transition,
+    // opacity: isDragging ? 0.5 : 1,
+  };
 
   let { nameTitle, activeMonitor, activeIndex, handleChange, handleShowAddCard, handleAddCard, handleChangeTitleCard } =
     useListBoardContext();
+
   return (
-    <SortableContext id={id} items={cards} strategy={rectSortingStrategy}>
-      <div ref={setNodeRef} className="px-[8px]">
+    <div ref={setNodeRef} style={dndKitColumStyles} {...attributes}>
+      <div {...listeners} className="px-[8px]">
         <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
           <div className="flex p-1 items-center bg-gray-100">
             <input
@@ -38,27 +49,29 @@ function List({ item = [], id }) {
             />
           </div>
           {/* List board */}
-          <div
-            style={{
-              scrollbarWidth: "thin",
-              scrollbarColor: "#fff6 #00000026",
-            }}
-            className="flex-1 p-1"
-          >
-            {cards?.map((card, index) => {
-              return (
-                <ItemList
-                  id={card.id}
-                  key={card.id}
-                  dataList={item}
-                  dataCard={card}
-                  imageSrc
-                  isDescriptionIcon
-                  Attachments={[1]}
-                />
-              );
-            })}
-          </div>
+          <SortableContext strategy={verticalListSortingStrategy} items={cards?.map((item) => item.id)}>
+            <div
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#fff6 #00000026",
+              }}
+              className="flex-1 p-1"
+            >
+              {cards?.map((card, index) => {
+                return (
+                  <ItemList
+                    id={card.id}
+                    key={card.id}
+                    dataList={item}
+                    dataCard={card}
+                    imageSrc
+                    isDescriptionIcon
+                    Attachments={[1]}
+                  />
+                );
+              })}
+            </div>
+          </SortableContext>
 
           {item.isShowAddCard && activeIndex === item.id && (
             <CreateItem
@@ -98,7 +111,7 @@ function List({ item = [], id }) {
           )}
         </div>
       </div>
-    </SortableContext>
+    </div>
   );
 }
 

@@ -4,24 +4,29 @@ import { CreateItem } from "../../Components/CreateItem";
 import { AddIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import List from "./List";
-import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, closestCorners } from "@dnd-kit/core";
+import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
 
 function ListInBoard() {
   let { nameTitle, isShowAddList, listCount, setListCount, handleShowAddList, handleAddList, handleChangeTitleCard } =
     useListBoardContext();
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+
+  // nhấn giữ 250ms và dung sai của cảm ứng (di chuyển chênh lệch 5px )
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 250,
+      tolerance: 500,
+    },
+  });
+
+  const mySensors = useSensors(mouseSensor, touchSensor);
 
   const handleDragOver = ({ over, active }) => {
     const overId = over?.id;
@@ -30,23 +35,25 @@ function ListInBoard() {
       return;
     }
 
-    const activeContainer = active.data.current.sortable.containerId;
-    const overContainer = over.data.current?.sortable.containerId;
+    const activeContainer = active.data.current.sortable;
+    const overContainer = over.data.current?.sortable;
 
     if (!overContainer) {
       return;
     }
 
-    if (activeContainer !== overContainer) {
-      setListCount((items) => {
-        let newState = [...items];
+    const activeIndex = active.data.current.sortable.index;
+    const overIndex = over.data.current?.sortable.index || 0;
 
-        const activeIndex = active.data.current.sortable.index;
-        const overIndex = over.data.current?.sortable.index || 0;
-        const activeCard = listCount.find((item) => item.id === activeContainer)?.cards[activeIndex];
-        newState = moveBetweenContainers(newState, activeContainer, activeIndex, overContainer, overIndex, activeCard);
-        return newState;
-      });
+    if (activeContainer !== overContainer) {
+      // setListCount((items) => {
+      //   let newState = [...items];
+      //   const activeIndex = active.data.current.sortable.index;
+      //   const overIndex = over.data.current?.sortable.index || 0;
+      //   const activeCard = listCount.find((item) => item.id === activeContainer)?.cards[activeIndex];
+      //   newState = moveBetweenContainers(newState, activeContainer, activeIndex, overContainer, overIndex, activeCard);
+      //   return newState;
+      // });
     }
   };
 
@@ -55,31 +62,15 @@ function ListInBoard() {
       return;
     }
 
+    if (!active?.data?.current.cards) {
+      return;
+    }
+
     if (active.id !== over.id) {
-      const activeContainer = active.data.current.sortable.containerId;
-      const overContainer = over.data.current?.sortable.containerId || over.id;
       const activeIndex = active.data.current.sortable.index;
       const overIndex = over.data.current?.sortable.index || 0;
-
-      setListCount((prev) => {
-        let newItems = [...prev];
-        if (activeContainer === overContainer) {
-          const activeList = listCount.find((list) => list.id === activeContainer);
-          activeList.cards = arrayMove(activeList.cards, activeIndex, overIndex);
-        } else {
-          const activeCard = listCount.find((item) => item.id === activeContainer)?.cards[activeIndex];
-          newItems = moveBetweenContainers(
-            newItems,
-            activeContainer,
-            activeIndex,
-            overContainer,
-            overIndex,
-            activeCard,
-          );
-        }
-
-        return newItems;
-      });
+      const newColums = arrayMove(listCount, activeIndex, overIndex);
+      setListCount(newColums);
     }
   };
 
@@ -104,12 +95,19 @@ function ListInBoard() {
       >
         <div className="my-4 px-[4px] flex">
           <div className="flex flex-nowrap">
-            <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
-              <div style={{ display: "flex" }}>
-                {listCount.map((item, index) => {
-                  return <List id={item.id} key={index} item={item} />;
-                })}
-              </div>
+            <DndContext
+              onDragOver={handleDragOver}
+              sensors={mySensors}
+              onDragEnd={handleDragEnd}
+              collisionDetection={closestCorners}
+            >
+              <SortableContext strategy={horizontalListSortingStrategy} items={listCount?.map((item) => item.id)}>
+                <div style={{ display: "flex" }}>
+                  {listCount.map((item, index) => {
+                    return <List id={item.id} key={index} item={item} />;
+                  })}
+                </div>
+              </SortableContext>
             </DndContext>
 
             <div className="px-[8px]">
