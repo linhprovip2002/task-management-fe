@@ -223,3 +223,21 @@ export const listColorLabel = [
     color: "bg-purple-700",
   },
 ];
+
+export const itemChooseCopyCard = [
+  {
+    id: 0,
+    title: "Information Board",
+    isShow: false,
+  },
+  {
+    id: 2,
+    title: "List",
+    isShow: false,
+  },
+  {
+    id: 3,
+    title: "Location",
+    isShow: false,
+  },
+];
