@@ -11,13 +11,14 @@ import { blue } from "@mui/material/colors";
 import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
 import HeadlessTippy from "@tippyjs/react/headless";
 import UserItem from "../InviteWorkspace/UserItem";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { getAllMembersByIdBoard, removeMember } from "../../../Services/API/ApiBoard/apiBoard";
 import { useDebounce } from "../../../Hooks";
 import { userServices } from "../../../Services";
 import { useStorage } from "../../../Contexts";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const options = ["Member", "Admin"];
 
@@ -120,7 +121,7 @@ function MemberItem({ data, onDeleted, isAdmin = true, disabelRemove = false }) 
   );
 }
 
-export default function BoardMemberModal({ open = false, onClose }) {
+function BoardMemberModal({ open = false, onClose }) {
   const { idBoard } = useParams();
   const handleClose = () => {
     onClose();
@@ -265,3 +266,9 @@ export default function BoardMemberModal({ open = false, onClose }) {
     </Dialog>
   );
 }
+
+BoardMemberModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
+export default memo(BoardMemberModal);
