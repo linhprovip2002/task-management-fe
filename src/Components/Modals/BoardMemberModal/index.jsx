@@ -11,17 +11,18 @@ import { blue } from "@mui/material/colors";
 import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
 import HeadlessTippy from "@tippyjs/react/headless";
 import UserItem from "../InviteWorkspace/UserItem";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { getAllMembersByIdBoard, removeMember } from "../../../Services/API/ApiBoard/apiBoard";
 import { useDebounce } from "../../../Hooks";
 import { userServices } from "../../../Services";
 import { useStorage } from "../../../Contexts";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const options = ["Member", "Admin"];
 
-function MemberItem({ data, onDeleted, isAdmin = true }) {
+function MemberItem({ data, onDeleted, isAdmin = true, disabelRemove = false }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { idBoard } = useParams();
@@ -84,6 +85,7 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
               )}
               {!confirmDelete ? (
                 <Button
+                  disabled={disabelRemove}
                   onClick={() => setConfirmDelete(true)}
                   variant="contained"
                   color="error"
@@ -119,7 +121,8 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
   );
 }
 
-export default function BoardMemberModal({ open = false, onClose }) {
+function BoardMemberModal({ open = false, onClose }) {
+  const { idBoard } = useParams();
   const handleClose = () => {
     onClose();
   };
@@ -181,7 +184,7 @@ export default function BoardMemberModal({ open = false, onClose }) {
   }, [debounceValue]);
 
   useEffect(() => {
-    getAllMembersByIdBoard(151)
+    getAllMembersByIdBoard(idBoard)
       .then((res) => {
         return res.data;
       })
@@ -190,7 +193,7 @@ export default function BoardMemberModal({ open = false, onClose }) {
           item.user.role = item.role;
           return item.user;
         });
-        members = members.filter((member) => member.id !== userData?.id);
+        // members = members.filter((member) => member.id !== userData?.id);
         setMembers(members);
       })
       .catch((err) => {
@@ -211,9 +214,11 @@ export default function BoardMemberModal({ open = false, onClose }) {
     >
       <DialogTitle width={"600px"}>Members on board</DialogTitle>
       <List sx={{ pt: 0 }}>
-        {members.map((item, index) => (
-          <MemberItem onDeleted={handleRemoveSuccess} key={index} data={item} />
-        ))}
+        {members.map((item, index) => {
+          const disable = item.id === userData.id;
+
+          return <MemberItem disabelRemove={disable} onDeleted={handleRemoveSuccess} key={index} data={item} />;
+        })}
 
         <div className="px-3">
           <div className="mb-2 ">
@@ -261,3 +266,9 @@ export default function BoardMemberModal({ open = false, onClose }) {
     </Dialog>
   );
 }
+
+BoardMemberModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
+export default memo(BoardMemberModal);

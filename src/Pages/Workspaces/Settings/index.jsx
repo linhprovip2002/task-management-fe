@@ -18,7 +18,6 @@ const WorkspaceSettings = () => {
   const { id } = useParams();
   const { workspaceDetails, isLoading } = useGetWorkspaceById(id);
   const [workspaceData, setWorkspaceData] = useState(workspaceDetails);
-
   const [openUpdate, setOpenUpdate] = useState(false);
   const [invitePopup, setInvitePopup] = useState(false);
 
