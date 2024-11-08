@@ -5,10 +5,11 @@ import "@fontsource/inter";
 import { CustomToastContainer } from "./Contexts/Toast";
 import { RequiredAuth } from "./Components/RequiredAuth";
 import { NotFound } from "./Pages/NotFound404/NotFound";
+import ErrorBoundary from "./Contexts/ErrorBoundary/ErrorBoundary";
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <Routes>
         {publicRoutes.map((route, index) => {
           const Page = route.component;
@@ -45,7 +46,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <CustomToastContainer />
-    </>
+    </ErrorBoundary>
   );
 }
 

@@ -1,5 +1,4 @@
 export { default as Login } from "./Login";
-export { default as Board } from "./Board";
 export { default as SignUp } from "./SignUp";
 // Workspace
 export { default as WorkspaceHighlights } from "./Workspaces/Highlights";

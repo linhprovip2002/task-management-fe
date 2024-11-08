@@ -10,5 +10,6 @@ export const EQueryKeys = {
   GET_WORKSPACE_MEMBER: "getWorkspaceMember",
   GET_BOARD_WORKSPACE: "getBoardWorkspace",
   //BOARD
-  GET_ALL_BOARD: "getAllBoard"
+  GET_ALL_BOARD: "getAllBoard",
+  GET_BOARD_PERMISSION: "getBoardPermission"
 };
