@@ -7,8 +7,7 @@ import { MemberCard } from "./components/MemberCard";
 
 const WorkspaceMembers = () => {
   const { id } = useParams();
-  const { workspaceMembers, isLoading, isRefetching } =
-    useGetWorkspaceMember(id);
+  const { workspaceMembers, isLoading, isRefetching } = useGetWorkspaceMember(id);
 
   if (isLoading || isRefetching) return <Loading />;
 
@@ -17,17 +16,14 @@ const WorkspaceMembers = () => {
       <BoardInformation isMemberPage />
       <Divider />
       <div className="flex flex-col gap-4">
-        <div className="text-xl font-bold">
-          Workspace members ({workspaceMembers.length})
-        </div>
+        <div className="text-xl font-bold">Workspace members ({workspaceMembers?.length})</div>
         <div>
-          Workspace members can view and join all Workspace visible boards and
-          create new boards in the Workspace.
+          Workspace members can view and join all Workspace visible boards and create new boards in the Workspace.
         </div>
         <Divider />
         <div>
           <div className="flex flex-col gap-4">
-            {workspaceMembers.map((member) => (
+            {workspaceMembers?.map((member) => (
               <MemberCard key={member.id} member={member} />
             ))}
           </div>

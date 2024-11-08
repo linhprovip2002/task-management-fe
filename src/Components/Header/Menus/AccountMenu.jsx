@@ -6,13 +6,11 @@ import routes from "../../../config/routes";
 import { useStorage } from "../../../Contexts";
 import { useGetUserProfile } from "../../../Hooks";
 import Loading from "../../Loading";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import HeadlessTippy from "@tippyjs/react/headless";
 import { Avatar, Divider } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
-export const styleCSS =
-  "block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100";
+export const styleCSS = "block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100";
 
 export default function AccountMenu() {
   const navigate = useNavigate();
@@ -44,17 +42,11 @@ export default function AccountMenu() {
             tabIndex="-1"
             {...attrs}
           >
-            <p className="px-4 my-2 font-semibold text-gray-600 text-[12px]">
-              ACCOUNT
-            </p>
+            <p className="px-4 my-2 font-semibold text-gray-600 text-[12px]">ACCOUNT</p>
             <div className="flex items-center">
               <div className="flex items-center px-4 py-2">
                 {userData?.avatarUrl ? (
-                  <Avatar
-                    sx={{ width: "30px", height: "30px" }}
-                    alt={userData?.name}
-                    src={userData?.avatarUrl}
-                  />
+                  <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
                 ) : (
                   <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
                     {userProfile?.name[0] || " "}
@@ -66,10 +58,7 @@ export default function AccountMenu() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className={`${styleCSS}`}
-            >
+            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
               Switch account
             </button>
             {/* <Link
@@ -80,19 +69,14 @@ export default function AccountMenu() {
               <OpenInNewIcon sx={{ fontSize: "14px" }} />
             </Link> */}
             <Divider />
-            <p className="px-4 my-3 font-semibold text-gray-600 text-[12px]">
-              TRELLO
-            </p>
+            <p className="px-4 my-3 font-semibold text-gray-600 text-[12px]">TRELLO</p>
             <Link
               to={routes.profile.replace(":id", userData.id)}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               Profile and visibility
             </Link>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className={`${styleCSS}`}
-            >
+            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
               Cards
             </button>
             <div className="my-2 border-t border-gray-200"></div>
@@ -107,16 +91,10 @@ export default function AccountMenu() {
               <p>Create Workspace</p>
             </button>
             <div className="my-2 border-t border-gray-200"></div>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className={`${styleCSS}`}
-            >
+            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
               Add another account
             </button>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className={`${styleCSS}`}
-            >
+            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
               Settings
             </button>
             <Divider />
@@ -129,10 +107,7 @@ export default function AccountMenu() {
           </div>
         )}
       >
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="flex items-center ml-4 text-gray-700"
-        >
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center ml-4 text-gray-700">
           {userData?.avatarUrl ? (
             <Avatar alt={userData.name} src={userData.avatarUrl} />
           ) : (
@@ -143,10 +118,7 @@ export default function AccountMenu() {
         </button>
       </HeadlessTippy>
 
-      <EditWorkspaceModal
-        open={openEditWorkspaceModal}
-        handleClose={() => setOpenEditWorkspaceModal(false)}
-      />
+      <EditWorkspaceModal open={openEditWorkspaceModal} handleClose={() => setOpenEditWorkspaceModal(false)} />
     </>
   );
 }

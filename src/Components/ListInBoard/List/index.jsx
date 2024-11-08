@@ -14,15 +14,13 @@ import { CSS } from "@dnd-kit/utilities";
 function List({ item = {}, id }) {
   const cards = item.cards || [];
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: id,
     data: { ...item, type: "column" },
   });
   const dndKitColumStyles = {
     transform: CSS.Translate.toString(transform),
     height: "100%",
-    transition,
-    // opacity: isDragging ? 0.5 : 1,
   };
 
   let { nameTitle, activeMonitor, activeIndex, handleChange, handleShowAddCard, handleAddCard, handleChangeTitleCard } =

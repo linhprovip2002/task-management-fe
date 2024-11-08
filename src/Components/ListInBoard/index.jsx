@@ -28,34 +28,34 @@ function ListInBoard() {
 
   const mySensors = useSensors(mouseSensor, touchSensor);
 
-  const handleDragOver = ({ over, active }) => {
-    const overId = over?.id;
+  // const handleDragOver = ({ over, active }) => {
+  //   const overId = over?.id;
 
-    if (!overId) {
-      return;
-    }
+  //   if (!overId) {
+  //     return;
+  //   }
 
-    const activeContainer = active.data.current.sortable;
-    const overContainer = over.data.current?.sortable;
+  //   const activeContainer = active.data.current.sortable;
+  //   const overContainer = over.data.current?.sortable;
 
-    if (!overContainer) {
-      return;
-    }
+  //   if (!overContainer) {
+  //     return;
+  //   }
 
-    const activeIndex = active.data.current.sortable.index;
-    const overIndex = over.data.current?.sortable.index || 0;
+  //   const activeIndex = active.data.current.sortable.index;
+  //   const overIndex = over.data.current?.sortable.index || 0;
 
-    if (activeContainer !== overContainer) {
-      // setListCount((items) => {
-      //   let newState = [...items];
-      //   const activeIndex = active.data.current.sortable.index;
-      //   const overIndex = over.data.current?.sortable.index || 0;
-      //   const activeCard = listCount.find((item) => item.id === activeContainer)?.cards[activeIndex];
-      //   newState = moveBetweenContainers(newState, activeContainer, activeIndex, overContainer, overIndex, activeCard);
-      //   return newState;
-      // });
-    }
-  };
+  //   if (activeContainer !== overContainer) {
+  //     // setListCount((items) => {
+  //     //   let newState = [...items];
+  //     //   const activeIndex = active.data.current.sortable.index;
+  //     //   const overIndex = over.data.current?.sortable.index || 0;
+  //     //   const activeCard = listCount.find((item) => item.id === activeContainer)?.cards[activeIndex];
+  //     //   newState = moveBetweenContainers(newState, activeContainer, activeIndex, overContainer, overIndex, activeCard);
+  //     //   return newState;
+  //     // });
+  //   }
+  // };
 
   const handleDragEnd = ({ active, over }) => {
     if (!over) {
@@ -96,7 +96,7 @@ function ListInBoard() {
         <div className="my-4 px-[4px] flex">
           <div className="flex flex-nowrap">
             <DndContext
-              onDragOver={handleDragOver}
+              // onDragOver={handleDragOver}
               sensors={mySensors}
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
