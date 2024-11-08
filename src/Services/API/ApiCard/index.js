@@ -33,3 +33,9 @@ export async function deleteCard(cardId) {
     throw error;
   }
 }
+
+export async function JoinToCard(idCard, idUser) {
+  return await request.delete(`/card/${idCard}/assign`, {
+    userId: idUser,
+  });
+}

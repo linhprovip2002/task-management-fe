@@ -6,29 +6,31 @@ import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
-import { getAllUserByIdCard, getCardById } from "../../Services/API/ApiCard";
 import { useNavigate } from "react-router-dom";
 
-function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [], Users = [], isArchived = false }) {
+function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = false }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
 
-  let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace, setMembersInCard } = useListBoardContext();
+  let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace } = useListBoardContext();
   const navigate = useNavigate();
   const handleGetDataCardDetail = async (dataList, dataCard) => {
     try {
-      const resDataCardDetail = await getCardById(dataCard.id);
-      handleShowBoardCard(dataList, resDataCardDetail.data);
-      const resMemberCard = await getAllUserByIdCard(dataCard.id);
-      setMembersInCard(resMemberCard?.data);
+      handleShowBoardCard(dataList, dataCard);
     } catch (err) {
       console.error("Error fetching data card detail: ", err);
       navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
     }
   };
+
+  useEffect(() => {
+    if (!dataCard) {
+      navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+    }
+  }, [dataCard, idWorkSpace, boardId, navigate]);
 
   const itemStyle = {
     transform: CSS.Transform.toString(transform),
@@ -40,7 +42,6 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
     userSelect: "none",
     cursor: "grab",
     boxSizing: "border-box",
-    zIndex: 999,
   };
 
   return (
@@ -55,22 +56,28 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
         onClick={() => handleGetDataCardDetail(dataList, dataCard)}
         className="flex flex-col justify-center min-h-[40px] w-full"
       >
-        {typeof dataCard.coverUrl === "string" && dataCard.coverUrl.startsWith("http") && (
-          <div className="w-full min-h-[80px]">
-            <img
-              src={dataCard.coverUrl}
-              alt=""
-              className="w-full h-full object-cover rounded-tl-[8px] rounded-tr-[8px]"
-            />
-          </div>
+        {dataCard?.coverUrl && (
+          <div
+            style={{
+              backgroundImage: dataCard?.coverUrl.startsWith("http") ? `url(${dataCard?.coverUrl})` : "none",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+            className={`w-full min-h-[80px] rounded-t-[8px] ${dataCard?.coverUrl.startsWith("bg-") ? dataCard?.coverUrl : ""}`}
+          />
         )}
         <div className="flex flex-col mx-[12px]">
           <div className="flex items-center flex-wrap mt-2">
-            {dataCard.tagCards.length > 0 && (
-              <div
-                className={`hover:opacity-90 bg-blue-500 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
-              />
-            )}
+            {dataCard?.tagCards?.length > 0 &&
+              dataCard?.tagCards.map((tagCard) =>
+                tagCard?.tag?.color ? (
+                  <div
+                    key={tagCard.tagId}
+                    className={`hover:opacity-90 ${tagCard.tag.color} mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
+                  />
+                ) : null,
+              )}
           </div>
           <div className="text-[16px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
           <div className="flex items-center justify-between w-full flex-wrap">
@@ -86,7 +93,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
                   </div>
                 </Tippy>
               )}
-              {dataCard.description && (
+              {dataCard?.description && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">The card already has a description</span>}
                   arrow={false}
@@ -97,7 +104,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
                   </div>
                 </Tippy>
               )}
-              {dataCard.comments.length > 0 && (
+              {dataCard?.comments?.length > 0 && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">Comment</span>}
                   arrow={false}
@@ -105,11 +112,11 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
                 >
                   <div className="flex items-center ">
                     <SmsOutlinedIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{Attachments.length}</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{dataCard?.comments?.length}</div>
                   </div>
                 </Tippy>
               )}
-              {Attachments.length > 0 && (
+              {dataCard?.files?.length > 0 && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">Attachments</span>}
                   arrow={false}
@@ -117,7 +124,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
                 >
                   <div className="flex items-center ">
                     <AttachmentIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{Attachments.length}</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{dataCard?.files?.length}</div>
                   </div>
                 </Tippy>
               )}
@@ -134,11 +141,14 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, Attachments = [
                 </Tippy>
               )}
             </div>
-            <div className="flex items-center flex-wrap pb-2 ml-auto">
-              <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-white text-[10px] bg-gradient-to-b from-green-400 to-blue-500">
-                PM
-              </div>
-            </div>
+            {dataCard?.members?.length > 0 &&
+              dataCard?.members?.map((member, index) => (
+                <div key={index} className="flex items-center flex-wrap pb-2 ml-auto">
+                  <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-white text-[10px] bg-gradient-to-b from-green-400 to-blue-500">
+                    PM
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </div>

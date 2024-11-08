@@ -68,7 +68,7 @@ function ListBoardContent() {
     <>
       <div
         style={{
-          height: "calc(100vh - 56.8px)",
+          height: "calc(100vh - 61px)",
         }}
         className="w-[100wh] flex"
       >
@@ -126,6 +126,8 @@ function ListBoardContent() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
+            maxHeight: "100%",
+            overflow: "hidden",
           }}
         >
           <HeaderBoard />

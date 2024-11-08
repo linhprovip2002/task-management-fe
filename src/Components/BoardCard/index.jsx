@@ -156,7 +156,7 @@ export const BoardCard = () => {
     return `${day}-${month}-${year}, ${hours}:${minutes}`;
   };
 
-  const listComment = dataCard?.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const listComment = dataCard?.comments?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
@@ -431,9 +431,17 @@ export const BoardCard = () => {
   };
 
   return (
-    <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]">
+    <div
+      style={{
+        scrollbarWidth: "thin",
+        scrollbarColor: "#fff6 #00000026",
+        maxHeight: "100vh",
+        overflowY: "auto",
+      }}
+      className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-black bg-opacity-50 overflow-auto z-[999]"
+    >
       <div className="mt-20 mb-10">
-        <div className="relative mt-20 flex flex-col justify-between w-[700px] bg-white rounded-[8px] font-medium text-[12px] z-500">
+        <div className="absolute top-10 left-[50%] mb-10 transform -translate-x-1/2 flex flex-col justify-between w-[700px] bg-white rounded-[8px] font-medium text-[12px] z-500">
           {chooseColorBackground && (
             <div
               style={{
@@ -452,17 +460,19 @@ export const BoardCard = () => {
                   <FeaturedPlayListIcon fontSize="small" />
                 </div>
                 <div className="flex-1 ml-4">
-                  <div className="text-[16px] mb-2">{dataCard.title}</div>
+                  <div className="text-[16px] mb-2">{dataCard?.title || "No Title"}</div>
                   <div className="flex items-center text-[12px] mb-6">
                     <span className="mr-2 font-normal">in the list</span>
                     <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
-                      {dataList?.title}
+                      {dataList?.title || "No Title"}
                     </div>
                     {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                   </div>
                   <div className="flex items-center flex-wrap">
-                    {membersInCard.length !== 0 && <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />}
-                    {countLabel.length > 0 && (
+                    {membersInCard && membersInCard?.length !== 0 && (
+                      <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />
+                    )}
+                    {countLabel?.length > 0 && (
                       <div className="mr-2 mb-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Label</span>
@@ -764,7 +774,7 @@ export const BoardCard = () => {
                 </div>
               </div>
               {/* SHOW COMMENT */}
-              {listComment.map((item) => (
+              {listComment?.map((item) => (
                 <ShowComment
                   item={item}
                   key={item.id}
@@ -775,7 +785,7 @@ export const BoardCard = () => {
             </div>
             <div className="min-w-[180px]">
               <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
-                {listBtnCard.map((item, index) => (
+                {listBtnCard?.map((item, index) => (
                   <ButtonBoardCard onHandleEvent={(e) => handleClickBtn(e, item)} key={index} nameBtn={item.nameBtn}>
                     {item.Icon}
                   </ButtonBoardCard>

@@ -9,8 +9,7 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
 export const EditCard = ({ imageSrc, isDescriptionIcon = false, isAttachment = false, attachmentCount }) => {
   const { handleShowBoardCard, handleShowBoardEdit, dataCard, dataList, position } = useListBoardContext();
-
-  const [inputTitle, setInputTitle] = useState(dataCard.title);
+  const [inputTitle, setInputTitle] = useState(dataCard?.title);
   const handleChange = (e) => {
     setInputTitle(e.target.value);
   };

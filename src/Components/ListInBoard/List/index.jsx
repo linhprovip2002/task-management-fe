@@ -42,21 +42,13 @@ function List({ item = [], id }) {
             style={{
               scrollbarWidth: "thin",
               scrollbarColor: "#fff6 #00000026",
+              maxHeight: "400px",
+              overflowY: "auto",
             }}
             className="flex-1 p-1"
           >
             {cards?.map((card, index) => {
-              return (
-                <ItemList
-                  id={card.id}
-                  key={card.id}
-                  dataList={item}
-                  dataCard={card}
-                  imageSrc
-                  isDescriptionIcon
-                  Attachments={[1]}
-                />
-              );
+              return <ItemList id={card.id} key={index} dataList={item} dataCard={card} />;
             })}
           </div>
 
