@@ -1,22 +1,29 @@
 import React, { useState } from "react";
-import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 import Droppable from "./Droppable";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
+import { EditPermissionModal } from "../../Components/Modals/EditPermissionModal";
 
 function Test() {
   const [items, setItems] = useState({
     group1: ["1", "2", "3"],
     group2: ["4", "5", "6"],
-    group3: ["7", "8", "9"],
+    group3: ["7", "8", "9"]
   });
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
+      coordinateGetter: sortableKeyboardCoordinates
+    })
   );
 
   const handleDragOver = ({ over, active }) => {
@@ -38,7 +45,14 @@ function Test() {
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
 
-        return moveBetweenContainers(items, activeContainer, activeIndex, overContainer, overIndex, active.id);
+        return moveBetweenContainers(
+          items,
+          activeContainer,
+          activeIndex,
+          overContainer,
+          overIndex,
+          active.id
+        );
       });
     }
   };
@@ -59,10 +73,21 @@ function Test() {
         if (activeContainer === overContainer) {
           newItems = {
             ...items,
-            [overContainer]: arrayMove(items[overContainer], activeIndex, overIndex),
+            [overContainer]: arrayMove(
+              items[overContainer],
+              activeIndex,
+              overIndex
+            )
           };
         } else {
-          newItems = moveBetweenContainers(items, activeContainer, activeIndex, overContainer, overIndex, active.id);
+          newItems = moveBetweenContainers(
+            items,
+            activeContainer,
+            activeIndex,
+            overContainer,
+            overIndex,
+            active.id
+          );
         }
 
         return newItems;
@@ -70,24 +95,38 @@ function Test() {
     }
   };
 
-  const moveBetweenContainers = (items, activeContainer, activeIndex, overContainer, overIndex, item) => {
+  const moveBetweenContainers = (
+    items,
+    activeContainer,
+    activeIndex,
+    overContainer,
+    overIndex,
+    item
+  ) => {
     return {
       ...items,
       [activeContainer]: removeAtIndex(items[activeContainer], activeIndex),
-      [overContainer]: insertAtIndex(items[overContainer], overIndex, item),
+      [overContainer]: insertAtIndex(items[overContainer], overIndex, item)
     };
   };
 
   const containerStyle = { display: "flex" };
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
-      <div style={containerStyle}>
-        {Object.keys(items).map((group) => (
-          <Droppable id={group} items={items[group]} key={group} />
-        ))}
-      </div>
-    </DndContext>
+    <>
+      <DndContext
+        sensors={sensors}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+      >
+        <div style={containerStyle}>
+          {Object.keys(items).map((group) => (
+            <Droppable id={group} items={items[group]} key={group} />
+          ))}
+        </div>
+      </DndContext>
+      <EditPermissionModal open={true} handleClose={() => {}} />
+    </>
   );
 }
 
