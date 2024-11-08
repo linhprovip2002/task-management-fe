@@ -36,11 +36,13 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [membersBoard, setMembersBoard] = useState([]);
   const [membersInCard, setMembersInCard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [uploadedFiles, setUploadedFiles] = useState([]);//file  upload len thang server
+  const [uploadedFiles, setUploadedFiles] = useState([]); //file  upload len thang server
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [upFileComment, setUpFileComment] = useState([]);
+  const [editorInstance, setEditorInstance] = useState(null);
 
   const navigate = useNavigate();
 
@@ -74,10 +76,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
 
       // Lấy dữ liệu file đã tải lên
       const uploadedFilesData = responses.flatMap((response) => response.data);
-      console.log("uploadedFilesData", uploadedFilesData);
       const uploadedUrls = uploadedFilesData.map((file) => file.url);
-      console.log('uploadedUrls', uploadedUrls);
-      
+
       // Cập nhật danh sách file đã tải lên
       setUploadedFiles((prev) => [...prev, ...uploadedFilesData]);
 
@@ -107,8 +107,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     [setPostUploadedFiles],
   );
 
-  console.log('postUploadedFiles', postUploadedFiles);
-
   const handleDeleteFile = async (fileId) => {
     try {
       await apiDeleteFile(dataCard.id, fileId);
@@ -124,26 +122,47 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     }
   };
 
+  // const handleFileCommentChange = (event) => {
+  //   const files = event.target.files;
+  //   if (files && files.length > 0) {
+  //     const fileUrls = Array.from(files).map((file) => URL.createObjectURL(file));
+  //     setUpFileComment(fileUrls); // Lưu URL xem trước
+  //   } else {
+  //     setUpFileComment([]); // Đảm bảo upFileComment là mảng rỗng nếu không có file nào được chọn
+  //   }
+  // };
+
   const handlePostComment = async () => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, "text/html");
+    const images = doc.querySelectorAll("img");
+    const imageUrls = Array.from(images).map((img) => (img.src));
     const params = {
       content: content,
-      // files: postUploadedFiles,
+      files: imageUrls,
       cardId: dataCard.id,
     };
     setLoading(true);
     const loadingToastId = toast.loading("Saving...");
+    console.log('content', content);
+
     try {
       const response = await postComment(boardId, params);
       toast.dismiss(loadingToastId);
-      toast.success("Create comment successfuly!");
+      toast.success("Create comment successfully!");
+
+      // Cập nhật lại nội dung và các file sau khi bình luận thành công
       setContent("");
+      setUpFileComment([]);
       const newComment = response.data;
+
+      // Thêm bình luận mới vào danh sách bình luận
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
         comments: [...prevDataCard.comments, newComment],
       }));
     } catch (err) {
-      toast.dismiss();
+      toast.dismiss(loadingToastId);
       toast.error("Cannot create comment");
       console.error("Lỗi khi đăng comment:", err);
     } finally {
@@ -158,6 +177,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         ...prevDataCard,
         comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
       }));
+      toast.success("File deleted successfully!");
     } catch (err) {
       console.error("Error deleting comment:", err);
     }
@@ -215,6 +235,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setIsShowBoardEdit(!isShowBoardEdit);
       }
       setDataList(data);
+      setPostUploadedFiles([...dataCard.files]);
       setDataCard(dataCard);
     },
     [isShowBoardCard, isShowBoardEdit],
@@ -228,6 +249,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setDataList(dataList);
       try {
         const resDataCardDetail = await getCardById(dataCard.id);
+        setPostUploadedFiles([...resDataCardDetail.data.files]);
         setDataCard(resDataCardDetail.data);
       } catch (err) {
         console.error("Error fetching data card detail: ", err);
@@ -396,6 +418,10 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         handlePostComment,
         handleDeleteComment,
         handleDeleteFile,
+        upFileComment,
+        setUpFileComment,
+        // handleFileCommentChange,s
+        setEditorInstance,
       }}
     >
       {children}

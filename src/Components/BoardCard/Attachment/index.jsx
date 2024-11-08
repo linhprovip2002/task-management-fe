@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import ItemAttachment from "./ItemAttachment";
 
-const Attachment = ({ formatDate, postUploadedFiles, handleDeleteFile, dataCard }) => {
+const Attachment = ({ formatDate, postUploadedFiles, handleDeleteFile }) => {
   const [showImage, setShowImage] = useState(false);
   const [openMore, setOpenMore] = useState(null);
   const moreRef = useRef(null);
-  console.log('postUploadedFiles', postUploadedFiles);
   const handleOpenMore = (id) => setOpenMore(openMore === id ? null : id);
   const handleCloseMore = () => setOpenMore(null);
 

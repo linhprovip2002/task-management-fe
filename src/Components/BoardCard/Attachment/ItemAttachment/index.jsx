@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import MorePoperAttach from "../../ShowComment/MorePoperAttach";
+import MorePoperAttach from "../MorePoperAttach";
 import { Link } from "react-router-dom";
+import { Box, Modal } from "@mui/material";
 
 const ItemAttachment = ({ item, moreRef, handleCloseMore, openMore, handleOpenMore, formatDate, handleDeleteFile }) => {
   const [openImg, setOpenImg] = useState(false);
-  console.log(item);
   const handleImageClick = () => setOpenImg(true);
   const handleCloseImageClick = () => setOpenImg(false);
   return (
@@ -42,11 +42,26 @@ const ItemAttachment = ({ item, moreRef, handleCloseMore, openMore, handleOpenMo
           )}
         </div>
       </div>
-      {openImg && (
-        <div className="text-center absolute m-auto z-50 w-[600px] h-[400px] bg-black bg-opacity-50" onClick={handleCloseImageClick}>
-          <img src={item.url} alt="attachment" className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full" />
+      {/* {openImg && (
+        <div className="z-50 w-full h-full m-auto text-center bg-black bg-opacity-50 " onClick={handleCloseImageClick}>
+          <img
+            src={item.url}
+            alt="attachment"
+            className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full"
+          />
         </div>
-      )}
+      )} */}
+      <Modal open={openImg} onClose={handleCloseImageClick}>
+        <Box >
+        <div className="z-50 w-[80%] h-[80%] m-auto text-center bg-black bg-opacity-50 " onClick={handleCloseImageClick}>
+          <img
+            src={item.url}
+            alt="attachment"
+            className="rounded-[4px] p-4 cursor-pointer object-cover w-full h-full"
+          />
+        </div>
+        </Box>
+      </Modal>
     </div>
   );
 };
