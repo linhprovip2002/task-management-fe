@@ -16,6 +16,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@tinymce/tinymce-react": "^5.1.1",
     "@tippyjs/react": "^4.2.6",
     "assert": "^2.1.0",
     "async_hooks": "^1.0.0",

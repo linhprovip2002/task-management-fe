@@ -8,9 +8,6 @@ const ShowComment = ({item, formatDate, handleDeleteComment}) => {
   const { userData } = useStorage();
   //eslint-disable-next-line
   const { setIsLoggedIn, isLoggedIn } = useStorage();
-  //eslint-disable-next-line
-  // const { userProfile, isLoading } = useGetUserProfile(isLoggedIn);
-  // const { isLoading: isLoadingWorkspace } = useGetBoardWorkspace();  
 
   return (
     <>
@@ -31,7 +28,7 @@ const ShowComment = ({item, formatDate, handleDeleteComment}) => {
             <p className="text-[12px] font-normal text-gray-500">Created {formatDate(item.createdAt)}</p>
 
             {/* Comment Text */}
-            <p className="p-2 mt-1 w-[420px] text-gray-800 bg-white border border-gray-300 rounded-lg">{item.content}</p>
+            <div dangerouslySetInnerHTML={{__html:item.content}} className="p-2 mt-1 w-[420px] text-gray-800 bg-white border border-gray-300 rounded-lg"></div>
 
             {/* Actions */}
             <div className="flex mt-2 space-x-4 text-sm text-gray-500">

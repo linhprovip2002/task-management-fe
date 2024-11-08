@@ -26,15 +26,13 @@ import UploadFile from "./Attachment/UploadFile";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
-import { useGetUserProfile } from "../../Hooks";
-import { Avatar, IconButton, TextField, Tooltip } from "@mui/material";
 import ShowComment from "./ShowComment";
 import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
 import { updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
-import LinkIcon from "@mui/icons-material/Link";
 import UploadPoper from "./Attachment/UploadPoper";
+import WriteComment from "./WriteComment";
 
 export const BoardCard = () => {
   const {
@@ -47,20 +45,19 @@ export const BoardCard = () => {
     setPosition,
     setMembersInCard,
     membersInCard,
-    uploadedFiles,
     handleFileChange,
     postUploadedFiles,
     content,
     setContent,
+    // uploadedFiles,
     isSaving,
     handlePostComment,
     handleDeleteComment,
     loading,
     handleDeleteFile,
+    setEditorInstance,
   } = useListBoardContext();
   const { userData } = useStorage();
-  const { isLoggedIn } = useStorage();
-  const { userProfile } = useGetUserProfile(isLoggedIn);
   const [listLabel, setListLabel] = useState(() => {
     var tagsCard = dataCard?.tagCards
       ?.map((tagCard) => {
@@ -107,29 +104,9 @@ export const BoardCard = () => {
     return dataCard.coverUrl;
   });
 
-  // eslint-disable-next-line
-  const [openPoper, setOpenPoper] = useState(false);
   const [openAttach, setOpenAttach] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleIconClick = () => {
-    document.getElementById("hiddenFileInput").click();
-  };
-
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
-
-  // handle open, close poper delete image
-  const handleOpenPoper = () => setOpenPoper(true);
-  const handleClosePoper = () => setOpenPoper(false);
-
-  const handleInputChange = (e) => {
-    setContent(e.target.value);
-  };
 
   // handle date
   const formatDate = (isoString) => {
@@ -482,7 +459,7 @@ export const BoardCard = () => {
                       </div>
                     )}
                     {endDateCheck != null && (
-                      <div className="mr-2 mb-2">
+                      <div className="mb-2 mr-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Expiration date</span>
                         </div>
@@ -555,14 +532,9 @@ export const BoardCard = () => {
                 </div>
                 <div className="p-2 ml-6">
                   <Attachment
-                    uploadedFiles={uploadedFiles}
                     postUploadedFiles={postUploadedFiles}
-                    open={handleOpenPoper}
-                    handleClose={handleClosePoper}
                     formatDate={formatDate}
                     loading={loading}
-                    position={position}
-                    setOpenAttach={setOpenAttach}
                     handleDeleteFile={handleDeleteFile}
                   />
                 </div>
@@ -688,76 +660,21 @@ export const BoardCard = () => {
                       className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
                     />
                   </div>
-                  <div className="flex items-center text-[12px] mb-2">dfdfdfdfdfdfd</div>
+                  <div className="flex items-center text-[12px] mb-2"></div>
                   <div className="flex items-center text-[12px] mb-2"></div>
                 </div>
               </div>
               {/* POST COMMENTS */}
-              <div className="flex p-2">
-                <div className="mr-2">
-                  {userData?.avatarUrl ? (
-                    <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
-                  ) : (
-                    <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
-                      {userProfile?.name[0] || " "}
-                    </div>
-                  )}
-                  <div className="p-2 border border-gray-300 rounded-sm">
-                    {isFocused && (
-                      <div className="flex items-center mb-2 space-x-2">
-                        <Tooltip title="Link">
-                          <IconButton size="small" onClick={handleIconClick}>
-                            <LinkIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <input
-                          type="file"
-                          id="hiddenFileInput"
-                          style={{ display: "none" }}
-                          onChange={handleFileChange}
-                        />
-                      </div>
-                    )}
-                    <div>
-                      <TextField
-                        sx={{
-                          width: "420px",
-                        }}
-                        id="outlined-basic"
-                        size="small"
-                        label="Write a comment..."
-                        variant="outlined"
-                        rows={isFocused ? 3 : 1}
-                        value={content}
-                        onChange={handleInputChange}
-                        onFocus={handleFocus}
-                      />
-                    </div>
-                  </div>
-                  <div className="pr-2 mt-2 ">
-                    {isFocused && (
-                      <div>
-                        <button
-                          onClick={handlePostComment}
-                          hidden={!content && isSaving}
-                          className={`px-3 py-[8px] rounded text-white ${
-                            content ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"
-                          }`}
-                        >
-                          {loading ? "Saving..." : "Save"}
-                        </button>
-                        <button
-                          hidden={!content && isSaving}
-                          className={`px-3 py-[8px] ml-2 rounded text-white ${
-                            content ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"
-                          }`}
-                        >
-                          DisCard Change
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <div className="flex w-full">
+                <WriteComment
+                  setEditorInstance={setEditorInstance}
+                  setContent={setContent}
+                  loading={loading}
+                  handleFileChange={handleFileChange}
+                  content={content}
+                  handlePostComment={handlePostComment}
+                  isSaving={isSaving}
+                />
               </div>
               {/* SHOW COMMENT */}
               {listComment?.map((item) => (

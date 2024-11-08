@@ -60,7 +60,7 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
       style={{ top: position.top - 300, left: position.left }}
       className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
     >
-      <div className="text-center p-2 mx-8">Cover photo</div>
+      <div className="p-2 mx-8 text-center">Cover photo</div>
       <div className="mx-2">
         <div className="py-2 bg-white">Size</div>
         <div className="flex items-center justify-center">
@@ -79,7 +79,7 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
               <div className={`bg-gray-200  w-[90%] h-[6px] my-2 rounded-[4px]`} />
               <div className={`bg-gray-200  w-[70%] h-[6px] my-2 rounded-[4px]`} />
               <div className="flex items-center justify-between w-full pb-2">
-                <div className="w-full flex">
+                <div className="flex w-full">
                   <div className={`bg-gray-200  w-[10%] mr-1 h-[10px] rounded-[4px]`} />
                   <div className={`bg-gray-200  w-[10%] mr-1 h-[10px] rounded-[4px]`} />
                 </div>
@@ -98,7 +98,7 @@ function BackgroundPhoto({ position, handleCloseShowMenuBtnCard, background, cho
         )}
         <div className="mt-2">
           <div className="py-2 bg-white">Color</div>
-          <ul className="flex items-center justify-center flex-wrap">
+          <ul className="flex flex-wrap items-center justify-center">
             {Array.isArray(listColorLabel)
               ? listColorLabel?.map((item, index) => (
                   <li
