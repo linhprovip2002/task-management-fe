@@ -51,16 +51,6 @@ export const listBtnCard = [
     Icon: <InsertPhotoIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
-    id: 8,
-    nameBtn: "Custom Fields",
-    Icon: <Crop169Icon className="ml-1 mr-2" fontSize="small" />,
-  },
-  {
-    id: 9,
-    nameBtn: "Move",
-    Icon: <ArrowForwardOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-  },
-  {
     id: 10,
     nameBtn: "Copy",
     Icon: <ContentCopyOutlinedIcon className="ml-1 mr-2" fontSize="small" />,

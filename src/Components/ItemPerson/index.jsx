@@ -11,7 +11,7 @@ function ItemPerson({ handleShowMenuBtnCard }) {
         <span className="mr-2">Member</span>
       </div>
       <div className="relative flex items-center justify-center">
-        {membersInCard.map((item, index) => (
+        {membersInCard?.map((item, index) => (
           <div
             key={index}
             className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] bg-gradient-to-b from-green-400 to-blue-500"

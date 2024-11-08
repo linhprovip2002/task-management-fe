@@ -52,6 +52,9 @@ function List({ item = {}, id }) {
               style={{
                 scrollbarWidth: "thin",
                 scrollbarColor: "#fff6 #00000026",
+                maxHeight: "400px",
+                overflowY: "auto",
+                overflowX: "hidden",
               }}
               className="flex-1 p-1"
             >

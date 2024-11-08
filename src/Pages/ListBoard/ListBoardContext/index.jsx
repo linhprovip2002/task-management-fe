@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import { createCardByIdList, getAllCardByIdList, getCardById } from "../../../Services/API/ApiCard";
+import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,
   getBoardId,
@@ -228,35 +228,29 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       }
       setDataList(data);
       setDataCard(dataCard);
+      setMembersInCard(dataCard?.members);
     },
     [isShowBoardCard, isShowBoardEdit],
   );
 
   const handleShowBoardEdit = useCallback(
     async (e, dataList, dataCard) => {
-      setIsShowBoardEdit(!isShowBoardEdit);
       const rect = e.currentTarget.getBoundingClientRect();
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setDataList(dataList);
-      try {
-        const resDataCardDetail = await getCardById(dataCard.id);
-        setDataCard(resDataCardDetail.data);
-      } catch (err) {
-        console.error("Error fetching data card detail: ", err);
-        navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
-      }
+      setDataCard(dataCard);
+      setIsShowBoardEdit(!isShowBoardEdit);
     },
-    [isShowBoardEdit, idWorkSpace, boardId, navigate],
+    [isShowBoardEdit],
   );
 
   const handleShowAddCard = (idList) => {
     setActiveIndex(idList);
-    const newList = [...listCount];
-    const index = newList.findIndex((list) => list.id === idList);
-    if (index !== -1) {
-      newList[index].isShowAddCard = !newList[index].isShowAddCard;
-      setListCount(newList);
-    }
+    const newList = listCount.map((list) => ({
+      ...list,
+      isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
+    }));
+    setListCount(newList);
   };
 
   const handleShowAddList = useCallback(() => {
@@ -408,6 +402,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         handlePostComment,
         handleDeleteComment,
         handleDeleteFile,
+        boardId,
+        idWorkSpace,
       }}
     >
       {children}
