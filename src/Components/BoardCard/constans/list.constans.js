@@ -6,8 +6,6 @@ import {
   AccessTimeOutlined as AccessTimeOutlinedIcon,
   AttachmentOutlined as AttachmentOutlinedIcon,
   InsertPhoto as InsertPhotoIcon,
-  Crop169 as Crop169Icon,
-  ArrowForwardOutlined as ArrowForwardOutlinedIcon,
   ContentCopyOutlined as ContentCopyOutlinedIcon,
   SaveAsOutlined as SaveAsOutlinedIcon,
   BackupTableOutlined as BackupTableOutlinedIcon,

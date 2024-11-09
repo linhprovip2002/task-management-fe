@@ -39,11 +39,8 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
     transform: CSS.Translate.toString(transform),
     transition,
     display: "flex",
-    flex: 1,
-    alignItems: "center",
     borderRadius: 5,
     userSelect: "none",
-    cursor: "grab",
     boxSizing: "border-box",
   };
 

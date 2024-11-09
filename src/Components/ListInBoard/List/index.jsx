@@ -48,16 +48,7 @@ function List({ item = {}, id }) {
           </div>
           {/* List board */}
           <SortableContext strategy={verticalListSortingStrategy} items={cards?.map((item) => item.id)}>
-            <div
-              style={{
-                scrollbarWidth: "thin",
-                scrollbarColor: "#fff6 #00000026",
-                maxHeight: "400px",
-                overflowY: "auto",
-                overflowX: "hidden",
-              }}
-              className="flex-1 p-1"
-            >
+            <div className="flex-1 p-1">
               {cards?.map((card, index) => {
                 return (
                   <ItemList

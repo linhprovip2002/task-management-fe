@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { CreateItem } from "../../Components/CreateItem";
 import { AddIcon } from "../../Components/Icons";
@@ -7,8 +7,11 @@ import List from "./List";
 import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, closestCorners } from "@dnd-kit/core";
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
+import useDebounce from "../../Hooks/useDebounce";
 
 function ListInBoard() {
+  const [activeDragItemType, setActiveDragItemType] = useState(null);
+
   let { nameTitle, isShowAddList, listCount, setListCount, handleShowAddList, handleAddList, handleChangeTitleCard } =
     useListBoardContext();
 
@@ -17,52 +20,70 @@ function ListInBoard() {
       distance: 10,
     },
   });
-
-  // nhấn giữ 250ms và dung sai của cảm ứng (di chuyển chênh lệch 5px )
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
       delay: 250,
       tolerance: 500,
     },
   });
-
   const mySensors = useSensors(mouseSensor, touchSensor);
 
-  // const handleDragOver = ({ over, active }) => {
-  //   const overId = over?.id;
+  const handleDragStart = (event) => {
+    setActiveDragItemType(event.active?.data?.current?.type);
+  };
 
-  //   if (!overId) {
-  //     return;
-  //   }
+  const handleDragOver = (event) => {
+    if (activeDragItemType === "column") return;
+    const { active, over } = event;
+    if (!over) return;
 
-  //   const activeContainer = active.data.current.sortable;
-  //   const overContainer = over.data.current?.sortable;
+    const activeContainer = active.data.current.sortable.containerId;
+    const overContainer = over.data.current?.sortable.containerId || over.id;
+    if (!overContainer || !activeContainer) return;
 
-  //   if (!overContainer) {
-  //     return;
-  //   }
+    if (activeContainer !== overContainer) {
+      const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
+      const overContainerIndex = Number(overContainer.split("-")[1]) - 1;
 
-  //   const activeIndex = active.data.current.sortable.index;
-  //   const overIndex = over.data.current?.sortable.index || 0;
+      const activeIndex = active.data.current.sortable.index;
+      const overIndex = over.data.current?.sortable.index || 0;
+      const newColums = [...listCount];
+      const activeCard = newColums[activeContainerIndex]?.cards[activeIndex];
 
-  //   if (activeContainer !== overContainer) {
-  //     // setListCount((items) => {
-  //     //   let newState = [...items];
-  //     //   const activeIndex = active.data.current.sortable.index;
-  //     //   const overIndex = over.data.current?.sortable.index || 0;
-  //     //   const activeCard = listCount.find((item) => item.id === activeContainer)?.cards[activeIndex];
-  //     //   newState = moveBetweenContainers(newState, activeContainer, activeIndex, overContainer, overIndex, activeCard);
-  //     //   return newState;
-  //     // });
-  //   }
-  // };
+      if (overContainerIndex === -1) {
+        // trường hợp kéo qua cột rỗng thì không có overContainerIndex và overIndex sẽ thay cho index của container
+        moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overIndex, 0, activeCard);
+      } else {
+        moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
+      }
+      setListCount(newColums);
+    }
+  };
 
   const handleDragEnd = ({ active, over }) => {
     if (!over) {
       return;
     }
 
-    if (!active?.data?.current.cards) {
+    if (activeDragItemType === "card") {
+      //TODO case drag card
+      // setState for card
+      const activeIndex = active.data.current.sortable.index;
+      const overIndex = over.data.current?.sortable.index || 0;
+      const activeContainer = active.data.current.sortable.containerId;
+      const overContainer = over.data.current?.sortable.containerId || over.id;
+      if (!overContainer || !activeContainer) return;
+
+      const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
+      const overContainerIndex = Number(overContainer.split("-")[1]) - 1;
+      if (overContainerIndex < 0) return;
+
+      if (activeContainerIndex === overContainerIndex) {
+        const newColums = [...listCount];
+        const activeColumn = newColums[activeContainerIndex];
+        if (activeColumn.cards) activeColumn.cards = arrayMove(activeColumn.cards, activeIndex, overIndex);
+        setListCount(newColums);
+      }
       return;
     }
 
@@ -72,17 +93,32 @@ function ListInBoard() {
       const newColums = arrayMove(listCount, activeIndex, overIndex);
       setListCount(newColums);
     }
+
+    setActiveDragItemType(null);
   };
 
-  const moveBetweenContainers = (items, activeContainer, activeIndex, overContainer, overIndex, item) => {
-    const activeList = items.find((item) => item.id === activeContainer);
-    const overList = items.find((item) => item.id === overContainer);
+  const moveBetweenContainers = (
+    items,
+    activeContainerIndex,
+    activeItemIndex,
+    overContainerIndex,
+    overItemIndex,
+    item,
+  ) => {
+    const activeList = items[activeContainerIndex];
+    const overList = items[overContainerIndex];
+    if (!activeList || !overList) return items;
 
-    activeList.cards = removeAtIndex(activeList.cards, activeIndex);
-    overList.cards = insertAtIndex(overList.cards, overIndex, item);
-
+    activeList.cards = removeAtIndex(activeList.cards, activeItemIndex);
+    overList.cards = insertAtIndex(overList.cards, overItemIndex, item);
     return items;
   };
+
+  const debounceValue = useDebounce(listCount, 1000);
+
+  useEffect(() => {
+    //TODO call api move card or column here
+  }, [debounceValue]);
 
   return (
     <div className="relative h-[90vh]">
@@ -96,8 +132,9 @@ function ListInBoard() {
         <div className="my-4 px-[4px] flex">
           <div className="flex flex-nowrap">
             <DndContext
-              // onDragOver={handleDragOver}
               sensors={mySensors}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
             >

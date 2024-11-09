@@ -339,7 +339,6 @@ export const BoardCard = () => {
   const handleAddMember = async (item) => {
     try {
       const member = await item;
-      console.log(member);
       if (membersInCard.some((item) => item.id === member.id)) {
         setMembersInCard(membersInCard.filter((item) => item.id !== member.id));
         listBtnCard.forEach((item) => {
