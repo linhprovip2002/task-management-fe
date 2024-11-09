@@ -13,7 +13,7 @@ import ListInBoard from "../../Components/ListInBoard";
 import ListBoardProvider from "./ListBoardContext";
 import { useListBoardContext } from "./ListBoardContext";
 import NavbarTable from "../../Components/HiDotsVertical/NavbarTable";
-import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
+// import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 function ListBoard() {
   const { idWorkSpace, idBoard } = useParams();
@@ -26,7 +26,7 @@ function ListBoard() {
 
 function ListBoardContent() {
   const { dataBoard, dataWorkspace, handleClosedNavBar, isShowBoardCard, isShowBoardEdit } = useListBoardContext();
-  const { dataPermission } = useGetBoardPermission(dataBoard.id);
+  // const { dataPermission } = useGetBoardPermission(dataBoard.id);
   const [anchorEl, setAnchorEl] = useState(null);
   const [titleName, settitleName] = useState("Sort by alphabetical order");
   const [activeCollectTable, setActiveCollectTable] = useState(0);

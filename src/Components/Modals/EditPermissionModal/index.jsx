@@ -3,10 +3,7 @@ import Loading from "../../Loading";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CenterModel } from "../styles";
-import {
-  PermissionGridConstants,
-  RoleOptions
-} from "./constants/Permission.constants";
+import { PermissionGridConstants, RoleOptions } from "./constants/Permission.constants";
 import { CreateNewRoleModal } from "./CreateNewRoleModal";
 
 export const EditPermissionModal = ({ open: defaultOpen }) => {
@@ -19,7 +16,6 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-    console.log("submit", data);
   };
 
   const handleChange = (permissionTitle, childTitle, value) => {
@@ -28,8 +24,8 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
       ...formValues.permissions,
       [permissionTitle]: {
         ...formValues.permissions?.[permissionTitle],
-        [childTitle]: value
-      }
+        [childTitle]: value,
+      },
     };
     setValue("permissions", updatedPermissions);
   };
@@ -38,7 +34,6 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
     if (watchRole?.value === "newRole") {
       setValue("role", null);
       setOpenCreateRoleModal(true);
-      console.log("new role");
     }
     // eslint-disable-next-line
   }, [watchRole]);
@@ -52,10 +47,7 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
           setOpen(false);
         }}
       >
-        <form
-          className={`w-1/2 flex p-4 rounded-md bg-white ${CenterModel}`}
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className={`w-1/2 flex p-4 rounded-md bg-white ${CenterModel}`} onSubmit={handleSubmit(onSubmit)}>
           <div className="w-full">
             <div className="flex w-full gap-2 items-center">
               <div>Role</div>
@@ -70,9 +62,7 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
                     size="small"
                     options={RoleOptions}
                     getOptionLabel={(option) => option.label}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Role" />
-                    )}
+                    renderInput={(params) => <TextField {...params} label="Role" />}
                     onChange={(_, data) => field.onChange(data)}
                   />
                 )}
@@ -89,9 +79,7 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
                     size="small"
                     options={RoleOptions}
                     getOptionLabel={(option) => option.label}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Team" />
-                    )}
+                    renderInput={(params) => <TextField {...params} label="Team" />}
                     onChange={(_, data) => field.onChange(data)}
                   />
                 )}
@@ -99,17 +87,11 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
             </div>
             <div className="w-full flex flex-col gap-2">
               {PermissionGridConstants.map((permission) => (
-                <div
-                  className="flex items-center w-full"
-                  key={permission.title}
-                >
+                <div className="flex items-center w-full" key={permission.title}>
                   <div className="min-w-1/2 w-1/2">{permission.title}</div>
                   <div className="flex gap-4 items-center">
                     {permission.children.map((child) => (
-                      <div
-                        className="flex gap-2 items-center"
-                        key={child.title}
-                      >
+                      <div className="flex gap-2 items-center" key={child.title}>
                         <div>{child.title}</div>
                         <Controller
                           name={`permissions.${permission.title}.${child.title}`}
@@ -117,13 +99,7 @@ export const EditPermissionModal = ({ open: defaultOpen }) => {
                           render={({ field }) => (
                             <Switch
                               checked={field.value || false}
-                              onChange={(_, value) =>
-                                handleChange(
-                                  permission.title,
-                                  child.title,
-                                  value
-                                )
-                              }
+                              onChange={(_, value) => handleChange(permission.title, child.title, value)}
                             />
                           )}
                         />

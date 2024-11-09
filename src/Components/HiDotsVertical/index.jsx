@@ -183,9 +183,9 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
                 title={nameOperations[activeCollectOperation]}
                 description={"Name"}
                 nameBtn={"Create list"}
-                onLeaveBoard={handleClickAway}
-                onToggleCollape={toggleCollape}
-                onHandleCopyList={handleAddCopyList}
+                onClose={handleClickAway}
+                onBack={toggleCollape}
+                onClickConfirm={handleAddCopyList}
               >
                 <div className="w-full px-4">
                   <textarea
@@ -202,9 +202,9 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
               <ItemMenu
                 title={nameOperations[activeCollectOperation]}
                 nameBtn={"Move"}
-                onLeaveBoard={handleClickAway}
-                onToggleCollape={toggleCollape}
-                onHandleCopyList={handleAddCopyList}
+                onClose={handleClickAway}
+                onBack={toggleCollape}
+                onClickConfirm={handleAddCopyList}
               >
                 {itemChooseToMove.map((item, index) => (
                   <DropItemChoose
@@ -219,11 +219,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
               </ItemMenu>
             )}
             {isLeaveBoard && activeCollectOperation === 3 && (
-              <ItemMenu
-                title={nameOperations[activeCollectOperation]}
-                onLeaveBoard={handleClickAway}
-                onToggleCollape={toggleCollape}
-              >
+              <ItemMenu title={nameOperations[activeCollectOperation]} onClose={handleClickAway} onBack={toggleCollape}>
                 {listCount.map((item, index) => (
                   <div
                     onClick={item.title === nameList ? undefined : () => handleShow(index, item.id)}
@@ -236,11 +232,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
               </ItemMenu>
             )}
             {isLeaveBoard && activeCollectOperation === 4 && (
-              <ItemMenu
-                title={nameOperations[activeCollectOperation]}
-                onLeaveBoard={handleClickAway}
-                onToggleCollape={toggleCollape}
-              >
+              <ItemMenu title={nameOperations[activeCollectOperation]} onClose={handleClickAway} onBack={toggleCollape}>
                 {collectTypeSort.map((nameType, index) => (
                   <div
                     onClick={() => handleSortCard(index, data.id)}
@@ -256,8 +248,8 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
               <ItemMenu
                 title={nameOperations[activeCollectOperation]}
                 nameBtn={"Save Tags"}
-                onLeaveBoard={handleClickAway}
-                onToggleCollape={toggleCollape}
+                onClose={handleClickAway}
+                onBack={toggleCollape}
               >
                 <div className="w-full px-4">
                   <p className="whitespace-normal">Are you sure you want to save all selected tags?</p>

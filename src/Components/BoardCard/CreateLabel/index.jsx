@@ -33,7 +33,7 @@ function CreateLabel({
 
   return (
     <div style={{ top: position.top - 100, left: position.left }} className="absolute">
-      <ItemMenu title={"Label"} onLeaveBoard={handleCloseShowMenuBtnCard} onToggleCollape={ShowDetailNewLabel}>
+      <ItemMenu title={"Label"} onClose={handleCloseShowMenuBtnCard} onBack={ShowDetailNewLabel}>
         <div className="flex items-center justify-center bg-gray-100 h-[60px]">
           {chooseColorLabel ? (
             <div className={`${chooseColorLabel.color} w-[80%] h-[32px] p-2 rounded-[4px]`}>

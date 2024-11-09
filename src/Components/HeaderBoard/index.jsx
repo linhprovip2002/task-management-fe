@@ -8,6 +8,7 @@ import RightSidebar from "../../Components/RightSidebar";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { HiDotsVertical } from "react-icons/hi";
 import GroupIcon from "@mui/icons-material/Group";
+import GroupAvatars from "../GroupAvatars";
 
 function HeaderBoard() {
   const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
@@ -35,6 +36,10 @@ function HeaderBoard() {
         </TippyDetail>
       </div>
       <div className="flex items-center">
+        <div className="flex">
+          <GroupAvatars />
+        </div>
+
         <TippyDetail title={"Table filter tags"}>
           <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
             <FilterIcon width={16} height={16} className={"mr-2"} />

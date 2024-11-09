@@ -42,7 +42,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [upFileComment, setUpFileComment] = useState([]);
-  const [editorInstance, setEditorInstance] = useState(null);
 
   const navigate = useNavigate();
 
@@ -144,7 +143,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
     setLoading(true);
     const loadingToastId = toast.loading("Saving...");
-    console.log("content", content);
 
     try {
       const response = await postComment(boardId, params);
@@ -417,7 +415,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         upFileComment,
         setUpFileComment,
         // handleFileCommentChange,s
-        setEditorInstance,
       }}
     >
       {children}

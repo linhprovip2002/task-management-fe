@@ -8,15 +8,16 @@ import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
   const [memberPopup, setMemberPopup] = useState(false);
   const { dataBoard } = useListBoardContext();
+
   return (
     <>
       <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
         <div className="text-center p-2 mx-8">{dataBoard.title}</div>
         <div
-          onClick={toggleCollape}
           className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
+          onClick={toggleCollape}
         >
-          <div className="">Leave the board</div>
+          <div>{dataBoard?.role?.roleName === "admin" ? "Close board" : "Leave board"}</div>
           <ChevronRightIcon fontSize="small" />
         </div>
         <div
@@ -32,11 +33,18 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
       </div>
       {isChooseMoveList && (
         <ItemMenu
-          title={"Do you want to leave the board?"}
-          description={"You will be removed from all cards in this table"}
-          nameBtn={"Leave"}
-          onLeaveBoard={handleLeaveBoard}
-          onToggleCollape={toggleCollape}
+          title={dataBoard.role?.roleName === "admin" ? "Close this board" : "Do you want to leave the board?"}
+          description={
+            dataBoard.role?.roleName === "admin"
+              ? "You can find and reopen closed boards at the bottom of your boards page."
+              : "You will be removed from all cards in this table"
+          }
+          nameBtn={dataBoard.role?.roleName === "admin" ? "Close" : "Leave"}
+          onClose={handleLeaveBoard}
+          onBack={toggleCollape}
+          onClickConfirm={() => {
+            console.log("clicked");
+          }}
         />
       )}
 

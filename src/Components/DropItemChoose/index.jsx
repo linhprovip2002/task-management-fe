@@ -54,7 +54,6 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
       try {
         const res = await getBoard(50, 1);
         setDataAllBoard(res.data);
-        console.log(res);
       } catch (err) {
         console.error("Error fetching board data: ", err);
       }
