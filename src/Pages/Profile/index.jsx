@@ -3,6 +3,7 @@ import { useStorage } from "../../Contexts/Storage";
 import { ProfileTabs } from "./constants/ProfileTabs.constant";
 import { convertStringToColor } from "./helpers/convertStringToColor.js";
 import { Link, useLocation } from "react-router-dom";
+import Loading from "../../Components/Loading";
 
 const tabItemStyles =
   "text-sm w-fit text-[var(--dark-slate-blue)] font-bold pt-2 pb-[9px] cursor-pointer hover:text-[var(--primary)] mr-4";
@@ -19,6 +20,8 @@ function stringAvatar(name) {
 export default function Profile() {
   const location = useLocation();
   const { userData } = useStorage();
+
+  if (!userData) return <Loading />;
 
   return (
     <div>
@@ -43,14 +46,13 @@ export default function Profile() {
       </div>
 
       <ul className="flex mx-12 border-b-2 border-gray-200 border-solid">
-        {ProfileTabs.map((tab) => {
+        {ProfileTabs.map((tab, index) => {
           const tabPath = tab.path.replace(":id", userData.id);
           const isSelectedTab = location.pathname === tabPath;
-
           return (
             <Link
               to={tabPath}
-              key={tab.id}
+              key={index}
               className={`${tabItemStyles} ${isSelectedTab ? "text-blue-600" : ""}`}
             >
               {tab.title}

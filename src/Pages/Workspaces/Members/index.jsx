@@ -9,7 +9,7 @@ const WorkspaceMembers = () => {
   const { id } = useParams();
   const { workspaceMembers, isLoading, isRefetching } = useGetWorkspaceMember(id);
 
-  if (isLoading || isRefetching) return <Loading />;
+  if (isLoading || isRefetching || !workspaceMembers) return <Loading />;
 
   return (
     <div className="flex flex-col gap-4">

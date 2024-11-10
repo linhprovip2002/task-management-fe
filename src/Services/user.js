@@ -12,8 +12,8 @@ class UserServices {
       params: {
         ...(limit && { limit }),
         ...(page && { page }),
-        ...(name && { name }),
-      },
+        ...(name && { name })
+      }
     });
     return response.data;
   }
@@ -22,7 +22,7 @@ class UserServices {
   async getUserById(id) {
     const response = await request({
       method: "GET",
-      baseURL: `${baseURL}/${id}`,
+      baseURL: `${baseURL}/${id}`
     });
     return response.data;
   }
@@ -30,12 +30,23 @@ class UserServices {
   // Method to update a user by ID
   async updateUser({ name, bio, avatarUrl }) {
     try {
-      // Lọc các giá trị undefined
       const body = Object.fromEntries(
-        Object.entries({ name, bio, avatarUrl }).filter(([_, value]) => value !== undefined),
+        Object.entries({ name, bio, avatarUrl }).filter(([, value]) => value)
       );
-
       const response = await request.patch(`/auth/me`, body);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Method to change password
+  async changePassword({ currentPassword, newPassword }) {
+    try {
+      const response = await request.patch(`/auth/change-password`, {
+        currentPassword,
+        newPassword
+      });
       return response.data;
     } catch (error) {
       throw error;
