@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { CreateItem } from "../../Components/CreateItem";
 import { AddIcon } from "../../Components/Icons";
@@ -9,24 +9,9 @@ import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortabl
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
 import useDebounce from "../../Hooks/useDebounce";
 import { changePositionList } from "../../Services/API/ApiListOfBoard";
+import { changePositionCard } from "../../Services/API/ApiCard";
 
 function ListInBoard() {
-  const [activeDragItemType, setActiveDragItemType] = useState(null);
-  const [changeData, setChangeData] = useState(null);
-
-  let {
-    nameTitle,
-    isShowAddList,
-    listCount,
-    setListCount,
-    handleShowAddList,
-    handleAddList,
-    handleChangeTitleCard,
-    boardId,
-  } = useListBoardContext();
-
-  const debounceValue = useDebounce(changeData, 1000);
-
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10,
@@ -39,82 +24,109 @@ function ListInBoard() {
     },
   });
   const mySensors = useSensors(mouseSensor, touchSensor);
+  const [activeDragItemType, setActiveDragItemType] = useState(null);
+  const [changeData, setChangeData] = useState(null);
+  const debounceValue = useDebounce(changeData, 1000);
 
-  const handleDragStart = (event) => {
+  let {
+    nameTitle,
+    isShowAddList,
+    listCount,
+    setListCount,
+    handleShowAddList,
+    handleAddList,
+    handleChangeTitleCard,
+    boardId,
+  } = useListBoardContext();
+
+  const handleDragStart = useCallback((event) => {
     setActiveDragItemType(event.active?.data?.current?.type);
-  };
+    const activeContainer = event.active?.data?.current?.sortable?.containerId;
+    const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
+    setChangeData({
+      activeContainerIndex,
+    });
+  }, []);
 
-  const handleDragOver = (event) => {
-    if (activeDragItemType === "column") return;
-    const { active, over } = event;
-    if (!over) return;
+  const handleDragOver = useCallback(
+    (event) => {
+      if (activeDragItemType === "column") return;
 
-    const activeContainer = active.data.current.sortable.containerId;
-    const overContainer = over.data.current?.sortable.containerId || over.id;
-    if (!overContainer || !activeContainer) return;
+      const { active, over } = event;
+      if (!over) return;
 
-    if (activeContainer !== overContainer) {
-      const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
-      const overContainerIndex = Number(overContainer.split("-")[1]) - 1;
-
-      const activeIndex = active.data.current.sortable.index;
-      const overIndex = over.data.current?.sortable.index || 0;
-      const newColums = [...listCount];
-      const activeCard = newColums[activeContainerIndex]?.cards[activeIndex];
-
-      if (overContainerIndex === -1) {
-        // trường hợp kéo qua cột rỗng thì không có overContainerIndex và overIndex sẽ thay cho index của container
-        moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overIndex, 0, activeCard);
-      } else {
-        moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
-      }
-      setListCount(newColums);
-    }
-  };
-
-  const handleDragEnd = ({ active, over }) => {
-    if (!over) {
-      return;
-    }
-
-    if (activeDragItemType === "card") {
-      //TODO case drag card
-      // setState for card
-      const activeIndex = active.data.current.sortable.index;
-      const overIndex = over.data.current?.sortable.index || 0;
       const activeContainer = active.data.current.sortable.containerId;
       const overContainer = over.data.current?.sortable.containerId || over.id;
       if (!overContainer || !activeContainer) return;
 
-      const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
-      const overContainerIndex = Number(overContainer.split("-")[1]) - 1;
-      if (overContainerIndex < 0) return;
+      if (activeContainer !== overContainer) {
+        const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
+        const overContainerIndex = Number(overContainer.split("-")[1]) - 1;
 
-      if (activeContainerIndex === overContainerIndex) {
+        const activeIndex = active.data.current.sortable.index;
+        const overIndex = over.data.current?.sortable.index || 0;
         const newColums = [...listCount];
-        const activeColumn = newColums[activeContainerIndex];
-        if (activeColumn.cards) activeColumn.cards = arrayMove(activeColumn.cards, activeIndex, overIndex);
+        const activeCard = newColums[activeContainerIndex]?.cards[activeIndex];
+
+        moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
+
         setListCount(newColums);
       }
+    },
+    [activeDragItemType, listCount, setListCount],
+  );
 
-      return;
-    }
+  const handleDragEnd = useCallback(
+    ({ active, over }) => {
+      if (!over) return;
 
-    if (active.id !== over.id) {
-      const activeIndex = active.data.current.sortable.index;
-      const overIndex = over.data.current?.sortable.index || 0;
-      const newColums = arrayMove(listCount, activeIndex, overIndex);
-      setListCount(newColums);
-      setChangeData({
-        type: "column",
-        listId: listCount[activeIndex].id,
-        activeIndex,
-        overIndex,
-      });
-    }
+      if (activeDragItemType === "card") {
+        const activeIndex = active.data.current.sortable.index;
+        const overIndex = over.data.current?.sortable.index || 0;
+        const activeContainer = active.data.current.sortable.containerId;
+        const overContainer = over.data.current?.sortable.containerId || over.id;
+        if (!overContainer || !activeContainer) return;
 
-    setActiveDragItemType(null);
-  };
+        const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
+        const overContainerIndex = Number(overContainer.split("-")[1]) - 1;
+        if (overContainerIndex < 0) return;
+
+        if (activeContainerIndex === overContainerIndex) {
+          const newColums = [...listCount];
+          const activeColumn = newColums[activeContainerIndex];
+          if (activeColumn.cards) activeColumn.cards = arrayMove(activeColumn.cards, activeIndex, overIndex);
+          setListCount(newColums);
+          setChangeData((prev) => {
+            return {
+              type: "card",
+              activeIndex,
+              overIndex,
+              overContainerIndex,
+              ...prev,
+            };
+          });
+        }
+
+        return;
+      }
+
+      if (active.id !== over.id) {
+        const activeIndex = active.data.current.sortable.index;
+        const overIndex = over.data.current?.sortable.index || 0;
+        const newColums = arrayMove(listCount, activeIndex, overIndex);
+        setListCount(newColums);
+        setChangeData({
+          type: "column",
+          listId: listCount[activeIndex].id,
+          activeIndex,
+          overIndex,
+        });
+      }
+
+      setActiveDragItemType(null);
+    },
+    [activeDragItemType, listCount, setListCount],
+  );
 
   const moveBetweenContainers = (
     items,
@@ -151,12 +163,16 @@ function ListInBoard() {
         const activeListId = listCount[debounceValue.activeContainerIndex].id;
         const overListId = listCount[debounceValue.overContainerIndex].id;
         const overIndex = debounceValue.overIndex;
-
-        console.log(activeListId);
-        console.log(overListId);
-        console.log(overIndex);
-        const card = listCount[debounceValue.activeContainerIndex].cards[overIndex];
-        console.log(card);
+        const card = listCount[debounceValue.overContainerIndex].cards[debounceValue.overIndex];
+        if (activeListId && overListId && card) {
+          changePositionCard({ cardId: card.id, activeListId, overListId, position: overIndex })
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       }
       setChangeData(null);
     }
@@ -172,7 +188,7 @@ function ListInBoard() {
         }}
         className="absolute h-full top-0 left-0 right-0 mb-2 pb-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
       >
-        <div className="my-4 px-[4px] flex">
+        <div className="my-4 px-[4px] flex h-full">
           <div className="flex flex-nowrap">
             <DndContext
               sensors={mySensors}
@@ -181,7 +197,7 @@ function ListInBoard() {
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
             >
-              <SortableContext strategy={horizontalListSortingStrategy} items={listCount?.map((item) => item.id)}>
+              <SortableContext strategy={horizontalListSortingStrategy} items={listCount}>
                 <div style={{ display: "flex" }}>
                   {listCount.map((item, index) => {
                     return <List id={item.id} key={index} item={item} />;
