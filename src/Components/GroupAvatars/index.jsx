@@ -41,15 +41,9 @@ function GroupAvatars({ users = [] }) {
         },
       }}
     >
-      <Avatar
-        {...stringAvatar("Remy Sharp")}
-        alt="Remy Sharp"
-        src="https://trello-members.s3.amazonaws.com/6411cb0b756e170127733b34/3cb3638a4c4bac4f4213caa087029bb6/50.png"
-      />
-      <Avatar {...stringAvatar("Travis Howard")} alt="Travis Howard" />
-      <Avatar {...stringAvatar("Cindy Baker")} alt="Cindy Baker" />
-      <Avatar {...stringAvatar("Agnes Walker")} alt="Agnes Walker" />
-      <Avatar {...stringAvatar("Trevor Henderson")} alt="Trevor Henderson" />
+      {users.map((user, index) => (
+        <Avatar key={index} {...stringAvatar(user.user?.name)} alt={user.user?.name} src={user.user?.avatarUrl || ""} />
+      ))}
     </AvatarGroup>
   );
 }
