@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import ItemMember from "./ItemMember";
+import { RemoveUserToCard } from "../../Services/API/ApiCard";
 
 const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
-  const { position, membersInCard, membersBoard } = useListBoardContext();
+  const { position, membersInCard, membersBoard, dataCard, setDataCard } = useListBoardContext();
   const [inputTitle, setInputTitle] = useState("");
   const [filteredMembersBoard, setFilteredMembersBoard] = useState([]);
 
@@ -19,16 +20,31 @@ const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
     setInputTitle(e.target.value);
   };
 
+  const HandleRemoveMember = useCallback(
+    async (member) => {
+      try {
+        await RemoveUserToCard(dataCard?.id, member.id);
+      } catch (error) {
+        console.log("error handle remove member in card", error);
+      }
+      setDataCard((prevDataCard) => ({
+        ...prevDataCard,
+        members: [...(prevDataCard.members || []), member],
+      }));
+    },
+    [dataCard, setDataCard],
+  );
+
   useEffect(() => {
     const filtered = membersBoard.filter((member) => {
-      return member.name && member.name.includes(inputTitle);
+      return member?.user?.name && member?.user?.name.includes(inputTitle);
     });
     setFilteredMembersBoard(filtered);
   }, [inputTitle, membersBoard]);
 
   return (
     <div
-      style={{ top: position.top, left: position.left }}
+      style={{ top: position?.top, left: position?.left }}
       className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
     >
       <div className="text-center p-2 mx-8">Member</div>
@@ -43,22 +59,28 @@ const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
           />
         </div>
         <div className="mt-2">
-          {membersInCard.length === 0 || (
+          {membersInCard?.length === 0 || (
             <>
               <div className="py-2 bg-white">Member of the card</div>
-              {membersInCard.map((item, index) => (
-                <ItemMember key={index} item={item} onHandleAddMember={HandleAddMemberInCard} />
+              {membersInCard?.map((item, index) => (
+                <ItemMember
+                  key={index}
+                  item={item}
+                  onHandleAddMember={HandleAddMemberInCard}
+                  isClose={true}
+                  onClose={HandleRemoveMember}
+                />
               ))}
             </>
           )}
         </div>
         <div className="mt-2">
-          {filteredMembersBoard.length === 0 ? (
+          {filteredMembersBoard?.length === 0 ? (
             <div className="py-2 bg-white">No members found in the board</div>
           ) : (
             <>
               <div className="py-2 bg-white">Members of the board</div>
-              {filteredMembersBoard.map((item, index) => (
+              {filteredMembersBoard?.map((item, index) => (
                 <ItemMember key={index} item={item} onHandleAddMember={HandleAddMemberInCard} />
               ))}
             </>

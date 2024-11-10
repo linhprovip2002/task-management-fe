@@ -2,7 +2,7 @@ import React, { createContext, useContext, useCallback, useEffect, useRef, useSt
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { CreateList } from "../../../Services/API/ApiListOfBoard";
+import { CreateList, UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,
@@ -194,8 +194,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
-          let cards = await getAllCardByIdList(list.id);
-          cards = cards.data;
+          let cards = await getAllCardByIdList(list.id, boardId);
+          cards = cards.data[0].cards;
           return { ...list, cards };
         });
         const updatedLists = await Promise.all(listWithCardsPromises);
@@ -210,14 +210,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
 
     fetchBoardData();
-  }, [boardId, idWorkSpace, navigate]);
+  }, [boardId, idWorkSpace, navigate, dataCard]);
 
   useEffect(() => {
     const getAllUserInBoard = async () => {
       try {
         const res = await getAllMembersByIdBoard(boardId);
-        const dataUser = res.data[0].user;
-        setMembersBoard([dataUser]);
+        const dataUser = res.data;
+        setMembersBoard(dataUser);
       } catch (err) {
         console.error("Error get all user data in board: ", err);
       }
@@ -265,7 +265,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     setIsShowAddList(!isShowAddList);
   }, [isShowAddList]);
 
-  const handleChange = (e, idList) => {
+  const handleChange = async (e, idList) => {
     const newList = [...listCount];
     const index = newList.findIndex((list) => list.id === idList);
     if (index !== -1) {
@@ -305,7 +305,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         listId: idList,
       };
       try {
-        await createCardByIdList(dataSend);
+        const res = await createCardByIdList(dataSend);
+        setDataCard(res);
       } catch (error) {
         console.error("Failed to create card by id list:", error);
       }
@@ -322,7 +323,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       };
 
       try {
-        await CreateList(newListItem);
+        await CreateList(dataBoard?.id, newListItem);
         setIsShowAddList(!isShowAddList);
         setNameTitle("");
         setListCount((prev) => [...prev, newListItem]);
@@ -415,6 +416,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         upFileComment,
         setUpFileComment,
         // handleFileCommentChange,s
+        setIsShowBoardEdit,
       }}
     >
       {children}

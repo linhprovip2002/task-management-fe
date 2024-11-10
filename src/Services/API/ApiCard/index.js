@@ -35,7 +35,11 @@ export async function deleteCard(cardId) {
 }
 
 export async function JoinToCard(idCard, idUser) {
-  return await request.delete(`/card/${idCard}/assign`, {
+  return await request.post(`/card/${idCard}/assign`, {
     userId: idUser,
   });
+}
+
+export async function RemoveUserToCard(idCard, idUser) {
+  return await request.delete(`/card/${idCard}/members/${idUser}`);
 }

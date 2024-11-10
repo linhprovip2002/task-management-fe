@@ -21,16 +21,16 @@ function HeaderBoard() {
   return (
     <div className="relative flex items-center justify-between h-[32px] p-6 bg-gray-100">
       <div className="flex items-center">
-        <div className="text-black p-2 font-bold text-[20px]">{dataBoard.title}</div>
+        <div className="text-black p-2 font-bold text-[18px]">{dataBoard.title}</div>
         <TippyDetail title="Star or unstar this tables. Starred tables will appear at the top of the tables list.">
           <div
             onClick={handleActiveStar}
-            className="cursor-pointer rounded-[4px] p-[4px] ml-2 hover:bg-gray-300 transition-opacity duration-300"
+            className="flex items-center justify-center cursor-pointer rounded-[4px] p-[6px] ml-2 hover:bg-gray-300 transition-opacity duration-300"
           >
             {activeStar ? (
-              <StarRoundedIcon style={{ fontSize: "24px" }} />
+              <StarRoundedIcon style={{ fontSize: "20px" }} />
             ) : (
-              <StarOutlineRoundedIcon style={{ fontSize: "24px" }} />
+              <StarOutlineRoundedIcon style={{ fontSize: "20px" }} />
             )}
           </div>
         </TippyDetail>
@@ -41,15 +41,15 @@ function HeaderBoard() {
         </div>
 
         <TippyDetail title={"Table filter tags"}>
-          <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
+          <div className="cursor-pointer flex items-center px-3 py-[6px] ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
             <FilterIcon width={16} height={16} className={"mr-2"} />
-            <span className="text-[16px] font-medium">Filter</span>
+            <span className="text-[14px] font-medium">Filter</span>
           </div>
         </TippyDetail>
         <TippyDetail title={"Share Board"}>
           <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
             <GroupIcon width={16} height={16} className={"mr-2 text-white"} />
-            <span className="text-[16px] font-medium text-white">Members</span>
+            <span className="text-[14px] font-medium text-white">Members</span>
           </div>
         </TippyDetail>
         <TippyDetail title={"menuHeader"}>

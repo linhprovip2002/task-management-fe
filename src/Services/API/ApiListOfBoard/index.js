@@ -5,8 +5,13 @@ export async function getListByBoardID(id) {
   return response?.data;
 }
 
-export async function CreateList(newData) {
-  const response = await request.post(`/board/{boardId}/list`, newData);
+export async function CreateList(boardId, newData) {
+  const response = await request.post(`/board/${boardId}/list`, newData);
+  return response?.data;
+}
+
+export async function UpdateList(boardId, listId, newData) {
+  const response = await request.patch(`/board/${boardId}/list/${listId}`, newData);
   return response?.data;
 }
 
