@@ -8,12 +8,24 @@ import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, closestCor
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
 import useDebounce from "../../Hooks/useDebounce";
+import { changePositionList } from "../../Services/API/ApiListOfBoard";
 
 function ListInBoard() {
   const [activeDragItemType, setActiveDragItemType] = useState(null);
+  const [changeData, setChangeData] = useState(null);
 
-  let { nameTitle, isShowAddList, listCount, setListCount, handleShowAddList, handleAddList, handleChangeTitleCard } =
-    useListBoardContext();
+  let {
+    nameTitle,
+    isShowAddList,
+    listCount,
+    setListCount,
+    handleShowAddList,
+    handleAddList,
+    handleChangeTitleCard,
+    boardId,
+  } = useListBoardContext();
+
+  const debounceValue = useDebounce(changeData, 1000);
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -84,6 +96,7 @@ function ListInBoard() {
         if (activeColumn.cards) activeColumn.cards = arrayMove(activeColumn.cards, activeIndex, overIndex);
         setListCount(newColums);
       }
+
       return;
     }
 
@@ -92,6 +105,12 @@ function ListInBoard() {
       const overIndex = over.data.current?.sortable.index || 0;
       const newColums = arrayMove(listCount, activeIndex, overIndex);
       setListCount(newColums);
+      setChangeData({
+        type: "column",
+        listId: listCount[activeIndex].id,
+        activeIndex,
+        overIndex,
+      });
     }
 
     setActiveDragItemType(null);
@@ -114,10 +133,34 @@ function ListInBoard() {
     return items;
   };
 
-  const debounceValue = useDebounce(listCount, 1000);
-
   useEffect(() => {
     //TODO call api move card or column here
+
+    if (debounceValue !== null) {
+      const activeListId = debounceValue.listId;
+      const overIndex = debounceValue.overIndex + 1;
+
+      if (debounceValue.type === "column") {
+        changePositionList({ boardId, listId: activeListId, newPosition: overIndex })
+          .then((res) => {})
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      if (debounceValue.type === "card") {
+        const activeListId = listCount[debounceValue.activeContainerIndex].id;
+        const overListId = listCount[debounceValue.overContainerIndex].id;
+        const overIndex = debounceValue.overIndex;
+
+        console.log(activeListId);
+        console.log(overListId);
+        console.log(overIndex);
+        const card = listCount[debounceValue.activeContainerIndex].cards[overIndex];
+        console.log(card);
+      }
+      setChangeData(null);
+    }
+    // eslint-disable-next-line
   }, [debounceValue]);
 
   return (

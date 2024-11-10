@@ -11,7 +11,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import GroupAvatars from "../GroupAvatars";
 
 function HeaderBoard() {
-  const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
+  const { activeStar, handleActiveStar, dataBoard, membersBoard } = useListBoardContext();
   const [rightSidebar, setRightSidebar] = useState(false);
 
   const handleToggleRightSidebar = () => {
@@ -37,7 +37,7 @@ function HeaderBoard() {
       </div>
       <div className="flex items-center">
         <div className="flex">
-          <GroupAvatars />
+          <GroupAvatars users={membersBoard} />
         </div>
 
         <TippyDetail title={"Table filter tags"}>
