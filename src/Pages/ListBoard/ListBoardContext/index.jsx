@@ -195,7 +195,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
           let cards = await getAllCardByIdList(list.id, boardId);
-          cards = cards.data;
+          cards = cards.data[0].cards;
           return { ...list, cards };
         });
         const updatedLists = await Promise.all(listWithCardsPromises);
