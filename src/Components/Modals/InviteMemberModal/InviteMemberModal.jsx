@@ -34,14 +34,15 @@ export const InviteMemberModal = ({ open, handleClose }) => {
       toast.error("Add member failed");
     },
     onSettled: () => {
-      handleClose();
       queryClient.invalidateQueries({
         queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER]
       });
       queryClient.invalidateQueries({
         queryKey: [EQueryKeys.GET_WORKSPACE_MEMBER]
       });
+      setIsLoading(false);
       reset(defaultInviteMemberValues);
+      handleClose();
     }
   });
 
