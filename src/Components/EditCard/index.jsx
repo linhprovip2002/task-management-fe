@@ -6,13 +6,49 @@ import { listBtnCard } from "./constans";
 import { AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
+import { updateCard } from "../../Services/API/ApiCard";
 
 export const EditCard = ({ imageSrc, isDescriptionIcon = false, isAttachment = false, attachmentCount }) => {
-  const { handleShowBoardCard, handleShowBoardEdit, dataCard, dataList, position } = useListBoardContext();
+  const {
+    handleShowBoardCard,
+    handleShowBoardEdit,
+    setIsShowBoardEdit,
+    setDataCard,
+    isShowBoardEdit,
+    dataCard,
+    dataList,
+    position,
+  } = useListBoardContext();
   const [inputTitle, setInputTitle] = useState(dataCard?.title);
   const handleChange = (e) => {
     setInputTitle(e.target.value);
   };
+
+  const handleSaveTitleCard = async () => {
+    try {
+      const data = {
+        title: inputTitle,
+        description: dataCard.description,
+        coverUrl: dataCard.coverUrl,
+        priority: dataCard.priority,
+        tagId: dataCard.tagId,
+        startDate: dataCard.startDate,
+        endDate: dataCard.endDate,
+        listId: dataList.id,
+      };
+      const res = await updateCard(dataCard.id, data);
+      setDataCard((prev) => {
+        return { ...prev, title: inputTitle };
+      });
+      if (isShowBoardEdit) {
+        setIsShowBoardEdit(!isShowBoardEdit);
+      }
+      return res;
+    } catch (error) {
+      console.error("Error setup background in card detail: ", error);
+    }
+  };
+
   const handleClickBtn = (item) => {
     switch (item.id) {
       case 1:
@@ -104,6 +140,7 @@ export const EditCard = ({ imageSrc, isDescriptionIcon = false, isAttachment = f
             isActive={true}
             nameBtn={"Save"}
             className={"text-white font-[500] bg-blue-500 hover:bg-gray-300 mb-1"}
+            onHandleEvent={handleSaveTitleCard}
           />
         </div>
       </div>

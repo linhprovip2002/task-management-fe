@@ -57,7 +57,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
       title: nameList.trim(),
     };
     try {
-      const list = await CreateList(dataList);
+      const list = await CreateList(dataBoard?.id, dataList);
       data.cards.map(async (card) => {
         const dataCard = {
           title: card.title,
