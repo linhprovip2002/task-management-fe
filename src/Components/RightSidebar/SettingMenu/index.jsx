@@ -1,34 +1,54 @@
-import React from "react";
-import MenuItem from "../MenuItem";
+import { memo, useState } from "react";
 import { Slide } from "@mui/material";
+import { EditPermissionModal } from "../../Modals/EditPermissionModal";
 
 const styles = {
-  permissionHeader: "text-[var(--text-color)] text-[14px] font-semibold py-2 px-3",
+  permissionHeader:
+    "text-[var(--text-color)] text-[14px] font-semibold py-2 px-3",
+  menuItem:
+    "text-sm px-4 py-2 rounded-md hover:bg-slate-100 hover:cursor-pointer"
 };
+
 function SettingMenu() {
+  const [openRoleManangement, setOpenRoleManangement] = useState(false);
+
   return (
-    <Slide in={true} direction="left">
-      <div className="flex flex-col">
-        <h1 className={styles.permissionHeader}>Worksapce</h1>
-        <MenuItem>BKDN</MenuItem>
-        <div className="mt-3">
-          <h1 className={styles.permissionHeader}>Permissions</h1>
-        </div>
-        <MenuItem>Commenting</MenuItem>
-        <MenuItem>Adding and removing members</MenuItem>
-        <MenuItem>Workspace editing</MenuItem>
+    <>
+      <Slide in={true} direction="left">
+        <div className="flex flex-col">
+          <h1 className={styles.permissionHeader}>Worksapce</h1>
+          <div className={styles.menuItem}>BKDN</div>
+          <div className="mt-3">
+            <h1 className={styles.permissionHeader}>Permissions</h1>
+          </div>
+          <div className={styles.menuItem}>Commenting</div>
+          <div
+            className={styles.menuItem}
+            onClick={() => setOpenRoleManangement(true)}
+          >
+            Roles Management
+          </div>
+          <div className={styles.menuItem}>Members Management</div>
+          <div className={styles.menuItem}>Workspace editing</div>
 
-        <div className="mt-3">
-          <h1 className={styles.permissionHeader}>Covers</h1>
-        </div>
+          <div className="mt-3">
+            <h1 className={styles.permissionHeader}>Covers</h1>
+          </div>
 
-        <MenuItem>Card covers enabled</MenuItem>
-        <div className="mt-3">
-          <h1 className={styles.permissionHeader}>Collections</h1>
+          <div className={styles.menuItem}>Card covers enabled</div>
+          <div className="mt-3">
+            <h1 className={styles.permissionHeader}>Collections</h1>
+          </div>
         </div>
-      </div>
-    </Slide>
+      </Slide>
+      {openRoleManangement && (
+        <EditPermissionModal
+          open={openRoleManangement}
+          handleClose={() => setOpenRoleManangement(false)}
+        />
+      )}
+    </>
   );
 }
 
-export default React.memo(SettingMenu);
+export default memo(SettingMenu);

@@ -13,6 +13,9 @@ import ListInBoard from "../../Components/ListInBoard";
 import ListBoardProvider from "./ListBoardContext";
 import { useListBoardContext } from "./ListBoardContext";
 import NavbarTable from "../../Components/HiDotsVertical/NavbarTable";
+import Loading from "../../Components/Loading";
+
+import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 function ListBoard() {
   const { id: idWorkSpace, idBoard } = useParams();
@@ -29,9 +32,13 @@ function ListBoardContent() {
     dataWorkspace,
     handleClosedNavBar,
     isShowBoardCard,
-    isShowBoardEdit
+    isShowBoardEdit,
+    loading
   } = useListBoardContext();
-  // const { dataPermission } = useGetBoardPermission(dataBoard.id);
+  const { isLoading: isLoadingPermission } = useGetBoardPermission(
+    dataBoard.id
+  );
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [titleName, settitleName] = useState("Sort by alphabetical order");
   const [activeCollectTable, setActiveCollectTable] = useState(0);
@@ -69,6 +76,8 @@ function ListBoardContent() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
+  const isLoading =
+    loading || !dataBoard || !dataWorkspace || isLoadingPermission;
 
   return (
     <>
@@ -76,13 +85,13 @@ function ListBoardContent() {
         style={{
           height: "calc(100vh - 61px)"
         }}
-        className="w-[100wh] flex"
+        className="w-screen flex"
       >
         <Sidebar>
           <>
             <div className={`pl-4 py-4 flex items-center`}>
               <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
-                B
+                {dataBoard.title?.[0]}
               </div>
               <div className="flex-1 ml-2 text-[18px] font-medium">
                 {dataWorkspace.title}
@@ -134,12 +143,11 @@ function ListBoardContent() {
         </Sidebar>
         {/* list board */}
         <div
-          className="flex-grow flex flex-col overflow-x-hidden"
+          className="flex-grow flex flex-col overflow-x-hidden max-h-full overflow-hidden"
           style={{
-            backgroundColor:
-              !dataBoard.coverUrl && dataBoard.backgroundColor
-                ? dataBoard.backgroundColor
-                : "transparent",
+            backgroundColor: dataBoard.coverUrl
+              ? "transparent"
+              : dataBoard.backgroundColor || "transparent",
             backgroundImage: dataBoard.coverUrl
               ? `url(${dataBoard.coverUrl})`
               : dataBoard.backgroundColor
@@ -147,9 +155,7 @@ function ListBoardContent() {
                 : `url(https://trello.com/assets/707f35bc691220846678.svg)`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            maxHeight: "100%",
-            overflow: "hidden"
+            backgroundRepeat: "no-repeat"
           }}
         >
           <HeaderBoard />
@@ -158,6 +164,7 @@ function ListBoardContent() {
       </div>
       {isShowBoardCard && <BoardCard />}
       {isShowBoardEdit && <EditCard />}
+      {isLoading && <Loading />}
     </>
   );
 }
