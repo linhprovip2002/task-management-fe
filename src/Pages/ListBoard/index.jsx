@@ -13,10 +13,9 @@ import ListInBoard from "../../Components/ListInBoard";
 import ListBoardProvider from "./ListBoardContext";
 import { useListBoardContext } from "./ListBoardContext";
 import NavbarTable from "../../Components/HiDotsVertical/NavbarTable";
-// import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 function ListBoard() {
-  const { idWorkSpace, idBoard } = useParams();
+  const { id: idWorkSpace, idBoard } = useParams();
   return (
     <ListBoardProvider boardId={idBoard} idWorkSpace={idWorkSpace}>
       <ListBoardContent />
@@ -25,7 +24,13 @@ function ListBoard() {
 }
 
 function ListBoardContent() {
-  const { dataBoard, dataWorkspace, handleClosedNavBar, isShowBoardCard, isShowBoardEdit } = useListBoardContext();
+  const {
+    dataBoard,
+    dataWorkspace,
+    handleClosedNavBar,
+    isShowBoardCard,
+    isShowBoardEdit
+  } = useListBoardContext();
   // const { dataPermission } = useGetBoardPermission(dataBoard.id);
   const [anchorEl, setAnchorEl] = useState(null);
   const [titleName, settitleName] = useState("Sort by alphabetical order");
@@ -40,7 +45,7 @@ function ListBoardContent() {
     zIndex: 1,
     border: "1px solid",
     p: 1,
-    bgcolor: "background.paper",
+    bgcolor: "background.paper"
   };
 
   const handleClickHidot = (event) => {
@@ -69,7 +74,7 @@ function ListBoardContent() {
     <>
       <div
         style={{
-          height: "calc(100vh - 61px)",
+          height: "calc(100vh - 61px)"
         }}
         className="w-[100wh] flex"
       >
@@ -79,13 +84,24 @@ function ListBoardContent() {
               <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
                 B
               </div>
-              <div className="flex-1 ml-2 text-[18px] font-medium">{dataWorkspace.title}</div>
-              <div onClick={handleClosedNavBar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
-                <ArrowDown width={16} height={16} className={"rotate-90 text-gray-100"} />
+              <div className="flex-1 ml-2 text-[18px] font-medium">
+                {dataWorkspace.title}
+              </div>
+              <div
+                onClick={handleClosedNavBar}
+                className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer"
+              >
+                <ArrowDown
+                  width={16}
+                  height={16}
+                  className={"rotate-90 text-gray-100"}
+                />
               </div>
             </div>
             <div className="group flex items-center">
-              <div className="flex-1 text-[16px] font-medium py-2 pl-4 ">Your tables</div>
+              <div className="flex-1 text-[16px] font-medium py-2 pl-4 ">
+                Your tables
+              </div>
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div className="relative">
                   <div
@@ -93,7 +109,10 @@ function ListBoardContent() {
                     className=" cursor-pointer p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300"
                     onClick={handleClickHidot}
                   >
-                    <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
+                    <HiDotsVertical
+                      size={16}
+                      className="text-gray-700 rotate-90"
+                    />
                   </div>
                   <Popper id={id} open={open} anchorEl={anchorEl}>
                     <div style={styles}>
@@ -118,7 +137,9 @@ function ListBoardContent() {
           className="flex-grow flex flex-col overflow-x-hidden"
           style={{
             backgroundColor:
-              !dataBoard.coverUrl && dataBoard.backgroundColor ? dataBoard.backgroundColor : "transparent",
+              !dataBoard.coverUrl && dataBoard.backgroundColor
+                ? dataBoard.backgroundColor
+                : "transparent",
             backgroundImage: dataBoard.coverUrl
               ? `url(${dataBoard.coverUrl})`
               : dataBoard.backgroundColor
@@ -128,7 +149,7 @@ function ListBoardContent() {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             maxHeight: "100%",
-            overflow: "hidden",
+            overflow: "hidden"
           }}
         >
           <HeaderBoard />

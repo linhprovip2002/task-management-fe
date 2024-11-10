@@ -11,6 +11,7 @@ export const userRoutes = {
   profile: "/user/:id",
   profileActivity: "/user/:id/activity",
   profileCards: "/user/:id/cards",
+  profilePrivacy: "/user/:id/privacy",
   profileSettings: "/user/:id/settings"
 };
 
@@ -18,7 +19,7 @@ const routes = {
   notFound: "/not-found",
   login: "/login",
   signup: "/signup",
-  listboard: "/workspace/:idWorkSpace/board/:idBoard",
+  listboard: "/workspace/:id/board/:idBoard",
   test: "/test",
   ...userRoutes,
   ...workspaceRoutes

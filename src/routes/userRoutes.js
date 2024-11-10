@@ -27,5 +27,10 @@ export const UserRoutes = [
     path: config.routes.profileSettings,
     component: Profile,
     layout: DefaultLayout
+  },
+  {
+    path: config.routes.profilePrivacy,
+    component: Profile,
+    layout: DefaultLayout
   }
 ];

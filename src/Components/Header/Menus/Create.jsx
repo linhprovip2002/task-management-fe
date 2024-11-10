@@ -7,9 +7,7 @@ import { CreateNewBoard } from "../../Modals/CreateNewBoard/CreateNewBoard";
 
 export default function Create() {
   const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = useState(false); // create new board
-  
-  // const { id } = useParams();
+  const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
