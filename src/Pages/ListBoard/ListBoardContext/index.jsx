@@ -417,6 +417,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setUpFileComment,
         // handleFileCommentChange,s
         setIsShowBoardEdit,
+        setDataBoard,
       }}
     >
       {children}
