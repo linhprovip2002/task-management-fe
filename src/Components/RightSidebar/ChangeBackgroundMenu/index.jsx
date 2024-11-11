@@ -31,15 +31,11 @@ export default function ChangeBackgroundMenu() {
         coverUrl: colorUrl,
       };
     });
-    const loadingToastId = toast.loading("Updating...");
     updateBoard(dataBoard.id, { coverUrl: colorUrl })
-      .then((res) => {
-        toast.success("Updated background color");
-      })
+      .then((res) => {})
       .catch(() => {
         toast.error("Update background color unsuccessfully");
-      })
-      .finally(() => toast.dismiss(loadingToastId));
+      });
     // eslint-disable-next-line
   }, []);
 

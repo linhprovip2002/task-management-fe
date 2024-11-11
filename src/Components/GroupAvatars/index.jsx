@@ -2,30 +2,8 @@ import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import { memo } from "react";
 import PropTypes from "prop-types";
+import { stringAvatar } from "../../Utils/color";
 
-function stringToColor(string) {
-  let hash = 0;
-  let i;
-  for (i = 0; i < string.length; i += 1) {
-    hash = string.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  let color = "#";
-  for (i = 0; i < 3; i += 1) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += `00${value.toString(16)}`.slice(-2);
-  }
-  return color;
-}
-
-function stringAvatar(name) {
-  return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children: `${name.charAt(0).toUpperCase()}`,
-    title: name,
-  };
-}
 function GroupAvatars({ users = [] }) {
   return (
     <AvatarGroup
@@ -35,6 +13,7 @@ function GroupAvatars({ users = [] }) {
           width: 28,
           height: 28,
           cursor: "pointer",
+          fontSize: "14px",
           "&:hover": {
             opacity: 0.9,
           },
