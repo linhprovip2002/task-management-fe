@@ -83,7 +83,9 @@ function BoardMemberModal({ open = false, onClose }) {
         return res.data;
       })
       .then((data) => {
-        const members = data.map((item) => {
+        data = data.filter((item) => item.user !== null);
+
+        let members = data.map((item) => {
           item.user.role = item.role;
           return item.user;
         });

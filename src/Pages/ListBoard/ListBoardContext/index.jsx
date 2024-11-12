@@ -8,13 +8,9 @@ import {
   getAllMembersByIdBoard,
   getBoardId,
   getWorkspaceById,
-  updateBoard
+  updateBoard,
 } from "../../../Services/API/ApiBoard/apiBoard";
-import {
-  apiAssignFile,
-  apiDeleteFile,
-  apiUploadMultiFile
-} from "../../../Services/API/ApiUpload/apiUpload";
+import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 
 const ListBoardContext = createContext();
@@ -107,7 +103,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         console.error("Failed to get uploaded files:", error);
       }
     },
-    [setPostUploadedFiles]
+    [setPostUploadedFiles],
   );
 
   const handleDeleteFile = async (fileId) => {
@@ -115,7 +111,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       await apiDeleteFile(dataCard.id, fileId);
       setDataCard((prev) => ({
         ...prev,
-        files: prev.files.filter((file) => file.id !== fileId)
+        files: prev.files.filter((file) => file.id !== fileId),
       }));
       setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
       toast.success("File deleted successfully!");
@@ -143,7 +139,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: dataCard.id
+      cardId: dataCard.id,
     };
     setLoading(true);
     const loadingToastId = toast.loading("Saving...");
@@ -161,7 +157,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       // Thêm bình luận mới vào danh sách bình luận
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: [...prevDataCard.comments, newComment]
+        comments: [...prevDataCard.comments, newComment],
       }));
     } catch (err) {
       toast.dismiss(loadingToastId);
@@ -247,7 +243,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setDataCard(dataCard);
       setMembersInCard(dataCard?.members);
     },
-    [isShowBoardCard, isShowBoardEdit]
+    [isShowBoardCard, isShowBoardEdit],
   );
 
   const handleShowBoardEdit = useCallback(
@@ -259,14 +255,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setIsShowBoardEdit(!isShowBoardEdit);
       setPostUploadedFiles([...dataCard.files]);
     },
-    [isShowBoardEdit]
+    [isShowBoardEdit],
   );
 
   const handleShowAddCard = (idList) => {
     setActiveIndex(idList);
     const newList = listCount.map((list) => ({
       ...list,
-      isShowAddCard: list.id === idList ? !list.isShowAddCard : false
+      isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
     }));
     setListCount(newList);
   };
@@ -312,7 +308,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         coverUrl: "",
         priority: "medium",
         tagId: "",
-        listId: idList
+        listId: idList,
       };
       try {
         const res = await createCardByIdList(dataSend);
@@ -321,7 +317,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         console.error("Failed to create card by id list:", error);
       }
     },
-    [listCount]
+    [listCount],
   );
 
   const handleAddList = async (newData) => {
@@ -329,7 +325,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       const newListItem = {
         title: newData.title.trim(),
         description: "",
-        boardId: dataBoard.id
+        boardId: dataBoard.id,
       };
 
       try {
@@ -410,9 +406,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         uploadedFiles,
         setUploadedFiles,
         handleFileChange,
-        postUploadedFiles: postUploadedFiles.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        ),
+        postUploadedFiles: postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
         setPostUploadedFiles,
         handlePostFiles,
         loading,
@@ -426,8 +420,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         boardId,
         idWorkSpace,
         upFileComment,
-        setUpFileComment,
-        // handleFileCommentChange,s
+        setUpFileComment,,
         setIsShowBoardEdit,
         setDataBoard
       }}
