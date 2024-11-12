@@ -1,9 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { EQueryKeys } from "../constants";
-import {
-  getBoardPermission,
-  getBoardRole
-} from "../Services/API/apiBoardPermission";
+import { getBoardPermission, getBoardRole } from "../Services/API/apiBoardPermission";
 
 export const useGetBoardPermission = (boardId, roleId) => {
   const { data, isLoading, isError, refetch } = useQuery({
@@ -15,7 +12,24 @@ export const useGetBoardPermission = (boardId, roleId) => {
     }
   });
 
-  return { dataBoardPermission: data, isLoading, isError, refetch };
+  const getBoardPermissionByUser = (item) => {
+    const moduleName = "board";
+    return data?.find((el) => el.moduleName === moduleName && el.actionName === item);
+  };
+
+  const getListPermissionByUser = (item) => {
+    const moduleName = "list";
+    return data?.find((el) => el.moduleName === moduleName && el.actionName === item)?.isGranted;
+  };
+
+  return {
+    dataBoardPermission: data,
+    isLoading,
+    isError,
+    refetch,
+    getBoardPermissionByUser,
+    getListPermissionByUser
+  };
 };
 
 export const useGetBoardRole = (boardId) => {

@@ -43,7 +43,7 @@ function BoardMemberModal({ open = false, onClose }) {
     delete newMember.isExisted;
     newMember.role = {
       id: 3,
-      name: "member",
+      name: "member"
     };
     setMembers((prev) => [...prev, newMember]);
   };
@@ -83,14 +83,14 @@ function BoardMemberModal({ open = false, onClose }) {
         return res.data;
       })
       .then((data) => {
-        let members = data.map((item) => {
+        const members = data.map((item) => {
           item.user.role = item.role;
           return item.user;
         });
         setMembers(members);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
     // eslint-disable-next-line
   }, []);
@@ -102,8 +102,8 @@ function BoardMemberModal({ open = false, onClose }) {
       sx={{
         "& .MuiDialog-paper": {
           height: "100%",
-          borderRadius: 3,
-        },
+          borderRadius: 3
+        }
       }}
     >
       <DialogTitle width={"600px"} sx={{ textAlign: "center", color: "#172b4d" }}>
@@ -119,7 +119,14 @@ function BoardMemberModal({ open = false, onClose }) {
         {members.map((item, index) => {
           const disable = item.id === userData.id;
 
-          return <MemberItem disabelRemove={disable} onDeleted={handleRemoveSuccess} key={index} data={item} />;
+          return (
+            <MemberItem
+              disabelRemove={disable}
+              onDeleted={handleRemoveSuccess}
+              key={index}
+              data={item}
+            />
+          );
         })}
 
         <div className="px-3">
@@ -151,8 +158,8 @@ function BoardMemberModal({ open = false, onClose }) {
                       paddingY: "8px",
                       paddingX: "12px",
                       fontSize: "14px",
-                      fontWeight: 400,
-                    },
+                      fontWeight: 400
+                    }
                   }}
                 />
               </div>
@@ -171,6 +178,6 @@ function BoardMemberModal({ open = false, onClose }) {
 
 BoardMemberModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 export default memo(BoardMemberModal);

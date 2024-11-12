@@ -29,9 +29,9 @@ export const createBoardRole = async (boardId, name) => {
   }
 };
 
-export const updateBoardPermission = async (boardId) => {
+export const updateBoardPermission = async (boardId, payload) => {
   try {
-    const response = await request.put(`/board/${boardId}/permission`);
+    const response = await request.put(`/board/${boardId}/permission`, payload);
     return response.data;
   } catch (error) {
     console.error("Error:", error);

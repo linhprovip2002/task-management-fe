@@ -1,19 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from "react";
+import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import {
-  createCardByIdList,
-  getAllCardByIdList
-} from "../../../Services/API/ApiCard";
+import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
 import {
   getAllMembersByIdBoard,
   getBoardId,
@@ -187,9 +177,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       await deleteComment(boardId, cmdId);
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: prevDataCard.comments.filter(
-          (comment) => comment.id !== cmdId
-        )
+        comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId)
       }));
       toast.success("File deleted successfully!");
     } catch (err) {
@@ -203,13 +191,11 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       try {
         setLoading(true);
         const resWorkspace = await getWorkspaceById(idWorkSpace);
-        if (!resWorkspace || resWorkspace.error)
-          return navigate(`/workspace/${idWorkSpace}/home`);
+        if (!resWorkspace || resWorkspace.error) return navigate(`/workspace/${idWorkSpace}/home`);
         setDataWorkspace(resWorkspace?.data);
 
         const resBoard = await getBoardId(boardId);
-        if (!resBoard || resBoard.error)
-          return navigate(`/workspace/${idWorkSpace}/home`);
+        if (!resBoard || resBoard.error) return navigate(`/workspace/${idWorkSpace}/home`);
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -218,10 +204,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
           return { ...list, cards };
         });
         const updatedLists = await Promise.all(listWithCardsPromises);
-        if (
-          JSON.stringify(updatedLists) !==
-          JSON.stringify(prevListCountRef.current)
-        ) {
+        if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
           setListCount(updatedLists);
         }
         prevListCountRef.current = updatedLists;
@@ -443,10 +426,10 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         boardId,
         idWorkSpace,
         upFileComment,
-        setUpFileComment
+        setUpFileComment,
         // handleFileCommentChange,s
         setIsShowBoardEdit,
-        setDataBoard,
+        setDataBoard
       }}
     >
       {children}

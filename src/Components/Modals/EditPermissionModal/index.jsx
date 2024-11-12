@@ -8,6 +8,8 @@ import { PERMISSIONS } from "../../../constants/permission";
 import { capitalize } from "lodash";
 import { useGetBoardRole } from "../../../Hooks/useBoardPermission";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { updateBoardPermission } from "../../../Services/API/apiBoardPermission";
 
 export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +42,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
       }
       const index = acc.findIndex((p) => p.title === permission.module);
       acc[index].children.push({
+        id: permission.id,
         title: permission.displayName
       });
       return acc;
@@ -50,18 +53,26 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-  };
 
-  const handleChange = (permissionTitle, childTitle, value) => {
-    const formValues = getValues();
-    const updatedPermissions = {
-      ...formValues.permissions,
-      [permissionTitle]: {
-        ...formValues.permissions?.[permissionTitle],
-        [childTitle]: value
-      }
-    };
-    setValue("permissions", updatedPermissions);
+    const payload = data.permissions.map((permission) => ({
+      roleId: data.role.value,
+      permissionId: permission
+    }));
+    const response = await updateBoardPermission(idBoard, payload);
+    console.log(payload);
+  };
+  console.log(watch("permissions"));
+  const handleChange = (permission, value) => {
+    if (!watch("role")) {
+      toast.error("Please select a role first");
+      return;
+    }
+    const formValues = getValues("permissions") || [];
+    const updatedPermissions = value
+      ? [...formValues, permission.id].filter(Boolean)
+      : formValues.filter((p) => p !== permission.id);
+    const uniquePermissions = [...new Set(updatedPermissions)];
+    setValue("permissions", uniquePermissions);
   };
 
   useEffect(() => {
@@ -69,6 +80,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
       setValue("role", null);
       setOpenCreateRoleModal(true);
     }
+
     // eslint-disable-next-line
   }, [watchRole]);
 
@@ -102,20 +114,13 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
                     size="small"
                     options={RoleOptions}
                     getOptionLabel={(option) => option.label}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Role" />
-                    )}
+                    renderInput={(params) => <TextField {...params} label="Role" />}
                     onChange={(_, data) => field.onChange(data)}
                   />
                 )}
               />
               <div className="w-60 h-full">
-                <Button
-                  variant="contained"
-                  size="medium"
-                  type="submit"
-                  fullWidth
-                >
+                <Button variant="contained" size="medium" type="submit" fullWidth>
                   Save new settings
                 </Button>
               </div>
@@ -126,34 +131,28 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
                   className="flex items-center w-full gap-4 border-b border-slate-100"
                   key={permission.title}
                 >
-                  <div className="w-1/12 font-semibold">
-                    {capitalize(permission.title)}
-                  </div>
+                  <div className="w-1/12 font-semibold">{capitalize(permission.title)}</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-1">
-                    {permission.children.map((child) => (
-                      <div
-                        className="flex gap-2 items-center w-full"
-                        key={child.title}
-                      >
-                        <Controller
-                          name={`permissions.${permission.title}.${child.title}`}
-                          control={control}
-                          render={({ field }) => (
-                            <Switch
-                              checked={field.value || false}
-                              onChange={(_, value) =>
-                                handleChange(
-                                  permission.title,
-                                  child.title,
-                                  value
-                                )
-                              }
-                            />
-                          )}
-                        />
-                        <div>{child.title}</div>
-                      </div>
-                    ))}
+                    {permission.children.map((child) => {
+                      const permissions = watch("permissions") || [];
+                      const isChecked = permissions.includes(child.id);
+
+                      return (
+                        <div className="flex gap-2 items-center w-full" key={child.title}>
+                          <Controller
+                            name={`permissions.${child.id}`}
+                            control={control}
+                            render={() => (
+                              <Switch
+                                checked={isChecked}
+                                onChange={(_, value) => handleChange(child, value)}
+                              />
+                            )}
+                          />
+                          <div>{child.title}</div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}

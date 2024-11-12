@@ -9,9 +9,11 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { HiDotsVertical } from "react-icons/hi";
 import GroupIcon from "@mui/icons-material/Group";
 import GroupAvatars from "../GroupAvatars";
+import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 function HeaderBoard() {
-  const { activeStar, handleActiveStar, dataBoard, membersBoard } = useListBoardContext();
+  const { activeStar, handleActiveStar, dataBoard, membersBoard, boardId } = useListBoardContext();
+  const { getListPermissionByUser } = useGetBoardPermission(boardId);
   const [rightSidebar, setRightSidebar] = useState(false);
 
   const handleToggleRightSidebar = useCallback(() => {
@@ -37,13 +39,15 @@ function HeaderBoard() {
       </div>
       <div
         style={{
-          transition: "margin 0.2s ease-in",
+          transition: "margin 0.2s ease-in"
         }}
         className={`flex items-center ${rightSidebar && "mr-[330px]"}`}
       >
-        <div className="flex">
-          <GroupAvatars users={membersBoard} />
-        </div>
+        {getListPermissionByUser("list_member") && (
+          <div className="flex">
+            <GroupAvatars users={membersBoard} />
+          </div>
+        )}
 
         <TippyDetail title={"Table filter tags"}>
           <div className="cursor-pointer flex items-center px-3 py-[6px] ml-2 rounded-[4px] hover:bg-gray-300 transition-bg duration-300">
@@ -51,12 +55,14 @@ function HeaderBoard() {
             <span className="text-[14px] font-medium">Filter</span>
           </div>
         </TippyDetail>
-        <TippyDetail title={"Share Board"}>
-          <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
-            <GroupIcon width={16} height={16} className={"mr-2 text-white"} />
-            <span className="text-[14px] font-medium text-white">Members</span>
-          </div>
-        </TippyDetail>
+        {getListPermissionByUser("list_member") && (
+          <TippyDetail title={"Share Board"}>
+            <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
+              <GroupIcon width={16} height={16} className={"mr-2 text-white"} />
+              <span className="text-[14px] font-medium text-white">Members</span>
+            </div>
+          </TippyDetail>
+        )}
         <TippyDetail title={"Menu"}>
           <div
             onClick={handleToggleRightSidebar}

@@ -1,4 +1,6 @@
 export function stringToColor(string) {
+  if (!string) return "#000000";
+
   let hash = 0;
   let i;
   for (i = 0; i < string.length; i += 1) {
@@ -13,11 +15,12 @@ export function stringToColor(string) {
 }
 
 export function stringAvatar(name) {
+  if (!name) return null;
   return {
     sx: {
-      bgcolor: stringToColor(name),
+      bgcolor: stringToColor(name)
     },
     children: `${name.charAt(0).toUpperCase()}`,
-    title: name,
+    title: name
   };
 }

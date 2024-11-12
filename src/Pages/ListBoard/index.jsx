@@ -27,9 +27,15 @@ function ListBoard() {
 }
 
 function ListBoardContent() {
-  const { dataBoard, dataWorkspace, handleClosedNavBar, isShowBoardCard, isShowBoardEdit,
-    loading } = useListBoardContext();
-  const { isLoading: isLoadingPermission } = useGetBoardPermission(
+  const {
+    dataBoard,
+    dataWorkspace,
+    handleClosedNavBar,
+    isShowBoardCard,
+    isShowBoardEdit,
+    loading
+  } = useListBoardContext();
+  const { isLoading: isLoadingPermission, getListPermissionByUser } = useGetBoardPermission(
     dataBoard.id
   );
 
@@ -46,7 +52,7 @@ function ListBoardContent() {
     zIndex: 1,
     border: "1px solid",
     p: 1,
-    bgcolor: "background.paper",
+    bgcolor: "background.paper"
   };
 
   const handleClickHidot = (event) => {
@@ -70,14 +76,13 @@ function ListBoardContent() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
-  const isLoading =
-    loading || !dataBoard || !dataWorkspace || isLoadingPermission;
+  const isLoading = loading || !dataBoard || !dataWorkspace || isLoadingPermission;
 
   return (
     <>
       <div
         style={{
-          height: "calc(100vh - 61px)",
+          height: "calc(100vh - 61px)"
         }}
         className="w-screen flex"
       >
@@ -88,7 +93,10 @@ function ListBoardContent() {
                 B
               </div>
               <div className="flex-1 ml-2 text-[14px] font-[600]">{dataWorkspace?.title}</div>
-              <div onClick={handleClosedNavBar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
+              <div
+                onClick={handleClosedNavBar}
+                className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer"
+              >
                 <ArrowDown width={12} height={12} className={"rotate-90 text-gray-100"} />
               </div>
             </div>
