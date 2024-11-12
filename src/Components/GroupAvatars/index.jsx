@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { stringAvatar } from "../../Utils/color";
 
 function GroupAvatars({ users = [] }) {
+  users = users.filter((user) => user.user !== null);
   return (
     <AvatarGroup
       max={5}
