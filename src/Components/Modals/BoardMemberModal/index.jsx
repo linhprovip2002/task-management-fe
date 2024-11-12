@@ -115,7 +115,7 @@ function BoardMemberModal({ open = false, onClose }) {
           <CloseIcon />
         </button>
       </DialogTitle>
-      <List sx={{ pt: 0 }}>
+      <List sx={{ pt: 0, paddingX: 2 }}>
         {members.map((item, index) => {
           const disable = item.id === userData.id;
 
