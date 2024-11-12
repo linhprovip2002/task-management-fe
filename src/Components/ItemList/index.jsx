@@ -64,7 +64,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
             }}
-            className={`w-full min-h-[80px] rounded-t-[8px] ${dataCard?.coverUrl.startsWith("bg-") ? dataCard?.coverUrl : ""}`}
+            className={`w-full min-h-[80px] rounded-t-[6px] ${dataCard?.coverUrl.startsWith("bg-") ? dataCard?.coverUrl : ""}`}
           />
         )}
         <div className="flex flex-col mx-[12px]">
@@ -79,7 +79,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
                 ) : null,
               )}
           </div>
-          <div className="text-[16px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
+          <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
           <div className="flex items-center justify-between w-full flex-wrap">
             <div className="flex items-center flex-wrap pb-2">
               {isFollowing && (

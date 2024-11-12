@@ -10,6 +10,7 @@ import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 
 function List({ item = {}, id }) {
   const cards = item.cards || [];
@@ -23,9 +24,31 @@ function List({ item = {}, id }) {
     height: "100%",
   };
 
-  let { nameTitle, activeMonitor, activeIndex, handleChange, handleShowAddCard, handleAddCard, handleChangeTitleCard } =
-    useListBoardContext();
+  let {
+    boardId,
+    nameTitle,
+    activeMonitor,
+    activeIndex,
+    handleChange,
+    handleShowAddCard,
+    handleAddCard,
+    handleChangeTitleCard,
+  } = useListBoardContext();
 
+  const handleClickOutside = async (event) => {
+    if (event.target.value) {
+      const dataList = {
+        title: event.target.value.trim(),
+        description: item?.description,
+        boardId: boardId,
+      };
+      try {
+        await UpdateList(boardId, id, dataList);
+      } catch (error) {
+        console.error("Failed to create list:", error);
+      }
+    }
+  };
   return (
     <div ref={setNodeRef} style={dndKitColumStyles} {...attributes}>
       <div {...listeners} className="px-[8px]">
@@ -35,7 +58,8 @@ function List({ item = {}, id }) {
               type="text"
               value={item.title}
               onChange={(e) => handleChange(e, item.id)}
-              className="flex-1 min-w-0 mr-2 bg-gray-100 rounded-[8px] text-[16px] font-[500] px-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onBlur={(e) => handleClickOutside(e)}
+              className="flex-1 min-w-0 mr-2 bg-gray-100 rounded-[8px] text-[14px] font-[600] px-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {activeMonitor.includes(item.id) && <RemoveRedEyeOutlinedIcon className="p-1" />}
             <ConvertHiDotsVertical
@@ -47,7 +71,7 @@ function List({ item = {}, id }) {
             />
           </div>
           {/* List board */}
-          <SortableContext strategy={verticalListSortingStrategy} items={cards?.map((item) => item.id)}>
+          <SortableContext strategy={verticalListSortingStrategy} items={cards}>
             <div className="flex-1 p-1">
               {cards?.map((card, index) => {
                 return (
@@ -83,10 +107,10 @@ function List({ item = {}, id }) {
                 onClick={() => handleShowAddCard(item.id)}
                 className="flex flex-1 items-center rounded-[8px] hover:bg-gray-300 cursor-pointer"
               >
-                <div className=" rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300">
+                <div className="p-2 transition-opacity duration-300">
                   <AddIcon width={16} height={16} />
                 </div>
-                <div className="text-[16px] font-medium">Add card</div>
+                <div className="text-[14px] font-medium">Add card</div>
               </div>
               <TippyDetail title={"Create from template..."}>
                 <div>

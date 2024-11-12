@@ -56,6 +56,8 @@ export const BoardCard = () => {
     loading,
     handleDeleteFile,
     setEditorInstance,
+    boardId,
+    setDataCard,
   } = useListBoardContext();
   const { userData } = useStorage();
   const [listLabel, setListLabel] = useState(() => {
@@ -235,6 +237,9 @@ export const BoardCard = () => {
         listId: dataList.id,
       };
       const res = await updateCard(dataCard.id, data);
+      setDataCard((prev) => {
+        return { ...prev, coverUrl: chooseColorBackground };
+      });
       return res;
     } catch (error) {
       console.error("Error setup background in card detail: ", error);
@@ -245,14 +250,14 @@ export const BoardCard = () => {
     (item) => {
       const addTagAsync = async () => {
         try {
-          await AddTagInCard(item.boardId, dataCard?.id, item.id);
+          await AddTagInCard(boardId, dataCard?.id, item.id);
         } catch (err) {
           console.error("Error add data tag in card detail: ", err);
         }
       };
       const removeTagAsync = async () => {
         try {
-          await RemoveTagInCard(item.boardId, dataCard?.id, item.id);
+          await RemoveTagInCard(boardId, dataCard?.id, item.id);
         } catch (err) {
           console.error("Error remove data tag in card detail: ", err);
         }
@@ -266,8 +271,12 @@ export const BoardCard = () => {
           return [...prevCountLabel, item];
         }
       });
+      setDataCard((prevDataCard) => ({
+        ...prevDataCard,
+        tagCards: [...(prevDataCard.tagCards || []), countLabel],
+      }));
     },
-    [dataCard],
+    [dataCard, boardId, countLabel, setDataCard],
   );
 
   const handleCheckDoneToDoItem = (Item, todoItemList) => {
@@ -346,6 +355,11 @@ export const BoardCard = () => {
             item.nameBtn = "Join";
           }
         });
+        try {
+          // await RemoveUserToCard(dataCard?.id, member.id);
+        } catch (error) {
+          console.error("Error join to card:", error);
+        }
       } else {
         setMembersInCard([...membersInCard, member]);
         listBtnCard.forEach((item) => {
@@ -353,6 +367,10 @@ export const BoardCard = () => {
             item.nameBtn = "Leave";
           }
         });
+        try {
+        } catch (error) {
+          console.error("Error join to card:", error);
+        }
       }
       if (membersBoard.some((item) => item.id === member.id)) {
         setMembersBoard(membersBoard.filter((item) => item.id !== member.id));

@@ -41,8 +41,8 @@ function BoardInSidebar() {
   const id = open ? "simple-popper" : undefined;
 
   return (
-    <div className="relative flex items-center pl-4 py-1 bg-gray-200 hover:bg-gray-300 cursor-pointer group transition-all duration-200">
-      <div className="rounded-[4px] font-bold text-white text-[20px]">
+    <div className="relative flex items-center pl-4 py-[2px] bg-gray-200 hover:bg-gray-300 cursor-pointer group transition-all duration-200">
+      <div className="rounded-[4px] font-bold text-white text-[14px]">
         <ImageIcon width={24} height={20} className={"rounded-[2px]"} />
       </div>
       <div className=" flex-1 ml-2 text-[14px] font-medium">{dataBoard.title || "No title"}</div>
@@ -50,7 +50,7 @@ function BoardInSidebar() {
         <div className="relative">
           <div
             aria-describedby={id}
-            className=" cursor-pointer p-2 mr-2 opacity-0 group-hover:opacity-100 hover:bg-gray-400 rounded-[2px] transition-opacity duration-300"
+            className=" cursor-pointer p-[6px] opacity-0 group-hover:opacity-100 hover:bg-gray-400 rounded-[2px] transition-opacity duration-300"
             onClick={handleClickHidot}
           >
             <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
@@ -68,9 +68,13 @@ function BoardInSidebar() {
       </ClickAwayListener>
       <div
         onClick={handleActiveStar}
-        className={`cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
+        className={`flex items-center justify-center cursor-pointer right-0 top-[6px] mr-2 p-1 opacity-0 ${activeStar ? "opacity-100" : "group-hover:opacity-100"} group-hover:opacity-100 transition-opacity duration-300`}
       >
-        {activeStar ? <StarRoundedIcon size={24} /> : <StarOutlineRoundedIcon size={24} />}
+        {activeStar ? (
+          <StarRoundedIcon style={{ fontSize: 20 }} />
+        ) : (
+          <StarOutlineRoundedIcon style={{ fontSize: 20 }} />
+        )}
       </div>
     </div>
   );
