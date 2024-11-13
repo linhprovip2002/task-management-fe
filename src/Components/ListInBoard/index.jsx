@@ -160,15 +160,13 @@ function ListInBoard() {
           });
       }
       if (debounceValue.type === "card") {
-        const activeListId = listCount[debounceValue.activeContainerIndex].id;
-        const overListId = listCount[debounceValue.overContainerIndex].id;
+        const activeListId = listCount[debounceValue.activeContainerIndex]?.id;
+        const overListId = listCount[debounceValue.overContainerIndex]?.id;
         const overIndex = debounceValue.overIndex;
         const card = listCount[debounceValue.overContainerIndex].cards[debounceValue.overIndex];
         if (activeListId && overListId && card) {
           changePositionCard({ cardId: card.id, activeListId, overListId, position: overIndex })
-            .then((res) => {
-              console.log(res);
-            })
+            .then((res) => {})
             .catch((err) => {
               console.log(err);
             });

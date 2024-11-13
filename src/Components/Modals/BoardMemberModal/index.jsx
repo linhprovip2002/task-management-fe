@@ -28,7 +28,7 @@ function BoardMemberModal({ open = false, onClose }) {
   const [searchResult, setSearchResult] = useState([]);
   const { userData } = useStorage();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleRemoveSuccess = (idUser) => {
     setMembers((prev) => {
@@ -92,6 +92,9 @@ function BoardMemberModal({ open = false, onClose }) {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
     // eslint-disable-next-line
   }, []);
