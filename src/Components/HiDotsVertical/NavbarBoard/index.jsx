@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
   const [memberPopup, setMemberPopup] = useState(false);
   const { dataBoard } = useListBoardContext();
-  const { idBoard, idWorkSpace } = useParams();
+  const { idBoard, id } = useParams();
   const [leaving, setLeaving] = useState(false);
 
   const queryClient = useQueryClient();
@@ -30,7 +30,7 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
             queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
           });
           toast.success("Close board successfully");
-          return navigate(`/workspace/${idWorkSpace}/home`);
+          return navigate(`/workspace/${id}/home`);
         })
         .catch((err) => {
           console.log(err);
@@ -49,7 +49,7 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
           });
           //! chưa load lại được dữ liệu mới ở trang home workspace
           toast.success("Leave board successfully");
-          return navigate(`/workspace/${idWorkSpace}/home`);
+          return navigate(`/workspace/${id}/home`);
         })
         .catch((err) => {
           toast.error("Leave board not successfully");

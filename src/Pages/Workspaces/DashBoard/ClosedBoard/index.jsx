@@ -3,10 +3,36 @@ import React from "react";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import ClosedBoardItem from "./ClosedBoardItem";
-export default function ClosedBoarDialog({ open, onClose }) {
+import PropTypes from "prop-types";
+import { reOpenBoard } from "../../../../Services/API/ApiBoard/apiBoard";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { EQueryKeys } from "../../../../constants";
+
+function ClosedBoarDialog({ open, onClose, boards = [], workspaceName = "", setArchivedBoards }) {
+  const queryClient = useQueryClient();
+
   const handleClose = () => {
     if (onClose) return onClose();
   };
+
+  const handleReopenBoard = (data) => {
+    reOpenBoard(data.id)
+      .then((res) => {
+        toast.success("Reopen board successfully");
+        if (boards.length === 1) onClose();
+        setArchivedBoards((prev) => {
+          return [...prev].filter((board) => board.id !== data.id);
+        });
+        queryClient.invalidateQueries({
+          queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+        });
+      })
+      .catch((err) => {
+        toast.error("Re-open board unsuccessfully");
+      });
+  };
+
   return (
     <div>
       <Dialog
@@ -42,10 +68,20 @@ export default function ClosedBoarDialog({ open, onClose }) {
           </div>
 
           <div className="px-3 pb-3">
-            <ClosedBoardItem />
+            {boards.map((item, index) => (
+              <ClosedBoardItem onReopen={handleReopenBoard} data={item} key={index} workspaceName={workspaceName} />
+            ))}
           </div>
         </div>
       </Dialog>
     </div>
   );
 }
+
+ClosedBoarDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  boards: PropTypes.array,
+  workspaceName: PropTypes.string,
+};
+export default ClosedBoarDialog;
