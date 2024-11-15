@@ -57,3 +57,8 @@ export async function getArchivedCards(boardId) {
   const response = await request.get(`/board/${boardId}/cards/archived`);
   return response?.data;
 }
+
+export async function destroyCard(cardId) {
+  const response = await request.delete(`/card/${cardId}/destroy`);
+  return response?.data;
+}

@@ -18,6 +18,10 @@ export default function Archived() {
       .finally(() => setIsFetching(false));
   }, []);
 
+  const handleAfterDelete = (id) => {
+    setArchivedCards((prev) => [...prev].filter((card) => card.id !== id));
+  };
+
   return (
     <Slide in={true} direction="left">
       <div>
@@ -30,8 +34,8 @@ export default function Archived() {
                   paddingY: "6px",
                   paddingLeft: "12px",
                   paddingRight: "18px",
-                  fontSize: "14px"
-                }
+                  fontSize: "14px",
+                },
               }}
               placeholder="Search archive..."
             />
@@ -47,8 +51,8 @@ export default function Archived() {
               boxShadow: "none",
               "&:hover": {
                 bgcolor: "#091E4224", // Màu nền khi hover
-                boxShadow: "none"
-              }
+                boxShadow: "none",
+              },
             }}
           >
             Switch to list
@@ -70,7 +74,7 @@ export default function Archived() {
           )}
           <div className="flex flex-col">
             {archivedCards.map((card, index) => (
-              <ArchivedItem key={index} data={card} />
+              <ArchivedItem key={index} data={card} onDeleted={handleAfterDelete} />
             ))}
           </div>
         </div>

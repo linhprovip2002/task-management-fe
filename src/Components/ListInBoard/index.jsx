@@ -4,18 +4,8 @@ import { CreateItem } from "../../Components/CreateItem";
 import { AddIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import List from "./List";
-import {
-  DndContext,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  closestCorners
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  horizontalListSortingStrategy
-} from "@dnd-kit/sortable";
+import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, closestCorners } from "@dnd-kit/core";
+import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
 import useDebounce from "../../Hooks/useDebounce";
 import { changePositionList } from "../../Services/API/ApiListOfBoard";
@@ -25,14 +15,14 @@ import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 function ListInBoard() {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      distance: 10
-    }
+      distance: 10,
+    },
   });
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
       delay: 250,
-      tolerance: 500
-    }
+      tolerance: 500,
+    },
   });
   const mySensors = useSensors(mouseSensor, touchSensor);
   const [activeDragItemType, setActiveDragItemType] = useState(null);
@@ -48,7 +38,7 @@ function ListInBoard() {
     handleAddList,
     handleChangeTitleCard,
     boardId,
-    dataBoard
+    dataBoard,
   } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
 
@@ -57,7 +47,7 @@ function ListInBoard() {
     const activeContainer = event.active?.data?.current?.sortable?.containerId;
     const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
     setChangeData({
-      activeContainerIndex
+      activeContainerIndex,
     });
   }, []);
 
@@ -79,22 +69,14 @@ function ListInBoard() {
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
         const newColums = [...listCount];
-        const activeCard =
-          newColums[activeContainerIndex]?.cards?.[activeIndex];
+        const activeCard = newColums[activeContainerIndex]?.cards?.[activeIndex];
         if (!activeCard) return;
-        moveBetweenContainers(
-          newColums,
-          activeContainerIndex,
-          activeIndex,
-          overContainerIndex,
-          overIndex,
-          activeCard
-        );
+        moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
 
         setListCount(newColums);
       }
     },
-    [activeDragItemType, listCount, setListCount]
+    [activeDragItemType, listCount, setListCount],
   );
 
   const handleDragEnd = useCallback(
@@ -105,8 +87,7 @@ function ListInBoard() {
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
         const activeContainer = active.data.current.sortable.containerId;
-        const overContainer =
-          over.data.current?.sortable.containerId || over.id;
+        const overContainer = over.data.current?.sortable.containerId || over.id;
         if (!overContainer || !activeContainer) return;
 
         const activeContainerIndex = Number(activeContainer.split("-")[1]) - 1;
@@ -116,12 +97,7 @@ function ListInBoard() {
         if (activeContainerIndex === overContainerIndex) {
           const newColums = [...listCount];
           const activeColumn = newColums[activeContainerIndex];
-          if (activeColumn.cards)
-            activeColumn.cards = arrayMove(
-              activeColumn.cards,
-              activeIndex,
-              overIndex
-            );
+          if (activeColumn.cards) activeColumn.cards = arrayMove(activeColumn.cards, activeIndex, overIndex);
           setListCount(newColums);
           setChangeData((prev) => {
             return {
@@ -129,7 +105,7 @@ function ListInBoard() {
               activeIndex,
               overIndex,
               overContainerIndex,
-              ...prev
+              ...prev,
             };
           });
         }
@@ -146,13 +122,13 @@ function ListInBoard() {
           type: "column",
           listId: listCount[activeIndex].id,
           activeIndex,
-          overIndex
+          overIndex,
         });
       }
 
       setActiveDragItemType(null);
     },
-    [activeDragItemType, listCount, setListCount]
+    [activeDragItemType, listCount, setListCount],
   );
 
   const moveBetweenContainers = (
@@ -161,7 +137,7 @@ function ListInBoard() {
     activeItemIndex,
     overContainerIndex,
     overItemIndex,
-    item
+    item,
   ) => {
     const activeList = items[activeContainerIndex];
     const overList = items[overContainerIndex];
@@ -183,7 +159,7 @@ function ListInBoard() {
         changePositionList({
           boardId,
           listId: activeListId,
-          newPosition: overIndex
+          newPosition: overIndex,
         })
           .then((res) => {})
           .catch((err) => {
@@ -194,16 +170,13 @@ function ListInBoard() {
         const activeListId = listCount[debounceValue.activeContainerIndex]?.id;
         const overListId = listCount[debounceValue.overContainerIndex]?.id;
         const overIndex = debounceValue.overIndex + 1;
-        const card =
-          listCount[debounceValue.overContainerIndex].cards?.[
-            debounceValue.overIndex
-          ];
+        const card = listCount[debounceValue.overContainerIndex].cards?.[debounceValue.overIndex];
         if (activeListId && overListId && card) {
           changePositionCard({
             cardId: card.id,
             activeListId,
             overListId,
-            position: overIndex
+            position: overIndex,
           })
             .then((res) => {})
             .catch((err) => {
@@ -221,7 +194,7 @@ function ListInBoard() {
       <div
         style={{
           scrollbarWidth: "thin",
-          scrollbarColor: "#fff6 #00000026"
+          scrollbarColor: "#fff6 #00000026",
         }}
         className="absolute h-full top-0 left-0 right-0 mb-2 pb-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
       >
@@ -234,10 +207,7 @@ function ListInBoard() {
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
             >
-              <SortableContext
-                strategy={horizontalListSortingStrategy}
-                items={listCount}
-              >
+              <SortableContext strategy={horizontalListSortingStrategy} items={listCount}>
                 <div style={{ display: "flex" }}>
                   {listCount?.map((item, index) => {
                     return <List id={item.id} key={index} item={item} />;
@@ -257,9 +227,7 @@ function ListInBoard() {
                       <div className="rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300">
                         <AddIcon width={16} height={16} />
                       </div>
-                      <div className="text-[14px] font-medium text-[#44546f]">
-                        Add another list
-                      </div>
+                      <div className="text-[14px] font-medium text-[#44546f]">Add another list</div>
                     </>
                   ) : (
                     <div className="w-full">

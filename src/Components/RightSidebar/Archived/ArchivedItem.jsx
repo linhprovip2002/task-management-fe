@@ -3,17 +3,19 @@ import ItemList from "../../ItemList";
 import HeadlessTippy from "@tippyjs/react/headless";
 import { Close } from "@mui/icons-material";
 import { memo, useState } from "react";
-import { deleteCard } from "../../../Services/API/ApiCard";
 import { toast } from "react-toastify";
+import { destroyCard } from "../../../Services/API/ApiCard";
 
-function ArchivedItem({ data }) {
+function ArchivedItem({ data, onDeleted }) {
   const [popperDelete, setPopperDelete] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const handleDeleteCard = () => {
     setIsFetching(true);
-    deleteCard(1)
+
+    destroyCard(data.id)
       .then((res) => {
         toast.success("Delete card successfully");
+        if (onDeleted) onDeleted(data.id);
       })
       .catch((err) => {
         toast.error("Delete card unsuccessfully");

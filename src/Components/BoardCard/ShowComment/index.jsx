@@ -14,16 +14,8 @@ import { formatDate } from "../WriteComment/helpers/formatDate";
 const editorKey = process.env.REACT_APP_EDITOR_KEY;
 
 const ShowComment = ({ item, handleDeleteComment }) => {
-  const {
-    dataCard,
-    setLoading,
-    setContent,
-    setUpFileComment,
-    setPostUploadedFiles,
-    boardId,
-    setDataCard,
-    loading
-  } = useListBoardContext();
+  const { dataCard, setLoading, setContent, setUpFileComment, setPostUploadedFiles, boardId, setDataCard, loading } =
+    useListBoardContext();
   const { userData } = useStorage();
   //eslint-disable-next-line
   const [isFocused, setIsFocused] = useState(false);
@@ -51,7 +43,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
     const params = {
       content: newContent,
       files: imageUrls,
-      cardId: dataCard.id
+      cardId: dataCard.id,
     };
 
     const loadingToastId = toast.loading();
@@ -67,7 +59,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
         comments: [...prevDataCard.comments, newComment],
-        files: [...prevDataCard.files, ...newComment.files]
+        files: [...prevDataCard.files, ...newComment.files],
       }));
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
 
@@ -125,6 +117,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
         editorArea.removeEventListener("click", handleEditorClick);
       }
     };
+    // eslint-disable-next-line
   }, [isFocused]);
 
   return (
@@ -148,26 +141,16 @@ const ShowComment = ({ item, handleDeleteComment }) => {
               {loading ? "Saving..." : "Save"}
             </Button>
             <div className="ml-4"></div>
-            <Button
-              onClick={handleCloseComment}
-              className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white"
-            >
+            <Button onClick={handleCloseComment} className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white">
               Discard Change
             </Button>
           </div>
         </>
       ) : (
-        <div
-          className="flex p-2 my-2 space-x-3 rounded-md bg-gray-50"
-          key={item.id}
-        >
+        <div className="flex p-2 my-2 space-x-3 rounded-md bg-gray-50" key={item.id}>
           {/* Avatar */}
           {userData?.avatarUrl ? (
-            <Avatar
-              sx={{ width: "30px", height: "30px" }}
-              alt={userData?.name}
-              src={userData?.avatarUrl}
-            />
+            <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
           ) : (
             <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
               {userData?.name[0] || " "}
@@ -177,12 +160,8 @@ const ShowComment = ({ item, handleDeleteComment }) => {
           {/* Comment infomation */}
           <div>
             <div className="flex items-center">
-              <span className="mr-4 text-[14px] font-medium">
-                {userData.name}
-              </span>
-              <p className="text-[14px] font-normal text-gray-500">
-                Created {formatDate(item.createdAt)}
-              </p>
+              <span className="mr-4 text-[14px] font-medium">{userData.name}</span>
+              <p className="text-[14px] font-normal text-gray-500">Created {formatDate(item.createdAt)}</p>
             </div>
 
             {/* Comment content */}
@@ -197,10 +176,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
                 Edit
               </button>
               <span>•</span>
-              <button
-                onClick={() => handleDeleteComment(item.id)}
-                className="hover:underline"
-              >
+              <button onClick={() => handleDeleteComment(item.id)} className="hover:underline">
                 Delete
               </button>
             </div>
@@ -209,10 +185,7 @@ const ShowComment = ({ item, handleDeleteComment }) => {
       )}
       {
         <FormProvider {...method}>
-          <PreviewImageModal
-            open={openImagePreview}
-            handleCloseImageClick={handleCloseImageClick}
-          />
+          <PreviewImageModal open={openImagePreview} handleCloseImageClick={handleCloseImageClick} />
         </FormProvider>
       }
     </>
