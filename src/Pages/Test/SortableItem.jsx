@@ -3,11 +3,10 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 const SortableItem = (props) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id });
+  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: props.id, data: { type: "CARD" } });
 
   const itemStyle = {
-    transform: CSS.Transform.toString(transform),
-    transition,
+    transform: CSS.Translate.toString(transform),
     width: 110,
     height: 30,
     display: "flex",
