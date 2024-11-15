@@ -33,6 +33,12 @@ function ClosedBoarDialog({ open, onClose, boards = [], workspaceName = "", setA
       });
   };
 
+  const handleDestroyBoard = (data) => {
+    setArchivedBoards((prev) => {
+      return [...prev].filter((item) => item.id !== data.id);
+    });
+  };
+
   return (
     <div>
       <Dialog
@@ -69,7 +75,13 @@ function ClosedBoarDialog({ open, onClose, boards = [], workspaceName = "", setA
 
           <div className="px-3 pb-3">
             {boards.map((item, index) => (
-              <ClosedBoardItem onReopen={handleReopenBoard} data={item} key={index} workspaceName={workspaceName} />
+              <ClosedBoardItem
+                onReopen={handleReopenBoard}
+                onDestroy={handleDestroyBoard}
+                data={item}
+                key={index}
+                workspaceName={workspaceName}
+              />
             ))}
           </div>
         </div>
