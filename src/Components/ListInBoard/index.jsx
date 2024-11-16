@@ -37,6 +37,7 @@ function ListInBoard() {
     handleAddList,
     handleChangeTitleCard,
     boardId,
+    dataBoard,
   } = useListBoardContext();
 
   const handleDragStart = useCallback((event) => {
@@ -66,8 +67,8 @@ function ListInBoard() {
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
         const newColums = [...listCount];
-        const activeCard = newColums[activeContainerIndex]?.cards[activeIndex];
-
+        const activeCard = newColums[activeContainerIndex]?.cards?.[activeIndex];
+        if (!activeCard) return;
         moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
 
         setListCount(newColums);
@@ -147,7 +148,7 @@ function ListInBoard() {
 
   useEffect(() => {
     //TODO call api move card or column here
-
+    if (dataBoard?.role?.roleName !== "admin") return;
     if (debounceValue !== null) {
       const activeListId = debounceValue.listId;
       const overIndex = debounceValue.overIndex + 1;
@@ -162,8 +163,8 @@ function ListInBoard() {
       if (debounceValue.type === "card") {
         const activeListId = listCount[debounceValue.activeContainerIndex]?.id;
         const overListId = listCount[debounceValue.overContainerIndex]?.id;
-        const overIndex = debounceValue.overIndex;
-        const card = listCount[debounceValue.overContainerIndex].cards[debounceValue.overIndex];
+        const overIndex = debounceValue.overIndex + 1;
+        const card = listCount[debounceValue.overContainerIndex].cards?.[debounceValue.overIndex];
         if (activeListId && overListId && card) {
           changePositionCard({ cardId: card.id, activeListId, overListId, position: overIndex })
             .then((res) => {})

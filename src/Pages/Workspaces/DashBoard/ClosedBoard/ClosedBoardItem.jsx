@@ -1,12 +1,30 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NorthEastOutlinedIcon from "@mui/icons-material/NorthEastOutlined";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { destroyBoard } from "../../../../Services/API/ApiBoard/apiBoard";
+import { toast } from "react-toastify";
 
 export default function ClosedBoardItem({ data = {}, workspaceName = "", onReopen, onDestroy }) {
+  const [loading, setLoading] = useState(false);
+
   const handleReopen = () => {
     if (onReopen) return onReopen(data);
+  };
+  const handleDestroy = () => {
+    setLoading(true);
+    destroyBoard(data.id)
+      .then(() => {
+        toast.success("Destroy board successfully");
+        if (onDestroy) onDestroy(data);
+      })
+      .catch((err) => {
+        toast.error("Destroy board unsuccessfully");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -32,7 +50,8 @@ export default function ClosedBoardItem({ data = {}, workspaceName = "", onReope
           Reopen
         </Button>
         <Button
-          startIcon={<DeleteOutlinedIcon fontSize="small" />}
+          onClick={handleDestroy}
+          startIcon={loading ? <CircularProgress color="#fff" size={18} /> : <DeleteOutlinedIcon fontSize="small" />}
           sx={{ textTransform: "none", py: 0.5 }}
           variant="contained"
           color="error"
