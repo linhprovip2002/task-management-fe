@@ -48,7 +48,7 @@ function ListInBoard() {
     handleAddList,
     handleChangeTitleCard,
     boardId,
-    dataBoard,
+    dataBoard
   } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
 
@@ -79,9 +79,17 @@ function ListInBoard() {
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
         const newColums = [...listCount];
-        const activeCard = newColums[activeContainerIndex]?.cards?.[activeIndex];
+        const activeCard =
+          newColums[activeContainerIndex]?.cards?.[activeIndex];
         if (!activeCard) return;
-        moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
+        moveBetweenContainers(
+          newColums,
+          activeContainerIndex,
+          activeIndex,
+          overContainerIndex,
+          overIndex,
+          activeCard
+        );
 
         setListCount(newColums);
       }
@@ -186,9 +194,17 @@ function ListInBoard() {
         const activeListId = listCount[debounceValue.activeContainerIndex]?.id;
         const overListId = listCount[debounceValue.overContainerIndex]?.id;
         const overIndex = debounceValue.overIndex + 1;
-        const card = listCount[debounceValue.overContainerIndex].cards?.[debounceValue.overIndex];
+        const card =
+          listCount[debounceValue.overContainerIndex].cards?.[
+            debounceValue.overIndex
+          ];
         if (activeListId && overListId && card) {
-          changePositionCard({ cardId: card.id, activeListId, overListId, position: overIndex })
+          changePositionCard({
+            cardId: card.id,
+            activeListId,
+            overListId,
+            position: overIndex
+          })
             .then((res) => {})
             .catch((err) => {
               console.error(err);
@@ -241,7 +257,9 @@ function ListInBoard() {
                       <div className="rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300">
                         <AddIcon width={16} height={16} />
                       </div>
-                      <div className="text-[14px] font-medium text-[#44546f]">Add another list</div>
+                      <div className="text-[14px] font-medium text-[#44546f]">
+                        Add another list
+                      </div>
                     </>
                   ) : (
                     <div className="w-full">

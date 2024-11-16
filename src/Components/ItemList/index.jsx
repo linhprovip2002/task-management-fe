@@ -18,11 +18,18 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { useNavigate } from "react-router-dom";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
-function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = false }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: id,
-    data: { ...dataCard, type: "card" },
-  });
+function ItemList({
+  id,
+  dataList,
+  dataCard,
+  isFollowing = false,
+  isArchived = false
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: id,
+      data: { ...dataCard, type: "card" }
+    });
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -91,7 +98,9 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              backgroundColor: dataCard?.coverUrl.startsWith("#") ? dataCard?.coverUrl : "",
+              backgroundColor: dataCard?.coverUrl.startsWith("#")
+                ? dataCard?.coverUrl
+                : ""
             }}
             className={`w-full min-h-[80px] rounded-t-[6px]`}
           />
@@ -104,7 +113,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
                   <div
                     key={index}
                     style={{
-                      backgroundColor: tagCard.tag.color,
+                      backgroundColor: tagCard.tag.color
                     }}
                     className={`hover:opacity-90 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
                   />
@@ -119,7 +128,9 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
               {endDateCheck != null && (
                 <div onClick={(e) => e.stopPropagation()}>
                   <div
-                    onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                    onClick={() =>
+                      setCheckCompleteEndDate(!checkCompleteEndDate)
+                    }
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                     className={`flex items-center text-[12px] ${checkCompleteEndDate ? "bg-green-300" : checkOverdue ? "bg-red-100" : "bg-gray-300"} cursor-pointer rounded-[4px] p-1  hover:opacity-90 relative`}
@@ -128,7 +139,9 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
                       {isHovered ? (
                         <input
                           checked={checkCompleteEndDate}
-                          onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                          onChange={() =>
+                            setCheckCompleteEndDate(!checkCompleteEndDate)
+                          }
                           type="checkbox"
                           className="w-[12px] h-[12px] cursor-pointer"
                         />
