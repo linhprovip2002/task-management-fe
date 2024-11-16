@@ -197,7 +197,7 @@ function ListInBoard() {
             >
               <SortableContext strategy={horizontalListSortingStrategy} items={listCount}>
                 <div style={{ display: "flex" }}>
-                  {listCount.map((item, index) => {
+                  {listCount?.map((item, index) => {
                     return <List id={item.id} key={index} item={item} />;
                   })}
                 </div>
@@ -211,10 +211,10 @@ function ListInBoard() {
               >
                 {!isShowAddList ? (
                   <>
-                    <div className="rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300">
+                    <div className="rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300 text-[#44546f]">
                       <AddIcon width={16} height={16} />
                     </div>
-                    <div className="text-[16px] font-medium">Add another list</div>
+                    <div className="text-[14px] font-medium text-[#44546f]">Add another list</div>
                   </>
                 ) : (
                   <div className="w-full">

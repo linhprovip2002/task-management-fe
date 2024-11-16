@@ -92,9 +92,13 @@ export const BoardCard = () => {
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isJoin, setIsJoin] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
+  const [checkOverdue, setCheckOverdue] = useState(false);
   const [endDateCheck, setEndDateCheck] = useState(() => {
     if (!dataCard || dataCard.endDate == null) return null;
     const endDate = new Date(dataCard.endDate);
+    const currentDate = new Date();
+    const isOverdue = endDate < currentDate;
+    setCheckOverdue(isOverdue);
     const hours = endDate.getUTCHours().toString().padStart(2, "0");
     const minutes = endDate.getUTCMinutes().toString().padStart(2, "0");
     const day = endDate.getUTCDate().toString().padStart(2, "0");
@@ -183,6 +187,28 @@ export const BoardCard = () => {
     ShowDetailNewLabel();
     setInputTitleLabel("");
     handleAddLabel(dataLabel);
+  };
+
+  const handleUpdateLabel = (dataColor, titleLabel = "") => {
+    const dataLabel = {
+      ...dataColor,
+      name: titleLabel,
+    };
+    setListLabel((prev) => {
+      if (prev.some((item) => item.id === dataLabel.id)) {
+        const itemLabel = prev.find((item) => item.id === dataLabel.id);
+        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
+          return prev.map((item) =>
+            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
+          );
+        }
+        return prev;
+      } else {
+        return [...prev, dataLabel];
+      }
+    });
+    ShowDetailNewLabel();
+    setInputTitleLabel("");
   };
 
   const handleCreateNewToDoList = (nameItem, dataCopy = null) => {
@@ -429,8 +455,9 @@ export const BoardCard = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
+                backgroundColor: chooseColorBackground.startsWith("#") ? chooseColorBackground : "",
               }}
-              className={`w-full h-[100px] rounded-t-[8px] ${chooseColorBackground.startsWith("bg-") ? chooseColorBackground : ""}`}
+              className={`w-full h-[100px] rounded-t-[8px]`}
             />
           )}
           <div className="flex justify-between font-medium text-[12px] p-2 z-500">
@@ -461,7 +488,10 @@ export const BoardCard = () => {
                           {countLabel.map((item, index) => (
                             <div
                               key={item.id}
-                              className={`${item.color} flex items-center justify-center rounded-[4px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] `}
+                              style={{
+                                backgroundColor: item.color,
+                              }}
+                              className={`flex items-center justify-center rounded-[4px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] `}
                             >
                               {item.name}
                             </div>
@@ -476,11 +506,11 @@ export const BoardCard = () => {
                       </div>
                     )}
                     {endDateCheck != null && (
-                      <div className="mb-2 mr-2">
+                      <div className="mr-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Expiration date</span>
                         </div>
-                        <li className="flex items-center my-2 cursor-pointer">
+                        <li className="flex items-center cursor-pointer">
                           <input
                             checked={checkCompleteEndDate}
                             onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
@@ -489,7 +519,7 @@ export const BoardCard = () => {
                           />
                           <span className="flex items-center w-full">
                             <div
-                              className={`flex items-center justify-between rounded-[4px] mx-2 p-1 bg-gray-300 hover:bg-gray-100 cursor-pointer`}
+                              className={`flex items-center justify-between rounded-[4px] mx-2 p-1 ${checkCompleteEndDate ? "bg-gray-300" : checkOverdue ? "bg-red-300" : "bg-gray-300"} hover:opacity-90 cursor-pointer`}
                             >
                               <div className="">{endDateCheck}</div>
                               {checkCompleteEndDate && (
@@ -752,6 +782,7 @@ export const BoardCard = () => {
               inputTitleLabel={inputTitleLabel}
               handleChooseColor={handleChooseColor}
               handleCreateNewLabel={handleCreateNewLabel}
+              onUpdateLabel={handleUpdateLabel}
             />
           )}
         </>

@@ -107,13 +107,13 @@ function List({ item = {}, id }) {
                 onClick={() => handleShowAddCard(item.id)}
                 className="flex flex-1 items-center rounded-[8px] hover:bg-gray-300 cursor-pointer"
               >
-                <div className="p-2 transition-opacity duration-300">
+                <div className="p-2 transition-opacity duration-300 text-[#44546f]">
                   <AddIcon width={16} height={16} />
                 </div>
-                <div className="text-[14px] font-medium">Add card</div>
+                <div className="text-[14px] font-medium text-[#44546f]">Add card</div>
               </div>
               <TippyDetail title={"Create from template..."}>
-                <div>
+                <div className="text-[#44546f]">
                   <TemplateCardIcon
                     width={32}
                     height={32}
