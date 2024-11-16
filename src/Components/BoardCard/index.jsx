@@ -27,7 +27,10 @@ import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
 import ShowComment from "./ShowComment";
-import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
+import {
+  AddTagInCard,
+  RemoveTagInCard
+} from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
 import { updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
@@ -60,7 +63,6 @@ export const BoardCard = () => {
     boardId,
     setDataCard
   } = useListBoardContext();
-  const { getListPermissionByUser } = useGetBoardPermission(boardId);
 
   const { userData } = useStorage();
   const [listLabel, setListLabel] = useState(() => {
@@ -176,7 +178,10 @@ export const BoardCard = () => {
     setListLabel((prev) => {
       if (prev.some((item) => item.id === dataLabel.id)) {
         const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
+        if (
+          itemLabel.name !== dataLabel.name ||
+          itemLabel.color !== dataLabel.color
+        ) {
           return prev.map((item) =>
             item.id === dataLabel.id
               ? { ...item, color: dataLabel.color, name: dataLabel.name }
@@ -302,8 +307,11 @@ export const BoardCard = () => {
             return todoItem;
           });
 
-          const checkDoneCount = updatedTodoItems.filter((i) => i.checkDone).length;
-          const percent = Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
+          const checkDoneCount = updatedTodoItems.filter(
+            (i) => i.checkDone
+          ).length;
+          const percent =
+            Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
           return {
             ...todo,
             todoItem: updatedTodoItems,
@@ -450,19 +458,26 @@ export const BoardCard = () => {
                   <FeaturedPlayListIcon fontSize="small" />
                 </div>
                 <div className="flex-1 ml-4">
-                  <div className="text-[16px] mb-2">{dataCard?.title || "No Title"}</div>
+                  <div className="text-[16px] mb-2">
+                    {dataCard?.title || "No Title"}
+                  </div>
                   <div className="flex items-center text-[12px] mb-6">
                     <span className="mr-2 font-normal">in the list</span>
                     <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
                       {dataList?.title || "No Title"}
                     </div>
                     {isFollowing && (
-                      <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />
+                      <RemoveRedEyeOutlinedIcon
+                        className="ml-2"
+                        style={{ fontSize: "16px" }}
+                      />
                     )}
                   </div>
                   <div className="flex items-center flex-wrap">
                     {membersInCard && membersInCard?.length !== 0 && (
-                      <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />
+                      <ItemPerson
+                        handleShowMenuBtnCard={handleShowMenuBtnCard}
+                      />
                     )}
                     {countLabel?.length > 0 && (
                       <div className="mr-2 mb-2">
@@ -495,7 +510,9 @@ export const BoardCard = () => {
                         <li className="flex items-center my-2 cursor-pointer">
                           <input
                             checked={checkCompleteEndDate}
-                            onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                            onChange={() =>
+                              setCheckCompleteEndDate(!checkCompleteEndDate)
+                            }
                             type="checkbox"
                             className="w-5 h-5 cursor-pointer"
                           />
@@ -524,9 +541,14 @@ export const BoardCard = () => {
                         isFollowing={isFollowing}
                         isActive={true}
                         nameBtn={"Following"}
-                        className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
+                        className={
+                          "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
+                        }
                       >
-                        <RemoveRedEyeOutlinedIcon className="ml-1 mr-2" fontSize="small" />
+                        <RemoveRedEyeOutlinedIcon
+                          className="ml-1 mr-2"
+                          fontSize="small"
+                        />
                       </ButtonBoardCard>
                     </div>
                   </div>
@@ -551,7 +573,10 @@ export const BoardCard = () => {
                     <p className="ml-3">Attachment</p>
                   </div>
                   <div>
-                    <button onClick={handleOpenAttach} className="px-4 py-1 bg-gray-300 rounded-sm">
+                    <button
+                      onClick={handleOpenAttach}
+                      className="px-4 py-1 bg-gray-300 rounded-sm"
+                    >
                       Add
                     </button>
                     {openAttach && (
@@ -588,7 +613,9 @@ export const BoardCard = () => {
                             onHandleEvent={() => handleRemoveToDoList(item)}
                             isActive={true}
                             nameBtn={"Erase"}
-                            className={"w-[60px] justify-center bg-gray-200 hover:bg-gray-300"}
+                            className={
+                              "w-[60px] justify-center bg-gray-200 hover:bg-gray-300"
+                            }
                           />
                         </div>
                       </div>
@@ -604,16 +631,23 @@ export const BoardCard = () => {
                     </div>
                     <ul>
                       {item.todoItem.map((dataItem, index) => (
-                        <li key={index} className="flex items-center my-2 cursor-pointer">
+                        <li
+                          key={index}
+                          className="flex items-center my-2 cursor-pointer"
+                        >
                           <input
                             checked={dataItem.checkDone}
-                            onChange={() => handleCheckDoneToDoItem(item, dataItem)}
+                            onChange={() =>
+                              handleCheckDoneToDoItem(item, dataItem)
+                            }
                             type="checkbox"
                             className="w-5 h-5 mx-2 cursor-pointer"
                           />
                           <span className="flex items-center w-full">
                             <div
-                              onClick={() => handleCheckDoneToDoItem(item, dataItem)}
+                              onClick={() =>
+                                handleCheckDoneToDoItem(item, dataItem)
+                              }
                               className={`flex-1 hover:bg-gray-300 h-[34px] p-2 rounded-[4px] transition-all duration-50`}
                             >
                               <font>{dataItem.title}</font>
@@ -627,7 +661,9 @@ export const BoardCard = () => {
                             onHandleEvent={() => ShowCreateToDoItem(item)}
                             isActive={true}
                             nameBtn={"Add an item"}
-                            className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
+                            className={
+                              "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
+                            }
                           />
                         ) : (
                           <div>
@@ -643,7 +679,9 @@ export const BoardCard = () => {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center">
                                 <ButtonBoardCard
-                                  onHandleEvent={() => handleAddToDoItem(inputTitleToDoItem, item)}
+                                  onHandleEvent={() =>
+                                    handleAddToDoItem(inputTitleToDoItem, item)
+                                  }
                                   isActive={true}
                                   nameBtn={"More"}
                                   className={
@@ -664,20 +702,30 @@ export const BoardCard = () => {
                                   onHandleEvent={ShowCreateToDoItem}
                                   isActive={true}
                                   nameBtn={"Assign"}
-                                  className={"w-[80px] justify-center hover:bg-gray-200"}
+                                  className={
+                                    "w-[80px] justify-center hover:bg-gray-200"
+                                  }
                                 >
                                   <Person4OutlinedIcon
-                                    style={{ fontSize: "18px", marginRight: "4px" }}
+                                    style={{
+                                      fontSize: "18px",
+                                      marginRight: "4px"
+                                    }}
                                   />
                                 </ButtonBoardCard>
                                 <ButtonBoardCard
                                   onHandleEvent={ShowCreateToDoItem}
                                   isActive={true}
                                   nameBtn={"Expiration day"}
-                                  className={"w-[140px] ml-2 justify-center hover:bg-gray-200"}
+                                  className={
+                                    "w-[140px] ml-2 justify-center hover:bg-gray-200"
+                                  }
                                 >
                                   <AccessTimeIcon
-                                    style={{ fontSize: "18px", marginRight: "4px" }}
+                                    style={{
+                                      fontSize: "18px",
+                                      marginRight: "4px"
+                                    }}
                                   />
                                 </ButtonBoardCard>
                               </div>
@@ -699,7 +747,9 @@ export const BoardCard = () => {
                     <ButtonBoardCard
                       isActive={true}
                       nameBtn={"Show details"}
-                      className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
+                      className={
+                        "w-[100px] justify-center bg-gray-200 hover:bg-gray-300"
+                      }
                     />
                   </div>
                   <div className="flex items-center text-[12px] mb-2"></div>
@@ -821,7 +871,10 @@ export const BoardCard = () => {
       )}
 
       {isShowMenuBtnCard && numberShow === 10 && (
-        <CopyCard position={position} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
+        <CopyCard
+          position={position}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+        />
       )}
     </div>
   );

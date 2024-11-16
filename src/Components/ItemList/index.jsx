@@ -8,17 +8,32 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React, { useEffect } from "react";
 
-import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
+import {
+  EditIcon,
+  AttachmentIcon,
+  DescriptionIcon
+} from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { useNavigate } from "react-router-dom";
+import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
-function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = false }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: id,
-    data: { ...dataCard, type: "card" },
-  });
+function ItemList({
+  id,
+  dataList,
+  dataCard,
+  isFollowing = false,
+  isArchived = false
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: id,
+      data: { ...dataCard, type: "card" }
+    });
 
-  let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace } = useListBoardContext();
+  const { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace } =
+    useListBoardContext();
+  const { getCardPermissionByUser } = useGetBoardPermission(boardId);
+
   const navigate = useNavigate();
   const handleGetDataCardDetail = async (dataList, dataCard) => {
     try {
@@ -41,7 +56,7 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
     display: "flex",
     borderRadius: 5,
     userSelect: "none",
-    boxSizing: "border-box",
+    boxSizing: "border-box"
   };
 
   return (
@@ -59,10 +74,12 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
         {dataCard?.coverUrl && (
           <div
             style={{
-              backgroundImage: dataCard?.coverUrl.startsWith("http") ? `url(${dataCard?.coverUrl})` : "none",
+              backgroundImage: dataCard?.coverUrl.startsWith("http")
+                ? `url(${dataCard?.coverUrl})`
+                : "none",
               backgroundSize: "cover",
               backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
+              backgroundRepeat: "no-repeat"
             }}
             className={`w-full min-h-[80px] rounded-t-[6px] ${dataCard?.coverUrl.startsWith("bg-") ? dataCard?.coverUrl : ""}`}
           />
@@ -76,15 +93,21 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
                     key={index}
                     className={`hover:opacity-90 ${tagCard.tag.color} mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
                   />
-                ) : null,
+                ) : null
               )}
           </div>
-          <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
+          <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">
+            {dataCard.title}
+          </div>
           <div className="flex items-center justify-between w-full flex-wrap">
             <div className="flex items-center flex-wrap pb-2">
               {isFollowing && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">You are following this tag</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      You are following this tag
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
@@ -95,7 +118,11 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
               )}
               {dataCard?.description && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">The card already has a description</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      The card already has a description
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
@@ -106,44 +133,63 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
               )}
               {dataCard?.comments?.length > 0 && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">Comment</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">Comment</span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
                   <div className="flex items-center ">
                     <SmsOutlinedIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{dataCard?.comments?.length}</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">
+                      {dataCard?.comments?.length}
+                    </div>
                   </div>
                 </Tippy>
               )}
               {dataCard?.files?.length > 0 && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">Attachments</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      Attachments
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
                   <div className="flex items-center ">
                     <AttachmentIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{dataCard?.files?.length}</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">
+                      {dataCard?.files?.length}
+                    </div>
                   </div>
                 </Tippy>
               )}
               {isArchived && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">Attachments</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      Attachments
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
                   <div className="flex items-center ">
                     <InventoryIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">Archived</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">
+                      Archived
+                    </div>
                   </div>
                 </Tippy>
               )}
             </div>
             {dataCard?.members?.length > 0 &&
               dataCard?.members?.map((member, index) => (
-                <div key={index} className="flex items-center flex-wrap pb-2 ml-auto">
+                <div
+                  key={index}
+                  className="flex items-center flex-wrap pb-2 ml-auto"
+                >
                   <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-white text-[10px] bg-gradient-to-b from-green-400 to-blue-500">
                     PM
                   </div>
@@ -152,21 +198,28 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
           </div>
         </div>
       </div>
-      {isArchived || (
-        <Tippy content={<span className="text-[12px] max-w-[150px]">Edit card</span>} arrow={false} placement="bottom">
-          <div
-            onClick={(e) => handleShowBoardEdit(e, dataList, dataCard)}
-            className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
+      {getCardPermissionByUser("update") &&
+        (isArchived || (
+          <Tippy
+            content={
+              <span className="text-[12px] max-w-[150px]">Edit card</span>
+            }
+            arrow={false}
+            placement="bottom"
           >
-            <EditIcon width={16} height={16} />
-          </div>
-        </Tippy>
-      )}
+            <div
+              onClick={(e) => handleShowBoardEdit(e, dataList, dataCard)}
+              className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
+            >
+              <EditIcon width={16} height={16} />
+            </div>
+          </Tippy>
+        ))}
     </div>
   );
 }
 
 ItemList.propTypes = {
-  isArchived: PropTypes.bool,
+  isArchived: PropTypes.bool
 };
 export default React.memo(ItemList);

@@ -10,11 +10,14 @@ import { HiDotsVertical } from "react-icons/hi";
 import GroupIcon from "@mui/icons-material/Group";
 import GroupAvatars from "../GroupAvatars";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
+import BoardMemberModal from "../Modals/BoardMemberModal";
 
 function HeaderBoard() {
-  const { activeStar, handleActiveStar, dataBoard, membersBoard, boardId } = useListBoardContext();
+  const { activeStar, handleActiveStar, dataBoard, membersBoard, boardId } =
+    useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
   const [rightSidebar, setRightSidebar] = useState(false);
+  const [openMemberModal, setOpenMemberModal] = useState(false);
 
   const handleToggleRightSidebar = useCallback(() => {
     setRightSidebar(!rightSidebar);
@@ -23,7 +26,9 @@ function HeaderBoard() {
   return (
     <div className="relative flex items-center justify-between h-[32px] py-6 px-4 bg-gray-100">
       <div className="flex items-center">
-        <div className="text-black p-2 font-bold text-[18px]">{dataBoard.title}</div>
+        <div className="text-black p-2 font-bold text-[18px]">
+          {dataBoard.title}
+        </div>
         <TippyDetail title="Star or unstar this tables. Starred tables will appear at the top of the tables list.">
           <div
             onClick={handleActiveStar}
@@ -57,9 +62,14 @@ function HeaderBoard() {
         </TippyDetail>
         {getListPermissionByUser("list_member") && (
           <TippyDetail title={"Share Board"}>
-            <div className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300">
+            <div
+              onClick={() => setOpenMemberModal(true)}
+              className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300"
+            >
               <GroupIcon width={16} height={16} className={"mr-2 text-white"} />
-              <span className="text-[14px] font-medium text-white">Members</span>
+              <span className="text-[14px] font-medium text-white">
+                Members
+              </span>
             </div>
           </TippyDetail>
         )}
@@ -73,6 +83,12 @@ function HeaderBoard() {
         </TippyDetail>
       </div>
       <RightSidebar onClose={handleToggleRightSidebar} isOpen={rightSidebar} />
+      {openMemberModal && (
+        <BoardMemberModal
+          open={openMemberModal}
+          onClose={() => setOpenMemberModal(false)}
+        />
+      )}
     </div>
   );
 }

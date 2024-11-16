@@ -1,6 +1,6 @@
 import request from "./request";
 
-export const getBoardPermission = async (boardId, roleId) => {
+export const getBoardPermission = async (boardId) => {
   try {
     const response = await request.get(`/board/${boardId}/permission`);
     return response.data;
