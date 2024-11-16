@@ -6,7 +6,8 @@ import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
@@ -17,6 +18,23 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
     id: id,
     data: { ...dataCard, type: "card" },
   });
+  const [checkOverdue, setCheckOverdue] = useState(false);
+  const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [endDateCheck, setEndDateCheck] = useState(null);
+
+  useEffect(() => {
+    if (!dataCard || dataCard.endDate == null) return;
+    const endDate = new Date(dataCard.endDate);
+    const currentDate = new Date();
+    // overdue time
+    const isOverdue = endDate < currentDate;
+    setCheckOverdue(isOverdue);
+    const day = endDate.getUTCDate().toString().padStart(2, "0");
+    const month = (endDate.getUTCMonth() + 1).toString().padStart(2, "0");
+    const formattedDate = `${day}thg${month}`;
+    setEndDateCheck(formattedDate);
+  }, [dataCard, dataCard?.endDate]);
 
   let { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace } = useListBoardContext();
   const navigate = useNavigate();
@@ -63,8 +81,9 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
+              backgroundColor: dataCard?.coverUrl.startsWith("#") ? dataCard?.coverUrl : "",
             }}
-            className={`w-full min-h-[80px] rounded-t-[6px] ${dataCard?.coverUrl.startsWith("bg-") ? dataCard?.coverUrl : ""}`}
+            className={`w-full min-h-[80px] rounded-t-[6px]`}
           />
         )}
         <div className="flex flex-col mx-[12px]">
@@ -74,7 +93,10 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
                 tagCard?.tag?.color ? (
                   <div
                     key={index}
-                    className={`hover:opacity-90 ${tagCard.tag.color} mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
+                    style={{
+                      backgroundColor: tagCard.tag.color,
+                    }}
+                    className={`hover:opacity-90 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
                   />
                 ) : null,
               )}
@@ -82,6 +104,30 @@ function ItemList({ id, dataList, dataCard, isFollowing = false, isArchived = fa
           <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
           <div className="flex items-center justify-between w-full flex-wrap">
             <div className="flex items-center flex-wrap pb-2">
+              {endDateCheck != null && (
+                <div onClick={(e) => e.stopPropagation()}>
+                  <div
+                    onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                    className={`flex items-center text-[12px] ${checkCompleteEndDate ? "bg-green-300" : checkOverdue ? "bg-red-100" : "bg-gray-300"} cursor-pointer rounded-[4px] p-1  hover:opacity-90 relative`}
+                  >
+                    <div className=" flex items-center justify-center w-[20px] h-[20px]">
+                      {isHovered ? (
+                        <input
+                          checked={checkCompleteEndDate}
+                          onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                          type="checkbox"
+                          className="w-[12px] h-[12px] cursor-pointer"
+                        />
+                      ) : (
+                        <AccessTimeIcon style={{ fontSize: "16px" }} />
+                      )}
+                    </div>
+                    <div>{endDateCheck}</div>
+                  </div>
+                </div>
+              )}
               {isFollowing && (
                 <Tippy
                   content={<span className="text-[12px] max-w-[150px]">You are following this tag</span>}
