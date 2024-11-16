@@ -25,7 +25,7 @@ function BoardMemberModal({ open = false, onClose }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const debounceValue = useDebounce(searchValue, 500);
-  
+
   const handleRemoveSuccess = (idUser) => {
     setMembers((prev) => {
       let newState = [...prev];
@@ -82,7 +82,6 @@ function BoardMemberModal({ open = false, onClose }) {
       })
       .then((data) => {
         data = data.filter((item) => item.user !== null);
-
         let members = data.map((item) => {
           item.user.role = item.role;
           return item.user;

@@ -9,7 +9,13 @@ import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../../constants";
 
-function ClosedBoarDialog({ open, onClose, boards = [], workspaceName = "", setArchivedBoards }) {
+function ClosedBoarDialog({
+  open,
+  onClose,
+  boards = [],
+  workspaceName = "",
+  setArchivedBoards
+}) {
   const queryClient = useQueryClient();
 
   const handleClose = () => {
@@ -25,12 +31,18 @@ function ClosedBoarDialog({ open, onClose, boards = [], workspaceName = "", setA
           return [...prev].filter((board) => board.id !== data.id);
         });
         queryClient.invalidateQueries({
-          queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
+          queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
         });
       })
       .catch((err) => {
         toast.error("Re-open board unsuccessfully");
       });
+  };
+
+  const handleDestroyBoard = (data) => {
+    setArchivedBoards((prev) => {
+      return [...prev].filter((item) => item.id !== data.id);
+    });
   };
 
   return (
@@ -42,12 +54,12 @@ function ClosedBoarDialog({ open, onClose, boards = [], workspaceName = "", setA
             maxWidth: 768,
             width: 768,
             height: "fit-content",
-            marginTop: 5,
+            marginTop: 5
           },
           "& .MuiDialog-container": {
             alignItems: "unset",
-            WebkitAlignItems: "unset",
-          },
+            WebkitAlignItems: "unset"
+          }
         }}
         open={open}
         onClose={handleClose}
@@ -58,18 +70,35 @@ function ClosedBoarDialog({ open, onClose, boards = [], workspaceName = "", setA
           <div className="flex justify-between p-3">
             <div className="flex items-center">
               <Inventory2OutlinedIcon
-                sx={{ width: 24, height: 24, marginRight: 1, marginLeft: 0.5, color: "var(--text-color)" }}
+                sx={{
+                  width: 24,
+                  height: 24,
+                  marginRight: 1,
+                  marginLeft: 0.5,
+                  color: "var(--text-color)"
+                }}
               />
-              <h2 className="text-xl text-[var(--text-color)] font-semibold">Closed Boards</h2>
+              <h2 className="text-xl text-[var(--text-color)] font-semibold">
+                Closed Boards
+              </h2>
             </div>
-            <button onClick={handleClose} className="w-9 h-9 flex items-center justify-center">
+            <button
+              onClick={handleClose}
+              className="w-9 h-9 flex items-center justify-center"
+            >
               <CloseOutlinedIcon sx={{ width: 24, height: 24 }} />
             </button>
           </div>
 
           <div className="px-3 pb-3">
             {boards.map((item, index) => (
-              <ClosedBoardItem onReopen={handleReopenBoard} data={item} key={index} workspaceName={workspaceName} />
+              <ClosedBoardItem
+                onReopen={handleReopenBoard}
+                onDestroy={handleDestroyBoard}
+                data={item}
+                key={index}
+                workspaceName={workspaceName}
+              />
             ))}
           </div>
         </div>
@@ -82,6 +111,6 @@ ClosedBoarDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   boards: PropTypes.array,
-  workspaceName: PropTypes.string,
+  workspaceName: PropTypes.string
 };
 export default ClosedBoarDialog;

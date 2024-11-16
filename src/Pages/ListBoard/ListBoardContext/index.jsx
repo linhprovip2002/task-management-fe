@@ -317,7 +317,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         newList[index].cards = [];
       }
       if (newData.title) {
-        newList[index].cards = [...newList[index].cards, newData];
+        newList[index].cards = [...newList[index].cards, { ...newData, files: [] }];
       }
       newList[index].isShowAddCard = !newList[index].isShowAddCard;
       setListCount(newList);
@@ -333,7 +333,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       };
       try {
         const res = await createCardByIdList(dataSend);
-        setDataCard(res);
+        setDataCard({ ...res, files: [] });
       } catch (error) {
         console.error("Failed to create card by id list:", error);
       }

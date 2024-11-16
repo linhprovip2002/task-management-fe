@@ -4,7 +4,7 @@ export const ButtonBoardCard = ({ isActive = false, isFollowing, className, name
   return (
     <div
       onClick={onHandleEvent}
-      className={`${isActive ? className : "min-w-full m-1 bg-gray-200 hover:bg-gray-300"} cursor-pointer flex items-center px-2 py-[6px]  rounded-[4px] `}
+      className={`${isActive ? className : "min-w-full m-1 bg-gray-200 hover:bg-gray-300"} cursor-pointer flex items-center px-2 py-[6px] rounded-[4px] `}
     >
       {children}
       <div className="text-[14px]">{nameBtn}</div>

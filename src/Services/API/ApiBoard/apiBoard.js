@@ -101,3 +101,8 @@ export async function reOpenBoard(boardId) {
   const response = await request.post(`/board/${boardId}/reopen`);
   return response?.data;
 }
+
+export async function destroyBoard(boardId) {
+  const response = await request.delete(`/board/${boardId}/destroy`);
+  return response?.data;
+}
