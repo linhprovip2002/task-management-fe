@@ -17,7 +17,6 @@ import {
 import {
   getAllMembersByIdBoard,
   getBoardId,
-  getWorkspaceById,
   updateBoard
 } from "../../../Services/API/ApiBoard/apiBoard";
 import {
@@ -26,6 +25,7 @@ import {
   apiUploadMultiFile
 } from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
+import { useGetWorkspaceById } from "../../../Hooks";
 
 const ListBoardContext = createContext();
 
@@ -46,7 +46,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [activeStar, setActiveStar] = useState(false);
   const [listCount, setListCount] = useState([]);
   const [dataBoard, setDataBoard] = useState([]);
-  const [dataWorkspace, setDataWorkspace] = useState([]);
   const [membersBoard, setMembersBoard] = useState([]);
   const [membersInCard, setMembersInCard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -56,6 +55,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [upFileComment, setUpFileComment] = useState([]);
+
+  const { workspaceDetails: dataWorkspace } = useGetWorkspaceById(idWorkSpace);
 
   const navigate = useNavigate();
 
@@ -200,12 +201,9 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   let prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
+      console.log("fetchBoardData");
       try {
         setLoading(true);
-        const resWorkspace = await getWorkspaceById(idWorkSpace);
-        if (!resWorkspace || resWorkspace.error)
-          return navigate(`/workspace/${idWorkSpace}/home`);
-        setDataWorkspace(resWorkspace?.data);
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error)
@@ -317,7 +315,10 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         newList[index].cards = [];
       }
       if (newData.title) {
-        newList[index].cards = [...newList[index].cards, { ...newData, files: [] }];
+        newList[index].cards = [
+          ...newList[index].cards,
+          { ...newData, files: [] }
+        ];
       }
       newList[index].isShowAddCard = !newList[index].isShowAddCard;
       setListCount(newList);

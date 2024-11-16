@@ -34,10 +34,30 @@ export const PERMISSIONS = [
   { id: 75, name: "update", module: "list", displayName: "Update List" },
   { id: 76, name: "delete", module: "list", displayName: "Delete List" },
   { id: 77, name: "detail", module: "list", displayName: "Detail List" },
-  // { id: 78, name: "add_member", module: "list", displayName: "Add Member to List" },
-  // { id: 79, name: "remove_member", module: "list", displayName: "Remove Member from List" },
-  // { id: 80, name: "update_member", module: "list", displayName: "Update List Member" },
-  // { id: 81, name: "list_member", module: "list", displayName: "List List Members" },
+  {
+    id: 78,
+    name: "add_member",
+    module: "list",
+    displayName: "Add Member to List"
+  },
+  {
+    id: 79,
+    name: "remove_member",
+    module: "list",
+    displayName: "Remove Member from List"
+  },
+  {
+    id: 80,
+    name: "update_member",
+    module: "list",
+    displayName: "Update List Member"
+  },
+  {
+    id: 81,
+    name: "list_member",
+    module: "list",
+    displayName: "List List Members"
+  },
   // card
   { id: 82, name: "create", module: "card", displayName: "Create Card" },
   { id: 83, name: "list", module: "card", displayName: "List Cards" },

@@ -18,7 +18,7 @@ import { ClickAwayListener, Popper } from "@mui/material";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
-  let {
+  const {
     boardId,
     dataBoard,
     setListCount,
@@ -120,8 +120,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
     try {
       const res = await DeleteList(idBoard, idList);
       if (res?.data.removed === 1) {
-        listCount = listCount.filter((item) => item.id !== idList);
-        setListCount(listCount);
+        setListCount(listCount.filter((item) => item.id !== idList));
       }
     } catch (err) {
       console.error("Error delete list in board: ", err);
@@ -156,25 +155,15 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      {getListPermissionByUser("update") && (
+      {getListPermissionByUser("update") ? (
         <div className="relative">
-          {tippyName ? (
-            <Tippy
-              content={
-                <span className="text-[12px] max-w-[150px]">{tippyName}</span>
-              }
-              arrow={false}
-              placement="bottom"
-            >
-              <div
-                aria-describedby={id}
-                className={className}
-                onClick={handleClickHidot}
-              >
-                <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
-              </div>
-            </Tippy>
-          ) : (
+          <Tippy
+            content={
+              <span className="text-[12px] max-w-[150px]">{tippyName}</span>
+            }
+            arrow={false}
+            placement="bottom"
+          >
             <div
               aria-describedby={id}
               className={className}
@@ -182,10 +171,9 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
             >
               <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
             </div>
-          )}
-
+          </Tippy>
           <Popper id={id} open={open} anchorEl={anchorEl}>
-            <div style={styles}>
+            <>
               {chooseMenuOperation && (
                 <>
                   <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
@@ -298,9 +286,11 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
                   </div>
                 </ItemMenu>
               )}
-            </div>
+            </>
           </Popper>
         </div>
+      ) : (
+        <div></div>
       )}
     </ClickAwayListener>
   );

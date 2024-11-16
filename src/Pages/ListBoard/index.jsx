@@ -91,7 +91,7 @@ function ListBoardContent() {
           <>
             <div className={`pl-4 py-4 flex items-center`}>
               <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
-                B
+                {dataWorkspace?.title?.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 ml-2 text-[14px] font-[600]">
                 {dataWorkspace?.title}

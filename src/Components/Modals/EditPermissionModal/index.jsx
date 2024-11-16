@@ -147,14 +147,14 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
       const modulePermission = PERMISSIONS.filter(
         (perm) => perm.module === permission.title
       ).map((child) => child.id);
-      console.log(modulePermission);
+
       const allChecked = modulePermission.every((perm) =>
         watchPermissionByRole?.includes(perm)
       );
 
       updatedCheckedAll[permission.title] = allChecked;
     });
-    console.log(watchPermissionByRole, updatedCheckedAll);
+
     setCheckedAll(updatedCheckedAll);
     // eslint-disable-next-line
   }, [watchPermissionByRole, watchRole]);
