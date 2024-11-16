@@ -19,7 +19,7 @@ export default function Stared() {
   const { boardData, isLoading, isFetching } = useGetAllBoards();
 
   const starredBoard = useMemo(
-    () => boardData?.data.filter((board) => board.isFavorite),
+    () => boardData?.data.filter((board) => board.isFavorite) || [],
     [boardData]
   );
 
@@ -40,7 +40,7 @@ export default function Stared() {
                 tabIndex="-1"
                 {...attrs}
               >
-                {starredBoard?.length ? (
+                {starredBoard.length ? (
                   starredBoard.map((board, index) => (
                     <div
                       key={index}
@@ -49,10 +49,10 @@ export default function Stared() {
                         handleItemClick(e, board.id, board.workspaceId)
                       }
                     >
-                      <div className="flex items-center gap-2 text-base justify-between">
+                      <div className="flex items-center justify-between gap-2 text-base">
                         <div className="flex items-center gap-2">
                           <div
-                            className="w-10 rounded-sm h-8"
+                            className="w-10 h-8 rounded-sm"
                             style={{
                               backgroundColor: board.backgroundColor,
                               backgroundImage: board.coverUrl
@@ -63,14 +63,14 @@ export default function Stared() {
                               backgroundPosition: "center center"
                             }}
                           />
-                          <div className="text-xs  flex flex-col justify-between">
+                          <div className="flex flex-col justify-between text-xs">
                             <div className="font-bold">{board.title}</div>
                             <div>
                               {board?.workspace?.title || "Workspace Name"}
                             </div>
                           </div>
                         </div>
-                        <div className="text-yellow-400 flex justify-center">
+                        <div className="flex justify-center text-yellow-400">
                           <StarIcon fontSize="small" />
                         </div>
                       </div>
@@ -79,7 +79,7 @@ export default function Stared() {
                 ) : (
                   <div className="flex flex-col gap-3 p-2">
                     <img src="/NoStarredBoardImg.svg" alt="No starred Boards" />
-                    <div className="text-center text-sm">
+                    <div className="text-sm text-center">
                       Star important boards to access them quickly and easily.
                     </div>
                   </div>

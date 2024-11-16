@@ -7,12 +7,7 @@ import ItemMenu from "../ItemMenu";
 import { CreateList, DeleteList } from "../../Services/API/ApiListOfBoard";
 import { createCardByIdList } from "../../Services/API/ApiCard";
 import DropItemChoose from "../DropItemChoose";
-import {
-  collectTypeSort,
-  itemChooseToMove,
-  nameOperations,
-  styles
-} from "./constans";
+import { collectTypeSort, itemChooseToMove, nameOperations } from "./constans";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { ClickAwayListener, Popper } from "@mui/material";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";

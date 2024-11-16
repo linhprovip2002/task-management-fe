@@ -49,12 +49,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   const [membersBoard, setMembersBoard] = useState([]);
   const [membersInCard, setMembersInCard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [uploadedFiles, setUploadedFiles] = useState([]); //file  upload len thang server
-  const [postUploadedFiles, setPostUploadedFiles] = useState([]);
+
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [upFileComment, setUpFileComment] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]); //file  upload len thang server
+  const [postUploadedFiles, setPostUploadedFiles] = useState([]);
 
   const { workspaceDetails: dataWorkspace } = useGetWorkspaceById(idWorkSpace);
 
@@ -112,7 +114,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     async (id, allUrls) => {
       try {
         const response = await apiAssignFile(id, allUrls);
-        setPostUploadedFiles(response.data.files);
+        setPostUploadedFiles((prev) => [...prev, ...response.data.files]);
         return response.data.files;
       } catch (error) {
         console.error("Failed to get uploaded files:", error);
@@ -136,16 +138,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     }
   };
 
-  // const handleFileCommentChange = (event) => {
-  //   const files = event.target.files;
-  //   if (files && files.length > 0) {
-  //     const fileUrls = Array.from(files).map((file) => URL.createObjectURL(file));
-  //     setUpFileComment(fileUrls); // Lưu URL xem trước
-  //   } else {
-  //     setUpFileComment([]); // Đảm bảo upFileComment là mảng rỗng nếu không có file nào được chọn
-  //   }
-  // };
-
   const handlePostComment = async () => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(content, "text/html");
@@ -158,7 +150,6 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
     setLoading(true);
     const loadingToastId = toast.loading("Saving...");
-
     try {
       const response = await postComment(boardId, params);
       toast.dismiss(loadingToastId);
@@ -174,6 +165,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         ...prevDataCard,
         comments: [...prevDataCard.comments, newComment]
       }));
+      // Cập nhật danh sách file đã tải lên từ comment
+      setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
     } catch (err) {
       toast.dismiss(loadingToastId);
       toast.error("Cannot create comment");
@@ -192,7 +185,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
           (comment) => comment.id !== cmdId
         )
       }));
-      toast.success("File deleted successfully!");
+      toast.success("Deleted comment successfully!");
     } catch (err) {
       console.error("Error deleting comment:", err);
     }
@@ -201,13 +194,13 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   let prevListCountRef = useRef();
   useEffect(() => {
     const fetchBoardData = async () => {
-      console.log("fetchBoardData");
       try {
         setLoading(true);
 
         const resBoard = await getBoardId(boardId);
-        if (!resBoard || resBoard.error)
+        if (!resBoard || resBoard.error) {
           return navigate(`/workspace/${idWorkSpace}/home`);
+        }
         setDataBoard(resBoard);
         const lists = resBoard.lists;
         const listWithCardsPromises = lists.map(async (list) => {
@@ -260,6 +253,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setDataList(data);
       setPostUploadedFiles([...dataCard?.files]);
       setDataCard(dataCard);
+      setPostUploadedFiles([...dataCard?.files]);
       setMembersInCard(dataCard?.members);
     },
     [isShowBoardCard, isShowBoardEdit]
@@ -271,9 +265,9 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setDataList(dataList);
       setDataCard(dataCard);
-      setIsShowBoardEdit(!isShowBoardEdit);
-      setPostUploadedFiles([...dataCard.files]);
+      setPostUploadedFiles([...dataCard?.files]);
     },
+    //eslint-disable-next-line
     [isShowBoardEdit]
   );
 
@@ -446,7 +440,8 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         upFileComment,
         setUpFileComment,
         setIsShowBoardEdit,
-        setDataBoard
+        // handleUpdateComment,
+        setLoading
       }}
     >
       {children}

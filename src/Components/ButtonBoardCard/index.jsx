@@ -1,6 +1,13 @@
 import CheckIcon from "@mui/icons-material/Check";
 
-export const ButtonBoardCard = ({ isActive = false, isFollowing, className, nameBtn, onHandleEvent, children }) => {
+export const ButtonBoardCard = ({
+  isActive = false,
+  isFollowing,
+  className,
+  nameBtn,
+  onHandleEvent,
+  children
+}) => {
   return (
     <div
       onClick={onHandleEvent}
@@ -8,7 +15,9 @@ export const ButtonBoardCard = ({ isActive = false, isFollowing, className, name
     >
       {children}
       <div className="text-[14px]">{nameBtn}</div>
-      {isFollowing && <CheckIcon className="ml-1" style={{ fontSize: "16px" }} />}
+      {isFollowing && (
+        <CheckIcon className="ml-1" style={{ fontSize: "16px" }} />
+      )}
     </div>
   );
 };

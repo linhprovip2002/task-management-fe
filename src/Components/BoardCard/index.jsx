@@ -49,15 +49,12 @@ export const BoardCard = () => {
     setMembersInCard,
     membersInCard,
     handleFileChange,
-    postUploadedFiles,
     content,
     setContent,
-    // uploadedFiles,
     isSaving,
     handlePostComment,
     handleDeleteComment,
     loading,
-    handleDeleteFile,
     setEditorInstance,
     boardId,
     setDataCard
@@ -606,12 +603,7 @@ export const BoardCard = () => {
                 </div>
               </div>
               <div className="p-2 ml-6">
-                <Attachment
-                  postUploadedFiles={postUploadedFiles}
-                  formatDate={formatDate}
-                  loading={loading}
-                  handleDeleteFile={handleDeleteFile}
-                />
+                <Attachment loading={loading} />
               </div>
             </div>
             {/* WHAT TO DO HIEN THI LEN UI */}
