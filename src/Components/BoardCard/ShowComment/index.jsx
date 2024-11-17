@@ -10,18 +10,17 @@ import { PreviewImageModal } from "../../Modals/PreviewImageModal";
 import { editorInit } from "./constants/Editor.constant";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import { formatDate } from "../WriteComment/helpers/formatDate";
+import { useGetCardById } from "../../../Hooks";
 
 const editorKey = process.env.REACT_APP_EDITOR_KEY;
 
 const ShowComment = ({ item, handleDeleteComment }) => {
   const {
-    dataCard,
     setLoading,
     setContent,
     setUpFileComment,
     setPostUploadedFiles,
     boardId,
-    setDataCard,
     loading
   } = useListBoardContext();
   const { userData } = useStorage();
@@ -31,6 +30,9 @@ const ShowComment = ({ item, handleDeleteComment }) => {
   const [editorContent, setEditorContent] = useState(item.content);
   const [canEdit, setCanEdit] = useState(false);
   const [newContent, setNewContent] = useState("");
+
+  const cardId = localStorage.getItem("cardId");
+  const { data: dataCard } = useGetCardById(cardId);
 
   const method = useForm();
   const { setValue } = method;
@@ -63,12 +65,6 @@ const ShowComment = ({ item, handleDeleteComment }) => {
       setUpFileComment([]);
 
       const newComment = response.data;
-
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        comments: [...prevDataCard.comments, newComment],
-        files: [...prevDataCard.files, ...newComment.files]
-      }));
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
 
       toast.success("Edit successfully!");

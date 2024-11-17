@@ -15,21 +15,28 @@ import {
   DescriptionIcon
 } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 function ItemList({
   id,
-  dataList,
+  item,
   dataCard,
   isFollowing = false,
   isArchived = false
 }) {
+  const navigate = useNavigate();
+  const { id: idWorkSpace, idBoard } = useParams();
+
+  const { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
+  const { getCardPermissionByUser } = useGetBoardPermission(idBoard);
+
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: id,
       data: { ...dataCard, type: "card" }
     });
+
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -48,25 +55,16 @@ function ItemList({
     setEndDateCheck(formattedDate);
   }, [dataCard, dataCard?.endDate]);
 
-  const { handleShowBoardCard, handleShowBoardEdit, boardId, idWorkSpace } =
-    useListBoardContext();
-  const { getCardPermissionByUser } = useGetBoardPermission(boardId);
-
-  const navigate = useNavigate();
-  const handleGetDataCardDetail = async (dataList, dataCard) => {
-    try {
-      handleShowBoardCard(dataList, dataCard);
-    } catch (err) {
-      console.error("Error fetching data card detail: ", err);
-      navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
-    }
+  const handleGetDataCardDetail = (dataCard) => {
+    handleShowBoardCard(dataCard);
   };
 
   useEffect(() => {
     if (!dataCard) {
-      navigate(`/workspace/${idWorkSpace}/board/${boardId}`);
+      navigate(`/workspace/${idWorkSpace}/board/${idBoard}`);
     }
-  }, [dataCard, idWorkSpace, boardId, navigate]);
+    // eslint-disable-next-line
+  }, [dataCard]);
 
   const itemStyle = {
     transform: CSS.Translate.toString(transform),
@@ -86,7 +84,7 @@ function ItemList({
       className="relative group bg-white rounded-[8px] my-2 shadow-md hover:ring-1 hover:ring-blue-500 cursor-pointer"
     >
       <div
-        onClick={() => handleGetDataCardDetail(dataList, dataCard)}
+        onClick={() => handleGetDataCardDetail(dataCard)}
         className="flex flex-col justify-center min-h-[40px] w-full"
       >
         {dataCard?.coverUrl && (
@@ -260,7 +258,9 @@ function ItemList({
             placement="bottom"
           >
             <div
-              onClick={(e) => handleShowBoardEdit(e, dataList, dataCard)}
+              onClick={(e) => {
+                handleShowBoardEdit(e, item, dataCard);
+              }}
               className="absolute right-1 top-1 rounded-[50%] p-2 hover:bg-gray-100 bg-white group-hover:opacity-100 opacity-0 transition-opacity duration-300"
             >
               <EditIcon width={16} height={16} />

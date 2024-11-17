@@ -1,11 +1,10 @@
 import { HiDotsVertical } from "react-icons/hi";
-import { useParams } from "react-router-dom";
 import React, { useState } from "react";
 import { ClickAwayListener, Divider, Popper } from "@mui/material";
 
 import { ArrowDown } from "../../Components/Icons";
 import { BoardCard } from "../../Components/BoardCard";
-import { EditCard } from "../../Components/EditCard";
+import { EditCardModal } from "../../Components/EditCard";
 import Sidebar from "../../Components/Sidebar";
 import BoardInSidebar from "../../Components/BoardInSidebar";
 import HeaderBoard from "../../Components/HeaderBoard";
@@ -18,9 +17,8 @@ import Loading from "../../Components/Loading";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 function ListBoard() {
-  const { id: idWorkSpace, idBoard } = useParams();
   return (
-    <ListBoardProvider boardId={idBoard} idWorkSpace={idWorkSpace}>
+    <ListBoardProvider>
       <ListBoardContent />
     </ListBoardProvider>
   );
@@ -30,13 +28,13 @@ function ListBoardContent() {
   const {
     dataBoard,
     dataWorkspace,
-    handleClosedNavBar,
+    toggleNavbar,
     isShowBoardCard,
-    isShowBoardEdit,
+    toggleCardEditModal,
     loading
   } = useListBoardContext();
   const { isLoading: isLoadingPermission } = useGetBoardPermission(
-    dataBoard.id
+    dataBoard?.id
   );
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -76,8 +74,10 @@ function ListBoardContent() {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
+
   const isLoading =
     loading || !dataBoard || !dataWorkspace || isLoadingPermission;
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -91,13 +91,13 @@ function ListBoardContent() {
           <>
             <div className={`pl-4 py-4 flex items-center`}>
               <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
-                {dataWorkspace?.title?.charAt(0).toUpperCase()}
+                {dataWorkspace.title.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 ml-2 text-[14px] font-[600]">
-                {dataWorkspace?.title}
+                {dataWorkspace.title}
               </div>
               <div
-                onClick={handleClosedNavBar}
+                onClick={toggleNavbar}
                 className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer"
               >
                 <ArrowDown
@@ -152,9 +152,7 @@ function ListBoardContent() {
                 : "transparent",
             backgroundImage: dataBoard.coverUrl
               ? `url(${dataBoard.coverUrl})`
-              : dataBoard.backgroundColor
-                ? "none"
-                : `url(https://trello.com/assets/707f35bc691220846678.svg)`,
+              : dataBoard.backgroundColor || "/Board background.svg",
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -167,8 +165,7 @@ function ListBoardContent() {
         </div>
       </div>
       {isShowBoardCard && <BoardCard />}
-      {isShowBoardEdit && <EditCard />}
-      {isLoading && <Loading />}
+      {toggleCardEditModal && <EditCardModal />}
     </>
   );
 }
