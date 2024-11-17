@@ -44,9 +44,7 @@ function Filter({ onClose }) {
   const handleAddDate = (item) => {
     setChoosedDate((prev) => {
       const itemExists = prev.findIndex((p) => p.id === item.id) !== -1;
-      return itemExists
-        ? prev.filter((p) => p.id !== item.id)
-        : [...prev, item];
+      return itemExists ? prev.filter((p) => p.id !== item.id) : [...prev, item];
     });
   };
 
@@ -72,7 +70,7 @@ function Filter({ onClose }) {
                   return card?.endDate && new Date(card.endDate) >= today;
                 }
                 return date;
-              })
+              }),
             );
             return { ...listItem, cards: filteredCards };
           });
@@ -102,9 +100,7 @@ function Filter({ onClose }) {
   const handleAddLabel = (item) => {
     setChoosedLabel((prev) => {
       const itemExists = prev.findIndex((p) => p.id === item.id) !== -1;
-      return itemExists
-        ? prev.filter((p) => p.id !== item.id)
-        : [...prev, item];
+      return itemExists ? prev.filter((p) => p.id !== item.id) : [...prev, item];
     });
   };
 
@@ -114,11 +110,7 @@ function Filter({ onClose }) {
         ? list
         : list.map((listItem) => {
             const filteredCards = listItem.cards?.filter((card) =>
-              choosedLabel.some((label) =>
-                card?.tagCards?.some(
-                  (cardLabel) => cardLabel?.tag?.id === label.id
-                )
-              )
+              choosedLabel.some((label) => card?.tagCards?.some((cardLabel) => cardLabel?.tag?.id === label.id)),
             );
             return { ...listItem, cards: filteredCards };
           });
@@ -129,9 +121,7 @@ function Filter({ onClose }) {
   const handleAddMember = (item) => {
     setChoosedMember((prev) => {
       const itemExists = prev.findIndex((p) => p.id === item.id) !== -1;
-      return itemExists
-        ? prev.filter((p) => p.id !== item.id)
-        : [...prev, item];
+      return itemExists ? prev.filter((p) => p.id !== item.id) : [...prev, item];
     });
   };
 
@@ -141,11 +131,7 @@ function Filter({ onClose }) {
         ? list
         : list.map((listItem) => {
             const filteredCards = listItem?.cards?.filter((card) =>
-              choosedMember.some((member) =>
-                card?.members?.some(
-                  (cardMember) => cardMember?.user?.id === member.id
-                )
-              )
+              choosedMember.some((member) => card?.members?.some((cardMember) => cardMember?.user?.id === member.id)),
             );
             return { ...listItem, cards: filteredCards };
           });
@@ -161,8 +147,7 @@ function Filter({ onClose }) {
           if (members.length > 0) {
             members.forEach((member) => {
               setCountMember((prev) => {
-                const userExists =
-                  prev.findIndex((p) => p.id === member?.user?.id) !== -1;
+                const userExists = prev.findIndex((p) => p.id === member?.user?.id) !== -1;
                 if (!userExists) {
                   return [...prev, member?.user];
                 }
@@ -175,8 +160,7 @@ function Filter({ onClose }) {
           if (labels) {
             labels.forEach((label) => {
               setCountLabel((prev) => {
-                const labelExists =
-                  prev.findIndex((p) => p.id === label?.tag?.id) !== -1;
+                const labelExists = prev.findIndex((p) => p.id === label?.tag?.id) !== -1;
                 if (!labelExists) {
                   return [...prev, label?.tag];
                 }
@@ -204,9 +188,7 @@ function Filter({ onClose }) {
                 className="w-full bg-white rounded-[2px] font-[400] text-[14px] px-2 py-1 cursor-pointer  focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
-            <div className="font-[400] text-[11px]">
-              Search for tags, members, labels, and more.
-            </div>
+            <div className="font-[400] text-[11px]">Search for tags, members, labels, and more.</div>
 
             <div className="py-2 font-[600] text-[12px]">Members</div>
             <div className="flex flex-col">
@@ -217,17 +199,14 @@ function Filter({ onClose }) {
                   type="checkbox"
                   className="w-4 h-4 mr-2 cursor-pointer"
                 />
-                <span
-                  onClick={handleClickNoMember}
-                  className="flex items-center w-full"
-                >
+                <span onClick={handleClickNoMember} className="flex items-center w-full">
                   <div className="flex items-center flex-wrap mx-1">
                     <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-[10px] bg-gray-200">
                       <PersonOutlineOutlinedIcon
                         style={{
                           width: "16px",
                           height: "16px",
-                          color: "#44546f"
+                          color: "#44546f",
                         }}
                       />
                     </div>
@@ -237,28 +216,20 @@ function Filter({ onClose }) {
               </div>
               {countMember?.length > 0 &&
                 countMember?.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center py-2 pl-2 cursor-pointer"
-                  >
+                  <div key={member.id} className="flex items-center py-2 pl-2 cursor-pointer">
                     <input
                       checked={choosedMember.some((i) => i.id === member.id)}
                       onChange={() => handleAddMember(member)}
                       type="checkbox"
                       className="w-4 h-4 mr-2 cursor-pointer"
                     />
-                    <span
-                      onClick={() => handleAddMember(member)}
-                      className="flex items-center w-full"
-                    >
+                    <span onClick={() => handleAddMember(member)} className="flex items-center w-full">
                       <div className="flex items-center flex-wrap mx-1">
                         <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-white text-[10px] bg-gradient-to-b from-green-400 to-blue-500">
                           PM
                         </div>
                       </div>
-                      <div className="font-[400] text-[14px]">
-                        {member?.name}
-                      </div>
+                      <div className="font-[400] text-[14px]">{member?.name}</div>
                     </span>
                   </div>
                 ))}
@@ -267,20 +238,14 @@ function Filter({ onClose }) {
             <div className="py-2 font-[600] text-[12px]">Expiration date</div>
             <div className="flex flex-col">
               {expirations.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center py-2 pl-2 cursor-pointer"
-                >
+                <div key={item.id} className="flex items-center py-2 pl-2 cursor-pointer">
                   <input
                     checked={choosedDate.some((i) => i.id === item.id)}
                     onChange={() => handleAddDate(item)}
                     type="checkbox"
                     className="w-4 h-4 mr-2 cursor-pointer"
                   />
-                  <span
-                    onClick={() => handleAddDate(item)}
-                    className="flex items-center w-full"
-                  >
+                  <span onClick={() => handleAddDate(item)} className="flex items-center w-full">
                     <div className="flex items-center flex-wrap mx-1">
                       {item.Icon ? (
                         <div
@@ -307,15 +272,10 @@ function Filter({ onClose }) {
                   type="checkbox"
                   className="w-4 h-4 mr-2 cursor-pointer"
                 />
-                <span
-                  onClick={handleClickNoLabel}
-                  className="flex items-center w-full"
-                >
+                <span onClick={handleClickNoLabel} className="flex items-center w-full">
                   <div className="flex items-center flex-wrap mx-1">
                     <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-[10px] bg-gray-200">
-                      <BookmarksOutlinedIcon
-                        style={{ width: "16px", height: "16px" }}
-                      />
+                      <BookmarksOutlinedIcon style={{ width: "16px", height: "16px" }} />
                     </div>
                   </div>
                   <div className="font-[400] text-[14px]">No label</div>
@@ -324,10 +284,7 @@ function Filter({ onClose }) {
 
               {countLabel?.length > 0 &&
                 countLabel?.map((label) => (
-                  <div
-                    key={label?.id}
-                    className="flex items-center py-2 pl-2 cursor-pointer"
-                  >
+                  <div key={label?.id} className="flex items-center py-2 pl-2 cursor-pointer">
                     <input
                       checked={choosedLabel.some((i) => i.id === label.id)}
                       onChange={() => handleAddLabel(label)}
@@ -339,7 +296,7 @@ function Filter({ onClose }) {
                         onClick={() => handleAddLabel(label)}
                         style={{
                           backgroundColor: label?.color,
-                          color: "#ffffff"
+                          color: "#ffffff",
                         }}
                         className={`flex-1 flex items-center hover:opacity-90 h-[34px] p-2 rounded-[4px] transition-all duration-50`}
                       >

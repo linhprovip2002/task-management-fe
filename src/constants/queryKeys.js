@@ -12,5 +12,6 @@ export const EQueryKeys = {
   //BOARD
   GET_ALL_BOARD: "getAllBoard",
   GET_BOARD_PERMISSION: "getBoardPermission",
-  GET_BOARD_ROLE: "getBoardRole"
+  GET_BOARD_ROLE: "getBoardRole",
+  GET_CARD_BY_LIST: "getCardByList",
 };

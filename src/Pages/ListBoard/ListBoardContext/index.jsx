@@ -1,29 +1,11 @@
-import React, {
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from "react";
+import React, { createContext, useContext, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { CreateList } from "../../../Services/API/ApiListOfBoard";
-import {
-  createCardByIdList,
-  getAllCardByIdList
-} from "../../../Services/API/ApiCard";
-import {
-  getAllMembersByIdBoard,
-  getBoardId,
-  updateBoard
-} from "../../../Services/API/ApiBoard/apiBoard";
-import {
-  apiAssignFile,
-  apiDeleteFile,
-  apiUploadMultiFile
-} from "../../../Services/API/ApiUpload/apiUpload";
+import { createCardByIdList, getAllCardByIdList } from "../../../Services/API/ApiCard";
+import { getAllMembersByIdBoard, getBoardId, updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
+import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 import { useGetWorkspaceById } from "../../../Hooks";
 
@@ -120,7 +102,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         console.error("Failed to get uploaded files:", error);
       }
     },
-    [setPostUploadedFiles]
+    [setPostUploadedFiles],
   );
 
   const handleDeleteFile = async (fileId) => {
@@ -128,7 +110,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       await apiDeleteFile(dataCard.id, fileId);
       setDataCard((prev) => ({
         ...prev,
-        files: prev.files.filter((file) => file.id !== fileId)
+        files: prev.files.filter((file) => file.id !== fileId),
       }));
       setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
       toast.success("File deleted successfully!");
@@ -146,7 +128,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: dataCard.id
+      cardId: dataCard.id,
     };
     setLoading(true);
     const loadingToastId = toast.loading("Saving...");
@@ -163,7 +145,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       // Thêm bình luận mới vào danh sách bình luận
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: [...prevDataCard.comments, newComment]
+        comments: [...prevDataCard.comments, newComment],
       }));
       // Cập nhật danh sách file đã tải lên từ comment
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
@@ -181,9 +163,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       await deleteComment(boardId, cmdId);
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: prevDataCard.comments.filter(
-          (comment) => comment.id !== cmdId
-        )
+        comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
       }));
       toast.success("Deleted comment successfully!");
     } catch (err) {
@@ -192,10 +172,11 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
   };
 
   let prevListCountRef = useRef();
+  const {} = useGetAllCardByList(list.id, boardId);
   useEffect(() => {
     const fetchBoardData = async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
 
         const resBoard = await getBoardId(boardId);
         if (!resBoard || resBoard.error) {
@@ -209,10 +190,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
           return { ...list, cards };
         });
         const updatedLists = await Promise.all(listWithCardsPromises);
-        if (
-          JSON.stringify(updatedLists) !==
-          JSON.stringify(prevListCountRef.current)
-        ) {
+        if (JSON.stringify(updatedLists) !== JSON.stringify(prevListCountRef.current)) {
           setListCount(updatedLists);
         }
         prevListCountRef.current = updatedLists;
@@ -225,7 +203,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
     };
 
     fetchBoardData();
-  }, [boardId, idWorkSpace, navigate, dataCard]);
+  }, [boardId, idWorkSpace, navigate]);
 
   useEffect(() => {
     const getAllUserInBoard = async () => {
@@ -256,7 +234,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setPostUploadedFiles([...dataCard?.files]);
       setMembersInCard(dataCard?.members);
     },
-    [isShowBoardCard, isShowBoardEdit]
+    [isShowBoardCard, isShowBoardEdit],
   );
 
   const handleShowBoardEdit = useCallback(
@@ -268,14 +246,14 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
-    [isShowBoardEdit]
+    [isShowBoardEdit],
   );
 
   const handleShowAddCard = (idList) => {
     setActiveIndex(idList);
     const newList = listCount.map((list) => ({
       ...list,
-      isShowAddCard: list.id === idList ? !list.isShowAddCard : false
+      isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
     }));
     setListCount(newList);
   };
@@ -309,10 +287,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         newList[index].cards = [];
       }
       if (newData.title) {
-        newList[index].cards = [
-          ...newList[index].cards,
-          { ...newData, files: [] }
-        ];
+        newList[index].cards = [...newList[index].cards, { ...newData, files: [] }];
       }
       newList[index].isShowAddCard = !newList[index].isShowAddCard;
       setListCount(newList);
@@ -324,7 +299,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         coverUrl: "",
         priority: "medium",
         tagId: "",
-        listId: idList
+        listId: idList,
       };
       try {
         const res = await createCardByIdList(dataSend);
@@ -333,7 +308,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         console.error("Failed to create card by id list:", error);
       }
     },
-    [listCount]
+    [listCount],
   );
 
   const handleAddList = async (newData) => {
@@ -341,7 +316,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
       const newListItem = {
         title: newData.title.trim(),
         description: "",
-        boardId: dataBoard.id
+        boardId: dataBoard.id,
       };
 
       try {
@@ -422,9 +397,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         uploadedFiles,
         setUploadedFiles,
         handleFileChange,
-        postUploadedFiles: postUploadedFiles.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        ),
+        postUploadedFiles: postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
         setPostUploadedFiles,
         handlePostFiles,
         loading,
@@ -441,7 +414,7 @@ function ListBoardProvider({ children, boardId, idWorkSpace }) {
         setUpFileComment,
         setIsShowBoardEdit,
         // handleUpdateComment,
-        setLoading
+        setLoading,
       }}
     >
       {children}
