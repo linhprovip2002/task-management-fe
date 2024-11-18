@@ -33,7 +33,6 @@ function ListBoardProvider({ children }) {
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeStar, setActiveStar] = useState(false);
 
-  const [membersInCard, setMembersInCard] = useState([]);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const [content, setContent] = useState("");
@@ -178,14 +177,15 @@ function ListBoardProvider({ children }) {
     async (dataCard) => {
       setIsShowBoardCard(!isShowBoardCard);
       localStorage.setItem("cardId", dataCard.id);
-      // toggleCardEditModal && setToggleCardEditModal((prev) => !prev);
+      toggleCardEditModal && setToggleCardEditModal((prev) => !prev);
       // setDataList(data);
       // console.log(dataCard);
       // setDataCard(dataCard);
       // setPostUploadedFiles([...dataCard?.files]);
       // setMembersInCard(dataCard?.members);
     },
-    [isShowBoardCard, dataCard],
+    //eslint-disable-next-line
+    [isShowBoardCard, toggleCardEditModal],
   );
 
   const handleShowBoardEdit = useCallback(
@@ -273,8 +273,6 @@ function ListBoardProvider({ children }) {
         activeStar,
         handleActiveStar,
         membersBoard,
-        membersInCard,
-        setMembersInCard,
         toggleSidebar,
         handleChange,
         handleChangeTitleCard,

@@ -8,7 +8,9 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React, { useEffect, useState } from "react";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Avatar from "@mui/material/Avatar";
 
+import { stringAvatar } from "../../Utils/color";
 import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { useNavigate, useParams } from "react-router-dom";
@@ -105,7 +107,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
           </div>
           <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
           <div className="flex items-center justify-between w-full flex-wrap">
-            <div className="flex items-center flex-wrap pb-2">
+            <div className="flex flex-1 items-center flex-wrap pb-2">
               {endDateCheck != null && (
                 <div onClick={(e) => e.stopPropagation()}>
                   <div
@@ -191,10 +193,13 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
             </div>
             {dataCard?.members?.length > 0 &&
               dataCard?.members?.map((member, index) => (
-                <div key={index} className="flex items-center flex-wrap pb-2 ml-auto">
-                  <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-white text-[10px] bg-gradient-to-b from-green-400 to-blue-500">
-                    PM
-                  </div>
+                <div key={index} className="flex items-center flex-wrap pb-2">
+                  <Avatar
+                    {...stringAvatar(member.user?.name)}
+                    alt={member.user?.name}
+                    src={member.user?.avatarUrl || ""}
+                    sx={{ width: 24, height: 24, marginRight: "8px" }}
+                  />
                 </div>
               ))}
           </div>

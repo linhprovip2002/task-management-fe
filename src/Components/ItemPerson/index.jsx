@@ -1,23 +1,26 @@
 import React from "react";
 import { Add as AddIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
 
-function ItemPerson({ handleShowMenuBtnCard }) {
-  const { membersInCard } = useListBoardContext();
+import { stringAvatar } from "../../Utils/color";
+
+function ItemPerson({ handleShowMenuBtnCard, membersInCard }) {
   return (
-    <div className="mr-2">
+    <div className="mr-2 mb-2">
       <div className="flex items-center text-[12px] mb-2">
         <span className="mr-2">Member</span>
       </div>
       <div className="relative flex items-center justify-center">
         {membersInCard?.map((item, index) => (
-          <div
+          <Avatar
             key={index}
-            className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] bg-gradient-to-b from-green-400 to-blue-500"
-          >
-            PM
-          </div>
+            {...stringAvatar(item.user?.name)}
+            alt={item.user?.name}
+            src={item.user?.avatarUrl || ""}
+            sx={{ width: 32, height: 32, marginRight: "8px" }}
+          />
         ))}
         <div
           onClick={handleShowMenuBtnCard}

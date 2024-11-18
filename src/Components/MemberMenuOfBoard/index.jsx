@@ -5,11 +5,15 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import ItemMember from "./ItemMember";
 import { RemoveUserToCard } from "../../Services/API/ApiCard";
 import ClickAway from "../BoardCard/ClickAway";
+import { useGetCardById } from "../../Hooks";
 
-const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
-  const { position, membersInCard, membersBoard, dataCard, setDataCard } = useListBoardContext();
+const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseShowMenuBtnCard }) => {
+  const { position, membersBoard } = useListBoardContext();
   const [inputTitle, setInputTitle] = useState("");
   const [filteredMembersBoard, setFilteredMembersBoard] = useState([]);
+
+  const cardId = localStorage.getItem("cardId");
+  const { data: dataCard } = useGetCardById(cardId);
 
   const HandleAddMemberInCard = (item) => {
     if (handleCloseShowMenuBtnCard) {
@@ -24,24 +28,26 @@ const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
   const HandleRemoveMember = useCallback(
     async (member) => {
       try {
-        await RemoveUserToCard(dataCard?.id, member.id);
+        const res = await RemoveUserToCard(dataCard?.id, member?.user.id);
+        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== member?.user?.id));
       } catch (error) {
         console.error("error handle remove member in card", error);
       }
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        members: [...(prevDataCard.members || []), member],
-      }));
     },
-    [dataCard, setDataCard],
+    //eslint-disable-next-line
+    [dataCard, membersInCard, setMembersInCard],
   );
 
   useEffect(() => {
-    const filtered = membersBoard.filter((member) => {
+    const membersOutCard = membersBoard.filter((boardMember) => {
+      return !membersInCard.some((cardMember) => cardMember?.user?.id === boardMember?.user?.id);
+    });
+
+    const filtered = membersOutCard.filter((member) => {
       return member?.user?.name && member?.user?.name.includes(inputTitle);
     });
     setFilteredMembersBoard(filtered);
-  }, [inputTitle, membersBoard]);
+  }, [inputTitle, membersBoard, membersInCard]);
 
   const handleClickAway = () => {
     handleCloseShowMenuBtnCard();
@@ -69,13 +75,7 @@ const MemberMenu = ({ onAddMember, handleCloseShowMenuBtnCard }) => {
               <>
                 <div className="py-2 bg-white">Member of the card</div>
                 {membersInCard?.map((item, index) => (
-                  <ItemMember
-                    key={index}
-                    item={item}
-                    onHandleAddMember={HandleAddMemberInCard}
-                    isClose={true}
-                    onClose={HandleRemoveMember}
-                  />
+                  <ItemMember key={index} item={item} isClose={true} onClose={HandleRemoveMember} />
                 ))}
               </>
             )}

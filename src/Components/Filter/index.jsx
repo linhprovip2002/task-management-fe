@@ -8,7 +8,7 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { expirations } from "./constans";
 
 function Filter({ onClose }) {
-  const { dataList, setListCount } = useListBoardContext();
+  const { dataList, setDataList } = useListBoardContext();
   const [list] = useState(dataList);
   const [countMember, setCountMember] = useState([]);
   const [countLabel, setCountLabel] = useState([]);
@@ -35,11 +35,11 @@ function Filter({ onClose }) {
         return { ...item, cards: updatedCards };
       });
 
-      setListCount(updateList);
+      setDataList(updateList);
     } else {
-      setListCount(list);
+      setDataList(list);
     }
-  }, [setListCount, list, choosedNoMember]);
+  }, [setDataList, list, choosedNoMember]);
 
   const handleAddDate = (item) => {
     setChoosedDate((prev) => {
@@ -75,8 +75,8 @@ function Filter({ onClose }) {
             return { ...listItem, cards: filteredCards };
           });
 
-    setListCount(updateList);
-  }, [choosedDate, list, setListCount]);
+    setDataList(updateList);
+  }, [choosedDate, list, setDataList]);
 
   const handleClickNoLabel = () => {
     setChoosedNoLabel(!choosedNoLabel);
@@ -91,11 +91,11 @@ function Filter({ onClose }) {
         return { ...item, cards: updatedCards };
       });
 
-      setListCount(updateList);
+      setDataList(updateList);
     } else {
-      setListCount(list);
+      setDataList(list);
     }
-  }, [setListCount, list, choosedNoLabel]);
+  }, [setDataList, list, choosedNoLabel]);
 
   const handleAddLabel = (item) => {
     setChoosedLabel((prev) => {
@@ -115,8 +115,8 @@ function Filter({ onClose }) {
             return { ...listItem, cards: filteredCards };
           });
 
-    setListCount(updateList);
-  }, [choosedLabel, list, setListCount]);
+    setDataList(updateList);
+  }, [choosedLabel, list, setDataList]);
 
   const handleAddMember = (item) => {
     setChoosedMember((prev) => {
@@ -136,8 +136,8 @@ function Filter({ onClose }) {
             return { ...listItem, cards: filteredCards };
           });
 
-    setListCount(updateList);
-  }, [choosedMember, list, setListCount]);
+    setDataList(updateList);
+  }, [choosedMember, list, setDataList]);
 
   useEffect(() => {
     const handleGetData = () => {

@@ -9,10 +9,11 @@ import {
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
 } from "@mui/icons-material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 
-import { listColorLabel } from "./constans/list.constans";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import MemberMenu from "../MemberMenuOfBoard";
 import ToDoMenu from "../ToDoMenuOfBoard";
@@ -27,9 +28,9 @@ import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
 import ShowComment from "./ShowComment";
-import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
+import { AddTagInCard, getAllTagByIdBoard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
-import { updateCard } from "../../Services/API/ApiCard";
+import { JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
@@ -38,6 +39,8 @@ import { EQueryKeys } from "../../constants";
 import { useGetCardById } from "../../Hooks";
 import Loading from "../Loading";
 import { formatDate } from "./WriteComment/helpers/formatDate";
+import { useParams } from "react-router-dom";
+import { createTag, updateTag } from "../../Services/API/APITags";
 
 export const BoardCard = () => {
   const {
@@ -45,7 +48,6 @@ export const BoardCard = () => {
     dataList,
     position,
     setPosition,
-    membersInCard,
     handleFileChange,
     content,
     setContent,
@@ -55,35 +57,31 @@ export const BoardCard = () => {
     boardId,
     setDataCard,
   } = useListBoardContext();
+  const { idBoard } = useParams();
 
   const cardId = localStorage.getItem("cardId");
   const { data: dataCard } = useGetCardById(cardId);
   const queryClient = useQueryClient();
 
   const { userData } = useStorage();
-  const [listLabel, setListLabel] = useState(() => {
-    return (
+  const [labelOfCard, setLabelOfCard] = useState(
+    () =>
       dataCard?.tagCards
-        ?.map((tagCard) => {
-          if (!tagCard || !tagCard.tag) {
-            return null;
-          }
-          return {
-            id: tagCard.tag.id,
-            updatedAt: tagCard.tag.updatedAt || null,
-            createdAt: tagCard.tag.createdAt,
-            deletedAt: tagCard.tag.deletedAt,
-            color: tagCard.tag.color,
-            name: tagCard.tag.name,
-            boardId: tagCard.tag.boardId,
-          };
-        })
-        .filter(Boolean) || []
-    );
-  });
+        ?.filter((tagCard) => tagCard?.tag)
+        .map(({ tag }) => ({
+          id: tag.id,
+          updatedAt: tag.updatedAt || null,
+          color: tag.color,
+          name: tag.name,
+          boardId: idBoard,
+        })) || [],
+  );
+  const [updatedBtnCard, setUpdatedBtnCard] = useState(listBtnCard);
+  const [listColorLabel, setListColorLabel] = useState([]);
+  const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
   const [listToDo, setListToDo] = useState([]);
-  const [countLabel, setCountLabel] = useState(listLabel);
-  const [chooseColorLabel, setChooseColorLabel] = useState(listColorLabel[0]);
+  const [chooseColorLabel, setChooseColorLabel] = useState({});
+  const [tag, setTag] = useState({});
   const [inputTitleLabel, setInputTitleLabel] = useState("");
   const [inputTitleToDo, setInputTitleToDo] = useState("What to do");
   const [inputTitleToDoItem, setInputTitleToDoItem] = useState("");
@@ -96,7 +94,7 @@ export const BoardCard = () => {
 
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [checkOverdue, setCheckOverdue] = useState(false);
-  const [endDateCheck, setEndDateCheck] = useState(formatDate(dataCard?.endDate || ""));
+  const [endDateCheck, setEndDateCheck] = useState(formatDate(dataCard?.endDate));
 
   const [chooseColorBackground, setChooseColorBackground] = useState(dataCard?.coverUrl || "");
 
@@ -110,9 +108,39 @@ export const BoardCard = () => {
     setIsFollowing(!isFollowing);
   };
 
+  useEffect(() => {
+    const getAllLabelOfBoard = async () => {
+      try {
+        const res = await getAllTagByIdBoard(idBoard);
+        setListColorLabel(res?.data.data || []);
+      } catch (err) {
+        console.error("Error all label data: ", err);
+      }
+    };
+    getAllLabelOfBoard();
+  }, [idBoard]);
+
   const handleChooseColorBackground = useCallback(async (item) => {
     setChooseColorBackground(item);
   }, []);
+
+  useEffect(() => {
+    const isUserJoined = dataCard?.members.some((member) => member?.user.avatarUrl === userData.avatarUrl);
+    const newBtnCard = listBtnCard.map((btn) => {
+      if (btn.nameBtn === "Join" && isUserJoined) {
+        setIsJoin(true);
+        setIsFollowing(true);
+        return {
+          ...btn,
+          nameBtn: "Leave",
+          Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+        };
+      }
+      return btn;
+    });
+
+    setUpdatedBtnCard(newBtnCard);
+  }, [dataCard, userData]);
 
   const ShowCreateToDoItem = (Item) => {
     setListToDo((prev) => {
@@ -138,56 +166,52 @@ export const BoardCard = () => {
 
   const ShowUpdateLabel = useCallback(
     (item) => {
+      item = { ...item, colorCode: item.color };
       ShowDetailNewLabel();
       setIsUpdateLabel(!isUpdateLabel);
       setChooseColorLabel(item);
+      setTag(item);
       setInputTitleLabel(item.name);
     },
     [isUpdateLabel, ShowDetailNewLabel],
   );
-  const handleCreateNewLabel = (dataColor, titleLabel = "") => {
-    const dataLabel = {
-      ...dataColor,
-      name: titleLabel,
-    };
-    setListLabel((prev) => {
-      if (prev.some((item) => item.id === dataLabel.id)) {
-        const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
-          return prev.map((item) =>
-            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
-          );
-        }
-        return prev;
-      } else {
-        return [...prev, dataLabel];
-      }
-    });
-    ShowDetailNewLabel();
-    setInputTitleLabel("");
-    handleAddLabel(dataLabel);
+
+  const handleCreateNewLabel = async (dataColor, titleLabel = "") => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      const tag = await createTag({
+        boardId: Number(boardId),
+        name: titleLabel,
+        color: dataColor?.colorCode,
+      });
+      tag && setListColorLabel([...listColorLabel, tag]);
+      tag && (await AddTagInCard(boardId, dataCard?.id, tag.id));
+    } catch (err) {
+      console.error("Error add data tag in card detail: ", err);
+    }
   };
 
-  const handleUpdateLabel = (dataColor, titleLabel = "") => {
-    const dataLabel = {
-      ...dataColor,
-      name: titleLabel,
-    };
-    setListLabel((prev) => {
-      if (prev.some((item) => item.id === dataLabel.id)) {
-        const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
-          return prev.map((item) =>
-            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
-          );
-        }
-        return prev;
-      } else {
-        return [...prev, dataLabel];
+  const handleUpdateLabel = async (tag, dataColor, titleLabel = "") => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      const resTag = await updateTag({
+        boardId: Number(boardId),
+        name: titleLabel,
+        color: dataColor?.colorCode,
+        tagId: tag.id,
+      });
+      if (resTag) {
+        setListColorLabel((prevList) =>
+          prevList.map((item) =>
+            item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+          ),
+        );
       }
-    });
-    ShowDetailNewLabel();
-    setInputTitleLabel("");
+    } catch (error) {
+      console.error("Error update data tag in card detail: ", error);
+    }
   };
 
   const handleCreateNewToDoList = (nameItem, dataCopy = null) => {
@@ -267,7 +291,7 @@ export const BoardCard = () => {
           console.error("Error remove data tag in card detail: ", err);
         }
       };
-      setCountLabel((prevCountLabel) => {
+      setLabelOfCard((prevCountLabel) => {
         if (prevCountLabel.some((i) => i.id === item.id)) {
           removeTagAsync();
           return prevCountLabel.filter((i) => i.id !== item.id);
@@ -276,12 +300,8 @@ export const BoardCard = () => {
           return [...prevCountLabel, item];
         }
       });
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        tagCards: [...(prevDataCard.tagCards || []), countLabel],
-      }));
     },
-    [dataCard, boardId, countLabel, setDataCard],
+    [dataCard, boardId],
   );
 
   const handleCheckDoneToDoItem = (Item, todoItemList) => {
@@ -350,11 +370,48 @@ export const BoardCard = () => {
     setInputTitleToDoItem(e.target.value);
   };
 
+  const handleJoinIntoCard = async (item) => {
+    try {
+      const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
+      const newBtnCard = updatedBtnCard.map((btn) => {
+        if (btn.nameBtn === "Leave" && isUserJoined) {
+          return {
+            ...btn,
+            nameBtn: "Join",
+            Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />,
+          };
+        } else if (btn.nameBtn === "Join" && !isUserJoined) {
+          return {
+            ...btn,
+            nameBtn: "Leave",
+            Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+          };
+        }
+        return btn;
+      });
+      if (isUserJoined) {
+        const res = await RemoveUserToCard(dataCard.id, item.id);
+        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+      } else {
+        const res = await JoinToCard(dataCard.id, item.id);
+        res && setMembersInCard([...membersInCard, { user: item }]);
+      }
+
+      setUpdatedBtnCard(newBtnCard);
+      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
+    } catch (error) {
+      console.error("Error handling join member to card:", error);
+    }
+  };
+
   const handleAddMember = async (item) => {
     try {
-      // handle add ở trên
-      // await AddMemberInCard(boardId, dataCard?.id, item.id);
-
+      if (item?.user.id === userData.id) {
+        handleJoinIntoCard(item?.user);
+        return;
+      }
+      const res = await JoinToCard(dataCard.id, item?.user.id);
+      res && setMembersInCard([...membersInCard, { user: item?.user }]);
       queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
     } catch (error) {
       console.error("Error handling member:", error);
@@ -366,7 +423,7 @@ export const BoardCard = () => {
     if (item.id === 1) {
       setIsJoin(!isJoin);
       setIsFollowing(!isJoin);
-      handleAddMember(userData);
+      handleJoinIntoCard(userData);
     } else if ([2, 3, 4, 5, 6, 7, 10].includes(item.id)) {
       handleShowMenuBtnCard(e);
     }
@@ -415,21 +472,21 @@ export const BoardCard = () => {
                   </div>
                   <div className="flex items-center flex-wrap">
                     {membersInCard && membersInCard?.length !== 0 && (
-                      <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />
+                      <ItemPerson membersInCard={membersInCard} handleShowMenuBtnCard={handleShowMenuBtnCard} />
                     )}
-                    {countLabel?.length > 0 && (
+                    {labelOfCard?.length > 0 && (
                       <div className="mr-2 mb-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Label</span>
                         </div>
-                        <div className="relative flex items-center justify-center">
-                          {countLabel.map((item, index) => (
+                        <div className="flex items-center flex-wrap">
+                          {labelOfCard.map((item) => (
                             <div
                               key={item.id}
                               style={{
                                 backgroundColor: item.color,
                               }}
-                              className={`flex items-center justify-center rounded-[4px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] `}
+                              className={`flex items-center justify-center rounded-[4px] min-w-[32px] h-[32px] px-3 py-2 mb-2 mr-1 font-bold text-white text-[12px] `}
                             >
                               {item.name}
                             </div>
@@ -677,7 +734,7 @@ export const BoardCard = () => {
             </div>
             <div className="min-w-[180px]">
               <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
-                {listBtnCard?.map((item, index) => (
+                {updatedBtnCard?.map((item, index) => (
                   <ButtonBoardCard onHandleEvent={(e) => handleClickBtn(e, item)} key={index} nameBtn={item.nameBtn}>
                     {item.Icon}
                   </ButtonBoardCard>
@@ -695,8 +752,9 @@ export const BoardCard = () => {
         {isShowMenuBtnCard && numberShow === 2 && (
           <MemberMenu
             onAddMember={handleAddMember}
+            membersInCard={membersInCard}
+            setMembersInCard={setMembersInCard}
             handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-            endDate={setEndDateCheck}
           />
         )}
         {isShowMenuBtnCard && numberShow === 3 && (
@@ -704,8 +762,8 @@ export const BoardCard = () => {
             {!isCreateLabel && (
               <AddLabelInCard
                 position={position}
-                countLabel={countLabel}
-                listLabel={listLabel}
+                labelOfCard={labelOfCard}
+                listColorLabel={listColorLabel}
                 handleAddLabel={handleAddLabel}
                 ShowUpdateLabel={ShowUpdateLabel}
                 ShowDetailNewLabel={ShowDetailNewLabel}
@@ -715,6 +773,7 @@ export const BoardCard = () => {
             {isCreateLabel && (
               <CreateLabel
                 position={position}
+                tag={tag}
                 isUpdateLabel={isUpdateLabel}
                 handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
                 ShowDetailNewLabel={ShowDetailNewLabel}

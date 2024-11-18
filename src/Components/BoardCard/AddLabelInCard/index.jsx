@@ -5,8 +5,8 @@ import ClickAway from "../ClickAway";
 
 function AddLabelInCard({
   position,
-  countLabel,
-  listLabel,
+  labelOfCard,
+  listColorLabel,
   handleAddLabel,
   ShowUpdateLabel,
   ShowDetailNewLabel,
@@ -15,11 +15,12 @@ function AddLabelInCard({
   const handleClickAway = () => {
     handleCloseShowMenuBtnCard();
   };
+
   return (
     <ClickAway onClickAway={handleClickAway}>
       <div
-        style={{ top: position.top, left: position.left }}
-        className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
+        style={{ top: position.top - 200, left: position.left }}
+        className="absolute w-[280px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
       >
         <div className="text-center p-2 mx-8">Label</div>
         <div className="mx-2">
@@ -35,10 +36,10 @@ function AddLabelInCard({
           <div className="mt-2">
             <div className="py-2 bg-white">Label</div>
             <ul>
-              {listLabel?.map((item, index) => (
+              {listColorLabel?.map((item, index) => (
                 <li key={index} className="flex items-center my-2 cursor-pointer">
                   <input
-                    checked={countLabel.some((i) => i.id === item.id)}
+                    checked={labelOfCard.some((i) => i.id === item.id)}
                     onChange={() => handleAddLabel(item)}
                     type="checkbox"
                     className="w-5 h-5 mx-2 cursor-pointer"
