@@ -12,7 +12,6 @@ export default function Stared() {
 
   const handleItemClick = (e, boardId, workspaceId) => {
     e.stopPropagation();
-    console.log(`/workspace/${workspaceId}/board/${boardId}`);
     navigate(`/workspace/${workspaceId}/board/${boardId}`);
   };
 

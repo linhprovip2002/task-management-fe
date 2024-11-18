@@ -1,27 +1,13 @@
 import React, { useCallback, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import Calendar from "../../Calendar/index";
 import { updateCard } from "../../../Services/API/ApiCard";
 import ClickAway from "../ClickAway";
+import { getCurrentDate, getCurrentTime } from "../WriteComment/helpers/formatDate";
+import { useQueryClient } from "@tanstack/react-query";
 
-function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRemove }) {
-  const { dataCard, dataList, setDataCard } = useListBoardContext();
-  const getCurrentTime = () => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-
-  const getCurrentDate = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
+function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck, dataCard }) {
+  const queryClient = useQueryClient();
   const [startDate, setStartDate] = useState("NNNN/T/N");
   const [isChecked, setIsChecked] = useState(false);
   const [expirationDate, setExpirationDate] = useState(() => {
@@ -90,18 +76,13 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRe
       const day = expirationDate.split("-")[2];
       const [hours, minutes] = expirationTime.split(":");
       const data = {
-        title: dataCard.title,
-        description: dataCard.description,
-        coverUrl: dataCard.coverUrl,
-        priority: dataCard.priority,
-        tagId: dataCard.tagId,
         startDate: dataCard.startDate,
         endDate: `${expirationDate}T${expirationTime}`,
-        listId: dataList.id,
+        // listId: dataList.id
       };
-      endDate(`${hours}:${minutes} ${day}thg${month}`);
+      setEndDateCheck(`${hours}:${minutes} ${day}thg${month}`);
       const res = await updateCard(dataCard.id, data);
-      setDataCard((prev) => ({ ...prev, endDate: `${expirationDate}T${expirationTime}` }));
+      queryClient.invalidateQueries("card");
       return res;
     } catch (error) {
       console.error("Error setup expiration date in card detail: ", error);
@@ -113,16 +94,10 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRe
       handleCloseShowMenuBtnCard();
 
       const data = {
-        title: dataCard.title,
-        description: dataCard.description,
-        coverUrl: dataCard.coverUrl,
-        priority: dataCard.priority,
-        tagId: dataCard.tagId,
         startDate: dataCard.startDate,
         endDate: null,
-        listId: dataList.id,
       };
-      endDate(data.endDate);
+      setEndDateCheck(data.endDate);
       const res = await updateCard(dataCard.id, data);
       return res;
     } catch (error) {

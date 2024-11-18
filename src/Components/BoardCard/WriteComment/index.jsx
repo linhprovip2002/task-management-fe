@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { Avatar, Button, TextField } from "@mui/material";
 import { useStorage } from "../../../Contexts";
-import { useGetUserProfile } from "../../../Hooks";
+import { useGetCardById, useGetUserProfile } from "../../../Hooks";
 import { Editor } from "@tinymce/tinymce-react";
 import { writeInit } from "./constants/Write.constant";
+import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
 const editorKey = process.env.REACT_APP_EDITOR_KEY;
 
-const WriteComment = ({ content, setContent, loading, handlePostComment }) => {
+const WriteComment = ({ content, setContent, loading }) => {
+  const { handlePostComment } = useListBoardContext();
   const { userData, isLoggedIn } = useStorage();
   const { userProfile } = useGetUserProfile(isLoggedIn);
   const [isFocused, setIsFocused] = useState(false);
+
+  const cardId = localStorage.getItem("cardId");
+  const { data: dataCard } = useGetCardById(cardId);
 
   const handleCloseComment = () => {
     setIsFocused(false);
@@ -73,7 +78,7 @@ const WriteComment = ({ content, setContent, loading, handlePostComment }) => {
             {isFocused && (
               <div className="flex items-center justify-between">
                 <Button
-                  onClick={handlePostComment}
+                  onClick={() => handlePostComment(dataCard)}
                   variant="contained"
                   color="primary"
                   disabled={!content}

@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { Editor } from "@tinymce/tinymce-react";
+import { useGetCardById } from "../../../Hooks";
+import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-const CardAddDetail = ({ content, setContent, loading, handlePostComment }) => {
+const CardAddDetail = ({ content, setContent, loading }) => {
+  const { handlePostComment } = useListBoardContext();
   const [isFocused, setIsFocused] = useState(false);
+  const cardId = localStorage.getItem("cardId");
+  const { data: dataCard } = useGetCardById(cardId);
   const handleCloseComment = () => {
     setIsFocused(false);
     setContent("");
@@ -59,7 +64,7 @@ const CardAddDetail = ({ content, setContent, loading, handlePostComment }) => {
         {isFocused && (
           <div className="flex items-center justify-between">
             <Button
-              onClick={handlePostComment}
+              onClick={() => handlePostComment(dataCard)}
               variant="contained"
               color="primary"
               disabled={!content}

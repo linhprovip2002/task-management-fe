@@ -8,8 +8,8 @@ import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { expirations } from "./constans";
 
 function Filter({ onClose }) {
-  const { listCount, setListCount } = useListBoardContext();
-  const [list] = useState(listCount);
+  const { dataList, setListCount } = useListBoardContext();
+  const [list] = useState(dataList);
   const [countMember, setCountMember] = useState([]);
   const [countLabel, setCountLabel] = useState([]);
   const [choosedLabel, setChoosedLabel] = useState([]);

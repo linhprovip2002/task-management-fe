@@ -19,8 +19,8 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
     setListCount,
     handleShowAddCard,
     handleActiveMonitor,
-    handleCopyList,
-    listCount
+    setDataList,
+    dataList
   } = useListBoardContext();
   // const [allCardInList, setAllCardInList] = useState([]);
   const [isLeaveBoard, setIsLeaveBoard] = useState(false);
@@ -80,7 +80,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
         await createCardByIdList(dataCard);
       });
 
-      handleCopyList(dataCopyList);
+      setDataList([...dataList, dataCopyList]);
     } catch (error) {
       console.error("Failed to create copy list:", error);
     }
@@ -90,7 +90,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
   const handleSortCard = (index, idList) => {
     setActiveCollectOperation(index);
     handleClickAway();
-    const listCards = listCount.find((list) => list.id === idList).cards || [];
+    const listCards = dataList.find((list) => list.id === idList).cards || [];
     switch (index) {
       case 0:
         listCards.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
@@ -105,7 +105,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
         break;
     }
 
-    const updatedListCount = listCount.map((list) =>
+    const updatedListCount = dataList.map((list) =>
       list.id === idList ? { ...list, cards: listCards } : list
     );
     setListCount(updatedListCount);
@@ -115,7 +115,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
     try {
       const res = await DeleteList(idBoard, idList);
       if (res?.data.removed === 1) {
-        setListCount(listCount.filter((item) => item.id !== idList));
+        setListCount(dataList.filter((item) => item.id !== idList));
       }
     } catch (err) {
       console.error("Error delete list in board: ", err);
@@ -235,7 +235,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
                   onClose={handleClickAway}
                   onBack={toggleCollape}
                 >
-                  {listCount.map((item, index) => (
+                  {dataList.map((item, index) => (
                     <div
                       onClick={
                         item.title === nameList

@@ -5,6 +5,7 @@ import { createBoardRole } from "../../../Services/API/apiBoardPermission";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
+import { EQueryKeys } from "../../../constants";
 
 export const CreateNewRoleModal = ({ open, handleClose }) => {
   const queryClient = useQueryClient();
@@ -19,8 +20,8 @@ export const CreateNewRoleModal = ({ open, handleClose }) => {
     }
     createBoardRole(idBoard, roleName)
       .then((res) => {
-        console.log(res);
-        queryClient.invalidateQueries("boardRole");
+        console.error(res);
+        queryClient.invalidateQueries([EQueryKeys.GET_BOARD_ROLE]);
         toast.success("Role created successfully");
       })
       .catch(() => {

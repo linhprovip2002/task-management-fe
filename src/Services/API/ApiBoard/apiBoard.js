@@ -28,7 +28,7 @@ export async function getBoard(options) {
 }
 
 // get board theo id
-export async function getBoardId(id) {
+export async function getBoardById(id) {
   try {
     const response = await request.get(`/board/${id}`);
     return response.data;
