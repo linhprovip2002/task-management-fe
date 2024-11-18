@@ -1,5 +1,4 @@
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import React from "react";
 
 import { CreateItem } from "../../../Components/CreateItem";
 import { AddIcon, TemplateCardIcon } from "../../../Components/Icons";
@@ -16,6 +15,9 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
+import { memo } from "react";
+import { createCardByIdList } from "../../../Services/API/ApiCard";
+import { toast } from "react-toastify";
 
 function List({ item = {}, id }) {
   const cards = item.cards || [];
@@ -29,15 +31,14 @@ function List({ item = {}, id }) {
     height: "100%"
   };
 
-  let {
+  const {
     boardId,
-    nameTitle,
     activeMonitor,
     activeIndex,
     handleChange,
     handleShowAddCard,
-    handleAddCard,
-    handleChangeTitleCard
+    dataList,
+    setDataList
   } = useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(boardId);
 
@@ -55,6 +56,35 @@ function List({ item = {}, id }) {
       }
     }
   };
+
+  const handleAddCard = async (nameTitle) => {
+    try {
+      const newList = dataList.map((list) =>
+        list.id === id
+          ? {
+              ...list,
+              cards: [...(list.cards || []), { title: nameTitle, files: [] }],
+              isShowAddCard: !list.isShowAddCard
+            }
+          : list
+      );
+      setDataList(newList);
+
+      await createCardByIdList({
+        title: nameTitle,
+        description: "",
+        coverUrl: "",
+        priority: "medium",
+        tagId: "",
+        listId: id
+      });
+      toast.success("Create card successfully");
+    } catch (error) {
+      toast.error("Failed to create card");
+      console.error("Failed to create card by id list:", error);
+    }
+  };
+
   return (
     <div ref={setNodeRef} style={dndKitColumStyles} {...attributes}>
       <div {...listeners} className="px-[8px]">
@@ -86,7 +116,7 @@ function List({ item = {}, id }) {
                   <ItemList
                     id={card.id}
                     key={card.id}
-                    dataList={item}
+                    item={item}
                     dataCard={card}
                     imageSrc
                     isDescriptionIcon
@@ -101,11 +131,9 @@ function List({ item = {}, id }) {
             <CreateItem
               idList={item.id}
               nameBtn={"Add card"}
-              descriptionCard={nameTitle}
-              placeHolderText={"Enter title or paste link"}
+              placeHolderText={"Enter new card name"}
               onAdd={handleAddCard}
-              onShow={() => handleShowAddCard(item.id)}
-              onChangeTitle={handleChangeTitleCard}
+              setShowItem={() => handleShowAddCard(item.id)}
             />
           )}
 
@@ -118,7 +146,9 @@ function List({ item = {}, id }) {
                 <div className="p-2 transition-opacity duration-300 text-[#44546f]">
                   <AddIcon width={16} height={16} />
                 </div>
-                <div className="text-[14px] font-medium text-[#44546f]">Add card</div>
+                <div className="text-[14px] font-medium text-[#44546f]">
+                  Add card
+                </div>
               </div>
               <TippyDetail title={"Create from template..."}>
                 <div className="text-[#44546f]">
@@ -139,4 +169,4 @@ function List({ item = {}, id }) {
   );
 }
 
-export default React.memo(List);
+export default memo(List);

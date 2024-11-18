@@ -7,7 +7,6 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import { listBtnCard } from "./constans";
-import { listColorLabel } from "../BoardCard/constans/list.constans";
 import { AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
@@ -18,13 +17,13 @@ import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBo
 import BackgroundPhoto from "../BoardCard/BackgroundPhoto";
 import CalendarPopper from "../BoardCard/CalendarPopper";
 
-export const EditCard = ({ isFollowing = false, isArchived = false }) => {
+export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   const {
     handleShowBoardCard,
     handleShowBoardEdit,
-    setIsShowBoardEdit,
+    setToggleCardEditModal,
     setDataCard,
-    isShowBoardEdit,
+    toggleCardEditModal,
     dataCard,
     dataList,
     position,
@@ -57,7 +56,7 @@ export const EditCard = ({ isFollowing = false, isArchived = false }) => {
   const [countLabel, setCountLabel] = useState(listLabel);
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [inputTitleLabel, setInputTitleLabel] = useState("");
-  const [chooseColorLabel, setChooseColorLabel] = useState(listColorLabel[0]);
+  const [chooseColorLabel, setChooseColorLabel] = useState("");
   const [chooseColorBackground, setChooseColorBackground] = useState(() => {
     return dataCard.coverUrl;
   });
@@ -106,8 +105,8 @@ export const EditCard = ({ isFollowing = false, isArchived = false }) => {
       setDataCard((prev) => {
         return { ...prev, title: inputTitle };
       });
-      if (isShowBoardEdit) {
-        setIsShowBoardEdit(!isShowBoardEdit);
+      if (toggleCardEditModal) {
+        setToggleCardEditModal((prev) => !prev);
       }
       return res;
     } catch (error) {
@@ -271,7 +270,7 @@ export const EditCard = ({ isFollowing = false, isArchived = false }) => {
     setNumberShow(item.id);
     switch (item.id) {
       case 1:
-        handleShowBoardCard(dataList, dataCard);
+        handleShowBoardCard(dataCard);
         break;
       case 2:
       case 4:
@@ -460,7 +459,6 @@ export const EditCard = ({ isFollowing = false, isArchived = false }) => {
           </ButtonBoardCard>
         ))}
       </div>
-
       {isShowMenuBtnCard && numberShow === 2 && (
         <div onClick={(e) => e.stopPropagation()}>
           {!isCreateLabel && (
@@ -490,7 +488,6 @@ export const EditCard = ({ isFollowing = false, isArchived = false }) => {
           )}
         </div>
       )}
-
       {isShowMenuBtnCard && numberShow === 4 && (
         <div onClick={(e) => e.stopPropagation()}>
           <BackgroundPhoto
@@ -502,7 +499,6 @@ export const EditCard = ({ isFollowing = false, isArchived = false }) => {
           />
         </div>
       )}
-
       {isShowMenuBtnCard && numberShow === 5 && (
         <div onClick={(e) => e.stopPropagation()}>
           <CalendarPopper

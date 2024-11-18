@@ -7,12 +7,13 @@ import {
   Person4Outlined as Person4OutlinedIcon,
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   Add as AddIcon,
-  AccessTime as AccessTimeIcon
+  AccessTime as AccessTimeIcon,
 } from "@mui/icons-material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 
-import { listColorLabel } from "./constans/list.constans";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import MemberMenu from "../MemberMenuOfBoard";
 import ToDoMenu from "../ToDoMenuOfBoard";
@@ -27,63 +28,60 @@ import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
 import ShowComment from "./ShowComment";
-import {
-  AddTagInCard,
-  RemoveTagInCard
-} from "../../Services/API/ApiBoard/apiBoard";
+import { AddTagInCard, getAllTagByIdBoard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
-import { updateCard } from "../../Services/API/ApiCard";
+import { JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
 import CopyCard from "./CopyCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
+import { useQueryClient } from "@tanstack/react-query";
+import { EQueryKeys } from "../../constants";
+import { useGetCardById } from "../../Hooks";
+import Loading from "../Loading";
+import { formatDate } from "./WriteComment/helpers/formatDate";
+import { useParams } from "react-router-dom";
+import { createTag, updateTag } from "../../Services/API/APITags";
 
 export const BoardCard = () => {
   const {
     handleShowBoardCard,
-    membersBoard,
-    setMembersBoard,
     dataList,
-    dataCard,
     position,
     setPosition,
-    setMembersInCard,
-    membersInCard,
     handleFileChange,
     content,
     setContent,
     isSaving,
-    handlePostComment,
     handleDeleteComment,
-    loading,
     setEditorInstance,
     boardId,
-    setDataCard
+    setDataCard,
   } = useListBoardContext();
+  const { idBoard } = useParams();
+
+  const cardId = localStorage.getItem("cardId");
+  const { data: dataCard } = useGetCardById(cardId);
+  const queryClient = useQueryClient();
 
   const { userData } = useStorage();
-  const [listLabel, setListLabel] = useState(() => {
-    return (
+  const [labelOfCard, setLabelOfCard] = useState(
+    () =>
       dataCard?.tagCards
-        ?.map((tagCard) => {
-          if (!tagCard || !tagCard.tag) {
-            return null;
-          }
-          return {
-            id: tagCard.tag.id,
-            updatedAt: tagCard.tag.updatedAt || null,
-            createdAt: tagCard.tag.createdAt,
-            deletedAt: tagCard.tag.deletedAt,
-            color: tagCard.tag.color,
-            name: tagCard.tag.name,
-            boardId: tagCard.tag.boardId
-          };
-        })
-        .filter(Boolean) || []
-    );
-  });
+        ?.filter((tagCard) => tagCard?.tag)
+        .map(({ tag }) => ({
+          id: tag.id,
+          updatedAt: tag.updatedAt || null,
+          color: tag.color,
+          name: tag.name,
+          boardId: idBoard,
+        })) || [],
+  );
+  const [updatedBtnCard, setUpdatedBtnCard] = useState(listBtnCard);
+  const [listColorLabel, setListColorLabel] = useState([]);
+  const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
   const [listToDo, setListToDo] = useState([]);
-  const [countLabel, setCountLabel] = useState(listLabel);
-  const [chooseColorLabel, setChooseColorLabel] = useState(listColorLabel[0]);
+  const [chooseColorLabel, setChooseColorLabel] = useState({});
+  const [tag, setTag] = useState({});
   const [inputTitleLabel, setInputTitleLabel] = useState("");
   const [inputTitleToDo, setInputTitleToDo] = useState("What to do");
   const [inputTitleToDoItem, setInputTitleToDoItem] = useState("");
@@ -93,51 +91,56 @@ export const BoardCard = () => {
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isJoin, setIsJoin] = useState(false);
+
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [checkOverdue, setCheckOverdue] = useState(false);
-  const [endDateCheck, setEndDateCheck] = useState(() => {
-    if (!dataCard || dataCard.endDate == null) return null;
-    const endDate = new Date(dataCard.endDate);
-    const currentDate = new Date();
-    const isOverdue = endDate < currentDate;
-    setCheckOverdue(isOverdue);
-    const hours = endDate.getUTCHours().toString().padStart(2, "0");
-    const minutes = endDate.getUTCMinutes().toString().padStart(2, "0");
-    const day = endDate.getUTCDate().toString().padStart(2, "0");
-    const month = (endDate.getUTCMonth() + 1).toString().padStart(2, "0");
-    const formattedDate = `${hours}:${minutes} ${day}thg${month}`;
-    return formattedDate;
-  });
-  const [chooseColorBackground, setChooseColorBackground] = useState(() => {
-    return dataCard.coverUrl;
-  });
+  const [endDateCheck, setEndDateCheck] = useState(formatDate(dataCard?.endDate));
+
+  const [chooseColorBackground, setChooseColorBackground] = useState(dataCard?.coverUrl || "");
 
   const [openAttach, setOpenAttach] = useState(false);
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
 
-  // handle date
-  const formatDate = (isoString) => {
-    const date = new Date(isoString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${day}-${month}-${year}, ${hours}:${minutes}`;
-  };
-
-  const listComment = dataCard?.comments?.sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
+  const listComment = dataCard?.comments?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
   };
 
+  useEffect(() => {
+    const getAllLabelOfBoard = async () => {
+      try {
+        const res = await getAllTagByIdBoard(idBoard);
+        setListColorLabel(res?.data.data || []);
+      } catch (err) {
+        console.error("Error all label data: ", err);
+      }
+    };
+    getAllLabelOfBoard();
+  }, [idBoard]);
+
   const handleChooseColorBackground = useCallback(async (item) => {
     setChooseColorBackground(item);
   }, []);
+
+  useEffect(() => {
+    const isUserJoined = dataCard?.members.some((member) => member?.user.avatarUrl === userData.avatarUrl);
+    const newBtnCard = listBtnCard.map((btn) => {
+      if (btn.nameBtn === "Join" && isUserJoined) {
+        setIsJoin(true);
+        setIsFollowing(true);
+        return {
+          ...btn,
+          nameBtn: "Leave",
+          Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+        };
+      }
+      return btn;
+    });
+
+    setUpdatedBtnCard(newBtnCard);
+  }, [dataCard, userData]);
 
   const ShowCreateToDoItem = (Item) => {
     setListToDo((prev) => {
@@ -146,7 +149,7 @@ export const BoardCard = () => {
           const isCreateItem = !item.isCreateItem;
           return {
             ...item,
-            isCreateItem: isCreateItem
+            isCreateItem: isCreateItem,
           };
         }
         return item;
@@ -163,66 +166,52 @@ export const BoardCard = () => {
 
   const ShowUpdateLabel = useCallback(
     (item) => {
+      item = { ...item, colorCode: item.color };
       ShowDetailNewLabel();
       setIsUpdateLabel(!isUpdateLabel);
       setChooseColorLabel(item);
+      setTag(item);
       setInputTitleLabel(item.name);
     },
-    [isUpdateLabel, ShowDetailNewLabel]
+    [isUpdateLabel, ShowDetailNewLabel],
   );
-  const handleCreateNewLabel = (dataColor, titleLabel = "") => {
-    const dataLabel = {
-      ...dataColor,
-      name: titleLabel
-    };
-    setListLabel((prev) => {
-      if (prev.some((item) => item.id === dataLabel.id)) {
-        const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (
-          itemLabel.name !== dataLabel.name ||
-          itemLabel.color !== dataLabel.color
-        ) {
-          return prev.map((item) =>
-            item.id === dataLabel.id
-              ? { ...item, color: dataLabel.color, name: dataLabel.name }
-              : item
-          );
-        }
-        return prev;
-      } else {
-        return [...prev, dataLabel];
-      }
-    });
-    ShowDetailNewLabel();
-    setInputTitleLabel("");
-    handleAddLabel(dataLabel);
+
+  const handleCreateNewLabel = async (dataColor, titleLabel = "") => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      const tag = await createTag({
+        boardId: Number(boardId),
+        name: titleLabel,
+        color: dataColor?.colorCode,
+      });
+      tag && setListColorLabel([...listColorLabel, tag]);
+      tag && (await AddTagInCard(boardId, dataCard?.id, tag.id));
+    } catch (err) {
+      console.error("Error add data tag in card detail: ", err);
+    }
   };
 
-  const handleUpdateLabel = (dataColor, titleLabel = "") => {
-    const dataLabel = {
-      ...dataColor,
-      name: titleLabel
-    };
-    setListLabel((prev) => {
-      if (prev.some((item) => item.id === dataLabel.id)) {
-        const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (
-          itemLabel.name !== dataLabel.name ||
-          itemLabel.color !== dataLabel.color
-        ) {
-          return prev.map((item) =>
-            item.id === dataLabel.id
-              ? { ...item, color: dataLabel.color, name: dataLabel.name }
-              : item
-          );
-        }
-        return prev;
-      } else {
-        return [...prev, dataLabel];
+  const handleUpdateLabel = async (tag, dataColor, titleLabel = "") => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      const resTag = await updateTag({
+        boardId: Number(boardId),
+        name: titleLabel,
+        color: dataColor?.colorCode,
+        tagId: tag.id,
+      });
+      if (resTag) {
+        setListColorLabel((prevList) =>
+          prevList.map((item) =>
+            item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+          ),
+        );
       }
-    });
-    ShowDetailNewLabel();
-    setInputTitleLabel("");
+    } catch (error) {
+      console.error("Error update data tag in card detail: ", error);
+    }
   };
 
   const handleCreateNewToDoList = (nameItem, dataCopy = null) => {
@@ -230,7 +219,7 @@ export const BoardCard = () => {
       id: listToDo.length + 1,
       title: nameItem,
       todoItem: [],
-      percent: 0
+      percent: 0,
     };
     setListToDo((prev) => {
       if (prev.some((item) => item.id === dataToDo.id)) {
@@ -274,7 +263,7 @@ export const BoardCard = () => {
         tagId: dataCard.tagId,
         startDate: dataCard.startDate,
         endDate: dataCard.endDate,
-        listId: dataList.id
+        listId: dataList.id,
       };
       const res = await updateCard(dataCard.id, data);
       setDataCard((prev) => {
@@ -302,7 +291,7 @@ export const BoardCard = () => {
           console.error("Error remove data tag in card detail: ", err);
         }
       };
-      setCountLabel((prevCountLabel) => {
+      setLabelOfCard((prevCountLabel) => {
         if (prevCountLabel.some((i) => i.id === item.id)) {
           removeTagAsync();
           return prevCountLabel.filter((i) => i.id !== item.id);
@@ -311,12 +300,8 @@ export const BoardCard = () => {
           return [...prevCountLabel, item];
         }
       });
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        tagCards: [...(prevDataCard.tagCards || []), countLabel]
-      }));
     },
-    [dataCard, boardId, countLabel, setDataCard]
+    [dataCard, boardId],
   );
 
   const handleCheckDoneToDoItem = (Item, todoItemList) => {
@@ -328,21 +313,18 @@ export const BoardCard = () => {
             if (todoItem.id === todoItemList.id) {
               return {
                 ...todoItem,
-                checkDone: updatedCheckDone
+                checkDone: updatedCheckDone,
               };
             }
             return todoItem;
           });
 
-          const checkDoneCount = updatedTodoItems.filter(
-            (i) => i.checkDone
-          ).length;
-          const percent =
-            Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
+          const checkDoneCount = updatedTodoItems.filter((i) => i.checkDone).length;
+          const percent = Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
           return {
             ...todo,
             todoItem: updatedTodoItems,
-            percent
+            percent,
           };
         }
         return todo;
@@ -357,11 +339,11 @@ export const BoardCard = () => {
           const newDataItem = {
             id: i.todoItem.length + 1,
             title: nameItem,
-            checkDone: false
+            checkDone: false,
           };
           return {
             ...i,
-            todoItem: [...i.todoItem, newDataItem]
+            todoItem: [...i.todoItem, newDataItem],
           };
         }
         return i;
@@ -388,38 +370,49 @@ export const BoardCard = () => {
     setInputTitleToDoItem(e.target.value);
   };
 
+  const handleJoinIntoCard = async (item) => {
+    try {
+      const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
+      const newBtnCard = updatedBtnCard.map((btn) => {
+        if (btn.nameBtn === "Leave" && isUserJoined) {
+          return {
+            ...btn,
+            nameBtn: "Join",
+            Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />,
+          };
+        } else if (btn.nameBtn === "Join" && !isUserJoined) {
+          return {
+            ...btn,
+            nameBtn: "Leave",
+            Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+          };
+        }
+        return btn;
+      });
+      if (isUserJoined) {
+        const res = await RemoveUserToCard(dataCard.id, item.id);
+        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+      } else {
+        const res = await JoinToCard(dataCard.id, item.id);
+        res && setMembersInCard([...membersInCard, { user: item }]);
+      }
+
+      setUpdatedBtnCard(newBtnCard);
+      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
+    } catch (error) {
+      console.error("Error handling join member to card:", error);
+    }
+  };
+
   const handleAddMember = async (item) => {
     try {
-      const member = await item;
-      if (membersInCard.some((item) => item.id === member.id)) {
-        setMembersInCard(membersInCard.filter((item) => item.id !== member.id));
-        listBtnCard.forEach((item) => {
-          if (item.id === 1) {
-            item.nameBtn = "Join";
-          }
-        });
-        try {
-          // await RemoveUserToCard(dataCard?.id, member.id);
-        } catch (error) {
-          console.error("Error join to card:", error);
-        }
-      } else {
-        setMembersInCard([...membersInCard, member]);
-        listBtnCard.forEach((item) => {
-          if (item.id === 1) {
-            item.nameBtn = "Leave";
-          }
-        });
-        try {
-        } catch (error) {
-          console.error("Error join to card:", error);
-        }
+      if (item?.user.id === userData.id) {
+        handleJoinIntoCard(item?.user);
+        return;
       }
-      if (membersBoard.some((item) => item.id === member.id)) {
-        setMembersBoard(membersBoard.filter((item) => item.id !== member.id));
-      } else {
-        setMembersBoard([...membersBoard, member]);
-      }
+      const res = await JoinToCard(dataCard.id, item?.user.id);
+      res && setMembersInCard([...membersInCard, { user: item?.user }]);
+      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
     } catch (error) {
       console.error("Error handling member:", error);
     }
@@ -430,458 +423,408 @@ export const BoardCard = () => {
     if (item.id === 1) {
       setIsJoin(!isJoin);
       setIsFollowing(!isJoin);
-      handleAddMember(userData);
+      handleJoinIntoCard(userData);
     } else if ([2, 3, 4, 5, 6, 7, 10].includes(item.id)) {
       handleShowMenuBtnCard(e);
     }
   };
 
+  const loading = !dataCard;
+
   return (
-    <div
-      style={{
-        scrollbarWidth: "thin",
-        scrollbarColor: "#fff6 #00000026",
-        maxHeight: "100vh",
-        overflowY: "auto"
-      }}
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
-    >
-      <div className="max-h-[80vh] overflow-y-auto overflow-x-hidden absolute flex flex-col justify-between w-[700px] bg-white rounded-lg font-medium text-xs z-500">
-        {chooseColorBackground && (
-          <div
-            style={{
-              backgroundImage: chooseColorBackground.startsWith("http")
-                ? `url(${chooseColorBackground})`
-                : "none",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: chooseColorBackground.startsWith("#")
-                ? chooseColorBackground
-                : ""
-            }}
-            className={`w-full h-[100px] rounded-t-[8px]`}
-          />
-        )}
-        <div className="flex justify-between font-medium text-[12px] p-2 z-500">
-          <div className="flex-1 p-2">
-            <div className="flex p-2">
-              <div>
-                <FeaturedPlayListIcon fontSize="small" />
-              </div>
-              <div className="flex-1 ml-4">
-                <div className="text-[16px] mb-2">
-                  {dataCard?.title || "No Title"}
+    <>
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
+        <div
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "#fff6 #00000026",
+            overflowY: "auto",
+          }}
+          className="max-h-[80vh] overflow-y-auto overflow-x-hidden absolute flex flex-col justify-between w-[700px] bg-white rounded-lg font-medium text-xs z-500"
+        >
+          {loading && <Loading className="absolute" />}
+          {chooseColorBackground && (
+            <div
+              style={{
+                backgroundImage: chooseColorBackground.startsWith("http") ? `url(${chooseColorBackground})` : "none",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundColor: chooseColorBackground.startsWith("#") ? chooseColorBackground : "",
+              }}
+              className={`w-full min-h-[150px] rounded-t-l-[8px]`}
+            />
+          )}
+          <div className="flex justify-between font-medium text-[12px] p-2 z-500">
+            <div className="flex-1 p-2">
+              <div className="flex p-2">
+                <div>
+                  <FeaturedPlayListIcon fontSize="small" />
                 </div>
-                <div className="flex items-center text-[12px] mb-6">
-                  <span className="mr-2 font-normal">in the list</span>
-                  <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
-                    {dataList?.title || "No Title"}
+                <div className="flex-1 ml-4">
+                  <div className="text-[16px] mb-2">{dataCard?.title || "No Title"}</div>
+                  <div className="flex items-center text-[12px] mb-6">
+                    <span className="mr-2 font-normal">in the list</span>
+                    <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
+                      {dataList?.title || "No Title"}
+                    </div>
+                    {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                   </div>
-                  {isFollowing && (
-                    <RemoveRedEyeOutlinedIcon
-                      className="ml-2"
-                      style={{ fontSize: "16px" }}
-                    />
-                  )}
-                </div>
-                <div className="flex items-center flex-wrap">
-                  {membersInCard && membersInCard?.length !== 0 && (
-                    <ItemPerson handleShowMenuBtnCard={handleShowMenuBtnCard} />
-                  )}
-                  {countLabel?.length > 0 && (
-                    <div className="mr-2 mb-2">
-                      <div className="flex items-center text-[12px] mb-2">
-                        <span className="mr-2">Label</span>
-                      </div>
-                      <div className="relative flex items-center justify-center">
-                        {countLabel.map((item, index) => (
+                  <div className="flex items-center flex-wrap">
+                    {membersInCard && membersInCard?.length !== 0 && (
+                      <ItemPerson membersInCard={membersInCard} handleShowMenuBtnCard={handleShowMenuBtnCard} />
+                    )}
+                    {labelOfCard?.length > 0 && (
+                      <div className="mr-2 mb-2">
+                        <div className="flex items-center text-[12px] mb-2">
+                          <span className="mr-2">Label</span>
+                        </div>
+                        <div className="flex items-center flex-wrap">
+                          {labelOfCard.map((item) => (
+                            <div
+                              key={item.id}
+                              style={{
+                                backgroundColor: item.color,
+                              }}
+                              className={`flex items-center justify-center rounded-[4px] min-w-[32px] h-[32px] px-3 py-2 mb-2 mr-1 font-bold text-white text-[12px] `}
+                            >
+                              {item.name}
+                            </div>
+                          ))}
                           <div
-                            key={item.id}
-                            style={{
-                              backgroundColor: item.color
-                            }}
-                            className={`flex items-center justify-center rounded-[4px] h-[32px] px-3 mr-1 font-bold text-white text-[12px] `}
+                            onClick={ShowDetailNewLabel}
+                            className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-[12px] bg-gray-200 hover:bg-gray-300"
                           >
-                            {item.name}
+                            <AddIcon style={{ fontSize: "20px" }} />
                           </div>
-                        ))}
-                        <div
-                          onClick={ShowDetailNewLabel}
-                          className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-[12px] bg-gray-200 hover:bg-gray-300"
-                        >
-                          <AddIcon style={{ fontSize: "20px" }} />
                         </div>
                       </div>
-                    </div>
-                  )}
-                  {endDateCheck != null && (
+                    )}
+                    {endDateCheck != null && (
+                      <div className="mr-2">
+                        <div className="flex items-center text-[12px] mb-2">
+                          <span className="mr-2">Expiration date</span>
+                        </div>
+                        <li className="flex items-center cursor-pointer">
+                          <input
+                            checked={checkCompleteEndDate}
+                            onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                            type="checkbox"
+                            className="w-5 h-5 cursor-pointer"
+                          />
+                          <span className="flex items-center w-full">
+                            <div
+                              className={`flex items-center justify-between rounded-[4px] mx-2 p-1 ${checkCompleteEndDate ? "bg-gray-300" : checkOverdue ? "bg-red-300" : "bg-gray-300"} hover:opacity-90 cursor-pointer`}
+                            >
+                              <div className="">{endDateCheck}</div>
+                              {checkCompleteEndDate && (
+                                <div className="bg-green-500 p-[2px] text-[10px] rounded-[4px] ml-2">complete</div>
+                              )}
+                              <KeyboardArrowDownIcon fontSize="small" />
+                            </div>
+                          </span>
+                        </li>
+                      </div>
+                    )}
                     <div className="mr-2">
                       <div className="flex items-center text-[12px] mb-2">
-                        <span className="mr-2">Expiration date</span>
+                        <span className="mr-2">Notification</span>
                       </div>
-                      <li className="flex items-center cursor-pointer">
-                        <input
-                          checked={checkCompleteEndDate}
-                          onChange={() =>
-                            setCheckCompleteEndDate(!checkCompleteEndDate)
-                          }
-                          type="checkbox"
-                          className="w-5 h-5 cursor-pointer"
-                        />
-                        <span className="flex items-center w-full">
-                          <div
-                            className={`flex items-center justify-between rounded-[4px] mx-2 p-1 ${checkCompleteEndDate ? "bg-gray-300" : checkOverdue ? "bg-red-300" : "bg-gray-300"} hover:opacity-90 cursor-pointer`}
-                          >
-                            <div className="">{endDateCheck}</div>
-                            {checkCompleteEndDate && (
-                              <div className="bg-green-500 p-[2px] text-[10px] rounded-[4px] ml-2">
-                                complete
-                              </div>
-                            )}
-                            <KeyboardArrowDownIcon fontSize="small" />
-                          </div>
-                        </span>
-                      </li>
-                    </div>
-                  )}
-                  <div className="mr-2">
-                    <div className="flex items-center text-[12px] mb-2">
-                      <span className="mr-2">Notification</span>
-                    </div>
-                    <ButtonBoardCard
-                      onHandleEvent={handleFollowing}
-                      isFollowing={isFollowing}
-                      isActive={true}
-                      nameBtn={"Following"}
-                      className={
-                        "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
-                      }
-                    >
-                      <RemoveRedEyeOutlinedIcon
-                        className="ml-1 mr-2"
-                        fontSize="small"
-                      />
-                    </ButtonBoardCard>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex p-2">
-              <div>
-                <SubjectIcon fontSize="small" />
-              </div>
-              <div className="flex-1 ml-4">
-                <div className="text-[16px] mb-2">Describe</div>
-                <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-[14px] mb-2 p-2 pb-6 rounded-[4px]">
-                  <div>Add more detailed description...</div>
-                </div>
-              </div>
-            </div>
-            {/* SHOW ATTACHMENT */}
-            <div className="px-2">
-              <div className="flex items-center justify-between ">
-                <div className="flex items-center">
-                  <AttachmentIcon />
-                  <p className="ml-3">Attachment</p>
-                </div>
-                <div>
-                  <button
-                    onClick={handleOpenAttach}
-                    className="px-4 py-1 bg-gray-300 rounded-sm"
-                  >
-                    Add
-                  </button>
-                  {openAttach && (
-                    <div>
-                      <UploadPoper
-                        handleFileChange={handleFileChange}
-                        handleCloseAttach={handleCloseAttach}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="p-2 ml-6">
-                <Attachment loading={loading} />
-              </div>
-            </div>
-            {/* WHAT TO DO HIEN THI LEN UI */}
-            {listToDo &&
-              listToDo.map((item, index) => (
-                <div key={index}>
-                  <div className="flex p-2">
-                    <div>
-                      <CheckBoxOutlinedIcon fontSize="small" />
-                    </div>
-                    <div className="flex-1 ml-4">
-                      <div className="flex justify-between">
-                        <div className="text-[16px] mb-2">{item.title}</div>
-                        <ButtonBoardCard
-                          onHandleEvent={() => handleRemoveToDoList(item)}
-                          isActive={true}
-                          nameBtn={"Erase"}
-                          className={
-                            "w-[60px] justify-center bg-gray-200 hover:bg-gray-300"
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center p-2">
-                    <div className="w-[12px] mr-1">{item.percent || 0}%</div>
-                    <div className="relative ml-4 flex-1 w-full bg-gray-200 h-[8px] rounded-[4px]">
-                      <span
-                        style={{ width: `${item.percent}%` }}
-                        className={`absolute left-0 top-0 bg-blue-500 max-w-full h-[8px] rounded-[4px] index-50`}
-                      ></span>
-                    </div>
-                  </div>
-                  <ul>
-                    {item.todoItem.map((dataItem, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center my-2 cursor-pointer"
+                      <ButtonBoardCard
+                        onHandleEvent={handleFollowing}
+                        isFollowing={isFollowing}
+                        isActive={true}
+                        nameBtn={"Following"}
+                        className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
                       >
-                        <input
-                          checked={dataItem.checkDone}
-                          onChange={() =>
-                            handleCheckDoneToDoItem(item, dataItem)
-                          }
-                          type="checkbox"
-                          className="w-5 h-5 mx-2 cursor-pointer"
-                        />
-                        <span className="flex items-center w-full">
-                          <div
-                            onClick={() =>
-                              handleCheckDoneToDoItem(item, dataItem)
-                            }
-                            className={`flex-1 hover:bg-gray-300 h-[34px] p-2 rounded-[4px] transition-all duration-50`}
-                          >
-                            <font>{dataItem.title}</font>
-                          </div>
-                        </span>
-                      </li>
-                    ))}
-                    <div className="mb-8 ml-2">
-                      {!item.isCreateItem ? (
-                        <ButtonBoardCard
-                          onHandleEvent={() => ShowCreateToDoItem(item)}
-                          isActive={true}
-                          nameBtn={"Add an item"}
-                          className={
-                            "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
-                          }
-                        />
-                      ) : (
-                        <div>
-                          <div className="border-2 border-gray-500 rounded-[2px] mb-4">
-                            <input
-                              type="text"
-                              placeholder="Add an item"
-                              value={inputTitleToDoItem}
-                              onChange={(e) => handleChangeInputTodoItem(e)}
-                              className="w-full bg-white rounded-[2px] text-base font-[200] px-2 py-1 cursor-pointer  focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <ButtonBoardCard
-                                onHandleEvent={() =>
-                                  handleAddToDoItem(inputTitleToDoItem, item)
-                                }
-                                isActive={true}
-                                nameBtn={"More"}
-                                className={
-                                  "w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600"
-                                }
-                              />
-                              <ButtonBoardCard
-                                onHandleEvent={() => ShowCreateToDoItem(item)}
-                                isActive={true}
-                                nameBtn={"Cancel"}
-                                className={
-                                  "w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300"
-                                }
-                              />
-                            </div>
-                            <div className="flex items-center">
-                              <ButtonBoardCard
-                                onHandleEvent={ShowCreateToDoItem}
-                                isActive={true}
-                                nameBtn={"Assign"}
-                                className={
-                                  "w-[80px] justify-center hover:bg-gray-200"
-                                }
-                              >
-                                <Person4OutlinedIcon
-                                  style={{
-                                    fontSize: "18px",
-                                    marginRight: "4px"
-                                  }}
-                                />
-                              </ButtonBoardCard>
-                              <ButtonBoardCard
-                                onHandleEvent={ShowCreateToDoItem}
-                                isActive={true}
-                                nameBtn={"Expiration day"}
-                                className={
-                                  "w-[140px] ml-2 justify-center hover:bg-gray-200"
-                                }
-                              >
-                                <AccessTimeIcon
-                                  style={{
-                                    fontSize: "18px",
-                                    marginRight: "4px"
-                                  }}
-                                />
-                              </ButtonBoardCard>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                        <RemoveRedEyeOutlinedIcon className="ml-1 mr-2" fontSize="small" />
+                      </ButtonBoardCard>
                     </div>
-                  </ul>
+                  </div>
                 </div>
-              ))}
+              </div>
+              <div className="flex p-2">
+                <div>
+                  <SubjectIcon fontSize="small" />
+                </div>
+                <div className="flex-1 ml-4">
+                  <div className="text-[16px] mb-2">Describe</div>
+                  <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-[14px] mb-2 p-2 pb-6 rounded-[4px]">
+                    <div>Add more detailed description...</div>
+                  </div>
+                </div>
+              </div>
+              {/* SHOW ATTACHMENT */}
+              <div className="px-2">
+                <div className="flex items-center justify-between ">
+                  <div className="flex items-center">
+                    <AttachmentIcon />
+                    <p className="ml-3">Attachment</p>
+                  </div>
+                  <div>
+                    <button onClick={handleOpenAttach} className="px-4 py-1 bg-gray-300 rounded-sm">
+                      Add
+                    </button>
+                    {openAttach && (
+                      <div>
+                        <UploadPoper handleFileChange={handleFileChange} handleCloseAttach={handleCloseAttach} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="p-2 ml-6">
+                  <Attachment loading={loading} />
+                </div>
+              </div>
+              {/* WHAT TO DO HIEN THI LEN UI */}
+              {listToDo &&
+                listToDo.map((item, index) => (
+                  <div key={index}>
+                    <div className="flex p-2">
+                      <div>
+                        <CheckBoxOutlinedIcon fontSize="small" />
+                      </div>
+                      <div className="flex-1 ml-4">
+                        <div className="flex justify-between">
+                          <div className="text-[16px] mb-2">{item.title}</div>
+                          <ButtonBoardCard
+                            onHandleEvent={() => handleRemoveToDoList(item)}
+                            isActive={true}
+                            nameBtn={"Erase"}
+                            className={"w-[60px] justify-center bg-gray-200 hover:bg-gray-300"}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-2">
+                      <div className="w-[12px] mr-1">{item.percent || 0}%</div>
+                      <div className="relative ml-4 flex-1 w-full bg-gray-200 h-[8px] rounded-[4px]">
+                        <span
+                          style={{ width: `${item.percent}%` }}
+                          className={`absolute left-0 top-0 bg-blue-500 max-w-full h-[8px] rounded-[4px] index-50`}
+                        ></span>
+                      </div>
+                    </div>
+                    <ul>
+                      {item.todoItem.map((dataItem, index) => (
+                        <li key={index} className="flex items-center my-2 cursor-pointer">
+                          <input
+                            checked={dataItem.checkDone}
+                            onChange={() => handleCheckDoneToDoItem(item, dataItem)}
+                            type="checkbox"
+                            className="w-5 h-5 mx-2 cursor-pointer"
+                          />
+                          <span className="flex items-center w-full">
+                            <div
+                              onClick={() => handleCheckDoneToDoItem(item, dataItem)}
+                              className={`flex-1 hover:bg-gray-300 h-[34px] p-2 rounded-[4px] transition-all duration-50`}
+                            >
+                              <font>{dataItem.title}</font>
+                            </div>
+                          </span>
+                        </li>
+                      ))}
+                      <div className="mb-8 ml-2">
+                        {!item.isCreateItem ? (
+                          <ButtonBoardCard
+                            onHandleEvent={() => ShowCreateToDoItem(item)}
+                            isActive={true}
+                            nameBtn={"Add an item"}
+                            className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
+                          />
+                        ) : (
+                          <div>
+                            <div className="border-2 border-gray-500 rounded-[2px] mb-4">
+                              <input
+                                type="text"
+                                placeholder="Add an item"
+                                value={inputTitleToDoItem}
+                                onChange={(e) => handleChangeInputTodoItem(e)}
+                                className="w-full bg-white rounded-[2px] text-base font-[200] px-2 py-1 cursor-pointer  focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <ButtonBoardCard
+                                  onHandleEvent={() => handleAddToDoItem(inputTitleToDoItem, item)}
+                                  isActive={true}
+                                  nameBtn={"More"}
+                                  className={"w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600"}
+                                />
+                                <ButtonBoardCard
+                                  onHandleEvent={() => ShowCreateToDoItem(item)}
+                                  isActive={true}
+                                  nameBtn={"Cancel"}
+                                  className={"w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300"}
+                                />
+                              </div>
+                              <div className="flex items-center">
+                                <ButtonBoardCard
+                                  onHandleEvent={ShowCreateToDoItem}
+                                  isActive={true}
+                                  nameBtn={"Assign"}
+                                  className={"w-[80px] justify-center hover:bg-gray-200"}
+                                >
+                                  <Person4OutlinedIcon
+                                    style={{
+                                      fontSize: "18px",
+                                      marginRight: "4px",
+                                    }}
+                                  />
+                                </ButtonBoardCard>
+                                <ButtonBoardCard
+                                  onHandleEvent={ShowCreateToDoItem}
+                                  isActive={true}
+                                  nameBtn={"Expiration day"}
+                                  className={"w-[140px] ml-2 justify-center hover:bg-gray-200"}
+                                >
+                                  <AccessTimeIcon
+                                    style={{
+                                      fontSize: "18px",
+                                      marginRight: "4px",
+                                    }}
+                                  />
+                                </ButtonBoardCard>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </ul>
+                  </div>
+                ))}
 
-            <div className="flex p-2">
-              <div>
-                <FormatListBulletedIcon fontSize="small" />
-              </div>
-              <div className="flex-1 ml-4">
-                <div className="flex justify-between">
-                  <div className="text-[16px] mb-2">Work</div>
-                  <ButtonBoardCard
-                    isActive={true}
-                    nameBtn={"Show details"}
-                    className={
-                      "w-[100px] justify-center bg-gray-200 hover:bg-gray-300"
-                    }
-                  />
+              <div className="flex p-2">
+                <div>
+                  <FormatListBulletedIcon fontSize="small" />
                 </div>
-                <div className="flex items-center text-[12px] mb-2"></div>
-                <div className="flex items-center text-[12px] mb-2"></div>
+                <div className="flex-1 ml-4">
+                  <div className="flex justify-between">
+                    <div className="text-[16px] mb-2">Work</div>
+                    <ButtonBoardCard
+                      isActive={true}
+                      nameBtn={"Show details"}
+                      className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
+                    />
+                  </div>
+                  <div className="flex items-center text-[12px] mb-2"></div>
+                  <div className="flex items-center text-[12px] mb-2"></div>
+                </div>
               </div>
-            </div>
-            {/* POST COMMENTS */}
-            <div className="flex w-full">
-              <WriteComment
-                setEditorInstance={setEditorInstance}
-                setContent={setContent}
-                loading={loading}
-                handleFileChange={handleFileChange}
-                content={content}
-                handlePostComment={handlePostComment}
-                isSaving={isSaving}
-              />
-            </div>
-            {/* SHOW COMMENT */}
-            {listComment?.map((item) => (
-              <ShowComment
-                item={item}
-                key={item.id}
-                formatDate={formatDate}
-                handleDeleteComment={handleDeleteComment}
-              />
-            ))}
-          </div>
-          <div className="min-w-[180px]">
-            <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
-              {listBtnCard?.map((item, index) => (
-                <ButtonBoardCard
-                  onHandleEvent={(e) => handleClickBtn(e, item)}
-                  key={index}
-                  nameBtn={item.nameBtn}
-                >
-                  {item.Icon}
-                </ButtonBoardCard>
+              {/* POST COMMENTS */}
+              <div className="flex w-full">
+                <WriteComment
+                  setEditorInstance={setEditorInstance}
+                  setContent={setContent}
+                  loading={loading}
+                  handleFileChange={handleFileChange}
+                  content={content}
+                  isSaving={isSaving}
+                />
+              </div>
+              {/* SHOW COMMENT */}
+              {listComment?.map((item) => (
+                <ShowComment
+                  item={item}
+                  key={item.id}
+                  formatDate={formatDate}
+                  handleDeleteComment={handleDeleteComment}
+                />
               ))}
             </div>
-            <div className="flex items-center text-[12px] mb-2"></div>
-            <div className="flex items-center text-[12px] mb-2"></div>
+            <div className="min-w-[180px]">
+              <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
+                {updatedBtnCard?.map((item, index) => (
+                  <ButtonBoardCard onHandleEvent={(e) => handleClickBtn(e, item)} key={index} nameBtn={item.nameBtn}>
+                    {item.Icon}
+                  </ButtonBoardCard>
+                ))}
+              </div>
+              <div className="flex items-center text-[12px] mb-2"></div>
+              <div className="flex items-center text-[12px] mb-2"></div>
+            </div>
           </div>
+          <CloseIcon
+            onClick={() => handleShowBoardCard(dataCard)}
+            className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
+          />
         </div>
-        <CloseIcon
-          onClick={() => handleShowBoardCard(dataList, dataCard)}
-          className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
-        />
-      </div>
-      {isShowMenuBtnCard && numberShow === 2 && (
-        <MemberMenu
-          onAddMember={handleAddMember}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-          endDate={setEndDateCheck}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 3 && (
-        <>
-          {!isCreateLabel && (
-            <AddLabelInCard
-              position={position}
-              countLabel={countLabel}
-              listLabel={listLabel}
-              handleAddLabel={handleAddLabel}
-              ShowUpdateLabel={ShowUpdateLabel}
-              ShowDetailNewLabel={ShowDetailNewLabel}
-              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-            />
-          )}
-          {isCreateLabel && (
-            <CreateLabel
-              position={position}
-              isUpdateLabel={isUpdateLabel}
-              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-              ShowDetailNewLabel={ShowDetailNewLabel}
-              chooseColorLabel={chooseColorLabel}
-              handleChangeInputLabel={handleChangeInputLabel}
-              inputTitleLabel={inputTitleLabel}
-              handleChooseColor={handleChooseColor}
-              handleCreateNewLabel={handleCreateNewLabel}
-              onUpdateLabel={handleUpdateLabel}
-            />
-          )}
-        </>
-      )}
+        {isShowMenuBtnCard && numberShow === 2 && (
+          <MemberMenu
+            onAddMember={handleAddMember}
+            membersInCard={membersInCard}
+            setMembersInCard={setMembersInCard}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 3 && (
+          <>
+            {!isCreateLabel && (
+              <AddLabelInCard
+                position={position}
+                labelOfCard={labelOfCard}
+                listColorLabel={listColorLabel}
+                handleAddLabel={handleAddLabel}
+                ShowUpdateLabel={ShowUpdateLabel}
+                ShowDetailNewLabel={ShowDetailNewLabel}
+                handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+              />
+            )}
+            {isCreateLabel && (
+              <CreateLabel
+                position={position}
+                tag={tag}
+                isUpdateLabel={isUpdateLabel}
+                handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+                ShowDetailNewLabel={ShowDetailNewLabel}
+                chooseColorLabel={chooseColorLabel}
+                handleChangeInputLabel={handleChangeInputLabel}
+                inputTitleLabel={inputTitleLabel}
+                handleChooseColor={handleChooseColor}
+                handleCreateNewLabel={handleCreateNewLabel}
+                onUpdateLabel={handleUpdateLabel}
+              />
+            )}
+          </>
+        )}
 
-      {isShowMenuBtnCard && numberShow === 4 && (
-        <ToDoMenu
-          position={position}
-          inputTitleToDo={inputTitleToDo}
-          handleChangeInputTodo={handleChangeInputTodo}
-          handleCreateNewToDoList={handleCreateNewToDoList}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 5 && (
-        <CalendarPopper
-          position={position}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-          endDate={setEndDateCheck}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 6 && (
-        <UploadFile
-          position={position}
-          handleFileChange={handleFileChange}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 7 && (
-        <BackgroundPhoto
-          position={position}
-          handleCloseShowMenuBtnCard={handleCloseBtnPhoto}
-          ShowDetailNewLabel={ShowDetailNewLabel}
-          background={chooseColorBackground}
-          chooseBackground={handleChooseColorBackground}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 10 && (
-        <CopyCard
-          position={position}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-        />
-      )}
-    </div>
+        {isShowMenuBtnCard && numberShow === 4 && (
+          <ToDoMenu
+            position={position}
+            inputTitleToDo={inputTitleToDo}
+            handleChangeInputTodo={handleChangeInputTodo}
+            handleCreateNewToDoList={handleCreateNewToDoList}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 5 && (
+          <CalendarPopper
+            position={position}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+            setEndDateCheck={setEndDateCheck}
+            dataCard={dataCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 6 && (
+          <UploadFile
+            position={position}
+            handleFileChange={handleFileChange}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 7 && (
+          <BackgroundPhoto
+            position={position}
+            handleCloseShowMenuBtnCard={handleCloseBtnPhoto}
+            ShowDetailNewLabel={ShowDetailNewLabel}
+            background={chooseColorBackground}
+            chooseBackground={handleChooseColorBackground}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 10 && (
+          <CopyCard position={position} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
+        )}
+      </div>
+    </>
   );
 };

@@ -8,11 +8,16 @@ import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, closestCor
 import { SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
 import useDebounce from "../../Hooks/useDebounce";
-import { changePositionList } from "../../Services/API/ApiListOfBoard";
+import { changePositionList, CreateList } from "../../Services/API/ApiListOfBoard";
 import { changePositionCard } from "../../Services/API/ApiCard";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
+import { EQueryKeys } from "../../constants";
+import { useParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 function ListInBoard() {
+  const queryClient = useQueryClient();
+  const { idBoard } = useParams();
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10,
@@ -27,19 +32,10 @@ function ListInBoard() {
   const mySensors = useSensors(mouseSensor, touchSensor);
   const [activeDragItemType, setActiveDragItemType] = useState(null);
   const [changeData, setChangeData] = useState(null);
+  const [showAddListItem, setShowAddListItem] = useState(false);
   const debounceValue = useDebounce(changeData, 1000);
 
-  let {
-    nameTitle,
-    isShowAddList,
-    listCount,
-    setListCount,
-    handleShowAddList,
-    handleAddList,
-    handleChangeTitleCard,
-    boardId,
-    dataBoard,
-  } = useListBoardContext();
+  const { dataList, setListCount, boardId, dataBoard } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
 
   const handleDragStart = useCallback((event) => {
@@ -68,7 +64,7 @@ function ListInBoard() {
 
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
-        const newColums = [...listCount];
+        const newColums = [...dataList];
         const activeCard = newColums[activeContainerIndex]?.cards?.[activeIndex];
         if (!activeCard) return;
         moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
@@ -76,7 +72,7 @@ function ListInBoard() {
         setListCount(newColums);
       }
     },
-    [activeDragItemType, listCount, setListCount],
+    [activeDragItemType, dataList, setListCount],
   );
 
   const handleDragEnd = useCallback(
@@ -95,7 +91,7 @@ function ListInBoard() {
         if (overContainerIndex < 0) return;
 
         if (activeContainerIndex === overContainerIndex) {
-          const newColums = [...listCount];
+          const newColums = [...dataList];
           const activeColumn = newColums[activeContainerIndex];
           if (activeColumn.cards) activeColumn.cards = arrayMove(activeColumn.cards, activeIndex, overIndex);
           setListCount(newColums);
@@ -116,11 +112,11 @@ function ListInBoard() {
       if (active.id !== over.id) {
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
-        const newColums = arrayMove(listCount, activeIndex, overIndex);
+        const newColums = arrayMove(dataList, activeIndex, overIndex);
         setListCount(newColums);
         setChangeData({
           type: "column",
-          listId: listCount[activeIndex].id,
+          listId: dataList[activeIndex].id,
           activeIndex,
           overIndex,
         });
@@ -128,7 +124,7 @@ function ListInBoard() {
 
       setActiveDragItemType(null);
     },
-    [activeDragItemType, listCount, setListCount],
+    [activeDragItemType, dataList, setListCount],
   );
 
   const moveBetweenContainers = (
@@ -167,10 +163,10 @@ function ListInBoard() {
           });
       }
       if (debounceValue.type === "card") {
-        const activeListId = listCount[debounceValue.activeContainerIndex]?.id;
-        const overListId = listCount[debounceValue.overContainerIndex]?.id;
+        const activeListId = dataList[debounceValue.activeContainerIndex]?.id;
+        const overListId = dataList[debounceValue.overContainerIndex]?.id;
         const overIndex = debounceValue.overIndex + 1;
-        const card = listCount[debounceValue.overContainerIndex].cards?.[debounceValue.overIndex];
+        const card = dataList[debounceValue.overContainerIndex].cards?.[debounceValue.overIndex];
         if (activeListId && overListId && card) {
           changePositionCard({
             cardId: card.id,
@@ -188,6 +184,21 @@ function ListInBoard() {
     }
     // eslint-disable-next-line
   }, [debounceValue]);
+
+  const handleAddList = async (nameTitle) => {
+    const newListItem = {
+      title: nameTitle.trim(),
+      description: "",
+      boardId: idBoard,
+    };
+    try {
+      await CreateList(idBoard, newListItem);
+      setShowAddListItem((prev) => !prev);
+      queryClient.invalidateQueries([EQueryKeys.GET_BOARD_BY_ID]);
+    } catch (error) {
+      console.error("Failed to create list:", error);
+    }
+  };
 
   return (
     <div className="relative h-[90vh]">
@@ -207,9 +218,9 @@ function ListInBoard() {
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
             >
-              <SortableContext strategy={horizontalListSortingStrategy} items={listCount}>
+              <SortableContext strategy={horizontalListSortingStrategy} items={dataList}>
                 <div style={{ display: "flex" }}>
-                  {listCount?.map((item, index) => {
+                  {dataList?.map((item, index) => {
                     return <List id={item.id} key={index} item={item} />;
                   })}
                 </div>
@@ -219,10 +230,10 @@ function ListInBoard() {
             <div className="px-[8px]">
               {getListPermissionByUser("create") && (
                 <div
-                  onClick={!isShowAddList ? handleShowAddList : null}
-                  className={`flex items-center w-[248px] rounded-[12px] bg-gray-100 p-[6px] ${!isShowAddList ? "hover:bg-gray-300" : ""} cursor-pointer`}
+                  onClick={() => (!showAddListItem ? setShowAddListItem((prev) => !prev) : null)}
+                  className={`flex items-center w-[248px] rounded-[12px] bg-gray-100 p-[6px] ${!showAddListItem ? "hover:bg-gray-300" : ""} cursor-pointer`}
                 >
-                  {!isShowAddList ? (
+                  {!showAddListItem ? (
                     <>
                       <div className="rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300">
                         <AddIcon width={16} height={16} />
@@ -232,13 +243,11 @@ function ListInBoard() {
                   ) : (
                     <div className="w-full">
                       <CreateItem
-                        isList={true}
+                        isList
                         nameBtn={"Add list"}
-                        descriptionCard={nameTitle}
-                        placeHolderText={"Enter list name..."}
                         onAdd={handleAddList}
-                        onShow={handleShowAddList}
-                        onChangeTitle={handleChangeTitleCard}
+                        placeHolderText={"Enter list name..."}
+                        setShowItem={setShowAddListItem}
                       />
                     </div>
                   )}

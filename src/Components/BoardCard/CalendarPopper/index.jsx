@@ -1,26 +1,13 @@
 import React, { useCallback, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import Calendar from "../../Calendar/index";
 import { updateCard } from "../../../Services/API/ApiCard";
+import ClickAway from "../ClickAway";
+import { getCurrentDate, getCurrentTime } from "../WriteComment/helpers/formatDate";
+import { useQueryClient } from "@tanstack/react-query";
 
-function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRemove }) {
-  const { dataCard, dataList, setDataCard } = useListBoardContext();
-  const getCurrentTime = () => {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-
-  const getCurrentDate = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
+function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck, dataCard }) {
+  const queryClient = useQueryClient();
   const [startDate, setStartDate] = useState("NNNN/T/N");
   const [isChecked, setIsChecked] = useState(false);
   const [expirationDate, setExpirationDate] = useState(() => {
@@ -89,18 +76,13 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRe
       const day = expirationDate.split("-")[2];
       const [hours, minutes] = expirationTime.split(":");
       const data = {
-        title: dataCard.title,
-        description: dataCard.description,
-        coverUrl: dataCard.coverUrl,
-        priority: dataCard.priority,
-        tagId: dataCard.tagId,
         startDate: dataCard.startDate,
         endDate: `${expirationDate}T${expirationTime}`,
-        listId: dataList.id,
+        // listId: dataList.id
       };
-      endDate(`${hours}:${minutes} ${day}thg${month}`);
+      setEndDateCheck(`${hours}:${minutes} ${day}thg${month}`);
       const res = await updateCard(dataCard.id, data);
-      setDataCard((prev) => ({ ...prev, endDate: `${expirationDate}T${expirationTime}` }));
+      queryClient.invalidateQueries("card");
       return res;
     } catch (error) {
       console.error("Error setup expiration date in card detail: ", error);
@@ -112,89 +94,90 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, endDate, checkRe
       handleCloseShowMenuBtnCard();
 
       const data = {
-        title: dataCard.title,
-        description: dataCard.description,
-        coverUrl: dataCard.coverUrl,
-        priority: dataCard.priority,
-        tagId: dataCard.tagId,
         startDate: dataCard.startDate,
         endDate: null,
-        listId: dataList.id,
       };
-      endDate(data.endDate);
+      setEndDateCheck(data.endDate);
       const res = await updateCard(dataCard.id, data);
       return res;
     } catch (error) {
       console.error("Error setup expiration date in card detail: ", error);
     }
   };
+
+  const handleClickAway = () => {
+    handleCloseShowMenuBtnCard();
+  };
+
   return (
-    <div
-      style={{ top: position.top - 200, left: position.left }}
-      className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
-    >
-      <div className="p-2 mx-8 text-center">Day</div>
-      <div className="mx-2">
-        <div className="px-1 py-2">
-          <Calendar onChange={handleChangeDay} />
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Start date</label>
-            <div className="flex items-center justifyContent-center my-2">
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-                className="block p-2 mr-2 rounded-md shadow-sm"
-              />
-              <input
-                type="text"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className={`block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 ${isChecked ? "" : "opacity-50 cursor-not-allowed"}`}
-                disabled={!isChecked}
-              />
+    <ClickAway onClickAway={handleClickAway}>
+      <div
+        style={{ top: position.top - 200, left: position.left }}
+        className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
+      >
+        <div className="p-2 mx-8 text-center">Day</div>
+        <div className="mx-2">
+          <div className="px-1 py-2">
+            <Calendar onChange={handleChangeDay} />
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Start date</label>
+              <div className="flex items-center justifyContent-center my-2">
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
+                  className="block p-2 mr-2 rounded-md shadow-sm"
+                />
+                <input
+                  type="text"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className={`block w-full p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300 ${isChecked ? "" : "opacity-50 cursor-not-allowed"}`}
+                  disabled={!isChecked}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Expiration date</label>
-            <div className="flex items-center justifyContent-center my-2">
-              <input
-                type="text"
-                value={expirationDate}
-                onChange={(e) => handleChangeDateExp(e)}
-                onBlur={handleBlurDateExp}
-                className="block w-full mx-1 p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
-              />
-              <input
-                type="text"
-                value={expirationTime}
-                onChange={(e) => handleChangeTime(e)}
-                onBlur={handleBlurTime}
-                className="block w-full mx-1 p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
-              />
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Expiration date</label>
+              <div className="flex items-center justifyContent-center my-2">
+                <input
+                  type="text"
+                  value={expirationDate}
+                  onChange={(e) => handleChangeDateExp(e)}
+                  onBlur={handleBlurDateExp}
+                  className="block w-full mx-1 p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                />
+                <input
+                  type="text"
+                  value={expirationTime}
+                  onChange={(e) => handleChangeTime(e)}
+                  onBlur={handleBlurTime}
+                  className="block w-full mx-1 p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-300"
+                />
+              </div>
             </div>
-          </div>
 
-          <button
-            onClick={handleSaveExpirationDate}
-            className="w-full mb-2 px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-500 transition-all duration-0.3s"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleRemoveExpirationDate}
-            className="w-full mb-2 px-4 py-2 font-bold text-white bg-gray-400 rounded hover:bg-gray-700 transition-all duration-0.3s"
-          >
-            Remove
-          </button>
+            <button
+              onClick={handleSaveExpirationDate}
+              className="w-full mb-2 px-4 py-2 mt-4 font-bold text-white bg-green-600 rounded hover:bg-green-500 transition-all duration-0.3s"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleRemoveExpirationDate}
+              className="w-full mb-2 px-4 py-2 font-bold text-white bg-gray-400 rounded hover:bg-gray-700 transition-all duration-0.3s"
+            >
+              Remove
+            </button>
+          </div>
+          <CloseIcon
+            onClick={handleCloseShowMenuBtnCard}
+            className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100"
+          />
         </div>
-        <CloseIcon
-          onClick={handleCloseShowMenuBtnCard}
-          className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100"
-        />
       </div>
-    </div>
+    </ClickAway>
   );
 }
 

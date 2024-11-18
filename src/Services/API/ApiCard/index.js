@@ -9,7 +9,7 @@ export async function createCardByIdList(dataCard) {
   }
 }
 
-export async function getAllCardByIdList(id, boardId) {
+export async function getAllCardByList(id, boardId) {
   return await request.get(`/board/${boardId}/list/${id}/cards`);
 }
 
@@ -36,7 +36,7 @@ export async function deleteCard(cardId) {
 
 export async function JoinToCard(idCard, idUser) {
   return await request.post(`/card/${idCard}/assign`, {
-    userId: idUser,
+    userId: idUser
   });
 }
 
@@ -44,11 +44,16 @@ export async function RemoveUserToCard(idCard, idUser) {
   return await request.delete(`/card/${idCard}/members/${idUser}`);
 }
 
-export async function changePositionCard({ cardId, activeListId, overListId, position }) {
+export async function changePositionCard({
+  cardId,
+  activeListId,
+  overListId,
+  position
+}) {
   const response = await request.post(`/card/${cardId}/move`, {
     listId1: activeListId,
     listId2: overListId,
-    position,
+    position
   });
   return response?.data;
 }

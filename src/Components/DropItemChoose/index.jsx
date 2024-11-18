@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { getBoard, getBoardId } from "../../Services/API/ApiBoard/apiBoard";
+import { getBoard, getBoardById } from "../../Services/API/ApiBoard/apiBoard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 
 function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
@@ -19,7 +19,7 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
     const rect = e.target.getBoundingClientRect();
     setClickPosition({
       top: rect.top + window.scrollY,
-      left: rect.left + window.scrollX,
+      left: rect.left + window.scrollX
     });
 
     itemChooseToMove = itemChooseToMove.map((item) => {
@@ -64,7 +64,7 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
   useEffect(() => {
     const getAllPositionByIdBoard = async () => {
       try {
-        const res = await getBoardId(choosedBoard);
+        const res = await getBoardById(choosedBoard);
         setDataPosiontionBoard(res?.lists);
       } catch (err) {
         console.error("Error fetching board data: ", err);
@@ -75,7 +75,9 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
 
   return (
     <>
-      <div className="mx-2 mt-2 py-1 text-[14px]">{info.title || "No title"}</div>
+      <div className="mx-2 mt-2 py-1 text-[14px]">
+        {info.title || "No title"}
+      </div>
       <div
         onClick={handleChooseMoveList}
         className={`flex items-center justify-between rounded-[4px] mx-2 p-2 hover:ring-1 hover:ring-gray-500 hover:bg-gray-100 cursor-pointer  active:ring-blue-500`}
@@ -89,7 +91,10 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
 
       {info.isShow && info.id === 0 && (
         <div
-          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
+          style={{
+            top: clickPosition.top - 120,
+            left: clickPosition.left - 480
+          }}
           className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
         >
           {dataAllBoard.map((item, index) => (
@@ -106,7 +111,10 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
 
       {info.isShow && info.id === 1 && (
         <div
-          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
+          style={{
+            top: clickPosition.top - 120,
+            left: clickPosition.left - 480
+          }}
           className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
         >
           {dataPosiontionBoard.map((item, index) => (
@@ -122,7 +130,10 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
       )}
       {info.isShow && info.id === 2 && (
         <div
-          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
+          style={{
+            top: clickPosition.top - 120,
+            left: clickPosition.left - 480
+          }}
           className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
         >
           {dataPosiontionBoard.map((item, index) => (
@@ -138,7 +149,10 @@ function DropItemChoose({ info, itemChooseToMove, data, position, onChoose }) {
       )}
       {info.isShow && info.id === 3 && (
         <div
-          style={{ top: clickPosition.top - 120, left: clickPosition.left - 480 }}
+          style={{
+            top: clickPosition.top - 120,
+            left: clickPosition.left - 480
+          }}
           className="absolute bottom-[-14] left-2 w-[230px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-lg z-50"
         >
           {dataPosiontionBoard.map((item, index) => (
