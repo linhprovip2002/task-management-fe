@@ -1,12 +1,10 @@
 import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 import { useGetAllCardByList, useGetBoardById, useGetMembersByBoard, useGetWorkspaceById } from "../../../Hooks";
-import { useQueryClient } from "@tanstack/react-query";
-import { EQueryKeys } from "../../../constants";
 
 const ListBoardContext = createContext();
 
@@ -16,8 +14,6 @@ export const useListBoardContext = () => {
 
 function ListBoardProvider({ children }) {
   const { idBoard: boardId, id: idWorkSpace } = useParams();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const [nameTitle, setNameTitle] = useState("");
   const [isClosedNavBar, setIsCloseNavBar] = useState(false);
@@ -50,7 +46,7 @@ function ListBoardProvider({ children }) {
 
   useEffect(() => {
     setDataList(dataListAPI);
-  }, [dataListAPI]);
+  }, []);
 
   const handleFileChange = async (event) => {
     const files = event.target.files;

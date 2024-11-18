@@ -20,13 +20,10 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
   const navigate = useNavigate();
   const { id: idWorkSpace, idBoard } = useParams();
 
+  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: id, data: { type: "CARD" } });
+
   const { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(idBoard);
-
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: id,
-    data: { ...dataCard, type: "card" },
-  });
 
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
@@ -59,7 +56,6 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
 
   const itemStyle = {
     transform: CSS.Translate.toString(transform),
-    transition,
     display: "flex",
     borderRadius: 5,
     userSelect: "none",
@@ -78,18 +74,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
         onClick={() => handleGetDataCardDetail(dataCard)}
         className="flex flex-col justify-center min-h-[40px] w-full"
       >
-        {dataCard?.coverUrl && (
-          <div
-            style={{
-              backgroundImage: dataCard?.coverUrl.startsWith("http") ? `url(${dataCard?.coverUrl})` : "none",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: dataCard?.coverUrl.startsWith("#") ? dataCard?.coverUrl : "",
-            }}
-            className={`w-full min-h-[80px] rounded-t-[6px]`}
-          />
-        )}
+        {dataCard?.coverUrl && <div className={`w-full min-h-[80px] rounded-t-[6px]`} />}
         <div className="flex flex-col mx-[12px]">
           <div className="flex items-center flex-wrap mt-2">
             {dataCard?.tagCards?.length > 0 &&

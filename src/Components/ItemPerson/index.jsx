@@ -2,7 +2,6 @@ import React from "react";
 import { Add as AddIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import Avatar from "@mui/material/Avatar";
-import AvatarGroup from "@mui/material/AvatarGroup";
 
 import { stringAvatar } from "../../Utils/color";
 
