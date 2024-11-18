@@ -1,0 +1,14 @@
+.avatar-container {
+  cursor: pointer;
+  &:hover {
+    .avatar-cover {
+      display: flex;
+    }
+  }
+}
+
+.avatar-cover {
+  display: none;
+  background-color: rgba(9, 30, 66, 0.36);
+  border: 2px solid #fff;
+}

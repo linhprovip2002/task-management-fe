@@ -3,6 +3,7 @@ import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sort
 import SortableItem from "./SortableItem";
 import React from "react";
 import { CSS } from "@dnd-kit/utilities";
+
 const Droppable = ({ id, items }) => {
   const {
     attributes,

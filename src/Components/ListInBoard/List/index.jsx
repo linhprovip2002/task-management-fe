@@ -7,39 +7,27 @@ import ItemList from "../../../Components/ItemList";
 import TippyDetail from "../../TippyDetail";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-import {
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy
-} from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 import { memo } from "react";
 import { createCardByIdList } from "../../../Services/API/ApiCard";
 import { toast } from "react-toastify";
+import { useDroppable } from "@dnd-kit/core";
 
 function List({ item = {}, id }) {
   const cards = item.cards || [];
 
-  const { attributes, listeners, setNodeRef, transform } = useSortable({
-    id: id,
-    data: { ...item, type: "column" }
-  });
+  const { setNodeRef, transform } = useDroppable({ id });
+
   const dndKitColumStyles = {
     transform: CSS.Translate.toString(transform),
-    height: "100%"
+    height: "100%",
   };
 
-  const {
-    boardId,
-    activeMonitor,
-    activeIndex,
-    handleChange,
-    handleShowAddCard,
-    dataList,
-    setDataList
-  } = useListBoardContext();
+  const { boardId, activeMonitor, activeIndex, handleChange, handleShowAddCard, dataList, setDataList } =
+    useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(boardId);
 
   const handleClickOutside = async (event) => {
@@ -47,7 +35,7 @@ function List({ item = {}, id }) {
       const dataList = {
         title: event.target.value.trim(),
         description: item?.description,
-        boardId: boardId
+        boardId: boardId,
       };
       try {
         await UpdateList(boardId, id, dataList);
@@ -64,9 +52,9 @@ function List({ item = {}, id }) {
           ? {
               ...list,
               cards: [...(list.cards || []), { title: nameTitle, files: [] }],
-              isShowAddCard: !list.isShowAddCard
+              isShowAddCard: !list.isShowAddCard,
             }
-          : list
+          : list,
       );
       setDataList(newList);
 
@@ -76,7 +64,7 @@ function List({ item = {}, id }) {
         coverUrl: "",
         priority: "medium",
         tagId: "",
-        listId: id
+        listId: id,
       });
       toast.success("Create card successfully");
     } catch (error) {
@@ -86,8 +74,8 @@ function List({ item = {}, id }) {
   };
 
   return (
-    <div ref={setNodeRef} style={dndKitColumStyles} {...attributes}>
-      <div {...listeners} className="px-[8px]">
+    <div>
+      <div className="px-[8px]">
         <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
           <div className="flex p-1 items-center bg-gray-100">
             <input
@@ -97,9 +85,7 @@ function List({ item = {}, id }) {
               onBlur={(e) => handleClickOutside(e)}
               className="flex-1 min-w-0 mr-2 bg-gray-100 rounded-[8px] text-[14px] font-[600] px-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {activeMonitor.includes(item.id) && (
-              <RemoveRedEyeOutlinedIcon className="p-1" />
-            )}
+            {activeMonitor.includes(item.id) && <RemoveRedEyeOutlinedIcon className="p-1" />}
             <ConvertHiDotsVertical
               tippyName="Operation"
               data={item}
@@ -109,21 +95,23 @@ function List({ item = {}, id }) {
             />
           </div>
           {/* List board */}
-          <SortableContext strategy={verticalListSortingStrategy} items={cards}>
-            <div className="flex-1 p-1">
-              {cards?.map((card, index) => {
-                return (
-                  <ItemList
-                    id={card.id}
-                    key={card.id}
-                    item={item}
-                    dataCard={card}
-                    imageSrc
-                    isDescriptionIcon
-                    Attachments={[1]}
-                  />
-                );
-              })}
+          <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
+            <div ref={setNodeRef} style={dndKitColumStyles}>
+              <div className="flex-1 p-1">
+                {cards?.map((card, index) => {
+                  return (
+                    <ItemList
+                      id={card.id}
+                      key={index}
+                      item={item}
+                      dataCard={card}
+                      imageSrc
+                      isDescriptionIcon
+                      Attachments={[1]}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </SortableContext>
 
@@ -146,9 +134,7 @@ function List({ item = {}, id }) {
                 <div className="p-2 transition-opacity duration-300 text-[#44546f]">
                   <AddIcon width={16} height={16} />
                 </div>
-                <div className="text-[14px] font-medium text-[#44546f]">
-                  Add card
-                </div>
+                <div className="text-[14px] font-medium text-[#44546f]">Add card</div>
               </div>
               <TippyDetail title={"Create from template..."}>
                 <div className="text-[#44546f]">
