@@ -1,7 +1,7 @@
 import request from "../request";
 
 export async function getTags(boardId) {
-  const response = await request.get(`/board/${boardId}/tag`);
+  const response = await request.get(`/board/${boardId}/tag?limit=20`);
   return response?.data;
 }
 

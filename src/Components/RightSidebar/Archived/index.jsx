@@ -21,6 +21,9 @@ export default function Archived() {
   const handleAfterDelete = (id) => {
     setArchivedCards((prev) => [...prev].filter((card) => card.id !== id));
   };
+  const handleAfterResend = (data) => {
+    // console.log(data);
+  };
 
   return (
     <Slide in={true} direction="left">
@@ -74,7 +77,7 @@ export default function Archived() {
           )}
           <div className="flex flex-col">
             {archivedCards.map((card, index) => (
-              <ArchivedItem key={index} data={card} onDeleted={handleAfterDelete} />
+              <ArchivedItem onResend={handleAfterResend} key={index} data={card} onDeleted={handleAfterDelete} />
             ))}
           </div>
         </div>
