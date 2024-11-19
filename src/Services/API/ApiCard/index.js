@@ -36,7 +36,7 @@ export async function deleteCard(cardId) {
 
 export async function JoinToCard(idCard, idUser) {
   return await request.post(`/card/${idCard}/assign`, {
-    userId: idUser
+    userId: idUser,
   });
 }
 
@@ -44,16 +44,11 @@ export async function RemoveUserToCard(idCard, idUser) {
   return await request.delete(`/card/${idCard}/members/${idUser}`);
 }
 
-export async function changePositionCard({
-  cardId,
-  activeListId,
-  overListId,
-  position
-}) {
+export async function changePositionCard({ cardId, activeListId, overListId, position }) {
   const response = await request.post(`/card/${cardId}/move`, {
     listId1: activeListId,
     listId2: overListId,
-    position
+    position,
   });
   return response?.data;
 }
@@ -65,5 +60,10 @@ export async function getArchivedCards(boardId) {
 
 export async function destroyCard(cardId) {
   const response = await request.delete(`/card/${cardId}/destroy`);
+  return response?.data;
+}
+
+export async function resendCard(cardId) {
+  const response = await request.patch(`/card/${cardId}/restore`);
   return response?.data;
 }

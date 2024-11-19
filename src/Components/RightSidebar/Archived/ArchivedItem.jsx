@@ -4,9 +4,9 @@ import HeadlessTippy from "@tippyjs/react/headless";
 import { Close } from "@mui/icons-material";
 import { memo, useState } from "react";
 import { toast } from "react-toastify";
-import { destroyCard } from "../../../Services/API/ApiCard";
+import { destroyCard, resendCard } from "../../../Services/API/ApiCard";
 
-function ArchivedItem({ data, onDeleted }) {
+function ArchivedItem({ data, onDeleted, onResend }) {
   const [popperDelete, setPopperDelete] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const handleDeleteCard = () => {
@@ -26,6 +26,17 @@ function ArchivedItem({ data, onDeleted }) {
       });
   };
 
+  const handleResend = () => {
+    resendCard(data.id)
+      .then((res) => {
+        if (onResend) onResend(data);
+        toast.success("Resend to board successfully");
+      })
+      .catch((err) => {
+        toast.error("Resend to board unsuccessfully");
+      });
+  };
+
   return (
     <div className="mb-3">
       <ItemList
@@ -41,7 +52,9 @@ function ArchivedItem({ data, onDeleted }) {
       />
 
       <div className="flex gap-3 font-semibold text-[var(--dark-slate-blue)]">
-        <span className="hover:text-[var(--primary)] cursor-pointer hover:underline">Send to board</span>
+        <span onClick={handleResend} className="hover:text-[var(--primary)] cursor-pointer hover:underline">
+          Send to board
+        </span>
         <HeadlessTippy
           onClickOutside={() => setPopperDelete(false)}
           visible={popperDelete}
