@@ -65,7 +65,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
     userSelect: "none",
     boxSizing: "border-box",
   };
-
+  console.log("check");
   return (
     <div
       style={itemStyle}
@@ -198,7 +198,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
                     {...stringAvatar(member.user?.name)}
                     alt={member.user?.name}
                     src={member.user?.avatarUrl || ""}
-                    sx={{ width: 24, height: 24, marginRight: "8px" }}
+                    sx={{ width: 24, height: 24, marginLeft: "8px" }}
                   />
                 </div>
               ))}

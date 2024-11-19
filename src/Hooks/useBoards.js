@@ -18,20 +18,6 @@ export const useGetAllBoards = (options) => {
   return { boardData: data, isLoading, isError, refetch };
 };
 
-// export const useGetAllCardByList = (listId, boardId) => {
-//   const { isLoggedIn } = useStorage();
-//   const { data, isLoading, isError, refetch } = useQuery({
-//     queryKey: [EQueryKeys.GET_CARD_BY_LIST, JSON.stringify(options)],
-//     queryFn: () => getBoard(listId, boardId),
-//     ...{
-//       refetchOnWindowFocus: false,
-//       enabled: isLoggedIn,
-//     },
-//   });
-
-//   return { boardData: data, isLoading, isError, refetch };
-// };
-
 export const useGetBoardById = (boardId) => {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [EQueryKeys.GET_BOARD_BY_ID, boardId],

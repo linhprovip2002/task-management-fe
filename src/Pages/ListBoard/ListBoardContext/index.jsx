@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
-import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
 import { useGetAllCardByList, useGetBoardById, useGetMembersByBoard, useGetWorkspaceById } from "../../../Hooks";
-import { useQueryClient } from "@tanstack/react-query";
-import { EQueryKeys } from "../../../constants";
 
 const ListBoardContext = createContext();
 
@@ -16,8 +13,6 @@ export const useListBoardContext = () => {
 
 function ListBoardProvider({ children }) {
   const { idBoard: boardId, id: idWorkSpace } = useParams();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const [nameTitle, setNameTitle] = useState("");
   const [isClosedNavBar, setIsCloseNavBar] = useState(false);
@@ -40,7 +35,6 @@ function ListBoardProvider({ children }) {
   const [loading, setLoading] = useState(false);
 
   const [upFileComment, setUpFileComment] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]); //file  upload len thang server
   const [postUploadedFiles, setPostUploadedFiles] = useState([]);
 
   const { workspaceDetails: dataWorkspace } = useGetWorkspaceById(idWorkSpace);
@@ -50,83 +44,8 @@ function ListBoardProvider({ children }) {
 
   useEffect(() => {
     setDataList(dataListAPI);
+    //eslint-disable-next-line
   }, [dataListAPI]);
-
-  const handleFileChange = async (event) => {
-    const files = event.target.files;
-    if (!files.length) return;
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-    const validFiles = [];
-    Array.from(files).forEach((file) => {
-      if (file.size > MAX_FILE_SIZE) {
-        toast.error(`File ${file.name} is too large to upload.`);
-      } else {
-        validFiles.push(file);
-      }
-    });
-    if (!validFiles.length) return;
-    setLoading(true);
-    const loadToastId = toast.loading("Uploading...");
-
-    try {
-      // Tải lên các file song song
-      const uploadPromises = validFiles.map((file) => {
-        const formData = new FormData();
-        formData.append("files", file);
-        return apiUploadMultiFile(formData);
-      });
-
-      const responses = await Promise.all(uploadPromises);
-      toast.dismiss(loadToastId);
-      toast.success("Upload successful!");
-
-      // Lấy dữ liệu file đã tải lên
-      const uploadedFilesData = responses.flatMap((response) => response.data);
-      const uploadedUrls = uploadedFilesData.map((file) => file.url);
-
-      // Cập nhật danh sách file đã tải lên
-      setUploadedFiles((prev) => [...prev, ...uploadedFilesData]);
-
-      // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
-      await handlePostFiles(dataCard.id, uploadedUrls);
-      return uploadedFilesData;
-    } catch (error) {
-      console.error("Error uploading files:", error);
-      toast.dismiss(loadToastId);
-      toast.error("Failed to upload files.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ============HANDLE POST FILE LEN API==============
-  const handlePostFiles = useCallback(
-    async (id, allUrls) => {
-      try {
-        const response = await apiAssignFile(id, allUrls);
-        setPostUploadedFiles((prev) => [...prev, ...response.data.files]);
-        return response.data.files;
-      } catch (error) {
-        console.error("Failed to get uploaded files:", error);
-      }
-    },
-    [setPostUploadedFiles],
-  );
-
-  const handleDeleteFile = async (fileId) => {
-    try {
-      await apiDeleteFile(dataCard.id, fileId);
-      setDataCard((prev) => ({
-        ...prev,
-        files: prev.files.filter((file) => file.id !== fileId),
-      }));
-      setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
-      toast.success("File deleted successfully!");
-    } catch (error) {
-      console.error("Failed to delete file:", error);
-      toast.error("Failed to delete file.");
-    }
-  };
 
   const handlePostComment = async (dataCard) => {
     const parser = new DOMParser();
@@ -178,11 +97,6 @@ function ListBoardProvider({ children }) {
       setIsShowBoardCard(!isShowBoardCard);
       localStorage.setItem("cardId", dataCard.id);
       toggleCardEditModal && setToggleCardEditModal((prev) => !prev);
-      // setDataList(data);
-      // console.log(dataCard);
-      // setDataCard(dataCard);
-      // setPostUploadedFiles([...dataCard?.files]);
-      // setMembersInCard(dataCard?.members);
     },
     //eslint-disable-next-line
     [isShowBoardCard, toggleCardEditModal],
@@ -190,12 +104,13 @@ function ListBoardProvider({ children }) {
 
   const handleShowBoardEdit = useCallback(
     async (e, item, dataCard) => {
+      localStorage.setItem("cardId", dataCard?.id);
       const rect = e.currentTarget.getBoundingClientRect();
       setToggleCardEditModal(!toggleCardEditModal);
       setPosition({ top: rect.bottom + 8, left: rect.left });
       setItemList(item);
       setDataCard(dataCard);
-      setPostUploadedFiles([...dataCard?.files]);
+      // setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
     [toggleCardEditModal],
@@ -277,12 +192,7 @@ function ListBoardProvider({ children }) {
         handleChange,
         handleChangeTitleCard,
         handleShowAddCard,
-        uploadedFiles,
-        setUploadedFiles,
-        handleFileChange,
-        postUploadedFiles: postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
         setPostUploadedFiles,
-        handlePostFiles,
         loading,
         content,
         setContent,
@@ -290,13 +200,11 @@ function ListBoardProvider({ children }) {
         setIsSaving,
         handlePostComment,
         handleDeleteComment,
-        handleDeleteFile,
         boardId,
         idWorkSpace,
         upFileComment,
         setUpFileComment,
         setToggleCardEditModal,
-        // handleUpdateComment,
         setLoading,
       }}
     >

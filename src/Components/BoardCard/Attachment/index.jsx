@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import ItemAttachment from "./ItemAttachment";
-import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-const Attachment = () => {
-  const { postUploadedFiles } = useListBoardContext();
+const Attachment = ({ postUploadedFiles, setPostUploadedFiles }) => {
   const [showImage, setShowImage] = useState(false);
   const [openMore, setOpenMore] = useState(null);
   const moreRef = useRef(null);
+  postUploadedFiles = postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleOpenMore = (id) => setOpenMore(openMore === id ? null : id);
   const handleCloseMore = () => setOpenMore(null);
@@ -14,10 +13,7 @@ const Attachment = () => {
   // Handle click outside to close MorePoper
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        !event.target.closest(".more-poper") &&
-        !event.target.closest(".more-button")
-      ) {
+      if (!event.target.closest(".more-poper") && !event.target.closest(".more-button")) {
         setOpenMore(null);
       }
     };
@@ -34,7 +30,7 @@ const Attachment = () => {
 
   const fileToShow = useMemo(
     () => (showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4)),
-    [showImage, postUploadedFiles]
+    [showImage, postUploadedFiles],
   );
   const listFile = postUploadedFiles.length;
   const quantityFile = useMemo(() => listFile - 4, [listFile]);
@@ -49,22 +45,17 @@ const Attachment = () => {
           openMore={openMore}
           handleOpenMore={handleOpenMore}
           handleCloseMore={handleCloseMore}
+          setPostUploadedFiles={setPostUploadedFiles}
         />
       ))}
       {listFile > 4 && (
         <>
           {showImage ? (
-            <button
-              onClick={handleHideImage}
-              className="px-4 py-1 bg-gray-300 rounded-sm"
-            >
+            <button onClick={handleHideImage} className="px-4 py-1 bg-gray-300 rounded-sm">
               Show fewer attachments
             </button>
           ) : (
-            <button
-              onClick={handleShowImage}
-              className="px-4 py-1 bg-gray-300 rounded-sm"
-            >
+            <button onClick={handleShowImage} className="px-4 py-1 bg-gray-300 rounded-sm">
               View all attachments ({quantityFile} {"hidden"})
             </button>
           )}

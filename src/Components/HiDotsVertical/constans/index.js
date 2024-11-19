@@ -1,8 +1,6 @@
 export const nameOperations = [
   "Add card",
   "Copy list",
-  "Move list",
-  "Move all cards in this list",
   "Sort by...",
   "Monitor",
   "Save this list",

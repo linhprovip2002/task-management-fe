@@ -15,6 +15,7 @@ import NavbarTable from "../../Components/HiDotsVertical/NavbarTable";
 import Loading from "../../Components/Loading";
 
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
+import { useNavigate } from "react-router-dom";
 
 function ListBoard() {
   return (
@@ -25,17 +26,11 @@ function ListBoard() {
 }
 
 function ListBoardContent() {
-  const {
-    dataBoard,
-    dataWorkspace,
-    toggleNavbar,
-    isShowBoardCard,
-    toggleCardEditModal,
-    loading
-  } = useListBoardContext();
-  const { isLoading: isLoadingPermission } = useGetBoardPermission(
-    dataBoard?.id
-  );
+  const navigate = useNavigate();
+
+  const { dataBoard, dataWorkspace, toggleNavbar, isShowBoardCard, toggleCardEditModal, loading } =
+    useListBoardContext();
+  const { isLoading: isLoadingPermission } = useGetBoardPermission(dataBoard?.id);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [titleName, settitleName] = useState("Sort by alphabetical order");
@@ -50,7 +45,7 @@ function ListBoardContent() {
     zIndex: 1,
     border: "1px solid",
     p: 1,
-    bgcolor: "background.paper"
+    bgcolor: "background.paper",
   };
 
   const handleClickHidot = (event) => {
@@ -72,46 +67,40 @@ function ListBoardContent() {
     setIsChooseMoveList(!isChooseMoveList);
   };
 
+  const handleComingWorkSpace = () => {
+    navigate(`/workspace/${dataWorkspace?.id}/home`);
+  };
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
 
-  const isLoading =
-    loading || !dataBoard || !dataWorkspace || isLoadingPermission;
+  const isLoading = loading || !dataBoard || !dataWorkspace || isLoadingPermission;
   if (isLoading) return <Loading />;
 
   return (
     <>
       <div
         style={{
-          height: "calc(100vh - 61px)"
+          height: "calc(100vh - 61px)",
         }}
         className="w-screen flex"
       >
         <Sidebar>
           <>
-            <div className={`pl-4 py-4 flex items-center`}>
-              <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
-                {dataWorkspace.title.charAt(0).toUpperCase()}
+            <div className={`pl-4 py-4 flex items-center justify-between`}>
+              <div className={`flex flex-1 items-center cursor-pointer`} onClick={handleComingWorkSpace}>
+                <div className="rounded-[4px] px-2 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
+                  {dataWorkspace.title.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 ml-2 text-[14px] font-[600]">{dataWorkspace.title}</div>
               </div>
-              <div className="flex-1 ml-2 text-[14px] font-[600]">
-                {dataWorkspace.title}
-              </div>
-              <div
-                onClick={toggleNavbar}
-                className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer"
-              >
-                <ArrowDown
-                  width={12}
-                  height={12}
-                  className={"rotate-90 text-gray-100"}
-                />
+              <div onClick={toggleNavbar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
+                <ArrowDown width={12} height={12} className={"rotate-90 text-gray-100"} />
               </div>
             </div>
             <Divider />
             <div className="group flex items-center mt-[6px]">
-              <div className="flex-1 text-[14px] font-[600] py-2 pl-4 ">
-                Your tables
-              </div>
+              <div className="flex-1 text-[14px] font-[600] py-2 pl-4 ">Your tables</div>
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div className="relative">
                   <div
@@ -119,10 +108,7 @@ function ListBoardContent() {
                     className="cursor-pointer p-2 mr-1 opacity-0 group-hover:opacity-100 hover:bg-gray-300 rounded-[4px] transition-opacity duration-300"
                     onClick={handleClickHidot}
                   >
-                    <HiDotsVertical
-                      size={16}
-                      className="text-gray-700 rotate-90"
-                    />
+                    <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
                   </div>
                   <Popper id={id} open={open} anchorEl={anchorEl}>
                     <div style={styles}>
@@ -147,9 +133,7 @@ function ListBoardContent() {
           className="flex-grow flex flex-col overflow-x-hidden max-h-full overflow-hidden"
           style={{
             backgroundColor:
-              !dataBoard.coverUrl && dataBoard.backgroundColor
-                ? dataBoard.backgroundColor
-                : "transparent",
+              !dataBoard.coverUrl && dataBoard.backgroundColor ? dataBoard.backgroundColor : "transparent",
             backgroundImage: dataBoard.coverUrl
               ? `url(${dataBoard.coverUrl})`
               : dataBoard.backgroundColor || "/Board background.svg",
@@ -157,7 +141,7 @@ function ListBoardContent() {
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             maxHeight: "100%",
-            overflow: "hidden"
+            overflow: "hidden",
           }}
         >
           <HeaderBoard />

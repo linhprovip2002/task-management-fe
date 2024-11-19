@@ -19,11 +19,19 @@ function AddLabelInCard({
   return (
     <ClickAway onClickAway={handleClickAway}>
       <div
-        style={{ top: position.top - 200, left: position.left }}
+        style={{ top: position.top - 150, left: position.left }}
         className="absolute w-[280px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
       >
         <div className="text-center p-2 mx-8">Label</div>
-        <div className="mx-2">
+        <div
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "#fff6 #00000026",
+            overflowY: "auto",
+            maxHeight: "400px",
+          }}
+          className="px-2"
+        >
           <div className="mx-1 border-2 border-gray-500 rounded-lg">
             <input
               type="text"

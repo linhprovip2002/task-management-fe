@@ -35,7 +35,7 @@ function ListInBoard() {
   const [showAddListItem, setShowAddListItem] = useState(false);
   const debounceValue = useDebounce(changeData, 1000);
 
-  const { dataList, setListCount, boardId, dataBoard } = useListBoardContext();
+  const { dataList, setDataList, boardId, dataBoard } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
 
   const handleDragStart = useCallback((event) => {
@@ -68,11 +68,10 @@ function ListInBoard() {
         const activeCard = newColums[activeContainerIndex]?.cards?.[activeIndex];
         if (!activeCard) return;
         moveBetweenContainers(newColums, activeContainerIndex, activeIndex, overContainerIndex, overIndex, activeCard);
-
-        setListCount(newColums);
+        setDataList(newColums);
       }
     },
-    [activeDragItemType, dataList, setListCount],
+    [activeDragItemType, dataList, setDataList],
   );
 
   const handleDragEnd = useCallback(
@@ -94,7 +93,7 @@ function ListInBoard() {
           const newColums = [...dataList];
           const activeColumn = newColums[activeContainerIndex];
           if (activeColumn.cards) activeColumn.cards = arrayMove(activeColumn.cards, activeIndex, overIndex);
-          setListCount(newColums);
+          setDataList(newColums);
           setChangeData((prev) => {
             return {
               type: "card",
@@ -113,7 +112,7 @@ function ListInBoard() {
         const activeIndex = active.data.current.sortable.index;
         const overIndex = over.data.current?.sortable.index || 0;
         const newColums = arrayMove(dataList, activeIndex, overIndex);
-        setListCount(newColums);
+        setDataList(newColums);
         setChangeData({
           type: "column",
           listId: dataList[activeIndex].id,
@@ -124,7 +123,7 @@ function ListInBoard() {
 
       setActiveDragItemType(null);
     },
-    [activeDragItemType, dataList, setListCount],
+    [activeDragItemType, dataList, setDataList],
   );
 
   const moveBetweenContainers = (
@@ -182,6 +181,7 @@ function ListInBoard() {
       }
       setChangeData(null);
     }
+
     // eslint-disable-next-line
   }, [debounceValue]);
 

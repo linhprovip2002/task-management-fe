@@ -44,7 +44,15 @@ function CreateLabel({
               </div>
             )}
           </div>
-          <div className="mx-2">
+          <div
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "#fff6 #00000026",
+              overflowY: "auto",
+              maxHeight: "400px",
+            }}
+            className="px-2"
+          >
             <div className="py-2 bg-white">Title</div>
             <div className="border-2 border-gray-500 rounded-[2px]">
               <input

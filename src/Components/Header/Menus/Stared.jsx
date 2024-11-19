@@ -17,10 +17,7 @@ export default function Stared() {
 
   const { boardData, isLoading, isFetching } = useGetAllBoards();
 
-  const starredBoard = useMemo(
-    () => boardData?.data.filter((board) => board.isFavorite) || [],
-    [boardData]
-  );
+  const starredBoard = useMemo(() => boardData?.data.filter((board) => board.isFavorite) || [], [boardData]);
 
   return (
     <div className="relative inline-block">
@@ -44,9 +41,7 @@ export default function Stared() {
                     <div
                       key={index}
                       className="px-2 py-2 text-gray-700 rounded-md cursor-pointer hover:bg-slate-200"
-                      onClick={(e) =>
-                        handleItemClick(e, board.id, board.workspaceId)
-                      }
+                      onClick={(e) => handleItemClick(e, board.id, board.workspaceId)}
                     >
                       <div className="flex items-center justify-between gap-2 text-base">
                         <div className="flex items-center gap-2">
@@ -54,19 +49,15 @@ export default function Stared() {
                             className="w-10 h-8 rounded-sm"
                             style={{
                               backgroundColor: board.backgroundColor,
-                              backgroundImage: board.coverUrl
-                                ? `url(${board.coverUrl})`
-                                : "none",
+                              backgroundImage: board.coverUrl ? `url(${board.coverUrl})` : "none",
                               backgroundSize: "cover",
                               backgroundRepeat: "no-repeat",
-                              backgroundPosition: "center center"
+                              backgroundPosition: "center center",
                             }}
                           />
                           <div className="flex flex-col justify-between text-xs">
                             <div className="font-bold">{board.title}</div>
-                            <div>
-                              {board?.workspace?.title || "Workspace Name"}
-                            </div>
+                            <div>{board?.workspace?.title || "Workspace Name"}</div>
                           </div>
                         </div>
                         <div className="flex justify-center text-yellow-400">
@@ -78,9 +69,7 @@ export default function Stared() {
                 ) : (
                   <div className="flex flex-col gap-3 p-2">
                     <img src="/NoStarredBoardImg.svg" alt="No starred Boards" />
-                    <div className="text-sm text-center">
-                      Star important boards to access them quickly and easily.
-                    </div>
+                    <div className="text-sm text-center">Star important boards to access them quickly and easily.</div>
                   </div>
                 )}
               </div>
