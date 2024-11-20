@@ -13,7 +13,7 @@ export default function Activities() {
   useEffect(() => {
     getActivities(idBoard)
       .then((res) => {
-        setActivities(res);
+        setActivities(res.docs);
       })
       .catch((err) => {
         console.error(err);

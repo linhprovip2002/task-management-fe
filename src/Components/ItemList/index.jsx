@@ -20,7 +20,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
   const navigate = useNavigate();
   const { id: idWorkSpace, idBoard } = useParams();
 
-  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: id, data: { type: "CARD" } });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id, data: { type: "CARD" } });
 
   const { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(idBoard);
@@ -56,6 +56,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
 
   const itemStyle = {
     transform: CSS.Translate.toString(transform),
+    transition,
     display: "flex",
     borderRadius: 5,
     userSelect: "none",
@@ -90,7 +91,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
                 ) : null,
               )}
           </div>
-          <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard.title}</div>
+          <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard?.title}</div>
           <div className="flex items-center justify-between w-full flex-wrap">
             <div className="flex flex-1 items-center flex-wrap pb-2">
               {endDateCheck != null && (

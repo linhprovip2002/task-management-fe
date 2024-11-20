@@ -36,7 +36,6 @@ function ListInBoard() {
   const [showAddListItem, setShowAddListItem] = useState(false);
   const debounceValue = useDebounce(changeData, 1000);
   const [activeItemType, setActiveItemType] = useState(null);
-
   const { dataList, boardId, dataBoard } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
 
@@ -152,7 +151,6 @@ function ListInBoard() {
         });
       }
     }
-
     setActiveItemType(null);
   };
 
@@ -212,9 +210,9 @@ function ListInBoard() {
     }
   };
 
-  // useEffect(() => {
-  //   setColumns(dataList);
-  // }, [dataList]);
+  useEffect(() => {
+    setColumns(dataList);
+  }, [dataList]);
 
   return (
     <div className="relative h-[90vh]">

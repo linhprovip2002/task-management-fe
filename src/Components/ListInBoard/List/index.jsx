@@ -86,8 +86,8 @@ function List({ item = {}, id }) {
   };
 
   return (
-    <div ref={colNodeRef} style={dndKitColumStyles} {...attributes} {...listeners}>
-      <div className="px-[8px]">
+    <div ref={colNodeRef} style={dndKitColumStyles} {...attributes}>
+      <div {...listeners} className="px-[8px]">
         <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
           <div className="flex p-1 items-center bg-gray-100">
             <input
