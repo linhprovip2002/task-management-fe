@@ -14,10 +14,7 @@ const Attachment = () => {
   // Handle click outside to close MorePoper
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        !event.target.closest(".more-poper") &&
-        !event.target.closest(".more-button")
-      ) {
+      if (!event.target.closest(".more-poper") && !event.target.closest(".more-button")) {
         setOpenMore(null);
       }
     };
@@ -34,7 +31,7 @@ const Attachment = () => {
 
   const fileToShow = useMemo(
     () => (showImage ? postUploadedFiles : postUploadedFiles.slice(0, 4)),
-    [showImage, postUploadedFiles]
+    [showImage, postUploadedFiles],
   );
   const listFile = postUploadedFiles.length;
   const quantityFile = useMemo(() => listFile - 4, [listFile]);
@@ -54,17 +51,11 @@ const Attachment = () => {
       {listFile > 4 && (
         <>
           {showImage ? (
-            <button
-              onClick={handleHideImage}
-              className="px-4 py-1 bg-gray-300 rounded-sm"
-            >
+            <button onClick={handleHideImage} className="px-4 py-1 bg-gray-300 rounded-sm">
               Show fewer attachments
             </button>
           ) : (
-            <button
-              onClick={handleShowImage}
-              className="px-4 py-1 bg-gray-300 rounded-sm"
-            >
+            <button onClick={handleShowImage} className="px-4 py-1 bg-gray-300 rounded-sm">
               View all attachments ({quantityFile} {"hidden"})
             </button>
           )}

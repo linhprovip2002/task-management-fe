@@ -46,7 +46,7 @@ function ListBoardProvider({ children }) {
 
   useEffect(() => {
     setDataList(dataListAPI);
-  }, []);
+  }, [dataListAPI]);
 
   const handleFileChange = async (event) => {
     const files = event.target.files;
