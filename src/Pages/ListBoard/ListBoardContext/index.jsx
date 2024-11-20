@@ -117,7 +117,7 @@ function ListBoardProvider({ children }) {
   );
 
   const handleShowAddCard = (idList) => {
-    setActiveIndex(idList);
+    setActiveIndex((prev) => (prev === idList ? null : idList));
     const newList = dataList.map((list) => ({
       ...list,
       isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
@@ -205,6 +205,7 @@ function ListBoardProvider({ children }) {
         setUpFileComment,
         setToggleCardEditModal,
         setLoading,
+        setActiveIndex,
       }}
     >
       {children}

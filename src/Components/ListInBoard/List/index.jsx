@@ -7,7 +7,7 @@ import ItemList from "../../../Components/ItemList";
 import TippyDetail from "../../TippyDetail";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
@@ -17,17 +17,36 @@ import { toast } from "react-toastify";
 import { DndContext, DragOverlay, useDroppable } from "@dnd-kit/core";
 
 function List({ item = {}, id }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef: colNodeRef,
+    transform,
+  } = useSortable({
+    id: id,
+    data: {
+      type: "COLUMN",
+    },
+  });
   const cards = item.cards || [];
   const [activeId, setActiveId] = useState(null);
-  const { setNodeRef, transform } = useDroppable({ id });
+  const { setNodeRef } = useDroppable({ id });
 
   const dndKitColumStyles = {
     transform: CSS.Translate.toString(transform),
     height: "100%",
   };
 
-  const { boardId, activeMonitor, activeIndex, handleChange, handleShowAddCard, dataList, setDataList } =
-    useListBoardContext();
+  const {
+    boardId,
+    activeMonitor,
+    setActiveIndex,
+    activeIndex,
+    handleChange,
+    handleShowAddCard,
+    dataList,
+    setDataList,
+  } = useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(boardId);
 
   const handleClickOutside = async (event) => {
@@ -47,18 +66,7 @@ function List({ item = {}, id }) {
 
   const handleAddCard = async (nameTitle) => {
     try {
-      const newList = dataList.map((list) =>
-        list.id === id
-          ? {
-              ...list,
-              cards: [...(list.cards || []), { title: nameTitle, files: [] }],
-              isShowAddCard: !list.isShowAddCard,
-            }
-          : list,
-      );
-      setDataList(newList);
-
-      await createCardByIdList({
+      const newCard = await createCardByIdList({
         title: nameTitle,
         description: "",
         coverUrl: "",
@@ -66,6 +74,16 @@ function List({ item = {}, id }) {
         tagId: "",
         listId: id,
       });
+      const newList = dataList.map((list) =>
+        list.id === id
+          ? {
+              ...list,
+              cards: [...(list.cards || []), newCard],
+            }
+          : list,
+      );
+      setActiveIndex((prev) => prev && null);
+      setDataList(newList);
       toast.success("Create card successfully");
     } catch (error) {
       toast.error("Failed to create card");
@@ -74,7 +92,7 @@ function List({ item = {}, id }) {
   };
 
   return (
-    <div>
+    <div ref={colNodeRef} style={dndKitColumStyles} {...attributes} {...listeners}>
       <div className="px-[8px]">
         <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
           <div className="flex p-1 items-center bg-gray-100">
@@ -95,41 +113,34 @@ function List({ item = {}, id }) {
             />
           </div>
           {/* List board */}
-          <DndContext onDragStart={(event) => setActiveId(event.active.id)} onDragEnd={() => setActiveId(null)}>
-            <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
-              <div ref={setNodeRef} style={dndKitColumStyles}>
-                <div
-                  style={{
-                    maxHeight: "380px",
-                    overflowY: "auto",
-                    padding: "8px",
-                    scrollbarWidth: "thin",
-                  }}
-                  className="flex-1 p-1"
-                >
-                  {cards?.map((card, index) => {
-                    return (
-                      <ItemList
-                        id={card.id}
-                        key={index}
-                        item={item}
-                        dataCard={card}
-                        imageSrc
-                        isDescriptionIcon
-                        Attachments={[1]}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </SortableContext>
-            <DragOverlay>
-              {activeId ? (
-                <ItemList id={activeId} item={item} dataCard={cards.find((card) => card.id === activeId)} />
-              ) : null}
-            </DragOverlay>
-          </DndContext>
-          {item.isShowAddCard && activeIndex === item.id && (
+          <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
+            <div
+              ref={setNodeRef}
+              style={{
+                maxHeight: "380px",
+                overflowY: "auto",
+                padding: "8px",
+                scrollbarWidth: "thin",
+              }}
+              className="flex-1 p-1"
+            >
+              {cards?.map((card, index) => {
+                return (
+                  <ItemList
+                    id={card.id}
+                    key={index}
+                    item={item}
+                    dataCard={card}
+                    imageSrc
+                    isDescriptionIcon
+                    Attachments={[1]}
+                  />
+                );
+              })}
+            </div>
+          </SortableContext>
+
+          {activeIndex === item.id && (
             <CreateItem
               idList={item.id}
               nameBtn={"Add card"}
@@ -139,7 +150,7 @@ function List({ item = {}, id }) {
             />
           )}
 
-          {getCardPermissionByUser("create") && !item.isShowAddCard && (
+          {getCardPermissionByUser("create") && activeIndex !== item.id && (
             <div className="flex p-1 items-center pt-[8px]">
               <div
                 onClick={() => handleShowAddCard(item.id)}

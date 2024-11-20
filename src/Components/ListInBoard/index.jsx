@@ -14,6 +14,8 @@ import { EQueryKeys } from "../../constants";
 import { useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { findColById } from "../../Utils/dragDrop";
+import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import { toast } from "react-toastify";
 
 function ListInBoard() {
   const queryClient = useQueryClient();
@@ -35,11 +37,55 @@ function ListInBoard() {
   const debounceValue = useDebounce(changeData, 1000);
   const [activeItemType, setActiveItemType] = useState(null);
 
-  const { dataList, setDataList, boardId, dataBoard } = useListBoardContext();
+  const { dataList, boardId, dataBoard } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
+
+  const [columns, setColumns] = useState(dataList);
 
   const handleDragStart = ({ over, active }) => {
     setActiveItemType(active.data.current.type);
+  };
+
+  const handleDragOver = ({ over, active }) => {
+    if (activeItemType === "COLUMN") return;
+    const overId = over?.id;
+
+    if (!overId) {
+      return;
+    }
+
+    const activeContainer = active.data.current.sortable.containerId;
+    const overContainer = over.data.current?.sortable.containerId;
+
+    if (!overContainer) {
+      return;
+    }
+
+    if (activeContainer !== overContainer) {
+      const activeContainerIndex = findColById(columns, activeContainer);
+      const overContainerIndex = findColById(columns, overContainer);
+      const activeIndex = active.data.current.sortable.index;
+      const overIndex = over.data.current?.sortable.index || 0;
+
+      const activeCard = columns[activeContainerIndex].cards?.[activeIndex];
+
+      setColumns((prev) => {
+        const newItems = [...prev];
+
+        const changed = moveBetweenContainers(
+          prev,
+          activeContainerIndex,
+          activeIndex,
+          overContainerIndex,
+          overIndex,
+          activeCard,
+        );
+        newItems[activeContainerIndex].cards = changed.activeCol;
+        newItems[overContainerIndex].cards = changed.overCol;
+
+        return newItems;
+      });
+    }
   };
 
   const handleDragEnd = ({ active, over }) => {
@@ -53,12 +99,23 @@ function ListInBoard() {
       const activeIndex = active.data.current.sortable.index;
       const overIndex = over.data.current?.sortable.index || 0;
 
-      const activeContainerIndex = findColById(dataList, activeContainer);
-      const overContainerIndex = findColById(dataList, overContainer);
-
+      const activeContainerIndex = findColById(columns, activeContainer);
+      const overContainerIndex = findColById(columns, overContainer);
       if (activeItemType === "CARD") {
-        setDataList((prev) => {
+        setColumns((prev) => {
           const newItems = [...prev];
+          const activeCard = newItems[activeContainerIndex].cards?.[activeIndex];
+
+          const activeList = columns[activeContainerIndex];
+          const overList = columns[overContainerIndex];
+          setChangeData({
+            type: activeItemType,
+            cardId: activeCard.id,
+            activeListId: activeList.id,
+            overListId: overList.id,
+            newPosition: overIndex,
+          });
+
           if (activeContainerIndex === overContainerIndex) {
             newItems[activeContainerIndex].cards = arrayMove(
               newItems[activeContainerIndex].cards,
@@ -66,9 +123,8 @@ function ListInBoard() {
               overIndex,
             );
           } else {
-            const activeCard = newItems[activeContainerIndex].cards?.[activeIndex];
             const changed = moveBetweenContainers(
-              dataList,
+              columns,
               activeContainerIndex,
               activeIndex,
               overContainerIndex,
@@ -78,13 +134,20 @@ function ListInBoard() {
             newItems[activeContainerIndex].cards = changed.activeCol;
             newItems[overContainerIndex].cards = changed.overCol;
           }
+
           return newItems;
         });
       }
       if (activeItemType === "COLUMN") {
-        const activeColIndex = findColById(dataList, active.id);
-        const overColIndex = findColById(dataList, over.id);
-        setDataList((prev) => {
+        const activeColIndex = findColById(columns, active.id);
+        const overColIndex = findColById(columns, over.id);
+        const activeList = columns[activeColIndex];
+        setChangeData({
+          type: activeItemType,
+          activeListId: activeList?.id,
+          newPosition: overColIndex,
+        });
+        setColumns((prev) => {
           return arrayMove(prev, activeColIndex, overColIndex);
         });
       }
@@ -104,37 +167,30 @@ function ListInBoard() {
     //TODO call api move card or column here
     if (dataBoard?.role?.roleName !== "admin") return;
     if (debounceValue !== null) {
-      const activeListId = debounceValue.listId;
-      const overIndex = debounceValue.overIndex + 1;
-
-      if (debounceValue.type === "column") {
+      if (debounceValue.type === "COLUMN") {
+        // call api change position list
         changePositionList({
-          boardId,
-          listId: activeListId,
-          newPosition: overIndex,
+          boardId: idBoard,
+          listId: debounceValue.activeListId,
+          newPosition: debounceValue.newPosition + 1,
         })
           .then((res) => {})
           .catch((err) => {
-            console.error(err);
+            toast.error("Change position unsuccessfully");
           });
       }
       if (debounceValue.type === "CARD") {
-        const activeListId = dataList[debounceValue.activeContainerIndex]?.id;
-        const overListId = dataList[debounceValue.overContainerIndex]?.id;
-        const overIndex = debounceValue.overIndex + 1;
-        const card = dataList[debounceValue.overContainerIndex].cards?.[debounceValue.overIndex];
-        if (activeListId && overListId && card) {
-          changePositionCard({
-            cardId: card.id,
-            activeListId,
-            overListId,
-            position: overIndex,
-          })
-            .then((res) => {})
-            .catch((err) => {
-              console.error(err);
-            });
-        }
+        // call api change position card
+        changePositionCard({
+          cardId: debounceValue.cardId,
+          activeListId: debounceValue.activeListId,
+          overListId: debounceValue.overListId,
+          position: debounceValue.newPosition + 1,
+        })
+          .then((res) => {})
+          .catch((err) => {
+            toast.error("Change position unsuccesfully");
+          });
       }
       setChangeData(null);
     }
@@ -157,6 +213,10 @@ function ListInBoard() {
     }
   };
 
+  // useEffect(() => {
+  //   setColumns(dataList);
+  // }, [dataList]);
+
   return (
     <div className="relative h-[90vh]">
       <div
@@ -171,14 +231,17 @@ function ListInBoard() {
             <DndContext
               sensors={mySensors}
               onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
             >
-              <div style={{ display: "flex" }}>
-                {dataList?.map((item, index) => {
-                  return <List id={item.id} key={index} item={item} />;
-                })}
-              </div>
+              <SortableContext strategy={horizontalListSortingStrategy} items={columns.map((col) => col.id)}>
+                <div style={{ display: "flex" }}>
+                  {columns?.map((item, index) => {
+                    return <List id={item.id} key={index} item={item} />;
+                  })}
+                </div>
+              </SortableContext>
             </DndContext>
 
             <div className="px-[8px]">

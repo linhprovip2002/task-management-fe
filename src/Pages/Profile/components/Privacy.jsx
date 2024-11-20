@@ -13,17 +13,17 @@ export const Privacy = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [showPassword, setShowPassword] = useState({
     currentPassword: false,
-    newPassword: false
+    newPassword: false,
   });
 
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     defaultValues: PrivacyConstants,
-    resolver: joiResolver(changePasswordValidation)
+    resolver: joiResolver(changePasswordValidation),
   });
 
   useEffect(() => {
@@ -55,9 +55,7 @@ export const Privacy = () => {
           <Divider component={"div"} />
           <form onSubmit={handleSubmit(handleChangePassword)}>
             <div className="flex flex-col ">
-              <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">
-                Current Password
-              </label>
+              <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">Current Password</label>
               <OutlinedInput
                 {...register("currentPassword")}
                 placeholder="Enter current password"
@@ -69,18 +67,14 @@ export const Privacy = () => {
                     onClick={() =>
                       setShowPassword((prev) => ({
                         ...prev,
-                        currentPassword: !prev.currentPassword
+                        currentPassword: !prev.currentPassword,
                       }))
                     }
                     onMouseDown={(e) => e.preventDefault()}
                     onMouseUp={(e) => e.preventDefault()}
                     edge="end"
                   >
-                    {showPassword.currentPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
+                    {showPassword.currentPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 }
                 size="small"
@@ -88,9 +82,7 @@ export const Privacy = () => {
             </div>
 
             <div className="flex flex-col">
-              <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">
-                New Password
-              </label>
+              <label className="pt-4 text-sm text-[var(--text-color)] font-semibold">New Password</label>
               <OutlinedInput
                 {...register("newPassword")}
                 placeholder="Enter new password"
@@ -102,18 +94,14 @@ export const Privacy = () => {
                     onClick={() =>
                       setShowPassword((prev) => ({
                         ...prev,
-                        newPassword: !prev.newPassword
+                        newPassword: !prev.newPassword,
                       }))
                     }
                     onMouseDown={(e) => e.preventDefault()}
                     onMouseUp={(e) => e.preventDefault()}
                     edge="end"
                   >
-                    {showPassword.newPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
+                    {showPassword.newPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 }
                 size="small"

@@ -10,11 +10,7 @@ export const Board = ({ board }) => {
   const { id: workspaceId } = useParams();
 
   const getStar = useMemo(() => {
-    return isFavorite ? (
-      <StarIcon fontSize="small" />
-    ) : (
-      <StarBorderIcon fontSize="small" />
-    );
+    return isFavorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />;
   }, [isFavorite]);
 
   const handleToggleFavorite = async (e) => {
@@ -38,24 +34,17 @@ export const Board = ({ board }) => {
             className="w-full h-full rounded-lg"
             style={{
               backgroundColor: board.backgroundColor,
-              backgroundImage: board.coverUrl
-                ? `url(${board.coverUrl})`
-                : "none",
+              backgroundImage: board.coverUrl ? `url(${board.coverUrl})` : "none",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
-              backgroundPosition: "center center"
+              backgroundPosition: "center center",
             }}
           >
-            <p className="justify-start p-2 ml-1 font-bold text-white flext text-md">
-              {board.title}
-            </p>
+            <p className="justify-start p-2 ml-1 font-bold text-white flext text-md">{board.title}</p>
           </div>
           {(open || isFavorite) && (
             <div className="absolute inset-0 bg-white bg-opacity-10 z-10">
-              <div
-                className="absolute bottom-2 right-2 text-yellow-400"
-                onClick={handleToggleFavorite}
-              >
+              <div className="absolute bottom-2 right-2 text-yellow-400" onClick={handleToggleFavorite}>
                 {getStar}
               </div>
             </div>
