@@ -20,13 +20,10 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
   const navigate = useNavigate();
   const { id: idWorkSpace, idBoard } = useParams();
 
+  const { attributes, listeners, setNodeRef, transform } = useSortable({ id: id, data: { type: "CARD" } });
+
   const { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(idBoard);
-
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: id,
-    data: { ...dataCard, type: "card" },
-  });
 
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
@@ -59,13 +56,12 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
 
   const itemStyle = {
     transform: CSS.Translate.toString(transform),
-    transition,
     display: "flex",
     borderRadius: 5,
     userSelect: "none",
     boxSizing: "border-box",
   };
-  console.log("check");
+
   return (
     <div
       style={itemStyle}

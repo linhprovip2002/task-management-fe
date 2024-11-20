@@ -7,21 +7,20 @@ import ItemList from "../../../Components/ItemList";
 import TippyDetail from "../../TippyDetail";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 import { memo } from "react";
 import { createCardByIdList } from "../../../Services/API/ApiCard";
 import { toast } from "react-toastify";
+import { useDroppable } from "@dnd-kit/core";
 
 function List({ item = {}, id }) {
   const cards = item.cards || [];
 
-  const { attributes, listeners, setNodeRef, transform } = useSortable({
-    id: id,
-    data: { ...item, type: "column" },
-  });
+  const { setNodeRef, transform } = useDroppable({ id });
+
   const dndKitColumStyles = {
     transform: CSS.Translate.toString(transform),
     height: "100%",
@@ -75,8 +74,8 @@ function List({ item = {}, id }) {
   };
 
   return (
-    <div ref={setNodeRef} style={dndKitColumStyles} {...attributes}>
-      <div {...listeners} className="px-[8px]">
+    <div>
+      <div className="px-[8px]">
         <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
           <div className="flex p-1 items-center bg-gray-100">
             <input
@@ -96,29 +95,23 @@ function List({ item = {}, id }) {
             />
           </div>
           {/* List board */}
-          <SortableContext strategy={verticalListSortingStrategy} items={cards}>
-            <div
-              style={{
-                scrollbarWidth: "thin",
-                scrollbarColor: "#fff6 #00000026",
-                overflowY: "auto",
-                overflowX: "hidden",
-              }}
-              className="flex-1 p-1"
-            >
-              {cards?.map((card, index) => {
-                return (
-                  <ItemList
-                    id={card.id}
-                    key={card.id}
-                    item={item}
-                    dataCard={card}
-                    imageSrc
-                    isDescriptionIcon
-                    Attachments={[1]}
-                  />
-                );
-              })}
+          <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
+            <div ref={setNodeRef} style={dndKitColumStyles}>
+              <div className="flex-1 p-1">
+                {cards?.map((card, index) => {
+                  return (
+                    <ItemList
+                      id={card.id}
+                      key={index}
+                      item={item}
+                      dataCard={card}
+                      imageSrc
+                      isDescriptionIcon
+                      Attachments={[1]}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </SortableContext>
 

@@ -3,6 +3,7 @@ import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sort
 import SortableItem from "./SortableItem";
 import React from "react";
 import { CSS } from "@dnd-kit/utilities";
+
 const Droppable = ({ id, items }) => {
   const {
     attributes,
@@ -30,13 +31,15 @@ const Droppable = ({ id, items }) => {
   };
 
   return (
-    <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
-      <div ref={setNodeRef} style={droppableStyle}>
-        {items?.map((item) => (
-          <SortableItem key={item} id={item} />
-        ))}
-      </div>
-    </SortableContext>
+    <div ref={colNodeRef} style={dndKitColumStyles} {...attributes} {...listeners}>
+      <SortableContext id={id} items={items} strategy={rectSortingStrategy}>
+        <div ref={setNodeRef} style={droppableStyle}>
+          {items.map((item, index) => (
+            <SortableItem key={index} id={item.id} />
+          ))}
+        </div>
+      </SortableContext>
+    </div>
   );
 };
 

@@ -77,6 +77,11 @@ function ListBoardContent() {
   const isLoading = loading || !dataBoard || !dataWorkspace || isLoadingPermission;
   if (isLoading) return <Loading />;
 
+  const bgColor = !dataBoard.coverUrl && dataBoard.backgroundColor ? dataBoard.backgroundColor : "transparent";
+  const bgImage = dataBoard.coverUrl
+    ? `url(${dataBoard.coverUrl})`
+    : dataBoard.backgroundColor || "/Board background.svg";
+
   return (
     <>
       <div
@@ -132,16 +137,14 @@ function ListBoardContent() {
         <div
           className="flex-grow flex flex-col overflow-x-hidden max-h-full overflow-hidden"
           style={{
-            backgroundColor:
-              !dataBoard.coverUrl && dataBoard.backgroundColor ? dataBoard.backgroundColor : "transparent",
-            backgroundImage: dataBoard.coverUrl
-              ? `url(${dataBoard.coverUrl})`
-              : dataBoard.backgroundColor || "/Board background.svg",
+            backgroundColor: bgColor,
+            backgroundImage: bgImage,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             maxHeight: "100%",
             overflow: "hidden",
+            transition: "all 0.3s ease",
           }}
         >
           <HeaderBoard />

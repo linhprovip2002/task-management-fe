@@ -94,7 +94,7 @@ export const BoardCard = () => {
   const [isJoin, setIsJoin] = useState(false);
 
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
-  const [checkOverdue, setCheckOverdue] = useState(false);
+  const [checkOverdue] = useState(false);
   const [endDateCheck, setEndDateCheck] = useState(formatDate(dataCard?.endDate));
 
   const [chooseColorBackground, setChooseColorBackground] = useState(dataCard?.coverUrl || "");

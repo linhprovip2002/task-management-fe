@@ -2,22 +2,26 @@ import { memo, useState } from "react";
 import { Slide } from "@mui/material";
 import { EditPermissionModal } from "../../Modals/EditPermissionModal";
 import BoardMemberModal from "../../Modals/BoardMemberModal";
+import { useParams } from "react-router-dom";
+import { useGetWorkspaceById } from "../../../Hooks";
 
 const styles = {
   permissionHeader: "text-[var(--text-color)] text-[14px] font-semibold py-2 px-3",
-  menuItem: "text-sm px-4 py-2 rounded-md hover:bg-slate-100 hover:cursor-pointer"
+  menuItem: "text-sm px-4 py-2 rounded-md hover:bg-slate-100 hover:cursor-pointer",
 };
 
 function SettingMenu() {
   const [openRoleManangement, setOpenRoleManangement] = useState(false);
   const [openMemberManagement, setOpenMemberManagement] = useState(false);
 
+  const { id } = useParams();
+  const { workspaceDetails } = useGetWorkspaceById(id);
   return (
     <>
       <Slide in={true} direction="left">
         <div className="flex flex-col">
           <h1 className={styles.permissionHeader}>Worksapce</h1>
-          <div className={styles.menuItem}>BKDN</div>
+          <div className={styles.menuItem}>{workspaceDetails?.title}</div>
           <div className="mt-3">
             <h1 className={styles.permissionHeader}>Permissions</h1>
           </div>
@@ -35,22 +39,13 @@ function SettingMenu() {
           </div>
 
           <div className={styles.menuItem}>Card covers enabled</div>
-          <div className="mt-3">
-            <h1 className={styles.permissionHeader}>Collections</h1>
-          </div>
         </div>
       </Slide>
       {openRoleManangement && (
-        <EditPermissionModal
-          open={openRoleManangement}
-          handleClose={() => setOpenRoleManangement(false)}
-        />
+        <EditPermissionModal open={openRoleManangement} handleClose={() => setOpenRoleManangement(false)} />
       )}
       {openMemberManagement && (
-        <BoardMemberModal
-          open={openMemberManagement}
-          onClose={() => setOpenMemberManagement(false)}
-        />
+        <BoardMemberModal open={openMemberManagement} onClose={() => setOpenMemberManagement(false)} />
       )}
     </>
   );
