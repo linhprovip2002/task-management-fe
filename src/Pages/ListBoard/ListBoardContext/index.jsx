@@ -1,10 +1,25 @@
-import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
-import { apiAssignFile, apiDeleteFile, apiUploadMultiFile } from "../../../Services/API/ApiUpload/apiUpload";
+import {
+  apiAssignFile,
+  apiDeleteFile,
+  apiUploadMultiFile
+} from "../../../Services/API/ApiUpload/apiUpload";
 import { deleteComment, postComment } from "../../../Services/API/ApiComment";
-import { useGetAllCardByList, useGetBoardById, useGetMembersByBoard, useGetWorkspaceById } from "../../../Hooks";
+import {
+  useGetAllCardByList,
+  useGetBoardById,
+  useGetMembersByBoard,
+  useGetWorkspaceById
+} from "../../../Hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../constants";
 
@@ -110,7 +125,7 @@ function ListBoardProvider({ children }) {
         console.error("Failed to get uploaded files:", error);
       }
     },
-    [setPostUploadedFiles],
+    [setPostUploadedFiles]
   );
 
   const handleDeleteFile = async (fileId) => {
@@ -118,7 +133,7 @@ function ListBoardProvider({ children }) {
       await apiDeleteFile(dataCard.id, fileId);
       setDataCard((prev) => ({
         ...prev,
-        files: prev.files.filter((file) => file.id !== fileId),
+        files: prev.files.filter((file) => file.id !== fileId)
       }));
       setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
       toast.success("File deleted successfully!");
@@ -128,44 +143,14 @@ function ListBoardProvider({ children }) {
     }
   };
 
-  const handlePostComment = async (dataCard) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, "text/html");
-    const images = doc.querySelectorAll("img");
-    const imageUrls = Array.from(images).map((img) => img.src);
-    const params = {
-      content: content,
-      files: imageUrls,
-      cardId: dataCard.id,
-    };
-    setLoading(true);
-    const loadingToastId = toast.loading("Saving...");
-    try {
-      const response = await postComment(boardId, params);
-      toast.dismiss(loadingToastId);
-      toast.success("Create comment successfully!");
-
-      // Cập nhật lại nội dung và các file sau khi bình luận thành công
-      setContent("");
-      setUpFileComment([]);
-      const newComment = response.data;
-      // Cập nhật danh sách file đã tải lên từ comment
-      setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
-    } catch (err) {
-      toast.dismiss(loadingToastId);
-      toast.error("Cannot create comment");
-      console.error("Lỗi khi đăng comment:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleDeleteComment = async (cmdId) => {
     try {
       await deleteComment(boardId, cmdId);
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
+        comments: prevDataCard.comments.filter(
+          (comment) => comment.id !== cmdId
+        )
       }));
       toast.success("Deleted comment successfully!");
     } catch (err) {
@@ -185,7 +170,7 @@ function ListBoardProvider({ children }) {
       // setMembersInCard(dataCard?.members);
     },
     //eslint-disable-next-line
-    [isShowBoardCard, toggleCardEditModal],
+    [isShowBoardCard, toggleCardEditModal]
   );
 
   const handleShowBoardEdit = useCallback(
@@ -198,21 +183,23 @@ function ListBoardProvider({ children }) {
       setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
-    [toggleCardEditModal],
+    [toggleCardEditModal]
   );
 
   const handleShowAddCard = (idList) => {
     setActiveIndex(idList);
     const newList = dataList.map((list) => ({
       ...list,
-      isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
+      isShowAddCard: list.id === idList ? !list.isShowAddCard : false
     }));
     setDataList(newList);
   };
 
   const handleChange = async (e, idList) => {
     setDataList((prevDataList) =>
-      prevDataList.map((list) => (list.id === idList ? { ...list, title: e.target.value } : list)),
+      prevDataList.map((list) =>
+        list.id === idList ? { ...list, title: e.target.value } : list
+      )
     );
   };
 
@@ -280,7 +267,9 @@ function ListBoardProvider({ children }) {
         uploadedFiles,
         setUploadedFiles,
         handleFileChange,
-        postUploadedFiles: postUploadedFiles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+        postUploadedFiles: postUploadedFiles.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        ),
         setPostUploadedFiles,
         handlePostFiles,
         loading,
@@ -288,7 +277,6 @@ function ListBoardProvider({ children }) {
         setContent,
         isSaving,
         setIsSaving,
-        handlePostComment,
         handleDeleteComment,
         handleDeleteFile,
         boardId,
@@ -297,7 +285,7 @@ function ListBoardProvider({ children }) {
         setUpFileComment,
         setToggleCardEditModal,
         // handleUpdateComment,
-        setLoading,
+        setLoading
       }}
     >
       {children}
