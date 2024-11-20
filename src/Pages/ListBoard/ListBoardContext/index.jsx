@@ -198,7 +198,6 @@ function ListBoardProvider({ children }) {
         setContent,
         isSaving,
         setIsSaving,
-        handlePostComment,
         handleDeleteComment,
         boardId,
         idWorkSpace,

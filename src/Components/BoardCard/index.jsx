@@ -31,7 +31,7 @@ import CreateLabel from "./CreateLabel";
 import UploadFile from "./Attachment/UploadFile";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
-import ShowComment from "./ShowComment";
+import { BoardComments } from "./ShowComment";
 import { AddTagInCard, getAllTagByIdBoard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
 import { JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
@@ -794,7 +794,7 @@ export const BoardCard = () => {
               </div>
               {/* SHOW COMMENT */}
               {listComment?.map((item) => (
-                <ShowComment
+                <BoardComments
                   item={item}
                   key={item.id}
                   formatDate={formatDate}

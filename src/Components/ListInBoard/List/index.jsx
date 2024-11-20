@@ -11,14 +11,14 @@ import { rectSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { createCardByIdList } from "../../../Services/API/ApiCard";
 import { toast } from "react-toastify";
-import { useDroppable } from "@dnd-kit/core";
+import { DndContext, DragOverlay, useDroppable } from "@dnd-kit/core";
 
 function List({ item = {}, id }) {
   const cards = item.cards || [];
-
+  const [activeId, setActiveId] = useState(null);
   const { setNodeRef, transform } = useDroppable({ id });
 
   const dndKitColumStyles = {
@@ -95,26 +95,40 @@ function List({ item = {}, id }) {
             />
           </div>
           {/* List board */}
-          <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
-            <div ref={setNodeRef} style={dndKitColumStyles}>
-              <div className="flex-1 p-1">
-                {cards?.map((card, index) => {
-                  return (
-                    <ItemList
-                      id={card.id}
-                      key={index}
-                      item={item}
-                      dataCard={card}
-                      imageSrc
-                      isDescriptionIcon
-                      Attachments={[1]}
-                    />
-                  );
-                })}
+          <DndContext onDragStart={(event) => setActiveId(event.active.id)} onDragEnd={() => setActiveId(null)}>
+            <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
+              <div ref={setNodeRef} style={dndKitColumStyles}>
+                <div
+                  style={{
+                    maxHeight: "380px",
+                    overflowY: "auto",
+                    padding: "8px",
+                    scrollbarWidth: "thin",
+                  }}
+                  className="flex-1 p-1"
+                >
+                  {cards?.map((card, index) => {
+                    return (
+                      <ItemList
+                        id={card.id}
+                        key={index}
+                        item={item}
+                        dataCard={card}
+                        imageSrc
+                        isDescriptionIcon
+                        Attachments={[1]}
+                      />
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </SortableContext>
-
+            </SortableContext>
+            <DragOverlay>
+              {activeId ? (
+                <ItemList id={activeId} item={item} dataCard={cards.find((card) => card.id === activeId)} />
+              ) : null}
+            </DragOverlay>
+          </DndContext>
           {item.isShowAddCard && activeIndex === item.id && (
             <CreateItem
               idList={item.id}
