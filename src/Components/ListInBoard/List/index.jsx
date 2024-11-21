@@ -11,10 +11,10 @@ import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sort
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { createCardByIdList } from "../../../Services/API/ApiCard";
 import { toast } from "react-toastify";
-import { DndContext, DragOverlay, useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 
 function List({ item = {}, id }) {
   const {
@@ -29,7 +29,6 @@ function List({ item = {}, id }) {
     },
   });
   const cards = item.cards || [];
-  const [activeId, setActiveId] = useState(null);
   const { setNodeRef } = useDroppable({ id });
 
   const dndKitColumStyles = {
