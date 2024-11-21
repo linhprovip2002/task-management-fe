@@ -4,7 +4,15 @@ import { CreateItem } from "../../Components/CreateItem";
 import { AddIcon } from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import List from "./List";
-import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, closestCorners } from "@dnd-kit/core";
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+  DragOverlay,
+} from "@dnd-kit/core";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
 import useDebounce from "../../Hooks/useDebounce";
 import { changePositionList, CreateList } from "../../Services/API/ApiListOfBoard";
@@ -16,6 +24,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { findColById } from "../../Utils/dragDrop";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { toast } from "react-toastify";
+import ItemList from "../ItemList";
 
 function ListInBoard() {
   const queryClient = useQueryClient();
@@ -38,11 +47,25 @@ function ListInBoard() {
   const [activeItemType, setActiveItemType] = useState(null);
   const { dataList, boardId, dataBoard } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
-
+  const [activeItemData, setActiveItemData] = useState(null);
   const [columns, setColumns] = useState(dataList);
 
   const handleDragStart = ({ over, active }) => {
     setActiveItemType(active.data.current.type);
+
+    if (active.data.current.type === "CARD") {
+      const activeContainer = active.data.current.sortable.containerId;
+      const activeContainerIndex = findColById(columns, activeContainer);
+      const activeIndex = active.data.current.sortable.index;
+      const activeCard = columns[activeContainerIndex].cards[activeIndex];
+      setActiveItemData({ activeCardId: active.id, dataCard: activeCard });
+    }
+    if (active.data.current.type === "COLUMN") {
+      const activeColumnId = active.id;
+      const activeColumnIndex = findColById(columns, activeColumnId);
+      const activeColumn = columns[activeColumnIndex];
+      setActiveItemData({ activeColumnId, dataColumn: activeColumn, activeColumnIndex });
+    }
   };
 
   const handleDragOver = ({ over, active }) => {
@@ -105,16 +128,6 @@ function ListInBoard() {
           const newItems = [...prev];
           const activeCard = newItems[activeContainerIndex].cards?.[activeIndex];
 
-          const activeList = columns[activeContainerIndex];
-          const overList = columns[overContainerIndex];
-          setChangeData({
-            type: activeItemType,
-            cardId: activeCard.id,
-            activeListId: activeList.id,
-            overListId: overList.id,
-            newPosition: overIndex,
-          });
-
           if (activeContainerIndex === overContainerIndex) {
             newItems[activeContainerIndex].cards = arrayMove(
               newItems[activeContainerIndex].cards,
@@ -141,17 +154,14 @@ function ListInBoard() {
         const activeColIndex = findColById(columns, active.id);
         const overColIndex = findColById(columns, over.id);
         const activeList = columns[activeColIndex];
-        setChangeData({
-          type: activeItemType,
-          activeListId: activeList?.id,
-          newPosition: overColIndex,
-        });
+
         setColumns((prev) => {
           return arrayMove(prev, activeColIndex, overColIndex);
         });
       }
     }
     setActiveItemType(null);
+    setActiveItemData(null);
   };
 
   const moveBetweenContainers = (items, activeContainer, activeIndex, overContainer, overIndex, item) => {
@@ -162,6 +172,7 @@ function ListInBoard() {
   };
 
   useEffect(() => {
+    console.log("re render");
     //TODO call api move card or column here
     if (dataBoard?.role?.roleName !== "admin") return;
     if (debounceValue !== null) {
@@ -240,6 +251,15 @@ function ListInBoard() {
                   })}
                 </div>
               </SortableContext>
+              <DragOverlay>
+                {activeItemType === "CARD" ? (
+                  <ItemList id={activeItemData.activeCardId} dataCard={activeItemData.dataCard} />
+                ) : null}
+
+                {activeItemType === "COLUMN" ? (
+                  <List id={activeItemData.activeColumnId} item={activeItemData.dataColumn} />
+                ) : null}
+              </DragOverlay>
             </DndContext>
 
             <div className="px-[8px]">

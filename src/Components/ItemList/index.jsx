@@ -20,7 +20,10 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
   const navigate = useNavigate();
   const { id: idWorkSpace, idBoard } = useParams();
 
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id, data: { type: "CARD" } });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: id,
+    data: { type: "CARD" },
+  });
 
   const { handleShowBoardCard, handleShowBoardEdit } = useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(idBoard);
@@ -61,6 +64,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
     borderRadius: 5,
     userSelect: "none",
     boxSizing: "border-box",
+    opacity: isDragging ? "0.8" : 1,
   };
 
   return (

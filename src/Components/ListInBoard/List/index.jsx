@@ -22,6 +22,7 @@ function List({ item = {}, id }) {
     listeners,
     setNodeRef: colNodeRef,
     transform,
+    isDragging,
   } = useSortable({
     id: id,
     data: {
@@ -34,6 +35,7 @@ function List({ item = {}, id }) {
   const dndKitColumStyles = {
     transform: CSS.Translate.toString(transform),
     height: "100%",
+    opacity: isDragging ? "0.7" : 1,
   };
 
   const {
