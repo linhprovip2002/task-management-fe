@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { destroyBoard } from "../../../../Services/API/ApiBoard/apiBoard";
 import { toast } from "react-toastify";
+import { colors } from "../../../../Components/RightSidebar/LabelMenu/constant";
 
 export default function ClosedBoardItem({ data = {}, workspaceName = "", onReopen, onDestroy }) {
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,7 @@ export default function ClosedBoardItem({ data = {}, workspaceName = "", onReope
           alt=""
           className="w-10 h-8 rounded-sm"
           style={{
-            backgroundImage: `url(${data.coverUrl})`,
+            background: data.coverUrl ? `url(${data.coverUrl})` : colors[21].colorCode,
           }}
         />
         <div className="flex flex-col text-sm">
