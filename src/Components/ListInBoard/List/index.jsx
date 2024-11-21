@@ -93,7 +93,7 @@ function List({ item = {}, id }) {
   return (
     <div ref={colNodeRef} style={dndKitColumStyles} {...attributes}>
       <div {...listeners} className="px-[8px]">
-        <div className="flex flex-col w-[248px] max-h-[75vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
+        <div className="flex flex-col w-[248px] max-h-[80vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
           <div className="flex p-1 items-center bg-gray-100">
             <input
               type="text"
@@ -116,7 +116,7 @@ function List({ item = {}, id }) {
             <div
               ref={setNodeRef}
               style={{
-                maxHeight: "380px",
+                maxHeight: "100%",
                 overflowY: "auto",
                 padding: "8px",
                 scrollbarWidth: "thin",
