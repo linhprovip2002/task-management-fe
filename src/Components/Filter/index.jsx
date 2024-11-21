@@ -176,7 +176,7 @@ function Filter({ onClose }) {
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <div className="absolute w-[250px] bg-white rounded-[8px] py-2 font-[600] text-[14px] text-[#44546f] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
+      <div className="absolute right-0 w-[250px] bg-white rounded-[8px] py-2 font-[600] text-[14px] text-[#44546f] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
         <div className="text-center p-2 mx-8">Filter</div>
         <div style={{ maxHeight: "400px", overflowY: "auto" }}>
           <div className="mx-3 ">

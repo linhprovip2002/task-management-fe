@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 
 const ItemMenu = ({ title, description, nameBtn, onBack, onClose, onClickConfirm, children, loading = false }) => {
   return (
-    <div className="absolute w-[280px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
+    <div className="absolute w-[290px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]">
       <div className="text-center p-2 mx-8">{title}</div>
       {description && <div className="mx-4">{description}</div>}
       {children}

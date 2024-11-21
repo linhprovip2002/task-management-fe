@@ -1,8 +1,8 @@
 import request from "../request";
 
 // Api post comment
-export function postComment(boardId, params) {
-  return request.post(`/board/${boardId}/comment`, params);
+export function postComment(boardId, params, content) {
+  return request.post(`/board/${boardId}/comment`, params, content);
 }
 
 // Api get comment

@@ -1,11 +1,13 @@
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+
 import ClickAway from "../../ClickAway";
 
 const UploadFile = ({ position, handleCloseShowMenuBtnCard, handleFileChange }) => {
   const handleClickAway = () => {
     handleCloseShowMenuBtnCard();
   };
+
   return (
     <ClickAway onClickAway={handleClickAway}>
       <div

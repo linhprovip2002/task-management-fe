@@ -13,6 +13,11 @@ import { useCallback, useEffect, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
+import { useParams } from "react-router-dom";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { ClickAwayListener } from "@mui/material";
 
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import MemberMenu from "../MemberMenuOfBoard";
@@ -24,23 +29,20 @@ import { useStorage } from "../../Contexts";
 import AddLabelInCard from "./AddLabelInCard";
 import CreateLabel from "./CreateLabel";
 import UploadFile from "./Attachment/UploadFile";
-import AttachmentIcon from "@mui/icons-material/Attachment";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
-import ShowComment from "./ShowComment";
+import { BoardComments } from "./ShowComment";
 import { AddTagInCard, getAllTagByIdBoard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
 import { JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
-import CopyCard from "./CopyCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
-import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../constants";
 import { useGetCardById } from "../../Hooks";
 import Loading from "../Loading";
 import { formatDate } from "./WriteComment/helpers/formatDate";
-import { useParams } from "react-router-dom";
 import { createTag, updateTag } from "../../Services/API/APITags";
+import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
 
 export const BoardCard = () => {
   const {
@@ -48,7 +50,6 @@ export const BoardCard = () => {
     dataList,
     position,
     setPosition,
-    handleFileChange,
     content,
     setContent,
     isSaving,
@@ -101,6 +102,7 @@ export const BoardCard = () => {
   const [openAttach, setOpenAttach] = useState(false);
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
+  const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
 
   const listComment = dataCard?.comments?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -418,6 +420,60 @@ export const BoardCard = () => {
     }
   };
 
+  const handlePostFiles = useCallback(
+    async (id, allUrls) => {
+      try {
+        const response = await apiAssignFile(id, allUrls);
+        setPostUploadedFiles([...response.data.files]);
+        return response.data.files;
+      } catch (error) {
+        console.error("Failed to get uploaded files:", error);
+      }
+    },
+    [setPostUploadedFiles],
+  );
+
+  const handleFileChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const validFiles = [];
+    Array.from(files).forEach((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`File ${file.name} is too large to upload.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+    if (!validFiles.length) return;
+    const loadToastId = toast.loading("Uploading...");
+
+    try {
+      // Tải lên các file song song
+      const uploadPromises = validFiles.map((file) => {
+        const formData = new FormData();
+        formData.append("files", file);
+        return apiUploadMultiFile(formData);
+      });
+
+      const responses = await Promise.all(uploadPromises);
+      toast.dismiss(loadToastId);
+      toast.success("Upload successful!");
+
+      // Lấy dữ liệu file đã tải lên
+      const uploadedFilesData = responses.flatMap((response) => response.data);
+      const uploadedUrls = uploadedFilesData.map((file) => file.url);
+
+      // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
+      await handlePostFiles(dataCard.id, uploadedUrls);
+      return uploadedFilesData;
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      toast.dismiss(loadToastId);
+      toast.error("Failed to upload files.");
+    }
+  };
+
   const handleClickBtn = (e, item) => {
     setNumberShow(item.id);
     if (item.id === 1) {
@@ -429,18 +485,25 @@ export const BoardCard = () => {
     }
   };
 
+  const handleClickAway = () => {
+    handleShowBoardCard(dataCard);
+  };
+
   const loading = !dataCard;
 
   return (
-    <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1]">
+      <ClickAwayListener onClickAway={handleClickAway}>
         <div
           style={{
             scrollbarWidth: "thin",
             scrollbarColor: "#fff6 #00000026",
             overflowY: "auto",
           }}
-          className="max-h-[80vh] overflow-y-auto overflow-x-hidden absolute flex flex-col justify-between w-[700px] bg-white rounded-lg font-medium text-xs z-500"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="max-h-[80vh] overflow-y-auto overflow-x-hidden absolute flex flex-col justify-between w-[700px] bg-white rounded-lg font-medium text-xs z-[100]"
         >
           {loading && <Loading className="absolute" />}
           {chooseColorBackground && (
@@ -493,7 +556,7 @@ export const BoardCard = () => {
                           ))}
                           <div
                             onClick={ShowDetailNewLabel}
-                            className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mr-1 font-bold text-[12px] bg-gray-200 hover:bg-gray-300"
+                            className="flex items-center justify-center rounded-[50%] w-[32px] h-[32px] px-3 mb-2 mr-1 font-bold text-[12px] bg-gray-200 hover:bg-gray-300"
                           >
                             <AddIcon style={{ fontSize: "20px" }} />
                           </div>
@@ -501,7 +564,7 @@ export const BoardCard = () => {
                       </div>
                     )}
                     {endDateCheck != null && (
-                      <div className="mr-2">
+                      <div className="mr-2 mb-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Expiration date</span>
                         </div>
@@ -512,9 +575,12 @@ export const BoardCard = () => {
                             type="checkbox"
                             className="w-5 h-5 cursor-pointer"
                           />
-                          <span className="flex items-center w-full">
+                          <span
+                            onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                            className="flex items-center w-full"
+                          >
                             <div
-                              className={`flex items-center justify-between rounded-[4px] mx-2 p-1 ${checkCompleteEndDate ? "bg-gray-300" : checkOverdue ? "bg-red-300" : "bg-gray-300"} hover:opacity-90 cursor-pointer`}
+                              className={`flex items-center justify-between rounded-[4px] mx-2 p-1 ${checkCompleteEndDate ? "bg-green-200" : checkOverdue ? "bg-red-300" : "bg-gray-300"} hover:opacity-90 cursor-pointer`}
                             >
                               <div className="">{endDateCheck}</div>
                               {checkCompleteEndDate && (
@@ -526,7 +592,7 @@ export const BoardCard = () => {
                         </li>
                       </div>
                     )}
-                    <div className="mr-2">
+                    <div className="mr-2 mb-2">
                       <div className="flex items-center text-[12px] mb-2">
                         <span className="mr-2">Notification</span>
                       </div>
@@ -573,7 +639,11 @@ export const BoardCard = () => {
                   </div>
                 </div>
                 <div className="p-2 ml-6">
-                  <Attachment loading={loading} />
+                  <Attachment
+                    loading={loading}
+                    postUploadedFiles={postUploadedFiles}
+                    setPostUploadedFiles={setPostUploadedFiles}
+                  />
                 </div>
               </div>
               {/* WHAT TO DO HIEN THI LEN UI */}
@@ -724,7 +794,7 @@ export const BoardCard = () => {
               </div>
               {/* SHOW COMMENT */}
               {listComment?.map((item) => (
-                <ShowComment
+                <BoardComments
                   item={item}
                   key={item.id}
                   formatDate={formatDate}
@@ -749,82 +819,81 @@ export const BoardCard = () => {
             className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
           />
         </div>
-        {isShowMenuBtnCard && numberShow === 2 && (
-          <MemberMenu
-            onAddMember={handleAddMember}
-            membersInCard={membersInCard}
-            setMembersInCard={setMembersInCard}
-            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-          />
-        )}
-        {isShowMenuBtnCard && numberShow === 3 && (
-          <>
-            {!isCreateLabel && (
-              <AddLabelInCard
-                position={position}
-                labelOfCard={labelOfCard}
-                listColorLabel={listColorLabel}
-                handleAddLabel={handleAddLabel}
-                ShowUpdateLabel={ShowUpdateLabel}
-                ShowDetailNewLabel={ShowDetailNewLabel}
-                handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-              />
-            )}
-            {isCreateLabel && (
-              <CreateLabel
-                position={position}
-                tag={tag}
-                isUpdateLabel={isUpdateLabel}
-                handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-                ShowDetailNewLabel={ShowDetailNewLabel}
-                chooseColorLabel={chooseColorLabel}
-                handleChangeInputLabel={handleChangeInputLabel}
-                inputTitleLabel={inputTitleLabel}
-                handleChooseColor={handleChooseColor}
-                handleCreateNewLabel={handleCreateNewLabel}
-                onUpdateLabel={handleUpdateLabel}
-              />
-            )}
-          </>
-        )}
-
-        {isShowMenuBtnCard && numberShow === 4 && (
-          <ToDoMenu
-            position={position}
-            inputTitleToDo={inputTitleToDo}
-            handleChangeInputTodo={handleChangeInputTodo}
-            handleCreateNewToDoList={handleCreateNewToDoList}
-            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-          />
-        )}
-        {isShowMenuBtnCard && numberShow === 5 && (
-          <CalendarPopper
-            position={position}
-            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-            setEndDateCheck={setEndDateCheck}
-            dataCard={dataCard}
-          />
-        )}
-        {isShowMenuBtnCard && numberShow === 6 && (
-          <UploadFile
-            position={position}
-            handleFileChange={handleFileChange}
-            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-          />
-        )}
-        {isShowMenuBtnCard && numberShow === 7 && (
-          <BackgroundPhoto
-            position={position}
-            handleCloseShowMenuBtnCard={handleCloseBtnPhoto}
-            ShowDetailNewLabel={ShowDetailNewLabel}
-            background={chooseColorBackground}
-            chooseBackground={handleChooseColorBackground}
-          />
-        )}
-        {isShowMenuBtnCard && numberShow === 10 && (
-          <CopyCard position={position} handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard} />
-        )}
-      </div>
-    </>
+      </ClickAwayListener>
+      {isShowMenuBtnCard && numberShow === 2 && (
+        <MemberMenu
+          onAddMember={handleAddMember}
+          membersInCard={membersInCard}
+          setMembersInCard={setMembersInCard}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+        />
+      )}
+      {isShowMenuBtnCard && numberShow === 3 && (
+        <>
+          {!isCreateLabel && (
+            <AddLabelInCard
+              position={position}
+              labelOfCard={labelOfCard}
+              listColorLabel={listColorLabel}
+              handleAddLabel={handleAddLabel}
+              ShowUpdateLabel={ShowUpdateLabel}
+              ShowDetailNewLabel={ShowDetailNewLabel}
+              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+            />
+          )}
+          {isCreateLabel && (
+            <CreateLabel
+              position={position}
+              tag={tag}
+              isUpdateLabel={isUpdateLabel}
+              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+              ShowDetailNewLabel={ShowDetailNewLabel}
+              chooseColorLabel={chooseColorLabel}
+              handleChangeInputLabel={handleChangeInputLabel}
+              inputTitleLabel={inputTitleLabel}
+              handleChooseColor={handleChooseColor}
+              handleCreateNewLabel={handleCreateNewLabel}
+              onUpdateLabel={handleUpdateLabel}
+            />
+          )}
+        </>
+      )}
+      {isShowMenuBtnCard && numberShow === 4 && (
+        <ToDoMenu
+          position={position}
+          inputTitleToDo={inputTitleToDo}
+          handleChangeInputTodo={handleChangeInputTodo}
+          handleCreateNewToDoList={handleCreateNewToDoList}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+        />
+      )}
+      {isShowMenuBtnCard && numberShow === 5 && (
+        <CalendarPopper
+          position={position}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          setEndDateCheck={setEndDateCheck}
+          dataCard={dataCard}
+        />
+      )}
+      {isShowMenuBtnCard && numberShow === 6 && (
+        <UploadFile
+          position={position}
+          handleFileChange={handleFileChange}
+          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+        />
+      )}
+      {isShowMenuBtnCard && numberShow === 7 && (
+        <BackgroundPhoto
+          position={position}
+          handleCloseShowMenuBtnCard={handleCloseBtnPhoto}
+          ShowDetailNewLabel={ShowDetailNewLabel}
+          background={chooseColorBackground}
+          chooseBackground={handleChooseColorBackground}
+          postUploadedFiles={postUploadedFiles}
+          setPostUploadedFiles={setPostUploadedFiles}
+          handleUploadFile={handleFileChange}
+        />
+      )}
+    </div>
   );
 };

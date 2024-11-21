@@ -50,6 +50,7 @@ export const useGetAllCardByList = (boardData) => {
       return {
         queryKey: [EQueryKeys.GET_CARD_BY_LIST, list.id],
         queryFn: () => getAllCardByList(list.id, boardData.id),
+        refetchOnWindowFocus: false,
       };
     }) || [];
 

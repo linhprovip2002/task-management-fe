@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import CloseIcon from "@mui/icons-material/Close";
 import Tippy from "@tippyjs/react";
@@ -6,27 +6,17 @@ import "tippy.js/dist/tippy.css";
 import ItemMenu from "../ItemMenu";
 import { CreateList, DeleteList } from "../../Services/API/ApiListOfBoard";
 import { createCardByIdList } from "../../Services/API/ApiCard";
-import DropItemChoose from "../DropItemChoose";
-import { collectTypeSort, itemChooseToMove, nameOperations } from "./constans";
+import { collectTypeSort, nameOperations } from "./constans";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { ClickAwayListener, Popper } from "@mui/material";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
-  const {
-    boardId,
-    dataBoard,
-    setListCount,
-    handleShowAddCard,
-    handleActiveMonitor,
-    setDataList,
-    dataList
-  } = useListBoardContext();
-  // const [allCardInList, setAllCardInList] = useState([]);
+  const { boardId, dataBoard, setListCount, handleShowAddCard, handleActiveMonitor, setDataList, dataList } =
+    useListBoardContext();
   const [isLeaveBoard, setIsLeaveBoard] = useState(false);
   const [activeCollectOperation, setActiveCollectOperation] = useState(null);
   const [nameList, setNameList] = useState(data && data.title);
-  const [position, setPosition] = useState({ top: 0, left: 0 });
   const [anchorEl, setAnchorEl] = useState(null);
   const [chooseMenuOperation, setchooseMenuOperation] = useState(true);
 
@@ -51,20 +41,15 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
     setIsLeaveBoard(!isLeaveBoard);
   };
 
-  const handleChooseMoveList = useCallback((e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setPosition({ top: rect.bottom + 8, left: rect.left });
-  }, []);
-
   const handleAddCopyList = async () => {
     const dataList = {
       title: nameList.trim(),
       description: data.description,
-      boardId: dataBoard.id
+      boardId: dataBoard.id,
     };
     const dataCopyList = {
       ...data,
-      title: nameList.trim()
+      title: nameList.trim(),
     };
     try {
       const list = await CreateList(dataBoard?.id, dataList);
@@ -75,7 +60,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
           coverUrl: card.coverUrl || "",
           priority: card.priority || "",
           tagId: card.tagId || "",
-          listId: list.id
+          listId: list.id,
         };
         await createCardByIdList(dataCard);
       });
@@ -105,9 +90,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
         break;
     }
 
-    const updatedListCount = dataList.map((list) =>
-      list.id === idList ? { ...list, cards: listCards } : list
-    );
+    const updatedListCount = dataList.map((list) => (list.id === idList ? { ...list, cards: listCards } : list));
     setListCount(updatedListCount);
   };
 
@@ -131,13 +114,10 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
         handleShowAddCard(idList);
         break;
       case 3:
-        handleMoveAllCard(idList);
-        break;
-      case 5:
         handleActiveMonitor(data.id);
         handleClickAway();
         break;
-      case 6:
+      case 4:
         DeleteListInBoard(dataBoard.id, idList);
         handleClickAway();
         break;
@@ -146,24 +126,16 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
     }
   };
 
-  const handleMoveAllCard = async (idList) => {};
-
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       {getListPermissionByUser("update") ? (
         <div className="relative">
           <Tippy
-            content={
-              <span className="text-[12px] max-w-[150px]">{tippyName}</span>
-            }
+            content={<span className="text-[12px] max-w-[150px]">{tippyName}</span>}
             arrow={false}
             placement="bottom"
           >
-            <div
-              aria-describedby={id}
-              className={className}
-              onClick={handleClickHidot}
-            >
+            <div aria-describedby={id} className={className} onClick={handleClickHidot}>
               <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
             </div>
           </Tippy>
@@ -212,47 +184,6 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
               {isLeaveBoard && activeCollectOperation === 2 && (
                 <ItemMenu
                   title={nameOperations[activeCollectOperation]}
-                  nameBtn={"Move"}
-                  onClose={handleClickAway}
-                  onBack={toggleCollape}
-                  onClickConfirm={handleAddCopyList}
-                >
-                  {itemChooseToMove.map((item, index) => (
-                    <DropItemChoose
-                      key={index}
-                      info={item}
-                      itemChooseToMove={itemChooseToMove}
-                      data={data}
-                      position={position}
-                      onChoose={handleChooseMoveList}
-                    />
-                  ))}
-                </ItemMenu>
-              )}
-              {isLeaveBoard && activeCollectOperation === 3 && (
-                <ItemMenu
-                  title={nameOperations[activeCollectOperation]}
-                  onClose={handleClickAway}
-                  onBack={toggleCollape}
-                >
-                  {dataList.map((item, index) => (
-                    <div
-                      onClick={
-                        item.title === nameList
-                          ? undefined
-                          : () => handleShow(index, item.id)
-                      }
-                      key={index}
-                      className={`p-2 bg-white rounded transition duration-200 ${item.title === nameList ? "cursor-not-allowed opacity-50" : "hover:bg-gray-100 cursor-pointer"} `}
-                    >
-                      {item.title}
-                    </div>
-                  ))}
-                </ItemMenu>
-              )}
-              {isLeaveBoard && activeCollectOperation === 4 && (
-                <ItemMenu
-                  title={nameOperations[activeCollectOperation]}
                   onClose={handleClickAway}
                   onBack={toggleCollape}
                 >
@@ -275,9 +206,7 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
                   onBack={toggleCollape}
                 >
                   <div className="w-full px-4">
-                    <p className="whitespace-normal">
-                      Are you sure you want to save all selected tags?
-                    </p>
+                    <p className="whitespace-normal">Are you sure you want to save all selected tags?</p>
                   </div>
                 </ItemMenu>
               )}

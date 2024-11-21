@@ -75,7 +75,18 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
         onClick={() => handleGetDataCardDetail(dataCard)}
         className="flex flex-col justify-center min-h-[40px] w-full"
       >
-        {dataCard?.coverUrl && <div className={`w-full min-h-[80px] rounded-t-[6px]`} />}
+        {dataCard?.coverUrl && (
+          <div
+            style={{
+              backgroundImage: dataCard?.coverUrl.startsWith("http") ? `url(${dataCard?.coverUrl})` : "none",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundColor: dataCard?.coverUrl.startsWith("#") ? dataCard?.coverUrl : "",
+            }}
+            className={`w-full min-h-[80px] rounded-t-[6px]`}
+          />
+        )}
         <div className="flex flex-col mx-[12px]">
           <div className="flex items-center flex-wrap mt-2">
             {dataCard?.tagCards?.length > 0 &&
@@ -184,7 +195,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
                     {...stringAvatar(member.user?.name)}
                     alt={member.user?.name}
                     src={member.user?.avatarUrl || ""}
-                    sx={{ width: 24, height: 24, marginRight: "8px" }}
+                    sx={{ width: 24, height: 24, marginLeft: "8px" }}
                   />
                 </div>
               ))}

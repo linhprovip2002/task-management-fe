@@ -192,6 +192,7 @@ function ListInBoard() {
       }
       setChangeData(null);
     }
+
     // eslint-disable-next-line
   }, [debounceValue]);
 

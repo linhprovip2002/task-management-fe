@@ -11,7 +11,7 @@ function ItemPerson({ handleShowMenuBtnCard, membersInCard }) {
       <div className="flex items-center text-[12px] mb-2">
         <span className="mr-2">Member</span>
       </div>
-      <div className="relative flex items-center justify-center">
+      <div className="relative flex items-center justify-center mb-2">
         {membersInCard?.map((item, index) => (
           <Avatar
             key={index}

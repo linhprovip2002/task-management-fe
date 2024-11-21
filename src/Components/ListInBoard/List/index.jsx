@@ -28,9 +28,7 @@ function List({ item = {}, id }) {
       type: "COLUMN",
     },
   });
-
   const cards = item.cards || [];
-
   const { setNodeRef } = useDroppable({ id });
 
   const dndKitColumStyles = {
@@ -38,8 +36,16 @@ function List({ item = {}, id }) {
     height: "100%",
   };
 
-  const { boardId, activeMonitor, activeIndex, handleChange, handleShowAddCard, dataList, setDataList } =
-    useListBoardContext();
+  const {
+    boardId,
+    activeMonitor,
+    setActiveIndex,
+    activeIndex,
+    handleChange,
+    handleShowAddCard,
+    dataList,
+    setDataList,
+  } = useListBoardContext();
   const { getCardPermissionByUser } = useGetBoardPermission(boardId);
 
   const handleClickOutside = async (event) => {
@@ -59,18 +65,7 @@ function List({ item = {}, id }) {
 
   const handleAddCard = async (nameTitle) => {
     try {
-      const newList = dataList.map((list) =>
-        list.id === id
-          ? {
-              ...list,
-              cards: [...(list.cards || []), { title: nameTitle, files: [] }],
-              isShowAddCard: !list.isShowAddCard,
-            }
-          : list,
-      );
-      setDataList(newList);
-
-      await createCardByIdList({
+      const newCard = await createCardByIdList({
         title: nameTitle,
         description: "",
         coverUrl: "",
@@ -78,6 +73,16 @@ function List({ item = {}, id }) {
         tagId: "",
         listId: id,
       });
+      const newList = dataList.map((list) =>
+        list.id === id
+          ? {
+              ...list,
+              cards: [...(list.cards || []), newCard],
+            }
+          : list,
+      );
+      setActiveIndex((prev) => prev && null);
+      setDataList(newList);
       toast.success("Create card successfully");
     } catch (error) {
       toast.error("Failed to create card");
@@ -108,7 +113,16 @@ function List({ item = {}, id }) {
           </div>
           {/* List board */}
           <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
-            <div ref={setNodeRef} className="flex-1 p-1">
+            <div
+              ref={setNodeRef}
+              style={{
+                maxHeight: "380px",
+                overflowY: "auto",
+                padding: "8px",
+                scrollbarWidth: "thin",
+              }}
+              className="flex-1 p-1"
+            >
               {cards?.map((card, index) => {
                 return (
                   <ItemList
@@ -125,7 +139,7 @@ function List({ item = {}, id }) {
             </div>
           </SortableContext>
 
-          {item.isShowAddCard && activeIndex === item.id && (
+          {activeIndex === item.id && (
             <CreateItem
               idList={item.id}
               nameBtn={"Add card"}
@@ -135,7 +149,7 @@ function List({ item = {}, id }) {
             />
           )}
 
-          {getCardPermissionByUser("create") && !item.isShowAddCard && (
+          {getCardPermissionByUser("create") && activeIndex !== item.id && (
             <div className="flex p-1 items-center pt-[8px]">
               <div
                 onClick={() => handleShowAddCard(item.id)}

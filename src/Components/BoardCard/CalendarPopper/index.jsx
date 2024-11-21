@@ -116,7 +116,15 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck,
         className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
       >
         <div className="p-2 mx-8 text-center">Day</div>
-        <div className="mx-2">
+        <div
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "#fff6 #00000026",
+            overflowY: "auto",
+            maxHeight: "400px",
+          }}
+          className="px-2"
+        >
           <div className="px-1 py-2">
             <Calendar onChange={handleChangeDay} />
             <div className="mb-4">

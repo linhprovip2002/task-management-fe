@@ -2,65 +2,60 @@ import React, { useEffect, useState } from "react";
 import { useStorage } from "../../../Contexts";
 import { Avatar, Button } from "@mui/material";
 import "react-medium-image-zoom/dist/styles.css";
-import { Editor } from "@tinymce/tinymce-react";
 import { updateComment } from "../../../Services/API/ApiComment";
 import { toast } from "react-toastify";
 import { useForm, FormProvider } from "react-hook-form";
 import { PreviewImageModal } from "../../Modals/PreviewImageModal";
-import { editorInit } from "./constants/Editor.constant";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 import { formatDate } from "../WriteComment/helpers/formatDate";
 import { useGetCardById } from "../../../Hooks";
+import { TextEditor } from "../../TextEditor/TextEditor";
+import { useParams } from "react-router-dom";
+import Loading from "../../Loading";
 
-const editorKey = process.env.REACT_APP_EDITOR_KEY;
-
-const ShowComment = ({ item, handleDeleteComment }) => {
-  const { setLoading, setContent, setUpFileComment, setPostUploadedFiles, boardId, loading } = useListBoardContext();
+export const BoardComments = ({ item, handleDeleteComment }) => {
+  const { idBoard } = useParams();
+  const { setPostUploadedFiles } = useListBoardContext();
+  const [loading, setLoading] = useState(false);
   const { userData } = useStorage();
-  //eslint-disable-next-line
+
   const [isFocused, setIsFocused] = useState(false);
   const [openImagePreview, setOpenImagePreview] = useState(false);
-  const [editorContent, setEditorContent] = useState(item.content);
   const [canEdit, setCanEdit] = useState(false);
-  const [newContent, setNewContent] = useState("");
 
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
+  const { data: dataCard, isLoading } = useGetCardById(cardId);
 
   const method = useForm();
-  const { setValue } = method;
+  const { setValue, watch, handleSubmit } = method;
 
   const handleImageClick = (url) => {
     setValue("selectedImgUrl", url);
     setOpenImagePreview(true);
   };
 
-  const handleUpdateComment = async (boardId, cmdId, newContent) => {
+  const handleUpdateComment = async (data) => {
+    const { content } = data;
     setLoading(true);
 
     const parser = new DOMParser();
-    const doc = parser.parseFromString(newContent, "text/html");
+    const doc = parser.parseFromString(content, "text/html");
     const images = doc.querySelectorAll("img");
     const imageUrls = Array.from(images).map((img) => img.src);
 
     const params = {
-      content: newContent,
+      content: content,
       files: imageUrls,
-      cardId: dataCard.id,
+      cardId: dataCard.id
     };
 
     const loadingToastId = toast.loading();
 
     try {
-      const response = await updateComment(boardId, cmdId, params);
-
-      setContent("");
-      setUpFileComment([]);
+      const response = await updateComment(idBoard, item.id, params);
 
       const newComment = response.data;
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
-
-      toast.success("Edit successfully!");
     } catch (err) {
       toast.error("Cannot create comment");
       console.error("Comment error: ", err);
@@ -78,22 +73,12 @@ const ShowComment = ({ item, handleDeleteComment }) => {
   const handleEditClick = () => {
     setIsFocused(true);
     setCanEdit(true);
-    setEditorContent(item.content);
-  };
-
-  const handleEditorChange = (content) => {
-    setEditorContent(content);
-    setNewContent(content);
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
+    setValue("content", item.content);
   };
 
   const handleCloseComment = () => {
     setIsFocused(false);
     setCanEdit(false);
-    setNewContent("");
   };
 
   useEffect(() => {
@@ -118,53 +103,67 @@ const ShowComment = ({ item, handleDeleteComment }) => {
   }, [isFocused]);
 
   return (
-    <>
+    <FormProvider {...method}>
       {isFocused && canEdit ? (
-        <>
-          <Editor
-            apiKey={editorKey}
-            value={editorContent}
-            init={editorInit}
-            onEditorChange={handleEditorChange}
-            onFocus={handleFocus}
+        <form onSubmit={handleSubmit(handleUpdateComment)}>
+          <TextEditor
+            value={watch("content")}
+            onChange={(value) => {
+              setValue("content", value);
+            }}
+            loading={loading}
+            setLoading={setLoading}
+            placeholder="Write your message..."
           />
           <div className="flex items-center justify-between mt-2">
             <Button
-              onClick={() => handleUpdateComment(boardId, item.id, newContent)}
+              type="submit"
               variant="contained"
               color="primary"
-              disabled={!newContent}
+              size="small"
+              sx={{ textTransform: "none" }}
+              disabled={!watch("content") || loading}
             >
-              {loading ? "Saving..." : "Save"}
+              Save
             </Button>
             <div className="ml-4"></div>
-            <Button onClick={handleCloseComment} className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white">
+            <Button
+              onClick={handleCloseComment}
+              size="small"
+              sx={{ textTransform: "none" }}
+              className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white px-1"
+            >
               Discard Change
             </Button>
           </div>
-        </>
+        </form>
       ) : (
-        <div className="flex p-2 my-2 space-x-3 rounded-md bg-gray-50" key={item.id}>
-          {/* Avatar */}
-          {userData?.avatarUrl ? (
-            <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
-          ) : (
-            <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
-              {userData?.name[0] || " "}
-            </div>
-          )}
+        <div
+          className="flex p-2 my-2 space-x-3 rounded-md bg-gray-50"
+          key={item.id}
+        >
+          <Avatar
+            sx={{ width: "30px", height: "30px" }}
+            src={userData?.avatarUrl}
+          >
+            {userData?.name[0] || " "}
+          </Avatar>
 
           {/* Comment infomation */}
-          <div>
-            <div className="flex items-center">
-              <span className="mr-4 text-[14px] font-medium">{userData.name}</span>
-              <p className="text-[14px] font-normal text-gray-500">Created {formatDate(item.createdAt)}</p>
+          <div className="w-full">
+            <div className="flex items-center w-full">
+              <span className="mr-4 text-[14px] font-medium">
+                {userData.name}
+              </span>
+              <p className="text-[14px] font-normal text-gray-500">
+                Created {formatDate(item.createdAt)}
+              </p>
             </div>
 
             {/* Comment content */}
             <div
               dangerouslySetInnerHTML={{ __html: item.content }}
-              className="p-2 my-2 text-[16px] w-[420px] text-gray-800 bg-white border border-gray-300 rounded-lg break-words overflow-hidden text-ellipsis"
+              className="p-3 my-2 w-full  bg-white border border-gray-300 rounded-lg"
             />
 
             {/* Actions */}
@@ -173,20 +172,25 @@ const ShowComment = ({ item, handleDeleteComment }) => {
                 Edit
               </button>
               <span>•</span>
-              <button onClick={() => handleDeleteComment(item.id)} className="hover:underline">
+              <button
+                onClick={() => handleDeleteComment(item.id)}
+                className="hover:underline"
+              >
                 Delete
               </button>
             </div>
           </div>
         </div>
       )}
+      {isLoading ||
+        !userData ||
+        (loading && <Loading className="bg-white bg-opacity-10 z-1" />)}
       {
-        <FormProvider {...method}>
-          <PreviewImageModal open={openImagePreview} handleCloseImageClick={handleCloseImageClick} />
-        </FormProvider>
+        <PreviewImageModal
+          open={openImagePreview}
+          handleCloseImageClick={handleCloseImageClick}
+        />
       }
-    </>
+    </FormProvider>
   );
 };
-
-export default ShowComment;

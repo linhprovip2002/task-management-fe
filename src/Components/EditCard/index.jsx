@@ -5,17 +5,28 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { Avatar } from "@mui/material";
 
 import { listBtnCard } from "./constans";
 import { AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
-import { deleteCard, updateCard } from "../../Services/API/ApiCard";
+import { deleteCard, JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
 import AddLabelInCard from "../BoardCard/AddLabelInCard";
 import CreateLabel from "../BoardCard/CreateLabel";
-import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
+import { AddTagInCard, getAllTagByIdBoard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "../BoardCard/BackgroundPhoto";
 import CalendarPopper from "../BoardCard/CalendarPopper";
+import { useGetCardById } from "../../Hooks";
+import { useParams } from "react-router-dom";
+import { createTag, updateTag } from "../../Services/API/APITags";
+import { stringAvatar } from "../../Utils/color";
+import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
+import MemberMenu from "../MemberMenuOfBoard";
+import { useStorage } from "../../Contexts";
+import { EQueryKeys } from "../../constants";
 
 export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   const {
@@ -24,42 +35,41 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     setToggleCardEditModal,
     setDataCard,
     toggleCardEditModal,
-    dataCard,
     dataList,
     position,
     boardId,
   } = useListBoardContext();
-  const [listLabel, setListLabel] = useState(() => {
-    var tagsCard = dataCard?.tagCards
-      ?.map((tagCard) => {
-        if (!tagCard || !tagCard.tag) {
-          return null;
-        }
-        return {
-          id: tagCard.tag.id,
-          updatedAt: tagCard.tag.updatedAt || null,
-          createdAt: tagCard.tag.createdAt,
-          deletedAt: tagCard.tag.deletedAt,
-          color: tagCard.tag.color,
-          name: tagCard.tag.name,
-          boardId: tagCard.tag.boardId,
-        };
-      })
-      .filter(Boolean);
-    return tagsCard || [];
-  });
+  const { userData } = useStorage();
+  const queryClient = useQueryClient();
+  const cardId = localStorage.getItem("cardId");
+  const { data: dataCard } = useGetCardById(cardId);
+  const { idBoard } = useParams();
+  const [tag, setTag] = useState({});
+  const [labelOfCard, setLabelOfCard] = useState(
+    () =>
+      dataCard?.tagCards
+        ?.filter((tagCard) => tagCard?.tag)
+        .map(({ tag }) => ({
+          id: tag.id,
+          updatedAt: tag.updatedAt || null,
+          color: tag.color,
+          name: tag.name,
+          boardId: idBoard,
+        })) || [],
+  );
+  const [listColorLabel, setListColorLabel] = useState([]);
+  const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
+  const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
+
   const [inputTitle, setInputTitle] = useState(dataCard?.title);
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isCreateLabel, setIsCreateLabel] = useState(false);
   const [numberShow, setNumberShow] = useState(null);
   const [positionBtn, setPositionBtn] = useState({ top: 0, left: 0 });
-  const [countLabel, setCountLabel] = useState(listLabel);
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [inputTitleLabel, setInputTitleLabel] = useState("");
   const [chooseColorLabel, setChooseColorLabel] = useState("");
-  const [chooseColorBackground, setChooseColorBackground] = useState(() => {
-    return dataCard.coverUrl;
-  });
+  const [chooseColorBackground, setChooseColorBackground] = useState(dataCard?.coverUrl || "");
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -84,6 +94,18 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       }
     }
   }, [endDateCheck]);
+
+  useEffect(() => {
+    const getAllLabelOfBoard = async () => {
+      try {
+        const res = await getAllTagByIdBoard(idBoard);
+        setListColorLabel(res?.data.data || []);
+      } catch (err) {
+        console.error("Error all label data: ", err);
+      }
+    };
+    getAllLabelOfBoard();
+  }, [idBoard]);
 
   const handleChange = (e) => {
     setInputTitle(e.target.value);
@@ -141,7 +163,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
           console.error("Error remove data tag in card detail: ", err);
         }
       };
-      setCountLabel((prevCountLabel) => {
+      setLabelOfCard((prevCountLabel) => {
         if (prevCountLabel.some((i) => i.id === item.id)) {
           removeTagAsync();
           return prevCountLabel.filter((i) => i.id !== item.id);
@@ -150,12 +172,8 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
           return [...prevCountLabel, item];
         }
       });
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        tagCards: [...(prevDataCard.tagCards || []), countLabel],
-      }));
     },
-    [dataCard, boardId, countLabel, setDataCard],
+    [dataCard, boardId],
   );
 
   const ShowDetailNewLabel = useCallback(() => {
@@ -167,9 +185,11 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
 
   const ShowUpdateLabel = useCallback(
     (item) => {
+      item = { ...item, colorCode: item.color };
       ShowDetailNewLabel();
       setIsUpdateLabel(!isUpdateLabel);
       setChooseColorLabel(item);
+      setTag(item);
       setInputTitleLabel(item.name);
     },
     [isUpdateLabel, ShowDetailNewLabel],
@@ -183,49 +203,42 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     setChooseColorLabel(item);
   };
 
-  const handleCreateNewLabel = (dataColor, titleLabel = "") => {
-    const dataLabel = {
-      ...dataColor,
-      name: titleLabel,
-    };
-    setListLabel((prev) => {
-      if (prev.some((item) => item.id === dataLabel.id)) {
-        const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
-          return prev.map((item) =>
-            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
-          );
-        }
-        return prev;
-      } else {
-        return [...prev, dataLabel];
-      }
-    });
-    ShowDetailNewLabel();
-    setInputTitleLabel("");
-    handleAddLabel(dataLabel);
+  const handleCreateNewLabel = async (dataColor, titleLabel = "") => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      const tag = await createTag({
+        boardId: Number(boardId),
+        name: titleLabel,
+        color: dataColor?.colorCode,
+      });
+      tag && setListColorLabel([...listColorLabel, tag]);
+      tag && (await AddTagInCard(boardId, dataCard?.id, tag.id));
+    } catch (err) {
+      console.error("Error add data tag in card detail: ", err);
+    }
   };
 
-  const handleUpdateLabel = (dataColor, titleLabel = "") => {
-    const dataLabel = {
-      ...dataColor,
-      name: titleLabel,
-    };
-    setListLabel((prev) => {
-      if (prev.some((item) => item.id === dataLabel.id)) {
-        const itemLabel = prev.find((item) => item.id === dataLabel.id);
-        if (itemLabel.name !== dataLabel.name || itemLabel.color !== dataLabel.color) {
-          return prev.map((item) =>
-            item.id === dataLabel.id ? { ...item, color: dataLabel.color, name: dataLabel.name } : item,
-          );
-        }
-        return prev;
-      } else {
-        return [...prev, dataLabel];
+  const handleUpdateLabel = async (tag, dataColor, titleLabel = "") => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      const resTag = await updateTag({
+        boardId: Number(boardId),
+        name: titleLabel,
+        color: dataColor?.colorCode,
+        tagId: tag.id,
+      });
+      if (resTag) {
+        setListColorLabel((prevList) =>
+          prevList.map((item) =>
+            item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+          ),
+        );
       }
-    });
-    ShowDetailNewLabel();
-    setInputTitleLabel("");
+    } catch (error) {
+      console.error("Error update data tag in card detail: ", error);
+    }
   };
 
   const handleCloseBtnPhoto = async () => {
@@ -266,6 +279,90 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     }
   };
 
+  const handlePostFiles = useCallback(
+    async (id, allUrls) => {
+      try {
+        const response = await apiAssignFile(id, allUrls);
+        setPostUploadedFiles([...response.data.files]);
+        return response.data.files;
+      } catch (error) {
+        console.error("Failed to get uploaded files:", error);
+      }
+    },
+    [setPostUploadedFiles],
+  );
+
+  const handleFileChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    const validFiles = [];
+    Array.from(files).forEach((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`File ${file.name} is too large to upload.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+    if (!validFiles.length) return;
+    const loadToastId = toast.loading("Uploading...");
+
+    try {
+      // Tải lên các file song song
+      const uploadPromises = validFiles.map((file) => {
+        const formData = new FormData();
+        formData.append("files", file);
+        return apiUploadMultiFile(formData);
+      });
+
+      const responses = await Promise.all(uploadPromises);
+      toast.dismiss(loadToastId);
+      toast.success("Upload successful!");
+
+      // Lấy dữ liệu file đã tải lên
+      const uploadedFilesData = responses.flatMap((response) => response.data);
+      const uploadedUrls = uploadedFilesData.map((file) => file.url);
+
+      // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
+      await handlePostFiles(dataCard.id, uploadedUrls);
+      return uploadedFilesData;
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      toast.dismiss(loadToastId);
+      toast.error("Failed to upload files.");
+    }
+  };
+
+  const handleJoinIntoCard = async (item) => {
+    try {
+      const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
+      if (isUserJoined) {
+        const res = await RemoveUserToCard(dataCard.id, item.id);
+        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+      } else {
+        const res = await JoinToCard(dataCard.id, item.id);
+        res && setMembersInCard([...membersInCard, { user: item }]);
+      }
+      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
+    } catch (error) {
+      console.error("Error handling join member to card:", error);
+    }
+  };
+
+  const handleAddMember = async (item) => {
+    try {
+      if (item?.user.id === userData.id) {
+        handleJoinIntoCard(item?.user);
+        return;
+      }
+      const res = await JoinToCard(dataCard.id, item?.user.id);
+      res && setMembersInCard([...membersInCard, { user: item?.user }]);
+      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
+    } catch (error) {
+      console.error("Error handling member:", error);
+    }
+  };
+
   const handleClickBtn = (e, item) => {
     setNumberShow(item.id);
     switch (item.id) {
@@ -273,6 +370,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         handleShowBoardCard(dataCard);
         break;
       case 2:
+      case 3:
       case 4:
       case 5:
         handleShowMenuBtnCard(e);
@@ -293,7 +391,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       <div style={{ top: position.top - 120, left: position.left - 200 }} className="absolute mt-20 mb-10">
         <div
           onClick={(e) => e.stopPropagation()}
-          className=" flex justify-between min-w-[240px] bg-white rounded-[8px] font-medium text-[12px] z-500"
+          className=" flex justify-between w-[240px] bg-white rounded-[8px] font-medium text-[12px] z-500"
         >
           <div className="flex flex-col justify-center w-full min-h-[40px]">
             {chooseColorBackground && (
@@ -311,12 +409,15 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
 
             <div className="flex flex-col px-2 pb-2">
               <div className="flex items-center flex-wrap mt-2">
-                {countLabel?.length > 0 &&
-                  countLabel?.map((tagCard) =>
+                {labelOfCard?.length > 0 &&
+                  labelOfCard?.map((tagCard) =>
                     tagCard?.color ? (
                       <div
                         key={tagCard.id}
-                        className={`hover:opacity-90 ${tagCard.color} mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
+                        style={{
+                          backgroundColor: tagCard.color,
+                        }}
+                        className={`hover:opacity-90 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
                       />
                     ) : null,
                   )}
@@ -328,7 +429,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                 className="flex-1 rounded-[8px] py-1 text-[14px] font-[400] cursor-pointer whitespace-normal"
               />
               <div className="flex items-center justify-between w-full flex-wrap">
-                <div className="flex items-center flex-wrap pb-2">
+                <div className="flex flex-1 items-center flex-wrap pb-2">
                   {endDateCheck != null && (
                     <div onClick={(e) => e.stopPropagation()}>
                       <div
@@ -416,10 +517,13 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                 </div>
                 {dataCard?.members?.length > 0 &&
                   dataCard?.members?.map((member, index) => (
-                    <div key={index} className="flex items-center flex-wrap pb-2 ml-auto">
-                      <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-white text-[10px] bg-gradient-to-b from-green-400 to-blue-500">
-                        PM
-                      </div>
+                    <div key={index} className="flex items-center flex-wrap pb-2">
+                      <Avatar
+                        {...stringAvatar(member.user?.name)}
+                        alt={member.user?.name}
+                        src={member.user?.avatarUrl || ""}
+                        sx={{ width: 24, height: 24, marginLeft: "8px" }}
+                      />
                     </div>
                   ))}
               </div>
@@ -463,9 +567,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         <div onClick={(e) => e.stopPropagation()}>
           {!isCreateLabel && (
             <AddLabelInCard
-              position={positionBtn}
-              countLabel={countLabel}
-              listLabel={listLabel}
+              position={position}
+              labelOfCard={labelOfCard}
+              listColorLabel={listColorLabel}
               handleAddLabel={handleAddLabel}
               ShowUpdateLabel={ShowUpdateLabel}
               ShowDetailNewLabel={ShowDetailNewLabel}
@@ -474,7 +578,8 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
           )}
           {isCreateLabel && (
             <CreateLabel
-              position={positionBtn}
+              position={position}
+              tag={tag}
               isUpdateLabel={isUpdateLabel}
               handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
               ShowDetailNewLabel={ShowDetailNewLabel}
@@ -488,6 +593,16 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
           )}
         </div>
       )}
+      {isShowMenuBtnCard && numberShow === 3 && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <MemberMenu
+            onAddMember={handleAddMember}
+            membersInCard={membersInCard}
+            setMembersInCard={setMembersInCard}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          />
+        </div>
+      )}
       {isShowMenuBtnCard && numberShow === 4 && (
         <div onClick={(e) => e.stopPropagation()}>
           <BackgroundPhoto
@@ -496,6 +611,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
             ShowDetailNewLabel={ShowDetailNewLabel}
             background={chooseColorBackground}
             chooseBackground={handleChooseColorBackground}
+            postUploadedFiles={postUploadedFiles}
+            setPostUploadedFiles={setPostUploadedFiles}
+            handleUploadFile={handleFileChange}
           />
         </div>
       )}
@@ -504,7 +622,8 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
           <CalendarPopper
             position={position}
             handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-            endDate={setEndDateCheck}
+            setEndDateCheck={setEndDateCheck}
+            dataCard={dataCard}
           />
         </div>
       )}

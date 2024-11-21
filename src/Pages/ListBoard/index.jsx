@@ -15,6 +15,7 @@ import NavbarTable from "../../Components/HiDotsVertical/NavbarTable";
 import Loading from "../../Components/Loading";
 
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
+import { useNavigate } from "react-router-dom";
 
 function ListBoard() {
   return (
@@ -25,6 +26,8 @@ function ListBoard() {
 }
 
 function ListBoardContent() {
+  const navigate = useNavigate();
+
   const { dataBoard, dataWorkspace, toggleNavbar, isShowBoardCard, toggleCardEditModal, loading } =
     useListBoardContext();
   const { isLoading: isLoadingPermission } = useGetBoardPermission(dataBoard?.id);
@@ -64,6 +67,10 @@ function ListBoardContent() {
     setIsChooseMoveList(!isChooseMoveList);
   };
 
+  const handleComingWorkSpace = () => {
+    navigate(`/workspace/${dataWorkspace?.id}/home`);
+  };
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
 
@@ -85,11 +92,13 @@ function ListBoardContent() {
       >
         <Sidebar>
           <>
-            <div className={`pl-4 py-4 flex items-center`}>
-              <div className="rounded-[4px] px-3 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
-                {dataWorkspace.title.charAt(0).toUpperCase()}
+            <div className={`pl-4 py-4 flex items-center justify-between`}>
+              <div className={`flex flex-1 items-center cursor-pointer`} onClick={handleComingWorkSpace}>
+                <div className="rounded-[4px] px-2 font-bold text-white text-[20px] bg-gradient-to-b from-green-400 to-blue-500">
+                  {dataWorkspace.title.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 ml-2 text-[14px] font-[600]">{dataWorkspace.title}</div>
               </div>
-              <div className="flex-1 ml-2 text-[14px] font-[600]">{dataWorkspace.title}</div>
               <div onClick={toggleNavbar} className="mr-4 p-2 rounded-[4px] hover:bg-gray-300 cursor-pointer">
                 <ArrowDown width={12} height={12} className={"rotate-90 text-gray-100"} />
               </div>
