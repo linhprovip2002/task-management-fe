@@ -33,15 +33,12 @@ const WriteComment = () => {
     }
   }, [isEditMode]);
 
-  const handleCloseComment = () => {
-    setIsEditMode(false);
-  };
-
   const handleFocus = () => {
     setIsEditMode(true);
   };
 
-  const handlePostComment = async (data) => {
+  const handlePostComment = async (data, e) => {
+    e.preventDefault();
     const { content } = data;
     const parser = new DOMParser();
     const doc = parser.parseFromString(content, "text/html");
@@ -53,18 +50,16 @@ const WriteComment = () => {
       cardId: dataCard.id
     };
 
-    const loadingToastId = toast.loading("Saving...");
     try {
       setLoading(true);
       await postComment(idBoard, params);
       reset();
-      toast.dismiss(loadingToastId);
-      queryClient.invalidateQueries([EQueryKeys.GET_BOARD_BY_ID]);
+
+      queryClient.invalidateQueries([EQueryKeys.GET_CARD_COMMENT, cardId]);
     } catch (err) {
       toast.error("Cannot create comment");
       console.error("Lỗi khi đăng comment:", err);
     } finally {
-      toast.dismiss(loadingToastId);
       setLoading(false);
     }
   };
@@ -91,6 +86,7 @@ const WriteComment = () => {
           <div className="w-[428px] h-full">
             {isEditMode ? (
               <TextEditor
+                ref={textEditorRef}
                 value={watch("content")}
                 onChange={(value) => {
                   setValue("content", value);
