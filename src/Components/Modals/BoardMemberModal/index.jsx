@@ -23,7 +23,7 @@ function BoardMemberModal({ open = false, onClose }) {
   const [members, setMembers] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [noResult, setNoResult] = useState(null);
   const debounceValue = useDebounce(searchValue, 500);
 
   const handleRemoveSuccess = (idUser) => {
@@ -39,7 +39,7 @@ function BoardMemberModal({ open = false, onClose }) {
     delete newMember.isExisted;
     newMember.role = {
       id: 3,
-      name: "member"
+      name: "member",
     };
     setMembers((prev) => [...prev, newMember]);
   };
@@ -47,6 +47,7 @@ function BoardMemberModal({ open = false, onClose }) {
   useEffect(() => {
     if (!debounceValue.trim()) {
       setSearchResult([]);
+      setNoResult(null);
       return;
     }
 
@@ -57,12 +58,12 @@ function BoardMemberModal({ open = false, onClose }) {
         .then((res) => res.data)
         .then((data) => {
           const users = data.data.map((user) => {
-            user.isExisted = members.find((item) => item.id === user.id)
-              ? true
-              : false;
+            user.isExisted = members.find((item) => item.id === user.id) ? true : false;
             return user;
           });
           setSearchResult(users);
+          if (users.length === 0) setNoResult(true);
+          else setNoResult(false);
         })
         .catch((err) => {
           console.error(err);
@@ -104,14 +105,11 @@ function BoardMemberModal({ open = false, onClose }) {
       sx={{
         "& .MuiDialog-paper": {
           height: "100%",
-          borderRadius: 3
-        }
+          borderRadius: 3,
+        },
       }}
     >
-      <DialogTitle
-        width={"600px"}
-        sx={{ textAlign: "center", color: "#172b4d" }}
-      >
+      <DialogTitle width={"600px"} sx={{ textAlign: "center", color: "#172b4d" }}>
         Members on board
         <button
           onClick={handleClose}
@@ -126,18 +124,15 @@ function BoardMemberModal({ open = false, onClose }) {
             zIndex={999}
             placement="bottom"
             offset={[0, 0]}
-            visible={searchResult.length > 0}
+            visible={noResult !== null}
             interactive
             render={(props) => (
               <div className="bg-white w-[600px] p-5">
                 <div className="shadow-lg border border-solid border-slate-200 rounded-md p-5">
                   {searchResult.map((item, index) => (
-                    <UserItem
-                      onAdded={handleAddSuccess}
-                      data={item}
-                      key={index}
-                    />
+                    <UserItem onAdded={handleAddSuccess} data={item} key={index} />
                   ))}
+                  {noResult && <div className="text-black">No Result </div>}
                 </div>
               </div>
             )}
@@ -153,8 +148,8 @@ function BoardMemberModal({ open = false, onClose }) {
                     paddingY: "8px",
                     paddingX: "12px",
                     fontSize: "14px",
-                    fontWeight: 400
-                  }
+                    fontWeight: 400,
+                  },
                 }}
               />
             </div>
@@ -175,7 +170,7 @@ function BoardMemberModal({ open = false, onClose }) {
 
 BoardMemberModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
 };
 
 export default memo(BoardMemberModal);

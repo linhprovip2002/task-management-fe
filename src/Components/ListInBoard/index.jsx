@@ -153,7 +153,6 @@ function ListInBoard() {
       if (activeItemType === "COLUMN") {
         const activeColIndex = findColById(columns, active.id);
         const overColIndex = findColById(columns, over.id);
-        const activeList = columns[activeColIndex];
 
         setColumns((prev) => {
           return arrayMove(prev, activeColIndex, overColIndex);
