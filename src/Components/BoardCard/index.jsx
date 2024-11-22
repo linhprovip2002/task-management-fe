@@ -55,8 +55,6 @@ export const BoardCard = () => {
     isSaving,
     setEditorInstance,
     setDataCard,
-    postUploadedFiles,
-    setPostUploadedFiles,
   } = useListBoardContext();
   const { idBoard } = useParams();
 
@@ -77,6 +75,7 @@ export const BoardCard = () => {
           idBoard: idBoard,
         })) || [],
   );
+  const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
   const [updatedBtnCard, setUpdatedBtnCard] = useState(listBtnCard);
   const [listColorLabel, setListColorLabel] = useState([]);
   const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
@@ -630,7 +629,11 @@ export const BoardCard = () => {
                   </div>
                 </div>
                 <div className="p-2 ml-6">
-                  <Attachment loading={loading} />
+                  <Attachment
+                    loading={loading}
+                    postUploadedFiles={postUploadedFiles}
+                    setPostUploadedFiles={setPostUploadedFiles}
+                  />
                 </div>
               </div>
               {/* WHAT TO DO HIEN THI LEN UI */}

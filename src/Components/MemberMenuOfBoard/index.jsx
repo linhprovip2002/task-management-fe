@@ -39,14 +39,16 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
   );
 
   useEffect(() => {
-    const membersOutCard = membersBoard.filter((boardMember) => {
-      return !membersInCard.some((cardMember) => cardMember?.user?.id === boardMember?.user?.id);
-    });
+    if (membersBoard?.length >= 0) {
+      const membersOutCard = membersBoard.filter((boardMember) => {
+        return !membersInCard.some((cardMember) => cardMember?.user?.id === boardMember?.user?.id);
+      });
 
-    const filtered = membersOutCard.filter((member) => {
-      return member?.user?.name && member?.user?.name.includes(inputTitle);
-    });
-    setFilteredMembersBoard(filtered);
+      const filtered = membersOutCard.filter((member) => {
+        return member?.user?.name && member?.user?.name.includes(inputTitle);
+      });
+      setFilteredMembersBoard(filtered);
+    }
   }, [inputTitle, membersBoard, membersInCard]);
 
   const handleClickAway = () => {

@@ -1,18 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import ReactQuill from "./QuillConfig";
 import "react-quill/dist/quill.snow.css";
 import { apiUploadFile } from "../../Services/API/ApiUpload/apiUpload";
 
-const formats = [
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "list",
-  "bullet",
-  "link",
-  "image"
-];
+const formats = ["bold", "italic", "underline", "strike", "list", "bullet", "link", "image"];
 
 export const TextEditor = ({ loading, setLoading, ...props }) => {
   const modules = useMemo(
@@ -21,7 +12,7 @@ export const TextEditor = ({ loading, setLoading, ...props }) => {
         container: [
           ["bold", "italic", "underline", "strike"],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["link", "clean", "image"]
+          ["link", "clean", "image"],
         ],
         handlers: {
           image: function () {
@@ -46,11 +37,11 @@ export const TextEditor = ({ loading, setLoading, ...props }) => {
                 }
               }
             };
-          }
-        }
-      }
+          },
+        },
+      },
     }),
-    []
+    [],
   );
 
   return (

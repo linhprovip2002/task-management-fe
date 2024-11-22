@@ -13,6 +13,7 @@ function AddLabelInCard({
   handleCloseShowMenuBtnCard,
 }) {
   const handleClickAway = () => {
+    console.log("remove");
     handleCloseShowMenuBtnCard();
   };
 
