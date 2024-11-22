@@ -1,9 +1,24 @@
-import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState
+} from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
-import { deleteComment, postComment } from "../../../Services/API/ApiComment";
-import { useGetAllCardByList, useGetBoardById, useGetMembersByBoard, useGetWorkspaceById } from "../../../Hooks";
+import {
+  apiAssignFile,
+  apiDeleteFile,
+  apiUploadMultiFile
+} from "../../../Services/API/ApiUpload/apiUpload";
+import {
+  useGetAllCardByList,
+  useGetBoardById,
+  useGetMembersByBoard,
+  useGetWorkspaceById
+} from "../../../Hooks";
 
 const ListBoardContext = createContext();
 
@@ -47,59 +62,13 @@ function ListBoardProvider({ children }) {
     //eslint-disable-next-line
   }, [dataListAPI]);
 
-  const handlePostComment = async (dataCard) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, "text/html");
-    const images = doc.querySelectorAll("img");
-    const imageUrls = Array.from(images).map((img) => img.src);
-    const params = {
-      content: content,
-      files: imageUrls,
-      cardId: dataCard.id,
-    };
-    setLoading(true);
-    const loadingToastId = toast.loading("Saving...");
-    try {
-      const response = await postComment(boardId, params);
-      toast.dismiss(loadingToastId);
-      toast.success("Create comment successfully!");
-
-      // Cập nhật lại nội dung và các file sau khi bình luận thành công
-      setContent("");
-      setUpFileComment([]);
-      const newComment = response.data;
-      // Cập nhật danh sách file đã tải lên từ comment
-      setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
-    } catch (err) {
-      toast.dismiss(loadingToastId);
-      toast.error("Cannot create comment");
-      console.error("Lỗi khi đăng comment:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteComment = async (cmdId) => {
-    try {
-      await deleteComment(boardId, cmdId);
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        comments: prevDataCard.comments.filter((comment) => comment.id !== cmdId),
-      }));
-      toast.success("Deleted comment successfully!");
-    } catch (err) {
-      console.error("Error deleting comment:", err);
-    }
-  };
-
   const handleShowBoardCard = useCallback(
     async (dataCard) => {
       setIsShowBoardCard(!isShowBoardCard);
       localStorage.setItem("cardId", dataCard.id);
       toggleCardEditModal && setToggleCardEditModal((prev) => !prev);
     },
-    //eslint-disable-next-line
-    [isShowBoardCard, toggleCardEditModal],
+    [isShowBoardCard, toggleCardEditModal]
   );
 
   const handleShowBoardEdit = useCallback(
@@ -113,21 +82,23 @@ function ListBoardProvider({ children }) {
       // setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
-    [toggleCardEditModal],
+    [toggleCardEditModal]
   );
 
   const handleShowAddCard = (idList) => {
     setActiveIndex((prev) => (prev === idList ? null : idList));
     const newList = dataList.map((list) => ({
       ...list,
-      isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
+      isShowAddCard: list.id === idList ? !list.isShowAddCard : false
     }));
     setDataList(newList);
   };
 
   const handleChange = async (e, idList) => {
     setDataList((prevDataList) =>
-      prevDataList.map((list) => (list.id === idList ? { ...list, title: e.target.value } : list)),
+      prevDataList.map((list) =>
+        list.id === idList ? { ...list, title: e.target.value } : list
+      )
     );
   };
 
@@ -198,14 +169,11 @@ function ListBoardProvider({ children }) {
         setContent,
         isSaving,
         setIsSaving,
-        handleDeleteComment,
-        boardId,
-        idWorkSpace,
         upFileComment,
         setUpFileComment,
         setToggleCardEditModal,
-        setLoading,
-        setActiveIndex,
+
+        setActiveIndex
       }}
     >
       {children}
