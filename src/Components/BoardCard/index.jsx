@@ -17,7 +17,6 @@ import { useParams } from "react-router-dom";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { ClickAwayListener } from "@mui/material";
 
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import MemberMenu from "../MemberMenuOfBoard";
@@ -485,15 +484,11 @@ export const BoardCard = () => {
     }
   };
 
-  const handleClickAway = () => {
-    handleShowBoardCard(dataCard);
-  };
-
   const loading = !dataCard;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1]">
-      <ClickAwayListener onClickAway={handleClickAway}>
+    <>
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1]">
         <div
           style={{
             scrollbarWidth: "thin",
@@ -819,81 +814,81 @@ export const BoardCard = () => {
             className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
           />
         </div>
-      </ClickAwayListener>
-      {isShowMenuBtnCard && numberShow === 2 && (
-        <MemberMenu
-          onAddMember={handleAddMember}
-          membersInCard={membersInCard}
-          setMembersInCard={setMembersInCard}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 3 && (
-        <>
-          {!isCreateLabel && (
-            <AddLabelInCard
-              position={position}
-              labelOfCard={labelOfCard}
-              listColorLabel={listColorLabel}
-              handleAddLabel={handleAddLabel}
-              ShowUpdateLabel={ShowUpdateLabel}
-              ShowDetailNewLabel={ShowDetailNewLabel}
-              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-            />
-          )}
-          {isCreateLabel && (
-            <CreateLabel
-              position={position}
-              tag={tag}
-              isUpdateLabel={isUpdateLabel}
-              handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-              ShowDetailNewLabel={ShowDetailNewLabel}
-              chooseColorLabel={chooseColorLabel}
-              handleChangeInputLabel={handleChangeInputLabel}
-              inputTitleLabel={inputTitleLabel}
-              handleChooseColor={handleChooseColor}
-              handleCreateNewLabel={handleCreateNewLabel}
-              onUpdateLabel={handleUpdateLabel}
-            />
-          )}
-        </>
-      )}
-      {isShowMenuBtnCard && numberShow === 4 && (
-        <ToDoMenu
-          position={position}
-          inputTitleToDo={inputTitleToDo}
-          handleChangeInputTodo={handleChangeInputTodo}
-          handleCreateNewToDoList={handleCreateNewToDoList}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 5 && (
-        <CalendarPopper
-          position={position}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-          setEndDateCheck={setEndDateCheck}
-          dataCard={dataCard}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 6 && (
-        <UploadFile
-          position={position}
-          handleFileChange={handleFileChange}
-          handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
-        />
-      )}
-      {isShowMenuBtnCard && numberShow === 7 && (
-        <BackgroundPhoto
-          position={position}
-          handleCloseShowMenuBtnCard={handleCloseBtnPhoto}
-          ShowDetailNewLabel={ShowDetailNewLabel}
-          background={chooseColorBackground}
-          chooseBackground={handleChooseColorBackground}
-          postUploadedFiles={postUploadedFiles}
-          setPostUploadedFiles={setPostUploadedFiles}
-          handleUploadFile={handleFileChange}
-        />
-      )}
-    </div>
+        {isShowMenuBtnCard && numberShow === 2 && (
+          <MemberMenu
+            onAddMember={handleAddMember}
+            membersInCard={membersInCard}
+            setMembersInCard={setMembersInCard}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 3 && (
+          <>
+            {!isCreateLabel && (
+              <AddLabelInCard
+                position={position}
+                labelOfCard={labelOfCard}
+                listColorLabel={listColorLabel}
+                handleAddLabel={handleAddLabel}
+                ShowUpdateLabel={ShowUpdateLabel}
+                ShowDetailNewLabel={ShowDetailNewLabel}
+                handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+              />
+            )}
+            {isCreateLabel && (
+              <CreateLabel
+                position={position}
+                tag={tag}
+                isUpdateLabel={isUpdateLabel}
+                handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+                ShowDetailNewLabel={ShowDetailNewLabel}
+                chooseColorLabel={chooseColorLabel}
+                handleChangeInputLabel={handleChangeInputLabel}
+                inputTitleLabel={inputTitleLabel}
+                handleChooseColor={handleChooseColor}
+                handleCreateNewLabel={handleCreateNewLabel}
+                onUpdateLabel={handleUpdateLabel}
+              />
+            )}
+          </>
+        )}
+        {isShowMenuBtnCard && numberShow === 4 && (
+          <ToDoMenu
+            position={position}
+            inputTitleToDo={inputTitleToDo}
+            handleChangeInputTodo={handleChangeInputTodo}
+            handleCreateNewToDoList={handleCreateNewToDoList}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 5 && (
+          <CalendarPopper
+            position={position}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+            setEndDateCheck={setEndDateCheck}
+            dataCard={dataCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 6 && (
+          <UploadFile
+            position={position}
+            handleFileChange={handleFileChange}
+            handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 7 && (
+          <BackgroundPhoto
+            position={position}
+            handleCloseShowMenuBtnCard={handleCloseBtnPhoto}
+            ShowDetailNewLabel={ShowDetailNewLabel}
+            background={chooseColorBackground}
+            chooseBackground={handleChooseColorBackground}
+            postUploadedFiles={postUploadedFiles}
+            setPostUploadedFiles={setPostUploadedFiles}
+            handleUploadFile={handleFileChange}
+          />
+        )}
+      </div>
+    </>
   );
 };
