@@ -13,6 +13,7 @@ function AddLabelInCard({
   handleCloseShowMenuBtnCard,
 }) {
   const handleClickAway = () => {
+    console.log("remove");
     handleCloseShowMenuBtnCard();
   };
 
@@ -20,7 +21,7 @@ function AddLabelInCard({
     <ClickAway onClickAway={handleClickAway}>
       <div
         style={{ top: position.top - 150, left: position.left }}
-        className="absolute w-[280px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-50 shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
+        className="absolute w-[280px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-[300] shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
       >
         <div className="text-center p-2 mx-8">Label</div>
         <div

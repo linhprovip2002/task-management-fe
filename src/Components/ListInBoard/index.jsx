@@ -171,7 +171,6 @@ function ListInBoard() {
   };
 
   useEffect(() => {
-    console.log("re render");
     //TODO call api move card or column here
     if (dataBoard?.role?.roleName !== "admin") return;
     if (debounceValue !== null) {

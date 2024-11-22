@@ -1,0 +1,15 @@
+.child-hidden {
+  display: block;
+}
+
+.child-visible {
+  display: none;
+}
+
+.parent-group:hover .child-hidden {
+  display: none;
+}
+
+.parent-group:hover .child-visible {
+  display: block;
+}

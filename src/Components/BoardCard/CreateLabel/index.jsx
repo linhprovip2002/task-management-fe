@@ -24,7 +24,7 @@ function CreateLabel({
   };
   return (
     <ClickAway onClickAway={handleClickAway}>
-      <div style={{ top: position.top - 200, left: position.left }} className="absolute">
+      <div style={{ top: position.top - 200, left: position.left }} className="absolute z-[300]">
         <ItemMenu title={"Label"} onClose={handleCloseShowMenuBtnCard} onBack={ShowDetailNewLabel}>
           <div className="flex items-center justify-center bg-gray-100 h-[60px]">
             {chooseColorLabel ? (

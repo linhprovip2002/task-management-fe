@@ -10,10 +10,11 @@ function BackgroundPhoto({
   position,
   handleCloseShowMenuBtnCard,
   background,
+  postUploadedFiles,
   chooseBackground,
-  handleUploadFile
+  handleUploadFile,
 }) {
-  const { dataBoard, postUploadedFiles } = useListBoardContext();
+  const { dataBoard } = useListBoardContext();
   const [listColorLabel, setListColorLabel] = useState([]);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ function BackgroundPhoto({
             scrollbarWidth: "thin",
             scrollbarColor: "#fff6 #00000026",
             overflowY: "auto",
-            maxHeight: "400px"
+            maxHeight: "400px",
           }}
           className="px-2"
         >
@@ -61,40 +62,24 @@ function BackgroundPhoto({
             <div className="w-[200px] cursor-pointer flex items-center justify-center flex-col border border-black-1 rounded-[4px]">
               <div
                 style={{
-                  backgroundImage:
-                    background && background.startsWith("http")
-                      ? `url(${background})`
-                      : "none",
+                  backgroundImage: background && background.startsWith("http") ? `url(${background})` : "none",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
-                  backgroundColor:
-                    background && background.startsWith("#")
-                      ? background
-                      : "#f3f4f6"
+                  backgroundColor: background && background.startsWith("#") ? background : "#f3f4f6",
                 }}
                 className={`w-full h-[54px] p-2 rounded-t-[4px]`}
               />
 
               <div className="w-[90%]">
-                <div
-                  className={`bg-gray-200  w-[90%] h-[6px] my-2 rounded-[4px]`}
-                />
-                <div
-                  className={`bg-gray-200  w-[70%] h-[6px] my-2 rounded-[4px]`}
-                />
+                <div className={`bg-gray-200  w-[90%] h-[6px] my-2 rounded-[4px]`} />
+                <div className={`bg-gray-200  w-[70%] h-[6px] my-2 rounded-[4px]`} />
                 <div className="flex items-center justify-between w-full pb-2">
                   <div className="flex w-full">
-                    <div
-                      className={`bg-gray-200  w-[10%] mr-1 h-[10px] rounded-[4px]`}
-                    />
-                    <div
-                      className={`bg-gray-200  w-[10%] mr-1 h-[10px] rounded-[4px]`}
-                    />
+                    <div className={`bg-gray-200  w-[10%] mr-1 h-[10px] rounded-[4px]`} />
+                    <div className={`bg-gray-200  w-[10%] mr-1 h-[10px] rounded-[4px]`} />
                   </div>
-                  <div
-                    className={`bg-gray-200  w-[10%] h-[16px] rounded-[50%]`}
-                  />
+                  <div className={`bg-gray-200  w-[10%] h-[16px] rounded-[50%]`} />
                 </div>
               </div>
             </div>
@@ -117,14 +102,8 @@ function BackgroundPhoto({
                       key={index}
                       style={{
                         backgroundColor: item.color,
-                        border:
-                          background === item.color
-                            ? "3px solid #60a5fa"
-                            : "none",
-                        boxShadow:
-                          background === item.color
-                            ? "0 3px 10px rgba(0,0,0,0.3)"
-                            : "none"
+                        border: background === item.color ? "3px solid #60a5fa" : "none",
+                        boxShadow: background === item.color ? "0 3px 10px rgba(0,0,0,0.3)" : "none",
                       }}
                       className={`w-12 h-8 cursor-pointer rounded-[4px] mr-1 mb-1`}
                     ></li>
@@ -150,13 +129,7 @@ function BackgroundPhoto({
             ))}
           </div>
           <button className="w-full px-2 rounded-sm">
-            <input
-              type="file"
-              id="fileInput"
-              multiple
-              className="hidden"
-              onChange={handleUploadFile}
-            />
+            <input type="file" id="fileInput" multiple className="hidden" onChange={handleUploadFile} />
             <label
               htmlFor="fileInput"
               className="block w-full p-2 text-center bg-gray-200 rounded-sm cursor-pointer hover:bg-gray-300"

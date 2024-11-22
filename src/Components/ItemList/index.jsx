@@ -15,6 +15,7 @@ import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icon
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
+import "./ItemList.css";
 
 function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false }) {
   const navigate = useNavigate();
@@ -30,11 +31,12 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
 
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const [endDateCheck, setEndDateCheck] = useState(null);
-
   useEffect(() => {
-    if (!dataCard || dataCard.endDate == null) return;
+    if (!dataCard || dataCard.endDate == null) {
+      setEndDateCheck(null);
+      return;
+    }
     const endDate = new Date(dataCard.endDate);
     const currentDate = new Date();
     // overdue time
@@ -44,7 +46,7 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
     const month = (endDate.getUTCMonth() + 1).toString().padStart(2, "0");
     const formattedDate = `${day}thg${month}`;
     setEndDateCheck(formattedDate);
-  }, [dataCard, dataCard?.endDate]);
+  }, [dataCard]);
 
   const handleGetDataCardDetail = (dataCard) => {
     handleShowBoardCard(dataCard);
@@ -112,24 +114,22 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
               {endDateCheck != null && (
                 <div onClick={(e) => e.stopPropagation()}>
                   <div
-                    onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
-                    onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                    className={`flex items-center text-[12px] ${checkCompleteEndDate ? "bg-green-300" : checkOverdue ? "bg-red-100" : "bg-gray-300"} cursor-pointer rounded-[4px] p-1  hover:opacity-90 relative`}
+                    className={`parent-group flex items-center text-[12px] 
+        ${checkCompleteEndDate ? "bg-green-300" : checkOverdue ? "bg-red-100" : "bg-gray-300"}
+        cursor-pointer rounded-[4px] p-1 hover:opacity-90 relative`}
                   >
-                    <div className=" flex items-center justify-center w-[20px] h-[20px]">
-                      {isHovered ? (
+                    <label className="flex items-center">
+                      <div className="flex items-center cursor-pointer justify-center w-[20px] h-[20px] relative">
+                        <AccessTimeIcon style={{ fontSize: "16px" }} className="child-hidden" />
                         <input
+                          type="checkbox"
                           checked={checkCompleteEndDate}
                           onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
-                          type="checkbox"
-                          className="w-[12px] h-[12px] cursor-pointer"
+                          className="w-[12px] h-[12px] hidden child-visible"
                         />
-                      ) : (
-                        <AccessTimeIcon style={{ fontSize: "16px" }} />
-                      )}
-                    </div>
-                    <div>{endDateCheck}</div>
+                      </div>
+                      <div className="cursor-pointer">{endDateCheck}</div>
+                    </label>
                   </div>
                 </div>
               )}

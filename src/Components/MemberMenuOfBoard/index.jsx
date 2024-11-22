@@ -39,14 +39,16 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
   );
 
   useEffect(() => {
-    const membersOutCard = membersBoard.filter((boardMember) => {
-      return !membersInCard.some((cardMember) => cardMember?.user?.id === boardMember?.user?.id);
-    });
+    if (membersBoard?.length >= 0) {
+      const membersOutCard = membersBoard.filter((boardMember) => {
+        return !membersInCard.some((cardMember) => cardMember?.user?.id === boardMember?.user?.id);
+      });
 
-    const filtered = membersOutCard.filter((member) => {
-      return member?.user?.name && member?.user?.name.includes(inputTitle);
-    });
-    setFilteredMembersBoard(filtered);
+      const filtered = membersOutCard.filter((member) => {
+        return member?.user?.name && member?.user?.name.includes(inputTitle);
+      });
+      setFilteredMembersBoard(filtered);
+    }
   }, [inputTitle, membersBoard, membersInCard]);
 
   const handleClickAway = () => {
@@ -58,7 +60,7 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
     <ClickAway onClickAway={handleClickAway}>
       <div
         style={{ top: position?.top - 200, left: position?.left }}
-        className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
+        className="absolute w-[250px] bg-white rounded-[8px] py-2 font-medium text-[12px] z-[300] shadow-[0_3px_10px_rgba(0,0,0,0.3)]"
       >
         <div className="text-center p-2 mx-8">Member</div>
         <div
