@@ -16,24 +16,19 @@ function GroupAvatars({ users = [] }) {
           cursor: "pointer",
           fontSize: "14px",
           "&:hover": {
-            opacity: 0.9
-          }
-        }
+            opacity: 0.9,
+          },
+        },
       }}
     >
       {users.map((user, index) => (
-        <Avatar
-          key={index}
-          {...stringAvatar(user.user?.name)}
-          alt={user.user?.name}
-          src={user.user?.avatarUrl || ""}
-        />
+        <Avatar key={index} {...stringAvatar(user.user?.name)} alt={user.user?.name} src={user.user?.avatarUrl || ""} />
       ))}
     </AvatarGroup>
   );
 }
 
 GroupAvatars.propTypes = {
-  users: PropTypes.array
+  users: PropTypes.array,
 };
 export default memo(GroupAvatars);
