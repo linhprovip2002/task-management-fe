@@ -12,6 +12,7 @@ import { TextEditor } from "../../TextEditor/TextEditor";
 import { useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../../Loading";
+import { EQueryKeys } from "../../../constants";
 
 export const CardComments = ({ item }) => {
   const queryClient = useQueryClient();
@@ -23,7 +24,7 @@ export const CardComments = ({ item }) => {
   const [openImagePreview, setOpenImagePreview] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
 
-  const cardId = localStorage.getItem("cardId");
+  const cardId = +localStorage.getItem("cardId");
 
   const method = useForm({
     defaultValues: {
@@ -63,6 +64,9 @@ export const CardComments = ({ item }) => {
       const response = await updateComment(idBoard, item.id, params);
       const newComment = response.data;
       setValue("content", newComment.content);
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.GET_CARD_COMMENT]
+      });
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
     } catch (err) {
       toast.error("Cannot Update comment");
@@ -76,9 +80,12 @@ export const CardComments = ({ item }) => {
   const handleDeleteComment = async (commentId) => {
     try {
       await deleteComment(idBoard, commentId);
-      queryClient.invalidateQueries(["GET_CARD_COMMENT", cardId]);
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.GET_CARD_COMMENT]
+      });
       toast.success("Deleted comment successfully!");
     } catch (err) {
+      toast.error("Cannot delete comment");
       console.error("Error deleting comment:", err);
     }
   };

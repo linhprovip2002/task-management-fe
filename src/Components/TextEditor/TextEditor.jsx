@@ -34,11 +34,8 @@ export const TextEditor = ({ loading, setLoading, ...props }) => {
               const file = input.files[0];
               if (file) {
                 setLoading(true);
-                const formData = new FormData();
-                formData.append("file", file);
-
                 try {
-                  const response = await apiUploadFile(formData);
+                  const response = await apiUploadFile(file);
                   const url = response.data.location;
                   const range = this.quill.getSelection();
                   this.quill.insertEmbed(range.index, "image", url);

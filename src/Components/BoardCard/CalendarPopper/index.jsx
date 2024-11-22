@@ -3,10 +3,19 @@ import CloseIcon from "@mui/icons-material/Close";
 import Calendar from "../../Calendar/index";
 import { updateCard } from "../../../Services/API/ApiCard";
 import ClickAway from "../ClickAway";
-import { getCurrentDate, getCurrentTime } from "../WriteComment/helpers/formatDate";
+import {
+  getCurrentDate,
+  getCurrentTime
+} from "../WriteComment/helpers/formatDate";
 import { useQueryClient } from "@tanstack/react-query";
+import { EQueryKeys } from "../../../constants";
 
-function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck, dataCard }) {
+function CalendarPopper({
+  position,
+  handleCloseShowMenuBtnCard,
+  setEndDateCheck,
+  dataCard
+}) {
   const queryClient = useQueryClient();
   const [startDate, setStartDate] = useState("NNNN/T/N");
   const [isChecked, setIsChecked] = useState(false);
@@ -77,12 +86,14 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck,
       const [hours, minutes] = expirationTime.split(":");
       const data = {
         startDate: dataCard.startDate,
-        endDate: `${expirationDate}T${expirationTime}`,
+        endDate: `${expirationDate}T${expirationTime}`
         // listId: dataList.id
       };
       setEndDateCheck(`${hours}:${minutes} ${day}thg${month}`);
       const res = await updateCard(dataCard.id, data);
-      queryClient.invalidateQueries("card");
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.GET_CARD_BY_ID, dataCard.id]
+      });
       return res;
     } catch (error) {
       console.error("Error setup expiration date in card detail: ", error);
@@ -95,7 +106,7 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck,
 
       const data = {
         startDate: dataCard.startDate,
-        endDate: null,
+        endDate: null
       };
       setEndDateCheck(data.endDate);
       const res = await updateCard(dataCard.id, data);
@@ -121,14 +132,16 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck,
             scrollbarWidth: "thin",
             scrollbarColor: "#fff6 #00000026",
             overflowY: "auto",
-            maxHeight: "400px",
+            maxHeight: "400px"
           }}
           className="px-2"
         >
           <div className="px-1 py-2">
             <Calendar onChange={handleChangeDay} />
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Start date</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Start date
+              </label>
               <div className="flex items-center justifyContent-center my-2">
                 <input
                   type="checkbox"
@@ -147,7 +160,9 @@ function CalendarPopper({ position, handleCloseShowMenuBtnCard, setEndDateCheck,
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Expiration date</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Expiration date
+              </label>
               <div className="flex items-center justifyContent-center my-2">
                 <input
                   type="text"

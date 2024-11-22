@@ -436,7 +436,9 @@ export const BoardCard = () => {
       }
 
       setUpdatedBtnCard(newBtnCard);
-      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD]
+      });
     } catch (error) {
       console.error("Error handling join member to card:", error);
     }
@@ -450,7 +452,9 @@ export const BoardCard = () => {
       }
       const res = await JoinToCard(dataCard.id, item?.user.id);
       res && setMembersInCard([...membersInCard, { user: item?.user }]);
-      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD]
+      });
     } catch (error) {
       console.error("Error handling member:", error);
     }
@@ -705,11 +709,7 @@ export const BoardCard = () => {
                   </div>
                 </div>
                 <div className="p-2 ml-6">
-                  <Attachment
-                    loading={loading}
-                    postUploadedFiles={postUploadedFiles}
-                    setPostUploadedFiles={setPostUploadedFiles}
-                  />
+                  <Attachment loading={loading} />
                 </div>
               </div>
               {/* WHAT TO DO HIEN THI LEN UI */}
@@ -977,8 +977,6 @@ export const BoardCard = () => {
           ShowDetailNewLabel={ShowDetailNewLabel}
           background={chooseColorBackground}
           chooseBackground={handleChooseColorBackground}
-          postUploadedFiles={postUploadedFiles}
-          setPostUploadedFiles={setPostUploadedFiles}
           handleUploadFile={handleFileChange}
         />
       )}

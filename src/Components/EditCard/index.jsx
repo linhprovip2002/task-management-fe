@@ -13,12 +13,17 @@ import { listBtnCard } from "./constans";
 import { AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
-import { deleteCard, JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
+import {
+  deleteCard,
+  JoinToCard,
+  RemoveUserToCard,
+  updateCard
+} from "../../Services/API/ApiCard";
 import AddLabelInCard from "../BoardCard/AddLabelInCard";
 import CreateLabel from "../BoardCard/CreateLabel";
-import { AddTagInCard, getAllTagByIdBoard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import {
   AddTagInCard,
+  getAllTagByIdBoard,
   RemoveTagInCard
 } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "../BoardCard/BackgroundPhoto";
@@ -27,7 +32,10 @@ import { useGetCardById } from "../../Hooks";
 import { useParams } from "react-router-dom";
 import { createTag, updateTag } from "../../Services/API/APITags";
 import { stringAvatar } from "../../Utils/color";
-import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
+import {
+  apiAssignFile,
+  apiUploadMultiFile
+} from "../../Services/API/ApiUpload/apiUpload";
 import MemberMenu from "../MemberMenuOfBoard";
 import { useStorage } from "../../Contexts";
 import { EQueryKeys } from "../../constants";
@@ -58,11 +66,13 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
           updatedAt: tag.updatedAt || null,
           color: tag.color,
           name: tag.name,
-          boardId: idBoard,
-        })) || [],
+          boardId: idBoard
+        })) || []
   );
   const [listColorLabel, setListColorLabel] = useState([]);
-  const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
+  const [postUploadedFiles, setPostUploadedFiles] = useState(
+    dataCard?.files || []
+  );
   const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
 
   const [listLabel, setListLabel] = useState(() => {
@@ -92,7 +102,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [inputTitleLabel, setInputTitleLabel] = useState("");
   const [chooseColorLabel, setChooseColorLabel] = useState("");
-  const [chooseColorBackground, setChooseColorBackground] = useState(dataCard?.coverUrl || "");
+  const [chooseColorBackground, setChooseColorBackground] = useState(
+    dataCard?.coverUrl || ""
+  );
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -197,11 +209,11 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       });
       setDataCard((prevDataCard) => ({
         ...prevDataCard,
-        tagCards: [...(prevDataCard.tagCards || []), countLabel]
+        tagCards: [...(prevDataCard.tagCards || [])]
       }));
     },
-    [dataCard, boardId, countLabel, setDataCard]
-    [dataCard, boardId],
+    //  eslint-disable-next-line
+    [dataCard, boardId]
   );
 
   const ShowDetailNewLabel = useCallback(() => {
@@ -238,7 +250,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       const tag = await createTag({
         boardId: Number(boardId),
         name: titleLabel,
-        color: dataColor?.colorCode,
+        color: dataColor?.colorCode
       });
       tag && setListColorLabel([...listColorLabel, tag]);
       tag && (await AddTagInCard(boardId, dataCard?.id, tag.id));
@@ -255,13 +267,15 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         boardId: Number(boardId),
         name: titleLabel,
         color: dataColor?.colorCode,
-        tagId: tag.id,
+        tagId: tag.id
       });
       if (resTag) {
         setListColorLabel((prevList) =>
           prevList.map((item) =>
-            item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
-          ),
+            item.id === tag.id
+              ? { ...item, name: titleLabel, color: dataColor?.colorCode }
+              : item
+          )
         );
       }
     } catch (error) {
@@ -315,7 +329,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         console.error("Failed to get uploaded files:", error);
       }
     },
-    [setPostUploadedFiles],
+    [setPostUploadedFiles]
   );
 
   const handleFileChange = async (event) => {
@@ -361,94 +375,15 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
 
   const handleJoinIntoCard = async (item) => {
     try {
-      const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
+      const isUserJoined = membersInCard?.some(
+        (member) => member?.user?.id === item.id
+      );
       if (isUserJoined) {
         const res = await RemoveUserToCard(dataCard.id, item.id);
-        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
-      } else {
-        const res = await JoinToCard(dataCard.id, item.id);
-        res && setMembersInCard([...membersInCard, { user: item }]);
-      }
-      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
-    } catch (error) {
-      console.error("Error handling join member to card:", error);
-    }
-  };
-
-  const handleAddMember = async (item) => {
-    try {
-      if (item?.user.id === userData.id) {
-        handleJoinIntoCard(item?.user);
-        return;
-      }
-      const res = await JoinToCard(dataCard.id, item?.user.id);
-      res && setMembersInCard([...membersInCard, { user: item?.user }]);
-      queryClient.invalidateQueries([EQueryKeys.GET_MEMBER_BY_BOARD]);
-    } catch (error) {
-      console.error("Error handling member:", error);
-    }
-  };
-
-  const handlePostFiles = useCallback(
-    async (id, allUrls) => {
-      try {
-        const response = await apiAssignFile(id, allUrls);
-        setPostUploadedFiles([...response.data.files]);
-        return response.data.files;
-      } catch (error) {
-        console.error("Failed to get uploaded files:", error);
-      }
-    },
-    [setPostUploadedFiles],
-  );
-
-  const handleFileChange = async (event) => {
-    const files = event.target.files;
-    if (!files.length) return;
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-    const validFiles = [];
-    Array.from(files).forEach((file) => {
-      if (file.size > MAX_FILE_SIZE) {
-        toast.error(`File ${file.name} is too large to upload.`);
-      } else {
-        validFiles.push(file);
-      }
-    });
-    if (!validFiles.length) return;
-    const loadToastId = toast.loading("Uploading...");
-
-    try {
-      // Tải lên các file song song
-      const uploadPromises = validFiles.map((file) => {
-        const formData = new FormData();
-        formData.append("files", file);
-        return apiUploadMultiFile(formData);
-      });
-
-      const responses = await Promise.all(uploadPromises);
-      toast.dismiss(loadToastId);
-      toast.success("Upload successful!");
-
-      // Lấy dữ liệu file đã tải lên
-      const uploadedFilesData = responses.flatMap((response) => response.data);
-      const uploadedUrls = uploadedFilesData.map((file) => file.url);
-
-      // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
-      await handlePostFiles(dataCard.id, uploadedUrls);
-      return uploadedFilesData;
-    } catch (error) {
-      console.error("Error uploading files:", error);
-      toast.dismiss(loadToastId);
-      toast.error("Failed to upload files.");
-    }
-  };
-
-  const handleJoinIntoCard = async (item) => {
-    try {
-      const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
-      if (isUserJoined) {
-        const res = await RemoveUserToCard(dataCard.id, item.id);
-        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+        res &&
+          setMembersInCard((prev) =>
+            prev.filter((p) => p?.user?.id !== item.id)
+          );
       } else {
         const res = await JoinToCard(dataCard.id, item.id);
         res && setMembersInCard([...membersInCard, { user: item }]);
@@ -532,7 +467,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                       <div
                         key={tagCard.id}
                         style={{
-                          backgroundColor: tagCard.color,
+                          backgroundColor: tagCard.color
                         }}
                         className={`hover:opacity-90 mr-1 mb-1 h-[8px] w-[40px] rounded-[4px] transition-all duration-50`}
                       />
@@ -662,7 +597,10 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                 </div>
                 {dataCard?.members?.length > 0 &&
                   dataCard?.members?.map((member, index) => (
-                    <div key={index} className="flex items-center flex-wrap pb-2">
+                    <div
+                      key={index}
+                      className="flex items-center flex-wrap pb-2"
+                    >
                       <Avatar
                         {...stringAvatar(member.user?.name)}
                         alt={member.user?.name}

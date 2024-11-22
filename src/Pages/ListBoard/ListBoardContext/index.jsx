@@ -62,53 +62,6 @@ function ListBoardProvider({ children }) {
     //eslint-disable-next-line
   }, [dataListAPI]);
 
-  const handlePostComment = async (dataCard) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(content, "text/html");
-    const images = doc.querySelectorAll("img");
-    const imageUrls = Array.from(images).map((img) => img.src);
-    const params = {
-      content: content,
-      files: imageUrls,
-      cardId: dataCard.id
-    };
-    setLoading(true);
-    const loadingToastId = toast.loading("Saving...");
-    try {
-      const response = await postComment(boardId, params);
-      toast.dismiss(loadingToastId);
-      toast.success("Create comment successfully!");
-
-      // Cập nhật lại nội dung và các file sau khi bình luận thành công
-      setContent("");
-      setUpFileComment([]);
-      const newComment = response.data;
-      // Cập nhật danh sách file đã tải lên từ comment
-      setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
-    } catch (err) {
-      toast.dismiss(loadingToastId);
-      toast.error("Cannot create comment");
-      console.error("Lỗi khi đăng comment:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteComment = async (cmdId) => {
-    try {
-      await deleteComment(boardId, cmdId);
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        comments: prevDataCard.comments.filter(
-          (comment) => comment.id !== cmdId
-        )
-      }));
-      toast.success("Deleted comment successfully!");
-    } catch (err) {
-      console.error("Error deleting comment:", err);
-    }
-  };
-
   const handleShowBoardCard = useCallback(
     async (dataCard) => {
       setIsShowBoardCard(!isShowBoardCard);
@@ -216,13 +169,11 @@ function ListBoardProvider({ children }) {
         setContent,
         isSaving,
         setIsSaving,
-        handleDeleteFile,
         upFileComment,
         setUpFileComment,
         setToggleCardEditModal,
-        setLoading,
-        setActiveIndex,
-        setLoading
+
+        setActiveIndex
       }}
     >
       {children}
