@@ -39,36 +39,6 @@ function Filter({ onClose }) {
     });
   };
 
-  useEffect(() => {
-    const today = new Date();
-
-    const updateList =
-      choosedDate.length === 0
-        ? list
-        : list.map((listItem) => {
-            const filteredCards = listItem.cards?.filter((card) =>
-              choosedDate.some((date) => {
-                if (date.id === 1) {
-                  return card?.endDate === null;
-                }
-                if (date.id === 2) {
-                  return card?.endDate && new Date(card.endDate) < today;
-                }
-                if (date.id === 3) {
-                  return card?.endDate === null;
-                }
-                if (date.id === 4) {
-                  return card?.endDate && new Date(card.endDate) >= today;
-                }
-                return date;
-              }),
-            );
-            return { ...listItem, cards: filteredCards };
-          });
-
-    setDataList(updateList);
-  }, [choosedDate, list, setDataList]);
-
   const handleClickNoLabel = () => {
     setChoosedNoLabel(!choosedNoLabel);
   };
@@ -89,13 +59,33 @@ function Filter({ onClose }) {
 
   useEffect(() => {
     const updateList = list.map((listItem) => {
-      let filteredCards = listItem.cards;
+      let filteredCards = listItem?.cards;
+      const today = new Date();
+      if (choosedDate.length > 0) {
+        filteredCards = filteredCards.filter((card) =>
+          choosedDate.some((date) => {
+            if (date.id === 1) {
+              return card?.endDate === null;
+            }
+            if (date.id === 2) {
+              return card?.endDate && new Date(card.endDate) < today;
+            }
+            if (date.id === 3) {
+              return card?.endDate === null;
+            }
+            if (date.id === 4) {
+              return card?.endDate && new Date(card.endDate) >= today;
+            }
+            return card;
+          }),
+        );
+      }
       if (choosedLabel.length > 0) {
         filteredCards = filteredCards.filter((card) =>
           choosedLabel.some((label) => card?.tagCards?.some((cardLabel) => cardLabel?.tag?.id === label.id)),
         );
       }
-      if (choosedNoLabel && choosedLabel.length <= 0) {
+      if ((choosedNoLabel && choosedLabel.length <= 0) || (choosedNoLabel && choosedDate.length > 0)) {
         filteredCards = filteredCards.filter((card) => card?.tagCards?.length === 0);
       } else if (choosedNoLabel) {
         const updatedCardsByLabel = listItem?.cards.filter((card) => card?.tagCards?.length === 0);
@@ -106,7 +96,7 @@ function Filter({ onClose }) {
           choosedMember.some((member) => card?.members?.some((cardMember) => cardMember?.user?.id === member.id)),
         );
       }
-      if (choosedNoMember && choosedMember.length <= 0) {
+      if ((choosedNoMember && choosedMember.length <= 0) || (choosedNoMember && choosedDate > 0)) {
         filteredCards = filteredCards.filter((card) => card?.members?.length === 0);
       } else if (choosedNoMember && choosedNoLabel) {
         const updatedCardsByMember = filteredCards.filter((card) => card?.members?.length === 0);
@@ -119,7 +109,7 @@ function Filter({ onClose }) {
       return { ...listItem, cards: filteredCards };
     });
     setDataList(updateList);
-  }, [choosedLabel, choosedMember, list, choosedNoLabel, choosedNoMember, setDataList]);
+  }, [choosedLabel, choosedMember, list, choosedDate, choosedNoLabel, choosedNoMember, setDataList]);
 
   useEffect(() => {
     const handleGetData = () => {
