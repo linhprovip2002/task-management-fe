@@ -1,4 +1,4 @@
-import { ClickAwayListener } from "@mui/material";
+import { Avatar, ClickAwayListener } from "@mui/material";
 import { memo, useState, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
@@ -6,10 +6,16 @@ import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
 
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { expirations } from "./constans";
+import { stringAvatar } from "../../Utils/color";
+import { useGetAllCardByList, useGetBoardById } from "../../Hooks";
+import { useParams } from "react-router-dom";
 
 function Filter({ onClose }) {
-  const { dataList, setDataList } = useListBoardContext();
-  const [list] = useState(dataList);
+  const { idBoard } = useParams();
+  const { data: dataBoard } = useGetBoardById(idBoard);
+  const { data: dataListAPI } = useGetAllCardByList(dataBoard);
+  const { setDataList } = useListBoardContext();
+  const [list] = useState(dataListAPI);
   const [countMember, setCountMember] = useState([]);
   const [countLabel, setCountLabel] = useState([]);
   const [choosedLabel, setChoosedLabel] = useState([]);
@@ -25,21 +31,6 @@ function Filter({ onClose }) {
   const handleClickNoMember = () => {
     setChoosedNoMember(!choosedNoMember);
   };
-
-  useEffect(() => {
-    if (choosedNoMember) {
-      const updateList = list.map((item) => {
-        const updatedCards = item?.cards?.filter((card) => {
-          return card?.members?.length === 0;
-        });
-        return { ...item, cards: updatedCards };
-      });
-
-      setDataList(updateList);
-    } else {
-      setDataList(list);
-    }
-  }, [setDataList, list, choosedNoMember]);
 
   const handleAddDate = (item) => {
     setChoosedDate((prev) => {
@@ -82,41 +73,12 @@ function Filter({ onClose }) {
     setChoosedNoLabel(!choosedNoLabel);
   };
 
-  useEffect(() => {
-    if (choosedNoLabel) {
-      const updateList = list.map((item) => {
-        const updatedCards = item?.cards?.filter((card) => {
-          return card?.tagCards?.length === 0;
-        });
-        return { ...item, cards: updatedCards };
-      });
-
-      setDataList(updateList);
-    } else {
-      setDataList(list);
-    }
-  }, [setDataList, list, choosedNoLabel]);
-
   const handleAddLabel = (item) => {
     setChoosedLabel((prev) => {
       const itemExists = prev.findIndex((p) => p.id === item.id) !== -1;
       return itemExists ? prev.filter((p) => p.id !== item.id) : [...prev, item];
     });
   };
-
-  useEffect(() => {
-    const updateList =
-      choosedLabel.length === 0
-        ? list
-        : list.map((listItem) => {
-            const filteredCards = listItem.cards?.filter((card) =>
-              choosedLabel.some((label) => card?.tagCards?.some((cardLabel) => cardLabel?.tag?.id === label.id)),
-            );
-            return { ...listItem, cards: filteredCards };
-          });
-
-    setDataList(updateList);
-  }, [choosedLabel, list, setDataList]);
 
   const handleAddMember = (item) => {
     setChoosedMember((prev) => {
@@ -126,18 +88,38 @@ function Filter({ onClose }) {
   };
 
   useEffect(() => {
-    const updateList =
-      choosedMember.length === 0
-        ? list
-        : list.map((listItem) => {
-            const filteredCards = listItem?.cards?.filter((card) =>
-              choosedMember.some((member) => card?.members?.some((cardMember) => cardMember?.user?.id === member.id)),
-            );
-            return { ...listItem, cards: filteredCards };
-          });
+    const updateList = list.map((listItem) => {
+      let filteredCards = listItem.cards;
+      if (choosedLabel.length > 0) {
+        filteredCards = filteredCards.filter((card) =>
+          choosedLabel.some((label) => card?.tagCards?.some((cardLabel) => cardLabel?.tag?.id === label.id)),
+        );
+      }
+      if (choosedNoLabel && choosedLabel.length <= 0) {
+        filteredCards = filteredCards.filter((card) => card?.tagCards?.length === 0);
+      } else if (choosedNoLabel) {
+        const updatedCardsByLabel = listItem?.cards.filter((card) => card?.tagCards?.length === 0);
+        filteredCards = [...filteredCards, ...updatedCardsByLabel];
+      }
+      if (choosedMember.length > 0) {
+        filteredCards = filteredCards.filter((card) =>
+          choosedMember.some((member) => card?.members?.some((cardMember) => cardMember?.user?.id === member.id)),
+        );
+      }
+      if (choosedNoMember && choosedMember.length <= 0) {
+        filteredCards = filteredCards.filter((card) => card?.members?.length === 0);
+      } else if (choosedNoMember && choosedNoLabel) {
+        const updatedCardsByMember = filteredCards.filter((card) => card?.members?.length === 0);
+        filteredCards = [...filteredCards, ...updatedCardsByMember];
+      } else if (choosedNoMember) {
+        const updatedCardsByMember = listItem?.cards.filter((card) => card?.members?.length === 0);
+        filteredCards = [...filteredCards, ...updatedCardsByMember];
+      }
 
+      return { ...listItem, cards: filteredCards };
+    });
     setDataList(updateList);
-  }, [choosedMember, list, setDataList]);
+  }, [choosedLabel, choosedMember, list, choosedNoLabel, choosedNoMember, setDataList]);
 
   useEffect(() => {
     const handleGetData = () => {
@@ -146,26 +128,30 @@ function Filter({ onClose }) {
           const members = card?.members;
           if (members.length > 0) {
             members.forEach((member) => {
-              setCountMember((prev) => {
-                const userExists = prev.findIndex((p) => p.id === member?.user?.id) !== -1;
-                if (!userExists) {
-                  return [...prev, member?.user];
-                }
-                return prev;
-              });
+              if (member?.user) {
+                setCountMember((prev) => {
+                  const userExists = prev.findIndex((p) => p.id === member?.user?.id) !== -1;
+                  if (!userExists) {
+                    return [...prev, member?.user];
+                  }
+                  return prev;
+                });
+              }
             });
           }
 
           const labels = card?.tagCards;
-          if (labels) {
+          if (labels.length > 0) {
             labels.forEach((label) => {
-              setCountLabel((prev) => {
-                const labelExists = prev.findIndex((p) => p.id === label?.tag?.id) !== -1;
-                if (!labelExists) {
-                  return [...prev, label?.tag];
-                }
-                return prev;
-              });
+              if (label?.tag) {
+                setCountLabel((prev) => {
+                  const labelExists = prev.findIndex((p) => p.id === label?.tag?.id) !== -1;
+                  if (!labelExists) {
+                    return [...prev, label?.tag];
+                  }
+                  return prev;
+                });
+              }
             });
           }
         });
@@ -225,9 +211,12 @@ function Filter({ onClose }) {
                     />
                     <span onClick={() => handleAddMember(member)} className="flex items-center w-full">
                       <div className="flex items-center flex-wrap mx-1">
-                        <div className="flex items-center justify-center rounded-[50%] w-[24px] h-[24px] px-3 mr-[2px] font-medium text-white text-[10px] bg-gradient-to-b from-green-400 to-blue-500">
-                          PM
-                        </div>
+                        <Avatar
+                          {...stringAvatar(member?.name)}
+                          alt={member?.name}
+                          src={member?.avatarUrl || ""}
+                          sx={{ width: 24, height: 24 }}
+                        />
                       </div>
                       <div className="font-[400] text-[14px]">{member?.name}</div>
                     </span>

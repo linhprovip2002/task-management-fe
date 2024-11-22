@@ -4,7 +4,14 @@ import { memo } from "react";
 function ClickAway({ onClickAway, children }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-[200]">
-      <ClickAwayListener onClickAway={onClickAway}>{children}</ClickAwayListener>
+      <ClickAwayListener
+        onClickAway={(e) => {
+          e.stopPropagation();
+          onClickAway();
+        }}
+      >
+        {children}
+      </ClickAwayListener>
     </div>
   );
 }

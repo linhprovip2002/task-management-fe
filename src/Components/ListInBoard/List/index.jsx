@@ -126,17 +126,7 @@ function List({ item = {}, id }) {
               className="flex-1 p-1"
             >
               {cards?.map((card, index) => {
-                return (
-                  <ItemList
-                    id={card.id}
-                    key={index}
-                    item={item}
-                    dataCard={card}
-                    imageSrc
-                    isDescriptionIcon
-                    Attachments={[1]}
-                  />
-                );
+                return <ItemList id={card.id} key={index} item={item} dataCard={card} />;
               })}
             </div>
           </SortableContext>
