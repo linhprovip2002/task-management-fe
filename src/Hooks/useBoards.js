@@ -33,7 +33,7 @@ export const useGetBoardById = (boardId) => {
 
 export const useGetMembersByBoard = (boardId) => {
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [EQueryKeys.GET_MEMBERS_BY_BOARD, boardId],
+    queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD, boardId],
     queryFn: () => getAllMembersByIdBoard(boardId),
     ...{
       refetchOnWindowFocus: false,

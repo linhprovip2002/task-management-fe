@@ -14,7 +14,6 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
-import useDebounce from "../../Hooks/useDebounce";
 import { changePositionList, CreateList } from "../../Services/API/ApiListOfBoard";
 import { changePositionCard } from "../../Services/API/ApiCard";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
@@ -41,9 +40,8 @@ function ListInBoard() {
     },
   });
   const mySensors = useSensors(mouseSensor, touchSensor);
-  const [changeData, setChangeData] = useState(null);
   const [showAddListItem, setShowAddListItem] = useState(false);
-  const debounceValue = useDebounce(changeData, 1000);
+
   const [activeItemType, setActiveItemType] = useState(null);
   const { dataList, boardId, dataBoard } = useListBoardContext();
   const { getListPermissionByUser } = useGetBoardPermission(boardId);
@@ -114,16 +112,20 @@ function ListInBoard() {
     if (!over) {
       return;
     }
+    const activeContainer = active.data.current.sortable.containerId;
+    const overContainer = over.data.current?.sortable.containerId || over.id;
+    const activeIndex = active.data.current.sortable.index;
+    const overIndex = over.data.current?.sortable.index || 0;
 
     if (active.id !== over.id) {
-      const activeContainer = active.data.current.sortable.containerId;
-      const overContainer = over.data.current?.sortable.containerId || over.id;
-      const activeIndex = active.data.current.sortable.index;
-      const overIndex = over.data.current?.sortable.index || 0;
-
       const activeContainerIndex = findColById(columns, activeContainer);
       const overContainerIndex = findColById(columns, overContainer);
       if (activeItemType === "CARD") {
+        changePositionCard({ cardId: active.id, overListId: overContainer, position: overIndex + 1 })
+          .then((res) => {})
+          .catch((err) => {
+            toast.error("Change position unsuccessfully");
+          });
         setColumns((prev) => {
           const newItems = [...prev];
           const activeCard = newItems[activeContainerIndex].cards?.[activeIndex];
@@ -153,7 +155,11 @@ function ListInBoard() {
       if (activeItemType === "COLUMN") {
         const activeColIndex = findColById(columns, active.id);
         const overColIndex = findColById(columns, over.id);
-
+        changePositionList({ boardId: idBoard, listId: active.id, newPosition: overColIndex + 1 })
+          .then((res) => {})
+          .catch((err) => {
+            toast.error("Change position unsuccessfully");
+          });
         setColumns((prev) => {
           return arrayMove(prev, activeColIndex, overColIndex);
         });
@@ -169,41 +175,6 @@ function ListInBoard() {
       overCol: insertAtIndex(items[overContainer].cards, overIndex, item),
     };
   };
-
-  useEffect(() => {
-    //TODO call api move card or column here
-    if (dataBoard?.role?.roleName !== "admin") return;
-    if (debounceValue !== null) {
-      if (debounceValue.type === "COLUMN") {
-        // call api change position list
-        changePositionList({
-          boardId: idBoard,
-          listId: debounceValue.activeListId,
-          newPosition: debounceValue.newPosition + 1,
-        })
-          .then((res) => {})
-          .catch((err) => {
-            toast.error("Change position unsuccessfully");
-          });
-      }
-      if (debounceValue.type === "CARD") {
-        // call api change position card
-        changePositionCard({
-          cardId: debounceValue.cardId,
-          activeListId: debounceValue.activeListId,
-          overListId: debounceValue.overListId,
-          position: debounceValue.newPosition + 1,
-        })
-          .then((res) => {})
-          .catch((err) => {
-            toast.error("Change position unsuccesfully");
-          });
-      }
-      setChangeData(null);
-    }
-
-    // eslint-disable-next-line
-  }, [debounceValue]);
 
   const handleAddList = async (nameTitle) => {
     const newListItem = {
