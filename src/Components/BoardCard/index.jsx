@@ -480,11 +480,7 @@ export const BoardCard = () => {
     }
   };
 
-<<<<<<< HEAD
   const loading = !dataCard || !cardComments || isLoadingComments || isLoadingTags;
-=======
-  const loading = !dataCard;
->>>>>>> 5990400 (fix click button in board card)
 
   return (
     <>
