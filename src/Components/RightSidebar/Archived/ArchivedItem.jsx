@@ -5,10 +5,15 @@ import { Close } from "@mui/icons-material";
 import { memo, useState } from "react";
 import { toast } from "react-toastify";
 import { destroyCard, resendCard } from "../../../Services/API/ApiCard";
+import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
+import { findColById } from "../../../Utils/dragDrop";
+import { insertAtIndex } from "../../../Utils/array";
 
 function ArchivedItem({ data, onDeleted, onResend }) {
   const [popperDelete, setPopperDelete] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const { setDataList } = useListBoardContext();
+
   const handleDeleteCard = () => {
     setIsFetching(true);
 
@@ -29,6 +34,12 @@ function ArchivedItem({ data, onDeleted, onResend }) {
   const handleResend = () => {
     resendCard(data.id)
       .then((res) => {
+        setDataList((prev) => {
+          const newState = [...prev];
+          const colIndex = findColById(newState, data.listId);
+          newState[colIndex].cards = insertAtIndex(newState[colIndex].cards, data.position, data);
+          return newState;
+        });
         if (onResend) onResend(data);
         toast.success("Resend to board successfully");
       })

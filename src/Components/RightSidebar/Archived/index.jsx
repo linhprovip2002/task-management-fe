@@ -22,7 +22,7 @@ export default function Archived() {
     setArchivedCards((prev) => [...prev].filter((card) => card.id !== id));
   };
   const handleAfterResend = (data) => {
-    // console.log(data);
+    setArchivedCards((prev) => [...prev].filter((card) => card.id !== data.id));
   };
 
   return (
