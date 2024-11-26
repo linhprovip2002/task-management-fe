@@ -7,7 +7,11 @@ import ItemList from "../../../Components/ItemList";
 import TippyDetail from "../../TippyDetail";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
-import { rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
+import {
+  rectSortingStrategy,
+  SortableContext,
+  useSortable
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { UpdateList } from "../../../Services/API/ApiListOfBoard";
 import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
@@ -15,6 +19,7 @@ import { memo } from "react";
 import { createCardByIdList } from "../../../Services/API/ApiCard";
 import { toast } from "react-toastify";
 import { useDroppable } from "@dnd-kit/core";
+import { useParams } from "react-router-dom";
 
 function List({ item = {}, id }) {
   const {
@@ -22,12 +27,12 @@ function List({ item = {}, id }) {
     listeners,
     setNodeRef: colNodeRef,
     transform,
-    isDragging,
+    isDragging
   } = useSortable({
     id: id,
     data: {
-      type: "COLUMN",
-    },
+      type: "COLUMN"
+    }
   });
   const cards = item.cards || [];
   const { setNodeRef } = useDroppable({ id });
@@ -36,11 +41,11 @@ function List({ item = {}, id }) {
     transform: CSS.Translate.toString(transform),
     height: "100%",
     opacity: isDragging ? "0.7" : 1,
-    cursor: "default",
+    cursor: "default"
   };
 
+  const { idBoard } = useParams();
   const {
-    boardId,
     activeMonitor,
     setActiveIndex,
     activeIndex,
@@ -48,18 +53,19 @@ function List({ item = {}, id }) {
     handleShowAddCard,
     dataList,
     setDataList,
+    isOwner
   } = useListBoardContext();
-  const { getCardPermissionByUser } = useGetBoardPermission(boardId);
+  const { getCardPermissionByUser } = useGetBoardPermission(idBoard, isOwner);
 
   const handleClickOutside = async (event) => {
     if (event.target.value) {
       const dataList = {
         title: event.target.value.trim(),
         description: item?.description,
-        boardId: boardId,
+        idBoard: idBoard
       };
       try {
-        await UpdateList(boardId, id, dataList);
+        await UpdateList(idBoard, id, dataList);
       } catch (error) {
         console.error("Failed to create list:", error);
       }
@@ -74,15 +80,15 @@ function List({ item = {}, id }) {
         coverUrl: "",
         priority: "medium",
         tagId: "",
-        listId: id,
+        listId: id
       });
       const newList = dataList.map((list) =>
         list.id === id
           ? {
               ...list,
-              cards: [...(list.cards || []), newCard],
+              cards: [...(list.cards || []), newCard]
             }
-          : list,
+          : list
       );
       setActiveIndex((prev) => prev && null);
       setDataList(newList);
@@ -105,7 +111,9 @@ function List({ item = {}, id }) {
               onBlur={(e) => handleClickOutside(e)}
               className="flex-1 min-w-0 mr-2 bg-gray-100 rounded-[8px] text-[14px] font-[600] px-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {activeMonitor.includes(item.id) && <RemoveRedEyeOutlinedIcon className="p-1" />}
+            {activeMonitor.includes(item.id) && (
+              <RemoveRedEyeOutlinedIcon className="p-1" />
+            )}
             <ConvertHiDotsVertical
               tippyName="Operation"
               data={item}
@@ -115,19 +123,30 @@ function List({ item = {}, id }) {
             />
           </div>
           {/* List board */}
-          <SortableContext id={id} items={cards.map((card) => card.id)} strategy={rectSortingStrategy}>
+          <SortableContext
+            id={id}
+            items={cards.map((card) => card.id)}
+            strategy={rectSortingStrategy}
+          >
             <div
               ref={setNodeRef}
               style={{
                 maxHeight: "100%",
                 overflowY: "auto",
                 padding: "8px",
-                scrollbarWidth: "thin",
+                scrollbarWidth: "thin"
               }}
               className="flex-1 p-1"
             >
               {cards?.map((card, index) => {
-                return <ItemList id={card.id} key={index} item={item} dataCard={card} />;
+                return (
+                  <ItemList
+                    id={card.id}
+                    key={index}
+                    item={item}
+                    dataCard={card}
+                  />
+                );
               })}
             </div>
           </SortableContext>
@@ -151,7 +170,9 @@ function List({ item = {}, id }) {
                 <div className="p-2 transition-opacity duration-300 text-[#44546f]">
                   <AddIcon width={16} height={16} />
                 </div>
-                <div className="text-[14px] font-medium text-[#44546f]">Add card</div>
+                <div className="text-[14px] font-medium text-[#44546f]">
+                  Add card
+                </div>
               </div>
               <TippyDetail title={"Create from template..."}>
                 <div className="text-[#44546f]">

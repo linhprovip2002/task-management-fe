@@ -11,13 +11,15 @@ import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
-import { capitalize } from "lodash";
+import capitalize from "lodash/capitalize";
 
 import Loading from "../../Loading";
 import { CenterModel } from "../styles";
 import { CreateNewRoleModal } from "./CreateNewRoleModal";
-import { PERMISSIONS } from "../../../constants/permission";
-import { useGetBoardRole } from "../../../Hooks/useBoardPermission";
+import {
+  useGetBoardPermission,
+  useGetBoardRole
+} from "../../../Hooks/useBoardPermission";
 import { updateBoardPermission } from "../../../Services/API/apiBoardPermission";
 import { EQueryKeys } from "../../../constants";
 
@@ -36,6 +38,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   const { idBoard } = useParams();
   const queryClient = useQueryClient();
 
+  const { dataBoardPermission } = useGetBoardPermission(idBoard);
   const { dataBoardRole, isLoading: isLoadingRole } = useGetBoardRole(idBoard);
 
   const RoleOptions = useMemo(() => {
@@ -51,21 +54,25 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   }, [dataBoardRole]);
 
   const PermissionGridConstants = useMemo(() => {
-    return PERMISSIONS.reduce((acc, permission) => {
-      if (!acc.find((p) => p.title === permission.module)) {
+    return dataBoardPermission.reduce((acc, permission) => {
+      if (!acc.find((p) => p.title === permission.moduleName)) {
         acc.push({
-          title: permission.module,
+          title: permission.moduleName,
           children: []
         });
       }
-      const index = acc.findIndex((p) => p.title === permission.module);
+      const index = acc.findIndex((p) => p.title === permission.moduleName);
+
       acc[index].children.push({
         id: permission.id,
-        title: permission.displayName
+        title:
+          capitalize(permission.moduleName) +
+          " " +
+          capitalize(permission.actionName)
       });
       return acc;
     }, []);
-  }, []);
+  }, [dataBoardPermission]);
 
   const watchRole = watch("role");
   const watchPermissionByRole = watch("permissions");
@@ -74,13 +81,17 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const payload = data.permissions.map((permission) => ({
-      roleId: data.role.value,
-      permissionId: permission
-    }));
+    const payload = [
+      {
+        roleId: data.role.value,
+        permissionId: data.permissions
+      }
+    ];
     updateBoardPermission(idBoard, payload)
       .then(() => {
-        queryClient.invalidateQueries([EQueryKeys.GET_BOARD_PERMISSION]);
+        queryClient.invalidateQueries({
+          queryKey: [EQueryKeys.GET_BOARD_PERMISSION]
+        });
         toast.success("Permission updated successfully");
       })
       .catch((err) => {
@@ -110,9 +121,9 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
       ...prev,
       [module]: value
     }));
-    const modulePermission = PERMISSIONS.filter(
-      (permission) => permission.module === module
-    ).map((child) => child.id);
+    const modulePermission = dataBoardPermission
+      .filter((permission) => permission.moduleName === module)
+      .map((child) => child.id);
 
     const currentPermissions = getValues("permissions") || [];
 
@@ -144,9 +155,9 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
     const updatedCheckedAll = {};
 
     PermissionGridConstants.forEach((permission) => {
-      const modulePermission = PERMISSIONS.filter(
-        (perm) => perm.module === permission.title
-      ).map((child) => child.id);
+      const modulePermission = dataBoardPermission
+        .filter((perm) => perm.moduleName === permission.title)
+        .map((child) => child.id);
 
       const allChecked = modulePermission.every((perm) =>
         watchPermissionByRole?.includes(perm)
@@ -226,7 +237,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
                   <div className="w-1/12 font-semibold">
                     {capitalize(permission.title)}
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-1 overflow-x-hidden">
                     {permission.children.map((child) => {
                       return (
                         <div
