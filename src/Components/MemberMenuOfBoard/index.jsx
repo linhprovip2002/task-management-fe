@@ -6,14 +6,15 @@ import ItemMember from "./ItemMember";
 import { RemoveUserToCard } from "../../Services/API/ApiCard";
 import ClickAway from "../BoardCard/ClickAway";
 import { useGetCardById } from "../../Hooks";
+import { useParams } from "react-router-dom";
 
 const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseShowMenuBtnCard }) => {
   const { position, membersBoard } = useListBoardContext();
   const [inputTitle, setInputTitle] = useState("");
   const [filteredMembersBoard, setFilteredMembersBoard] = useState([]);
-
+  const { idBoard } = useParams();
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
+  const { data: dataCard } = useGetCardById(idBoard, cardId);
 
   const HandleAddMemberInCard = (item) => {
     if (handleCloseShowMenuBtnCard) {

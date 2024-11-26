@@ -8,7 +8,8 @@ const CardAddDetail = ({ content, setContent, loading }) => {
   const { handlePostComment } = useListBoardContext();
   const [isFocused, setIsFocused] = useState(false);
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
+  const { idBoard } = useParams();
+  const { data: dataCard } = useGetCardById(idBoard, cardId);
   const handleCloseComment = () => {
     setIsFocused(false);
     setContent("");
@@ -30,8 +31,7 @@ const CardAddDetail = ({ content, setContent, loading }) => {
             apiKey="qibz0pdsl3j3pwij2g3sw1414jdo15snwf06ohs4j3rolood"
             value={content}
             init={{
-              images_upload_url:
-                "https://api-task-management-production.up.railway.app/api/upload/file",
+              images_upload_url: "https://api-task-management-production.up.railway.app/api/upload/file",
               referrer_policy: "origin",
               height: 280,
               width: "100%",
@@ -40,8 +40,7 @@ const CardAddDetail = ({ content, setContent, loading }) => {
               statusbar: false,
               branding: false,
               plugins: ["advlist", "autolink", "lists", "link", "image"],
-              toolbar:
-                "undo redo bold italic alignleft aligncenter alignright | link image media"
+              toolbar: "undo redo bold italic alignleft aligncenter alignright | link image media",
             }}
             onEditorChange={handleEditorChange}
             onFocus={handleFocus}
@@ -49,7 +48,7 @@ const CardAddDetail = ({ content, setContent, loading }) => {
         ) : (
           <TextField
             sx={{
-              width: "100%"
+              width: "100%",
             }}
             id="outlined-basic"
             size="medium"
@@ -63,19 +62,11 @@ const CardAddDetail = ({ content, setContent, loading }) => {
       <div className="flex items-center mt-2">
         {isFocused && (
           <div className="flex items-center justify-between">
-            <Button
-              onClick={() => handlePostComment(dataCard)}
-              variant="contained"
-              color="primary"
-              disabled={!content}
-            >
+            <Button onClick={() => handlePostComment(dataCard)} variant="contained" color="primary" disabled={!content}>
               {loading ? "Saving..." : "Save"}
             </Button>
             <div className="ml-4"></div>
-            <Button
-              onClick={handleCloseComment}
-              className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white"
-            >
+            <Button onClick={handleCloseComment} className="text-white bg-blue-500 hover:bg-blue-500 hover:text-white">
               Discard Change
             </Button>
           </div>

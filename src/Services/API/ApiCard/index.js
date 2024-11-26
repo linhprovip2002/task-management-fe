@@ -1,8 +1,8 @@
 import request from "../request";
 
-export async function createCardByIdList(dataCard) {
+export async function createCardByIdList(boardId, dataCard) {
   try {
-    const response = await request.post(`/card`, dataCard);
+    const response = await request.post(`/board/${boardId}/card`, dataCard);
     return response.data;
   } catch (error) {
     throw error;
@@ -13,8 +13,8 @@ export async function getAllCardByList(id, boardId) {
   return await request.get(`/board/${boardId}/list/${id}/cards`);
 }
 
-export function getCardById(id) {
-  return request.get(`/card/${id}`);
+export function getCardById(boardId, id) {
+  return request.get(`board/${boardId}/card/${id}`);
 }
 
 export async function getAllUserByIdCard(id) {
@@ -25,9 +25,9 @@ export async function updateCard(id, data) {
   return await request.patch(`/card/${id}`, data);
 }
 
-export async function deleteCard(cardId) {
+export async function deleteCard(boardId, cardId) {
   try {
-    const response = await request.delete(`/card/${cardId}`);
+    const response = await request.delete(`/board/${boardId}/card/${cardId}`);
     return response.data;
   } catch (error) {
     throw error;
@@ -40,8 +40,8 @@ export async function JoinToCard(idCard, idUser) {
   });
 }
 
-export async function RemoveUserToCard(idCard, idUser) {
-  return await request.delete(`/card/${idCard}/members/${idUser}`);
+export async function RemoveUserToCard(boardId, idCard, idUser) {
+  return await request.delete(`/board/${boardId}/card/${idCard}/members/${idUser}`);
 }
 
 export async function changePositionCard({ cardId, overListId, position }) {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Box, Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Zoom from "react-medium-image-zoom";
@@ -18,7 +18,8 @@ const ItemAttachment = ({ item, moreRef, handleCloseMore, openMore, handleOpenMo
   const handleImageClick = () => setOpenImg(true);
   const handleCloseImageClick = () => setOpenImg(false);
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
+  const { idBoard } = useParams();
+  const { data: dataCard } = useGetCardById(idBoard, cardId);
 
   const handleDeleteFile = async (fileId) => {
     try {

@@ -36,31 +36,20 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     setDataCard,
     toggleCardEditModal,
     dataList,
+    setDataList,
     position,
-    boardId,
   } = useListBoardContext();
   const { userData } = useStorage();
   const queryClient = useQueryClient();
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
   const { idBoard } = useParams();
+  const { data: dataCard } = useGetCardById(idBoard, cardId);
   const [tag, setTag] = useState({});
-  const [labelOfCard, setLabelOfCard] = useState(
-    () =>
-      dataCard?.tagCards
-        ?.filter((tagCard) => tagCard?.tag)
-        .map(({ tag }) => ({
-          id: tag.id,
-          updatedAt: tag.updatedAt || null,
-          color: tag.color,
-          name: tag.name,
-          boardId: idBoard,
-        })) || [],
-  );
+  const [labelOfCard, setLabelOfCard] = useState([]);
   const [listColorLabel, setListColorLabel] = useState([]);
   const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
   const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
-  const [inputTitle, setInputTitle] = useState(dataCard?.title);
+  const [inputTitle, setInputTitle] = useState(dataCard?.title || "");
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
   const [isCreateLabel, setIsCreateLabel] = useState(false);
   const [numberShow, setNumberShow] = useState(null);
@@ -72,18 +61,39 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [endDateCheck, setEndDateCheck] = useState(() => {
-    if (!dataCard || dataCard.endDate == null) return null;
-    const endDate = new Date(dataCard.endDate);
-    const currentDate = new Date();
-    // overdue time
-    const isOverdue = endDate < currentDate;
-    setCheckOverdue(isOverdue);
-    const day = endDate.getUTCDate().toString().padStart(2, "0");
-    const month = (endDate.getUTCMonth() + 1).toString().padStart(2, "0");
-    const formattedDate = `${day}thg${month}`;
-    return formattedDate;
-  });
+  const [endDateCheck, setEndDateCheck] = useState(null);
+
+  useEffect(() => {
+    if (dataCard) {
+      setLabelOfCard(
+        dataCard?.tagCards
+          ?.filter((tagCard) => tagCard?.tag)
+          .map(({ tag }) => ({
+            id: tag.id,
+            updatedAt: tag.updatedAt || null,
+            color: tag.color,
+            name: tag.name,
+            boardId: idBoard,
+          })) || [],
+      );
+
+      setPostUploadedFiles(dataCard?.files || []);
+      setMembersInCard(dataCard?.members || []);
+      setInputTitle(dataCard?.title || "");
+      setChooseColorBackground(dataCard?.coverUrl || "");
+
+      if (dataCard.endDate) {
+        const endDate = new Date(dataCard.endDate);
+        const currentDate = new Date();
+        setCheckOverdue(endDate < currentDate);
+        const day = endDate.getUTCDate().toString().padStart(2, "0");
+        const month = (endDate.getUTCMonth() + 1).toString().padStart(2, "0");
+        setEndDateCheck(`${day}thg${month}`);
+      } else {
+        setEndDateCheck(null);
+      }
+    }
+  }, [dataCard, idBoard]);
 
   useEffect(() => {
     if (endDateCheck != null) {
@@ -150,14 +160,14 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     (item) => {
       const addTagAsync = async () => {
         try {
-          await AddTagInCard(boardId, dataCard?.id, item.id);
+          await AddTagInCard(idBoard, dataCard?.id, item.id);
         } catch (err) {
           console.error("Error add data tag in card detail: ", err);
         }
       };
       const removeTagAsync = async () => {
         try {
-          await RemoveTagInCard(boardId, dataCard?.id, item.id);
+          await RemoveTagInCard(idBoard, dataCard?.id, item.id);
         } catch (err) {
           console.error("Error remove data tag in card detail: ", err);
         }
@@ -177,7 +187,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       }));
     },
     //  eslint-disable-next-line
-    [dataCard, boardId],
+    [dataCard, idBoard],
   );
 
   const ShowDetailNewLabel = useCallback(() => {
@@ -212,12 +222,12 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       ShowDetailNewLabel();
       setInputTitleLabel("");
       const tag = await createTag({
-        boardId: Number(boardId),
+        boardId: Number(idBoard),
         name: titleLabel,
         color: dataColor?.colorCode,
       });
       tag && setListColorLabel([...listColorLabel, tag]);
-      tag && (await AddTagInCard(boardId, dataCard?.id, tag.id));
+      tag && (await AddTagInCard(idBoard, dataCard?.id, tag.id));
     } catch (err) {
       console.error("Error add data tag in card detail: ", err);
     }
@@ -228,7 +238,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       ShowDetailNewLabel();
       setInputTitleLabel("");
       const resTag = await updateTag({
-        boardId: Number(boardId),
+        boardId: Number(idBoard),
         name: titleLabel,
         color: dataColor?.colorCode,
         tagId: tag.id,
@@ -272,12 +282,23 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     setChooseColorBackground(item);
   }, []);
 
-  const handleStorageToCard = async () => {
+  const handleStorageToCard = async (dataCard) => {
     try {
-      const res = await deleteCard(dataCard.id);
+      const updatedLists = dataList.map((list) => {
+        if (list.cards.some((card) => card.id === dataCard.id)) {
+          return {
+            ...list,
+            cards: list.cards.filter((card) => card.id !== dataCard.id),
+          };
+        }
+        return list;
+      });
+      setDataList(updatedLists);
+      const res = await deleteCard(idBoard, dataCard.id);
       if (res.removed === 1) setDataCard(res);
     } catch (error) {
       console.error("Error: Unable to store data on the card", error);
+      setDataList(dataList);
     }
   };
 
@@ -378,7 +399,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         handleShowMenuBtnCard(e);
         break;
       case 8:
-        handleStorageToCard();
+        handleStorageToCard(dataCard);
         handleShowBoardEdit(e, dataList, dataCard);
         break;
       default:
