@@ -36,6 +36,7 @@ function List({ item = {}, id }) {
     transform: CSS.Translate.toString(transform),
     height: "100%",
     opacity: isDragging ? "0.7" : 1,
+    cursor: "default",
   };
 
   const {
