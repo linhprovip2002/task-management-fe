@@ -1,6 +1,6 @@
 import request from "./API/request";
 
-const baseURL = process.env.REACT_APP_API_URL + "/workspace";
+const baseURL = 'https://api-task-management-production.up.railway.app/api' + "/workspace";
 
 class WorkspaceServices {
   async createWorkspace(workspaceData) {

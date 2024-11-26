@@ -1,6 +1,6 @@
 import request from "./API/request";
 
-const baseURL = process.env.REACT_APP_API_URL + "/user";
+const baseURL = 'https://api-task-management-production.up.railway.app/api' + "/user";
 
 class UserServices {
   async getUser({ limit, page, search }) {

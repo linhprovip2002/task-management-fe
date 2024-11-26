@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { refreshAccessToken } from "./refreshToken";
 
 const request = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: 'https://api-task-management-production.up.railway.app/api',
   // baseURL: "http://localhost:3001/api",
   headers: {
     Accept: "application/json, text/plain, */*",

@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 export const refreshAccessToken = async () => {
   const refreshToken = Cookies.get("refreshToken") || "";
   try {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
+    const response = await axios.get(`${'https://api-task-management-production.up.railway.app/api'}/auth/refresh`, {
       headers: {
         Authorization: `Bearer ${refreshToken}`,
       },
