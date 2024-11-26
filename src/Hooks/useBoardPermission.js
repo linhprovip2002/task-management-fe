@@ -5,7 +5,7 @@ import {
   getBoardRole
 } from "../Services/API/apiBoardPermission";
 
-export const useGetBoardPermission = (boardId) => {
+export const useGetBoardPermission = (boardId, isOwner = false) => {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [EQueryKeys.GET_BOARD_PERMISSION, boardId],
     queryFn: () => getBoardPermission(boardId),
@@ -16,6 +16,7 @@ export const useGetBoardPermission = (boardId) => {
   });
 
   const getBoardPermissionByUser = (item) => {
+    if (isOwner) return true;
     const moduleName = "board";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item
@@ -23,6 +24,7 @@ export const useGetBoardPermission = (boardId) => {
   };
 
   const getListPermissionByUser = (item) => {
+    if (isOwner) return true;
     const moduleName = "list";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item
@@ -30,6 +32,7 @@ export const useGetBoardPermission = (boardId) => {
   };
 
   const getCardPermissionByUser = (item) => {
+    if (isOwner) return true;
     const moduleName = "card";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item
@@ -37,6 +40,7 @@ export const useGetBoardPermission = (boardId) => {
   };
 
   const getCommentPermissionByUser = (item) => {
+    if (isOwner) return true;
     const moduleName = "comment";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item
@@ -44,6 +48,7 @@ export const useGetBoardPermission = (boardId) => {
   };
 
   const getTagPermissionByUser = (item) => {
+    if (isOwner) return true;
     const moduleName = "tag";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item

@@ -11,17 +11,23 @@ import {
   useSensor,
   useSensors,
   closestCorners,
-  DragOverlay,
+  DragOverlay
 } from "@dnd-kit/core";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
-import { changePositionList, CreateList } from "../../Services/API/ApiListOfBoard";
+import {
+  changePositionList,
+  CreateList
+} from "../../Services/API/ApiListOfBoard";
 import { changePositionCard } from "../../Services/API/ApiCard";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 import { EQueryKeys } from "../../constants";
 import { useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { findColById } from "../../Utils/dragDrop";
-import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import {
+  horizontalListSortingStrategy,
+  SortableContext
+} from "@dnd-kit/sortable";
 import { toast } from "react-toastify";
 import ItemList from "../ItemList";
 
@@ -30,21 +36,21 @@ function ListInBoard() {
   const { idBoard } = useParams();
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
-      distance: 10,
-    },
+      distance: 10
+    }
   });
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
       delay: 250,
-      tolerance: 500,
-    },
+      tolerance: 500
+    }
   });
   const mySensors = useSensors(mouseSensor, touchSensor);
   const [showAddListItem, setShowAddListItem] = useState(false);
 
   const [activeItemType, setActiveItemType] = useState(null);
-  const { dataList, boardId, dataBoard } = useListBoardContext();
-  const { getListPermissionByUser } = useGetBoardPermission(boardId);
+  const { dataList, isOwner } = useListBoardContext();
+  const { getListPermissionByUser } = useGetBoardPermission(idBoard, isOwner);
   const [activeItemData, setActiveItemData] = useState(null);
   const [columns, setColumns] = useState(dataList);
 
@@ -62,7 +68,11 @@ function ListInBoard() {
       const activeColumnId = active.id;
       const activeColumnIndex = findColById(columns, activeColumnId);
       const activeColumn = columns[activeColumnIndex];
-      setActiveItemData({ activeColumnId, dataColumn: activeColumn, activeColumnIndex });
+      setActiveItemData({
+        activeColumnId,
+        dataColumn: activeColumn,
+        activeColumnIndex
+      });
     }
   };
 
@@ -98,7 +108,7 @@ function ListInBoard() {
           activeIndex,
           overContainerIndex,
           overIndex,
-          activeCard,
+          activeCard
         );
         newItems[activeContainerIndex].cards = changed.activeCol;
         newItems[overContainerIndex].cards = changed.overCol;
@@ -121,20 +131,25 @@ function ListInBoard() {
       const activeContainerIndex = findColById(columns, activeContainer);
       const overContainerIndex = findColById(columns, overContainer);
       if (activeItemType === "CARD") {
-        changePositionCard({ cardId: active.id, overListId: overContainer, position: overIndex + 1 })
+        changePositionCard({
+          cardId: active.id,
+          overListId: overContainer,
+          position: overIndex + 1
+        })
           .then((res) => {})
           .catch((err) => {
             toast.error("Change position unsuccessfully");
           });
         setColumns((prev) => {
           const newItems = [...prev];
-          const activeCard = newItems[activeContainerIndex].cards?.[activeIndex];
+          const activeCard =
+            newItems[activeContainerIndex].cards?.[activeIndex];
 
           if (activeContainerIndex === overContainerIndex) {
             newItems[activeContainerIndex].cards = arrayMove(
               newItems[activeContainerIndex].cards,
               activeIndex,
-              overIndex,
+              overIndex
             );
           } else {
             const changed = moveBetweenContainers(
@@ -143,7 +158,7 @@ function ListInBoard() {
               activeIndex,
               overContainerIndex,
               overIndex,
-              activeCard,
+              activeCard
             );
             newItems[activeContainerIndex].cards = changed.activeCol;
             newItems[overContainerIndex].cards = changed.overCol;
@@ -155,7 +170,11 @@ function ListInBoard() {
       if (activeItemType === "COLUMN") {
         const activeColIndex = findColById(columns, active.id);
         const overColIndex = findColById(columns, over.id);
-        changePositionList({ boardId: idBoard, listId: active.id, newPosition: overColIndex + 1 })
+        changePositionList({
+          boardId: idBoard,
+          listId: active.id,
+          newPosition: overColIndex + 1
+        })
           .then((res) => {})
           .catch((err) => {
             toast.error("Change position unsuccessfully");
@@ -169,10 +188,17 @@ function ListInBoard() {
     setActiveItemData(null);
   };
 
-  const moveBetweenContainers = (items, activeContainer, activeIndex, overContainer, overIndex, item) => {
+  const moveBetweenContainers = (
+    items,
+    activeContainer,
+    activeIndex,
+    overContainer,
+    overIndex,
+    item
+  ) => {
     return {
       activeCol: removeAtIndex(items[activeContainer].cards, activeIndex),
-      overCol: insertAtIndex(items[overContainer].cards, overIndex, item),
+      overCol: insertAtIndex(items[overContainer].cards, overIndex, item)
     };
   };
 
@@ -180,7 +206,7 @@ function ListInBoard() {
     const newListItem = {
       title: nameTitle.trim(),
       description: "",
-      boardId: idBoard,
+      boardId: idBoard
     };
     try {
       await CreateList(idBoard, newListItem);
@@ -200,7 +226,7 @@ function ListInBoard() {
       <div
         style={{
           scrollbarWidth: "thin",
-          scrollbarColor: "#fff6 #00000026",
+          scrollbarColor: "#fff6 #00000026"
         }}
         className="absolute h-full top-0 left-0 right-0 mb-2 pb-2 overflow-x-auto overflow-y-hidden whitespace-nowrap"
       >
@@ -213,7 +239,10 @@ function ListInBoard() {
               onDragEnd={handleDragEnd}
               collisionDetection={closestCorners}
             >
-              <SortableContext strategy={horizontalListSortingStrategy} items={columns.map((col) => col.id)}>
+              <SortableContext
+                strategy={horizontalListSortingStrategy}
+                items={columns.map((col) => col.id)}
+              >
                 <div style={{ display: "flex" }}>
                   {columns?.map((item, index) => {
                     return <List id={item.id} key={index} item={item} />;
@@ -222,11 +251,17 @@ function ListInBoard() {
               </SortableContext>
               <DragOverlay>
                 {activeItemType === "CARD" ? (
-                  <ItemList id={activeItemData.activeCardId} dataCard={activeItemData.dataCard} />
+                  <ItemList
+                    id={activeItemData.activeCardId}
+                    dataCard={activeItemData.dataCard}
+                  />
                 ) : null}
 
                 {activeItemType === "COLUMN" ? (
-                  <List id={activeItemData.activeColumnId} item={activeItemData.dataColumn} />
+                  <List
+                    id={activeItemData.activeColumnId}
+                    item={activeItemData.dataColumn}
+                  />
                 ) : null}
               </DragOverlay>
             </DndContext>
@@ -234,7 +269,11 @@ function ListInBoard() {
             <div className="px-[8px]">
               {getListPermissionByUser("create") && (
                 <div
-                  onClick={() => (!showAddListItem ? setShowAddListItem((prev) => !prev) : null)}
+                  onClick={() =>
+                    !showAddListItem
+                      ? setShowAddListItem((prev) => !prev)
+                      : null
+                  }
                   className={`flex items-center w-[248px] rounded-[12px] bg-gray-100 p-[6px] ${!showAddListItem ? "hover:bg-gray-300" : ""} cursor-pointer`}
                 >
                   {!showAddListItem ? (
@@ -242,7 +281,9 @@ function ListInBoard() {
                       <div className="rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300">
                         <AddIcon width={16} height={16} />
                       </div>
-                      <div className="text-[14px] font-medium text-[#44546f]">Add another list</div>
+                      <div className="text-[14px] font-medium text-[#44546f]">
+                        Add another list
+                      </div>
                     </>
                   ) : (
                     <div className="w-full">
