@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider
-} from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider } from "@mui/material";
 import classNames from "classnames/bind";
 import styles from "./RightSidebar.module.scss";
 import MenuItem from "./MenuItem";
@@ -28,10 +20,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SettingMenu from "./SettingMenu";
 import { useNavigate, useParams } from "react-router-dom";
 import Archived from "./Archived";
-import {
-  deleteBoardId,
-  leaveBoard
-} from "../../Services/API/ApiBoard/apiBoard";
+import { deleteBoardId, leaveBoard } from "../../Services/API/ApiBoard/apiBoard";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../constants";
@@ -41,6 +30,7 @@ import { memo } from "react";
 import LabelMenu from "./LabelMenu";
 import About from "./About";
 import Activities from "./Activities";
+import { useStorage } from "../../Contexts";
 
 const cx = classNames.bind(styles);
 
@@ -48,7 +38,8 @@ const sizeIcon = 20;
 
 function RightSidebar({ isOpen, onClose }) {
   const { dataBoard } = useListBoardContext();
-  const isOwner = dataBoard?.role?.roleName === "admin";
+  const { userData } = useStorage();
+  const isOwner = dataBoard.ownerId === userData.id;
 
   const items = {
     headerTitle: "Menu",
@@ -58,16 +49,16 @@ function RightSidebar({ isOpen, onClose }) {
         icon: <ErrorOutlineIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "About",
-          component: <About />
-        }
+          component: <About />,
+        },
       },
       {
         title: "Activity",
         icon: <ListIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "Activity",
-          component: <Activities />
-        }
+          component: <Activities />,
+        },
       },
       {
         title: "Archived Items",
@@ -75,78 +66,70 @@ function RightSidebar({ isOpen, onClose }) {
         divide: true,
         children: {
           headerTitle: "Archived",
-          component: <Archived />
-        }
+          component: <Archived />,
+        },
       },
       {
         title: "Settings",
         icon: <SettingsOutlinedIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "Settings",
-          component: <SettingMenu />
-        }
+          component: <SettingMenu />,
+        },
       },
 
       {
         title: "Change Background",
         icon: (
           <div className="w-5 h-5 flex">
-            <img
-              alt=""
-              className="w-full h-full object-cover rounded-sm"
-              src={dataBoard.coverUrl}
-            />
+            <img alt="" className="w-full h-full object-cover rounded-sm" src={dataBoard.coverUrl} />
           </div>
         ),
         children: {
           headerTitle: "Change Background",
-          component: <ChangeBackgroundMenu />
-        }
+          component: <ChangeBackgroundMenu />,
+        },
       },
       {
         title: "Power-Ups",
         icon: <RocketLaunchIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
+        disable: true,
       },
       {
         title: "Labels",
         icon: <LabelOutlinedIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "Labels",
-          component: <LabelMenu />
+          component: <LabelMenu />,
         },
-        divide: true
+        divide: true,
       },
       {
         title: "Watch",
         icon: <RemoveRedEyeOutlinedIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
+        disable: true,
       },
       {
         title: "Coppy board",
         icon: <ContentCopyIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
+        disable: true,
       },
       {
         title: "Email to board",
         icon: <MailOutlineIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
+        disable: true,
       },
       {
         title: "Print,export and share",
         icon: <ShareIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
+        disable: true,
       },
       {
         title: isOwner ? "Close board" : "Leave this board",
-        icon: isOwner ? (
-          <RemoveIcon sx={{ fontSize: sizeIcon }} />
-        ) : (
-          <LogoutIcon sx={{ fontSize: sizeIcon }} />
-        ),
-        onClick: () => setDeleteDialog(true)
-      }
-    ]
+        icon: isOwner ? <RemoveIcon sx={{ fontSize: sizeIcon }} /> : <LogoutIcon sx={{ fontSize: sizeIcon }} />,
+        onClick: () => setDeleteDialog(true),
+      },
+    ],
   };
 
   const [menuItems, setMenuItems] = useState([items]);
@@ -197,11 +180,7 @@ function RightSidebar({ isOpen, onClose }) {
       };
       return (
         <div key={index}>
-          <MenuItem
-            disable={item.disable}
-            onChange={handleChange}
-            icon={item?.icon}
-          >
+          <MenuItem disable={item.disable} onChange={handleChange} icon={item?.icon}>
             {item.title}
           </MenuItem>
           {item.divide && (
@@ -221,7 +200,7 @@ function RightSidebar({ isOpen, onClose }) {
       deleteBoardId(idBoard)
         .then((res) => {
           queryClient.invalidateQueries({
-            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
           });
           toast.success("Close board successfully");
           return navigate(`/workspace/${idWorkSpace}/home`);
@@ -239,7 +218,7 @@ function RightSidebar({ isOpen, onClose }) {
         .then((res) => {
           //* Gọi lại API get board từ useQuery để reload lại giao diện
           queryClient.invalidateQueries({
-            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
           });
           //! chưa load lại được dữ liệu mới ở trang home workspace
           toast.success("Leave board successfully");
@@ -260,14 +239,10 @@ function RightSidebar({ isOpen, onClose }) {
   return (
     <div
       className={cx(["drawer", "absolute top-0 right-0 z-[300]"], {
-        open: isOpen
+        open: isOpen,
       })}
     >
-      <div
-        className={cx([
-          "w-[339px] flex bg-white border-l border-solid border-gray-300 flex-col h-full"
-        ])}
-      >
+      <div className={cx(["w-[339px] flex bg-white border-l border-solid border-gray-300 flex-col h-full"])}>
         <div className="px-3">
           <div className="flex items-center justify-between">
             {menuItems.length > 1 && (
@@ -285,18 +260,14 @@ function RightSidebar({ isOpen, onClose }) {
               onClick={handleClose}
               className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-[var(--hover-background)]"
             >
-              <CloseIcon
-                sx={{ fontSize: "20px", color: "var(--text-color)" }}
-              />
+              <CloseIcon sx={{ fontSize: "20px", color: "var(--text-color)" }} />
             </button>
           </div>
 
           <Divider component={"div"} />
         </div>
 
-        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-y-scroll overflow-x-hidden">
-          {renderItems()}
-        </div>
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-y-scroll overflow-x-hidden">{renderItems()}</div>
       </div>
 
       {/* //TODO  Bật lên popup rời khỏi board  */}
@@ -309,13 +280,11 @@ function RightSidebar({ isOpen, onClose }) {
         aria-describedby="alert-dialog-description"
         sx={{
           "& .MuiDialog-paper": {
-            borderRadius: 3
-          }
+            borderRadius: 3,
+          },
         }}
       >
-        <DialogTitle id="alert-dialog-title">
-          {isOwner ? "Close board?" : "Leave board?"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{isOwner ? "Close board?" : "Leave board?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {isOwner
@@ -332,12 +301,7 @@ function RightSidebar({ isOpen, onClose }) {
           >
             Disagree
           </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleLeaveBoard}
-            autoFocus
-          >
+          <Button variant="contained" color="error" onClick={handleLeaveBoard} autoFocus>
             {isOwner ? "Close" : "Leave"}
           </Button>
         </DialogActions>
