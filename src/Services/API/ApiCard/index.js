@@ -34,16 +34,14 @@ export async function deleteCard(boardId, cardId) {
   }
 }
 
-export async function JoinToCard(idCard, idUser) {
-  return await request.post(`/card/${idCard}/assign`, {
+export async function JoinToCard(idCard, idUser, boardId) {
+  return await request.post(`/board/${boardId}/card/${idCard}/assign`, {
     userId: idUser,
   });
 }
 
 export async function RemoveUserToCard(boardId, idCard, idUser) {
-  return await request.delete(
-    `/board/${boardId}/card/${idCard}/members/${idUser}`
-  );
+  return await request.delete(`/board/${boardId}/card/${idCard}/members/${idUser}`);
 }
 
 export async function changePositionCard({ cardId, overListId, position, boardId }) {
@@ -64,7 +62,7 @@ export async function destroyCard(cardId) {
   return response?.data;
 }
 
-export async function resendCard(cardId) {
-  const response = await request.patch(`/card/${cardId}/restore`);
+export async function resendCard(cardId, boardId) {
+  const response = await request.patch(`/board/${boardId}/card/${cardId}/restore`);
   return response?.data;
 }

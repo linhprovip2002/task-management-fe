@@ -1,6 +1,6 @@
 import { BoardInformation } from "../../../Components/BoardInformation/BoardInformation";
 import { Divider } from "@mui/material";
-import { useGetWorkspaceMember } from "../../../Hooks";
+import { useGetWorkspaceById, useGetWorkspaceMember } from "../../../Hooks";
 import { useParams } from "react-router-dom";
 import Loading from "../../../Components/Loading";
 import { MemberCard } from "./components/MemberCard";
@@ -8,9 +8,10 @@ import { MemberCard } from "./components/MemberCard";
 const WorkspaceMembers = () => {
   const { id } = useParams();
   const { workspaceMembers, isLoading, isRefetching } = useGetWorkspaceMember(id);
+  const { workspaceDetails } = useGetWorkspaceById(id);
 
   if (isLoading || isRefetching || !workspaceMembers) return <Loading />;
-
+  const isOwner = false;
   return (
     <div className="flex flex-col gap-4">
       <BoardInformation isMemberPage />
@@ -24,7 +25,7 @@ const WorkspaceMembers = () => {
         <div>
           <div className="flex flex-col gap-4">
             {workspaceMembers?.map((member) => (
-              <MemberCard key={member.id} member={member} />
+              <MemberCard key={member.id} member={member} canRemove={isOwner} />
             ))}
           </div>
         </div>
