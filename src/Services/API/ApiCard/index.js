@@ -21,8 +21,8 @@ export async function getAllUserByIdCard(id) {
   return await request.get(`/card/${id}/members`);
 }
 
-export async function updateCard(id, data) {
-  return await request.patch(`/card/${id}`, data);
+export async function updateCard(boardId, id, data) {
+  return await request.patch(`board/${boardId}/card/${id}`, data);
 }
 
 export async function deleteCard(boardId, cardId) {
@@ -41,7 +41,9 @@ export async function JoinToCard(idCard, idUser) {
 }
 
 export async function RemoveUserToCard(boardId, idCard, idUser) {
-  return await request.delete(`/board/${boardId}/card/${idCard}/members/${idUser}`);
+  return await request.delete(
+    `/board/${boardId}/card/${idCard}/members/${idUser}`
+  );
 }
 
 export async function changePositionCard({ cardId, overListId, position, boardId }) {
