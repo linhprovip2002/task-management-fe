@@ -2,23 +2,24 @@ import AppsIcon from "@mui/icons-material/Apps";
 import TrelloLogoIcon from "../TrelloLogoIcon/TrelloLogoIcon";
 import WorkSpaces from "./Menus/WorkSpaces";
 import Stared from "./Menus/Stared";
-import { Box, ClickAwayListener, Fade, TextField, Tooltip } from "@mui/material";
+import { Box, CircularProgress, ClickAwayListener, Fade, TextField, Tooltip } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountMenu from "./Menus/AccountMenu";
 import NotificationsTab from "../NotificationsTab";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Popper from "@mui/material/Popper";
 import { Link } from "react-router-dom";
 import Create from "./Menus/Create";
 import { useStorage } from "../../Contexts";
 import HeadlessTippy from "@tippyjs/react/headless";
 import SearchPopper from "./SearchPopper";
+import { useDebounce } from "../../Hooks";
+import { userServices } from "../../Services";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [searchPopper, setSearchPopper] = useState(false);
-
   const { firstWorkspace, isLoggedIn } = useStorage();
 
   const handleClick = (event) => {
@@ -28,6 +29,29 @@ const Header = () => {
 
   const canBeOpen = open && Boolean(anchorEl);
   const id = canBeOpen ? "transition-popper" : undefined;
+
+  const [searchValue, setSearchValue] = useState("");
+  const debounceValue = useDebounce(searchValue, 500);
+  const [searching, setIsSearching] = useState(false);
+  const [searchResult, setSearchResult] = useState({});
+  useEffect(() => {
+    if (searchValue.trim() !== "") {
+      setIsSearching(true);
+      userServices
+        .searchGlobal({ searchValue: debounceValue })
+        .then((res) => {
+          setSearchResult(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setIsSearching(false);
+        });
+    } else {
+      setSearchResult({});
+    }
+  }, [debounceValue]);
 
   return (
     <>
@@ -57,15 +81,16 @@ const Header = () => {
             placement="bottom-start"
             visible={searchPopper}
             interactive
-            render={() => <SearchPopper />}
+            render={() => <SearchPopper loading={searching} searchResult={searchResult} />}
           >
             <div className="flex items-center w-full space-x-2 md:w-auto">
               <TextField
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 onFocus={() => setSearchPopper(true)}
                 id="outlined-basic"
                 label="Search"
                 size="small"
-                type="search"
                 variant="outlined"
                 className="w-full ml-8 md:w-64"
               />

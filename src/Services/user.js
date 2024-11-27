@@ -55,6 +55,11 @@ class UserServices {
   async searchUser(searchValue) {
     return await request.get(`/user?search=${searchValue}&limit=20&page=1`);
   }
+
+  async searchGlobal({ searchValue, page = 1, perPage = 20 }) {
+    const response = await request.get(`/user/search?search=${searchValue}&page=${page}&limit=${perPage}`);
+    return response?.data;
+  }
 }
 
 const userServices = new UserServices();
