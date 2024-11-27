@@ -26,11 +26,12 @@ const ItemAttachment = ({
   const handleCloseImageClick = () => setOpenImg(false);
   const cardId = localStorage.getItem("cardId");
   const { idBoard } = useParams();
+  // eslint-disable-next-line
   const { data: dataCard } = useGetCardById(idBoard, cardId);
-
-  const handleDeleteFile = async (fileId) => {
+  
+  const handleDeleteFile = async (idBoard, cardId, fileId) => {
     try {
-      await apiDeleteFile(dataCard.id, fileId);
+      await apiDeleteFile(idBoard, cardId, fileId);
       setPostUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
       toast.success("File deleted successfully!");
     } catch (error) {
@@ -74,7 +75,7 @@ const ItemAttachment = ({
             <MorePoperAttach
               handleOpenMore={handleOpenMore}
               handleCloseMore={handleCloseMore}
-              handleDeleteFile={() => handleDeleteFile(item.id)}
+              handleDeleteFile={() => handleDeleteFile(idBoard, cardId, item.id)}
             />
           )}
         </div>
@@ -127,7 +128,7 @@ const ItemAttachment = ({
                 <span className="text-[16px] text-white ml-2">Close</span>
               </button>
               <button
-                onClick={() => handleDeleteFile(item.id)}
+                onClick={() => handleDeleteFile(idBoard, cardId, item.id)}
                 className="flex items-center p-2 mx-6 text-white rounded-md hover:bg-gray-800"
               >
                 <DeleteIcon
