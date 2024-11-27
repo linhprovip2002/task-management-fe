@@ -2,12 +2,7 @@ import Avatar from "@mui/material/Avatar";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
-import {
-  Autocomplete,
-  Button,
-  CircularProgress,
-  TextField
-} from "@mui/material";
+import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -29,10 +24,8 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
   const { userData } = useStorage();
 
   const roleOptions = useMemo(
-    () =>
-      dataBoardRole?.map((role) => ({ label: role.name, value: role.id })) ||
-      [],
-    [dataBoardRole]
+    () => dataBoardRole?.map((role) => ({ label: role.name, value: role.id })) || [],
+    [dataBoardRole],
   );
 
   useEffect(() => {
@@ -61,7 +54,7 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
 
   return (
     <ListItem disableGutters>
-      <div className="flex gap-2 w-full hover:bg-slate-100 p-2 rounded-md items-center">
+      <div className="flex gap-2 w-full hover:bg-slate-100 p-2 rounded-md items-center h-[56px]">
         <div className="flex-1 flex">
           <Avatar
             {...stringAvatar(data?.name)}
@@ -71,13 +64,13 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
               width: 32,
               height: 32,
               marginRight: 1,
-              fontSize: "16px"
+              fontSize: "16px",
             }}
           />
           <ListItemText sx={{ color: "#172b4d" }} primary={data?.email} />
         </div>
         {isAdmin && (
-          <div className="flex-1 flex">
+          <div className={`flex-1 flex ${confirmDelete && "justify-end"}`}>
             <Autocomplete
               fullWidth
               disableClearable
@@ -90,28 +83,29 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
               renderInput={(params) => <TextField {...params} />}
               style={{ display: confirmDelete ? "none" : "block" }}
             />
-            <Button
-              disabled={userData.id === data.id}
-              onClick={() => setConfirmDelete(!confirmDelete)}
-              variant="contained"
-              color="error"
-              sx={{ textTransform: "none", paddingY: 0.5, marginLeft: 1 }}
-            >
-              {confirmDelete ? "Cancel" : "Remove"}
-            </Button>
-            {confirmDelete && (
+
+            <div className="flex gap-4">
               <Button
-                onClick={handleRemoveMember}
-                startIcon={
-                  isDeleting && <CircularProgress size={18} color="#fff" />
-                }
+                disabled={userData.id === data.id}
+                onClick={() => setConfirmDelete(!confirmDelete)}
                 variant="contained"
                 color="error"
-                sx={{ textTransform: "none", paddingY: 0.5 }}
+                sx={{ textTransform: "none", paddingY: 0.5, marginLeft: 1 }}
               >
-                Confirm
+                {confirmDelete ? "Cancel" : "Remove"}
               </Button>
-            )}
+              {confirmDelete && (
+                <Button
+                  onClick={handleRemoveMember}
+                  startIcon={isDeleting && <CircularProgress size={18} color="#fff" />}
+                  variant="contained"
+                  color="error"
+                  sx={{ textTransform: "none", paddingY: 0.5 }}
+                >
+                  Confirm
+                </Button>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -122,7 +116,7 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
 MemberItem.propTypes = {
   data: PropTypes.object,
   onDeleted: PropTypes.func,
-  isAdmin: PropTypes.bool
+  isAdmin: PropTypes.bool,
 };
 
 export default memo(MemberItem);

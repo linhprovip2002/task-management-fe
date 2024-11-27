@@ -2,7 +2,7 @@ import AppsIcon from "@mui/icons-material/Apps";
 import TrelloLogoIcon from "../TrelloLogoIcon/TrelloLogoIcon";
 import WorkSpaces from "./Menus/WorkSpaces";
 import Stared from "./Menus/Stared";
-import { Box, CircularProgress, ClickAwayListener, Fade, TextField, Tooltip } from "@mui/material";
+import { Box, ClickAwayListener, Fade, TextField, Tooltip } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountMenu from "./Menus/AccountMenu";
 import NotificationsTab from "../NotificationsTab";
@@ -51,6 +51,7 @@ const Header = () => {
     } else {
       setSearchResult({});
     }
+    // eslint-disable-next-line
   }, [debounceValue]);
 
   return (
