@@ -129,6 +129,7 @@ function ListInBoard() {
           cardId: active.id,
           overListId: overContainer,
           position: overIndex + 1,
+          boardId: idBoard,
         })
           .then((res) => {})
           .catch((err) => {
