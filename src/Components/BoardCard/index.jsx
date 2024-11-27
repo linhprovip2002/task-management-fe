@@ -8,6 +8,8 @@ import {
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
+  Replay as ReplayIcon,
+  Remove as RemoveIcon,
 } from "@mui/icons-material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -43,6 +45,7 @@ import { formatDate } from "./WriteComment/helpers/formatDate";
 import { createTag, updateTag } from "../../Services/API/APITags";
 import { useGetCardComments } from "../../Hooks/useCards";
 import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
+import DeleteCard from "./DeleteCard";
 
 export const BoardCard = () => {
   const {
@@ -59,22 +62,12 @@ export const BoardCard = () => {
   const { idBoard } = useParams();
 
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
+  const { data: dataCard } = useGetCardById(idBoard, cardId);
   const queryClient = useQueryClient();
 
   const { userData } = useStorage();
-  const [labelOfCard, setLabelOfCard] = useState(
-    () =>
-      dataCard?.tagCards
-        ?.filter((tagCard) => tagCard?.tag)
-        .map(({ tag }) => ({
-          id: tag.id,
-          updatedAt: tag.updatedAt || null,
-          color: tag.color,
-          name: tag.name,
-          idBoard: idBoard,
-        })) || [],
-  );
+  const [labelOfCard, setLabelOfCard] = useState([]);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
   const [updatedBtnCard, setUpdatedBtnCard] = useState(listBtnCard);
   const [listColorLabel, setListColorLabel] = useState([]);
@@ -106,6 +99,38 @@ export const BoardCard = () => {
   const listComment = useMemo(() => cardComments?.reverse() || [], [cardComments]);
 
   const { boardTags, isLoading: isLoadingTags } = useGetTagByBoardId(idBoard);
+
+  useEffect(() => {
+    if (dataCard) {
+      setLabelOfCard(
+        dataCard?.tagCards
+          ?.filter((tagCard) => tagCard?.tag)
+          .map(({ tag }) => ({
+            id: tag.id,
+            updatedAt: tag.updatedAt || null,
+            color: tag.color,
+            name: tag.name,
+            boardId: idBoard,
+          })) || [],
+      );
+
+      setPostUploadedFiles(dataCard?.files || []);
+      setMembersInCard(dataCard?.members || []);
+      setChooseColorBackground(dataCard?.coverUrl || "");
+
+      if (dataCard.endDate) {
+        const endDate = new Date(dataCard.endDate);
+        const currentDate = new Date();
+        setCheckOverdue(endDate < currentDate);
+        const day = endDate.getUTCDate().toString().padStart(2, "0");
+        const month = (endDate.getUTCMonth() + 1).toString().padStart(2, "0");
+        setEndDateCheck(`${day}thg${month}`);
+      } else {
+        setEndDateCheck(null);
+      }
+    }
+  }, [dataCard, idBoard]);
+
   useEffect(() => {
     setListColorLabel(boardTags?.data || []);
   }, [boardTags]);
@@ -384,7 +409,7 @@ export const BoardCard = () => {
         return btn;
       });
       if (isUserJoined) {
-        const res = await RemoveUserToCard(dataCard.id, item.id);
+        const res = await RemoveUserToCard(idBoard, dataCard.id, item.id);
         res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
       } else {
         const res = await JoinToCard(dataCard.id, item.id);
@@ -468,13 +493,57 @@ export const BoardCard = () => {
     }
   };
 
+  const handleArchived = useCallback((idBtn) => {
+    console.log(idBtn);
+    const updateBtnList = listBtnCard.flatMap((btn) => {
+      if (btn.id === idBtn) {
+        return [
+          {
+            id: 13,
+            nameBtn: "Send to board",
+            Icon: <ReplayIcon className="ml-1 mr-2" fontSize="small" />,
+          },
+          {
+            id: 14,
+            nameBtn: "Delete",
+            Icon: <RemoveIcon className="ml-1 mr-2" fontSize="small" />,
+            color: "#ca3521",
+          },
+        ];
+      }
+      return [btn];
+    });
+    setUpdatedBtnCard(updateBtnList);
+  }, []);
+
+  const handleSendToBoard = useCallback(() => {
+    setUpdatedBtnCard(listBtnCard);
+  }, []);
+
+  const handleDeleteCard = useCallback(() => {
+    setLoadingDelete(true);
+    setUpdatedBtnCard(listBtnCard);
+    console.log(dataCard);
+    console.log(idBoard);
+    setLoadingDelete(false);
+  }, [dataCard, idBoard]);
+
   const handleClickBtn = (e, item) => {
     setNumberShow(item.id);
     if (item.id === 1) {
       setIsJoin(!isJoin);
       setIsFollowing(!isJoin);
       handleJoinIntoCard(userData);
-    } else if ([2, 3, 4, 5, 6, 7, 10].includes(item.id)) {
+    }
+    if (item.id === 12) {
+      handleArchived(item.id);
+    }
+    if (item.id === 13) {
+      handleSendToBoard();
+    }
+    if (item.id === 14) {
+      handleShowMenuBtnCard(e);
+    } else if ([2, 3, 4, 5, 6, 7].includes(item.id)) {
       handleShowMenuBtnCard(e);
     }
   };
@@ -483,7 +552,7 @@ export const BoardCard = () => {
 
   return (
     <>
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[1]">
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[400]">
         <div
           style={{
             scrollbarWidth: "thin",
@@ -790,7 +859,12 @@ export const BoardCard = () => {
             <div className="min-w-[180px]">
               <div className="relative flex flex-col items-center mx-2 mt-16 mb-4">
                 {updatedBtnCard?.map((item, index) => (
-                  <ButtonBoardCard onHandleEvent={(e) => handleClickBtn(e, item)} key={index} nameBtn={item.nameBtn}>
+                  <ButtonBoardCard
+                    onHandleEvent={(e) => handleClickBtn(e, item)}
+                    key={index}
+                    nameBtn={item.nameBtn}
+                    item={item}
+                  >
                     {item.Icon}
                   </ButtonBoardCard>
                 ))}
@@ -876,6 +950,19 @@ export const BoardCard = () => {
             postUploadedFiles={postUploadedFiles}
             setPostUploadedFiles={setPostUploadedFiles}
             handleUploadFile={handleFileChange}
+          />
+        )}
+        {isShowMenuBtnCard && numberShow === 14 && (
+          <DeleteCard
+            position={position}
+            title={"Do you want to leave the card?"}
+            description={
+              "All activity on the card will be removed from your activity feed and you won't be able to reopen the card. There's no way to undo it. Are you sure?"
+            }
+            nameBtn={"Delete"}
+            onClickConfirm={handleDeleteCard}
+            onClose={handleCloseShowMenuBtnCard}
+            loading={loadingDelete}
           />
         )}
       </div>

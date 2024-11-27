@@ -12,21 +12,56 @@ import { useParams } from "react-router-dom";
 
 function Filter({ onClose }) {
   const { idBoard } = useParams();
+  const dataChooseMember = JSON.parse(localStorage.getItem("choosedMember"));
+  const dataChoosedLabel = JSON.parse(localStorage.getItem("choosedLabel"));
+  const dataChoosedDate = JSON.parse(localStorage.getItem("choosedDate"));
+  const dataChoosedNoMember = JSON.parse(localStorage.getItem("choosedNoMember"));
+  const dataChoosedNoLabel = JSON.parse(localStorage.getItem("choosedNoLabel"));
   const { data: dataBoard } = useGetBoardById(idBoard);
   const { data: dataListAPI } = useGetAllCardByList(dataBoard);
   const { setDataList } = useListBoardContext();
   const [list] = useState(dataListAPI);
   const [countMember, setCountMember] = useState([]);
   const [countLabel, setCountLabel] = useState([]);
-  const [choosedLabel, setChoosedLabel] = useState([]);
-  const [choosedMember, setChoosedMember] = useState([]);
-  const [choosedNoMember, setChoosedNoMember] = useState(false);
-  const [choosedDate, setChoosedDate] = useState([]);
-  const [choosedNoLabel, setChoosedNoLabel] = useState(false);
+  const [updateCountMember, setupdateCountMember] = useState([]);
+  const [updateCountLabel, setupdateCountLabel] = useState([]);
+  const [updateCountDate, setupdateCountDate] = useState(expirations);
+  const [choosedLabel, setChoosedLabel] = useState(dataChoosedLabel || []);
+  const [choosedMember, setChoosedMember] = useState(dataChooseMember || []);
+  const [choosedNoMember, setChoosedNoMember] = useState(dataChoosedNoMember || false);
+  const [choosedDate, setChoosedDate] = useState(dataChoosedDate || []);
+  const [choosedNoLabel, setChoosedNoLabel] = useState(dataChoosedNoLabel || false);
+  const [inputFind, setInputFind] = useState("");
 
   const handleClickAway = () => {
+    localStorage.setItem("choosedMember", JSON.stringify(choosedMember));
+    localStorage.setItem("choosedLabel", JSON.stringify(choosedLabel));
+    localStorage.setItem("choosedDate", JSON.stringify(choosedDate));
+    localStorage.setItem("choosedNoMember", JSON.stringify(choosedNoMember));
+    localStorage.setItem("choosedNoLabel", JSON.stringify(choosedNoLabel));
     onClose();
   };
+
+  useEffect(() => {
+    setupdateCountLabel(countLabel);
+    setupdateCountMember(countMember);
+  }, [countLabel, countMember]);
+
+  useEffect(() => {
+    const updateCountMember = countMember.filter(
+      (member) => member.name && member.name.toLowerCase().includes(inputFind.toLowerCase()),
+    );
+    const updateCountDate = expirations.filter(
+      (date) => date.name && date.name.toLowerCase().includes(inputFind.toLowerCase()),
+    );
+    const updateCountLabel = countLabel.filter(
+      (label) => label.name && label.name.toLowerCase().includes(inputFind.toLowerCase()),
+    );
+    setupdateCountLabel(updateCountLabel);
+    setupdateCountDate(updateCountDate);
+    setupdateCountMember(updateCountMember);
+    //eslint-disable-next-line
+  }, [inputFind]);
 
   const handleClickNoMember = () => {
     setChoosedNoMember(!choosedNoMember);
@@ -159,6 +194,8 @@ function Filter({ onClose }) {
             <div className="py-2 font-[600] text-[12px]">Keywords</div>
             <div className="border-[1px] border-gray-500 rounded-[2px]">
               <input
+                value={inputFind}
+                onChange={(e) => setInputFind(e.target.value)}
                 type="text"
                 placeholder="Enter keyword..."
                 className="w-full bg-white rounded-[2px] font-[400] text-[14px] px-2 py-1 cursor-pointer  focus:outline-none focus:ring-1 focus:ring-blue-500"
@@ -190,8 +227,8 @@ function Filter({ onClose }) {
                   <div className="font-[400] text-[14px]">No member</div>
                 </span>
               </div>
-              {countMember?.length > 0 &&
-                countMember?.map((member) => (
+              {updateCountMember?.length > 0 &&
+                updateCountMember?.map((member) => (
                   <div key={member.id} className="flex items-center py-2 pl-2 cursor-pointer">
                     <input
                       checked={choosedMember.some((i) => i.id === member.id)}
@@ -216,7 +253,7 @@ function Filter({ onClose }) {
 
             <div className="py-2 font-[600] text-[12px]">Expiration date</div>
             <div className="flex flex-col">
-              {expirations.map((item) => (
+              {updateCountDate.map((item) => (
                 <div key={item.id} className="flex items-center py-2 pl-2 cursor-pointer">
                   <input
                     checked={choosedDate.some((i) => i.id === item.id)}
@@ -261,8 +298,8 @@ function Filter({ onClose }) {
                 </span>
               </div>
 
-              {countLabel?.length > 0 &&
-                countLabel?.map((label) => (
+              {updateCountLabel?.length > 0 &&
+                updateCountLabel?.map((label) => (
                   <div key={label?.id} className="flex items-center py-2 pl-2 cursor-pointer">
                     <input
                       checked={choosedLabel.some((i) => i.id === label.id)}

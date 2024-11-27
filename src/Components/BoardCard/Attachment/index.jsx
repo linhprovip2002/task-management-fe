@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import ItemAttachment from "./ItemAttachment";
-import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
 const Attachment = ({ postUploadedFiles, setPostUploadedFiles }) => {
   const [showImage, setShowImage] = useState(false);

@@ -9,20 +9,20 @@ export const useGetCardComments = (boardId, cardId) => {
     queryFn: () => getComment(boardId, cardId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!boardId && !!cardId
-    }
+      enabled: !!boardId && !!cardId,
+    },
   });
 
   return { cardComments: data?.data, isLoading, isError, refetch };
 };
-export const useGetCardById = (cardId) => {
+export const useGetCardById = (boardId, cardId) => {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [EQueryKeys.GET_CARD_BY_ID, cardId],
-    queryFn: () => getCardById(cardId),
+    queryFn: () => getCardById(boardId, cardId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!cardId
-    }
+      enabled: !!boardId && !!cardId,
+    },
   });
 
   return { data: data?.data, isLoading, isError, refetch };

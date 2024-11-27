@@ -25,7 +25,7 @@ const WriteComment = () => {
   const [loading, setLoading] = useState(false);
 
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
+  const { data: dataCard } = useGetCardById(idBoard, cardId);
 
   useEffect(() => {
     if (isEditMode && textEditorRef.current) {
@@ -47,7 +47,7 @@ const WriteComment = () => {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: dataCard.id
+      cardId: dataCard.id,
     };
 
     try {
@@ -65,17 +65,10 @@ const WriteComment = () => {
   };
 
   return (
-    <form
-      className="flex justify-between mr-2"
-      onSubmit={handleSubmit(handlePostComment)}
-    >
+    <form className="flex justify-between mr-2" onSubmit={handleSubmit(handlePostComment)}>
       {loading && <Loading className="bg-white bg-opacity-10 z-1" />}
       {userData?.avatarUrl ? (
-        <Avatar
-          sx={{ width: "30px", height: "30px" }}
-          alt={userData?.name}
-          src={userData?.avatarUrl}
-        />
+        <Avatar sx={{ width: "30px", height: "30px" }} alt={userData?.name} src={userData?.avatarUrl} />
       ) : (
         <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
           {userProfile?.name[0] || " "}
