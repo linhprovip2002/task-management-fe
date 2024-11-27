@@ -39,7 +39,11 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   const queryClient = useQueryClient();
 
   const { dataBoardPermission } = useGetBoardPermission(idBoard);
-  const { dataBoardRole, isLoading: isLoadingRole } = useGetBoardRole(idBoard);
+  const {
+    dataBoardRole,
+    isLoading: isLoadingRole,
+    refetch: refetchBoardRole
+  } = useGetBoardRole(idBoard);
 
   const RoleOptions = useMemo(() => {
     if (!dataBoardRole) return [];
@@ -81,17 +85,16 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const payload = [
-      {
-        roleId: data.role.value,
-        permissionId: data.permissions
-      }
-    ];
+    const payload = {
+      roleId: data.role.value,
+      permissionId: [...new Set(data.permissions)]
+    };
     updateBoardPermission(idBoard, payload)
       .then(() => {
         queryClient.invalidateQueries({
           queryKey: [EQueryKeys.GET_BOARD_PERMISSION]
         });
+        refetchBoardRole();
         toast.success("Permission updated successfully");
       })
       .catch((err) => {
@@ -174,92 +177,96 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
 
   return (
     <>
-      {loading && (
-        <div className="fixed inset-0 z-[1400]">
-          <Loading />
-        </div>
-      )}
       <Modal
         open={defaultOpen}
         onClose={() => {
           handleClose();
         }}
       >
-        <form
-          className={`w-3/4 overflow-x-hidden flex flex-col items-center p-6 rounded-md bg-white ${CenterModel}`}
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="text-2xl font-bold mb-6">Edit Role & Permission</div>
-          <div className="w-full">
-            <div className="flex w-full gap-4 items-center max-sm:flex-col max-sm:items-start mb-4 font-semibold">
-              <div className="w-1/12">Role</div>
-              <Controller
-                name="role"
-                control={control}
-                defaultValue={null}
-                render={({ field }) => (
-                  <Autocomplete
-                    {...field}
+        <>
+          {loading && <Loading />}
+          <form
+            className={`w-3/4 overflow-x-hidden flex flex-col items-center p-6 rounded-md bg-white ${CenterModel}`}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="text-2xl font-bold mb-6">
+              Edit Role & Permission
+            </div>
+            <div className="w-full">
+              <div className="flex w-full gap-4 items-center max-sm:flex-col max-sm:items-start mb-4 font-semibold">
+                <div className="w-1/12">Role</div>
+                <Controller
+                  name="role"
+                  control={control}
+                  defaultValue={null}
+                  render={({ field }) => (
+                    <Autocomplete
+                      {...field}
+                      fullWidth
+                      size="small"
+                      options={RoleOptions}
+                      getOptionLabel={(option) => option.label}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Role" />
+                      )}
+                      onChange={(_, data) => field.onChange(data)}
+                    />
+                  )}
+                />
+                <div className="w-60 h-full">
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    type="submit"
                     fullWidth
-                    size="small"
-                    options={RoleOptions}
-                    getOptionLabel={(option) => option.label}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Role" />
-                    )}
-                    onChange={(_, data) => field.onChange(data)}
-                  />
-                )}
-              />
-              <div className="w-60 h-full">
-                <Button
-                  variant="contained"
-                  size="medium"
-                  type="submit"
-                  fullWidth
-                >
-                  Save new settings
-                </Button>
+                    disabled={!watchRole}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Save new settings
+                  </Button>
+                </div>
+              </div>
+              <div className="w-full flex flex-col gap-2 max-h-[75vh] overflow-y-scroll">
+                {PermissionGridConstants.map((permission) => (
+                  <div
+                    className="flex items-center w-full gap-4 border-b border-slate-100"
+                    key={permission.title}
+                  >
+                    <Checkbox
+                      checked={checkedAll[permission.title]}
+                      onChange={(e) => {
+                        handleCheckedAll(permission.title, e.target.checked);
+                      }}
+                    />
+                    <div className="w-1/12 font-semibold">
+                      {capitalize(permission.title)}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-1 overflow-x-hidden">
+                      {permission.children.map((child) => {
+                        return (
+                          <div
+                            className="flex gap-2 items-center w-full"
+                            key={child.title}
+                          >
+                            <Switch
+                              checked={watchPermissionByRole?.includes(
+                                child.id
+                              )}
+                              onChange={(_, value) => {
+                                handleChange(child, value);
+                              }}
+                            />
+                            <div>{child.title}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="w-full flex flex-col gap-2 max-h-[75vh] overflow-y-scroll">
-              {PermissionGridConstants.map((permission) => (
-                <div
-                  className="flex items-center w-full gap-4 border-b border-slate-100"
-                  key={permission.title}
-                >
-                  <Checkbox
-                    checked={checkedAll[permission.title]}
-                    onChange={(e) => {
-                      handleCheckedAll(permission.title, e.target.checked);
-                    }}
-                  />
-                  <div className="w-1/12 font-semibold">
-                    {capitalize(permission.title)}
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 flex-1 overflow-x-hidden">
-                    {permission.children.map((child) => {
-                      return (
-                        <div
-                          className="flex gap-2 items-center w-full"
-                          key={child.title}
-                        >
-                          <Switch
-                            checked={watchPermissionByRole?.includes(child.id)}
-                            onChange={(_, value) => {
-                              handleChange(child, value);
-                            }}
-                          />
-                          <div>{child.title}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </form>
+          </form>
+        </>
       </Modal>
       {openCreateRoleModal && (
         <CreateNewRoleModal

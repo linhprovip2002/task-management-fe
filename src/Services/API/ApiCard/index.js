@@ -36,7 +36,7 @@ export async function deleteCard(boardId, cardId) {
 
 export async function JoinToCard(idCard, idUser) {
   return await request.post(`/card/${idCard}/assign`, {
-    userId: idUser,
+    userId: idUser
   });
 }
 
@@ -47,7 +47,7 @@ export async function RemoveUserToCard(boardId, idCard, idUser) {
 export async function changePositionCard({ cardId, overListId, position }) {
   const response = await request.post(`/card/${cardId}/move`, {
     listId2: overListId,
-    position,
+    position
   });
   return response?.data;
 }

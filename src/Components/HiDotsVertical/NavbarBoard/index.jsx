@@ -23,12 +23,13 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
   const navigate = useNavigate();
 
   const isAdmin = dataBoard.role?.roleName === "admin";
+
   const handleCloseOrLeave = () => {
     setLeaving(true);
     if (isAdmin) {
       //TODO close board
       deleteBoardId(idBoard)
-        .then((res) => {
+        .then(() => {
           queryClient.invalidateQueries({
             queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
           });
@@ -46,15 +47,14 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
       //TODO leave board
       leaveBoard(idBoard)
         .then((res) => {
-          //* Gọi lại API get board từ useQuery để reload lại giao diện
           queryClient.invalidateQueries({
             queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
           });
-          //! chưa load lại được dữ liệu mới ở trang home workspace
           toast.success("Leave board successfully");
           return navigate(`/workspace/${id}/home`);
         })
         .catch((err) => {
+          console.error(err);
           toast.error("Leave board not successfully");
         })
         .finally(() => setLeaving(false));

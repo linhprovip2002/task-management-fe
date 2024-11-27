@@ -10,7 +10,7 @@ const useGetUser = (options = {}) => {
   );
 
   const {
-    data: userInfo,
+    data: userList,
     isLoading,
     isError,
     refetch
@@ -23,7 +23,7 @@ const useGetUser = (options = {}) => {
     }
   });
 
-  return { userInfo, isLoading, isError, refetch };
+  return { userList, isLoading, isError, refetch };
 };
 
 export default useGetUser;

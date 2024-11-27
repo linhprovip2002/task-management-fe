@@ -38,7 +38,7 @@ function UserItem({ onClick, data, onAdded }) {
   return (
     <div
       onClick={handleClick}
-      className="py-2 px-2   flex gap-2 items-center hover:bg-[#091E424F] rounded-[4px] cursor-pointer justify-between"
+      className="p-3 flex gap-2 items-center hover:bg-slate-200 rounded-[4px] cursor-pointer justify-between"
     >
       <div className="flex gap-2 items-center">
         <Avatar sx={{ bgcolor: grey[500], width: 32, height: 32 }}>

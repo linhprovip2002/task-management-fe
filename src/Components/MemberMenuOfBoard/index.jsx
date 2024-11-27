@@ -8,7 +8,12 @@ import ClickAway from "../BoardCard/ClickAway";
 import { useGetCardById } from "../../Hooks";
 import { useParams } from "react-router-dom";
 
-const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseShowMenuBtnCard }) => {
+const MemberMenu = ({
+  onAddMember,
+  membersInCard,
+  setMembersInCard,
+  handleCloseShowMenuBtnCard
+}) => {
   const { position, membersBoard } = useListBoardContext();
   const [inputTitle, setInputTitle] = useState("");
   const [filteredMembersBoard, setFilteredMembersBoard] = useState([]);
@@ -30,19 +35,24 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
     async (member) => {
       try {
         const res = await RemoveUserToCard(dataCard?.id, member?.user.id);
-        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== member?.user?.id));
+        res &&
+          setMembersInCard((prev) =>
+            prev.filter((p) => p?.user?.id !== member?.user?.id)
+          );
       } catch (error) {
         console.error("error handle remove member in card", error);
       }
     },
     //eslint-disable-next-line
-    [dataCard, membersInCard, setMembersInCard],
+    [dataCard, membersInCard, setMembersInCard]
   );
 
   useEffect(() => {
     if (membersBoard?.length >= 0) {
       const membersOutCard = membersBoard.filter((boardMember) => {
-        return !membersInCard.some((cardMember) => cardMember?.user?.id === boardMember?.user?.id);
+        return !membersInCard.some(
+          (cardMember) => cardMember?.user?.id === boardMember?.user?.id
+        );
       });
 
       const filtered = membersOutCard.filter((member) => {
@@ -69,7 +79,7 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
             scrollbarWidth: "thin",
             scrollbarColor: "#fff6 #00000026",
             overflowY: "auto",
-            maxHeight: "400px",
+            maxHeight: "400px"
           }}
           className="px-2"
         >
@@ -87,7 +97,12 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
               <>
                 <div className="py-2 bg-white">Member of the card</div>
                 {membersInCard?.map((item, index) => (
-                  <ItemMember key={index} item={item} isClose={true} onClose={HandleRemoveMember} />
+                  <ItemMember
+                    key={index}
+                    item={item}
+                    isClose={true}
+                    onClose={HandleRemoveMember}
+                  />
                 ))}
               </>
             )}
@@ -99,7 +114,11 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
               <>
                 <div className="py-2 bg-white">Members of the board</div>
                 {filteredMembersBoard?.map((item, index) => (
-                  <ItemMember key={index} item={item} onHandleAddMember={HandleAddMemberInCard} />
+                  <ItemMember
+                    key={index}
+                    item={item}
+                    onHandleAddMember={HandleAddMemberInCard}
+                  />
                 ))}
               </>
             )}
