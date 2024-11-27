@@ -16,6 +16,7 @@ function SettingMenu() {
 
   const { id } = useParams();
   const { workspaceDetails } = useGetWorkspaceById(id);
+  
   return (
     <>
       <Slide in={true} direction="left">

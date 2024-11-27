@@ -1,7 +1,13 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
-export const CreateItem = ({ isList = false, nameBtn, onAdd, placeHolderText, setShowItem }) => {
+export const CreateItem = ({
+  isList = false,
+  nameBtn,
+  onAdd,
+  placeHolderText,
+  setShowItem
+}) => {
   const [nameTitle, setNameTitle] = useState("");
 
   return (
@@ -22,11 +28,14 @@ export const CreateItem = ({ isList = false, nameBtn, onAdd, placeHolderText, se
             nameTitle && onAdd(nameTitle);
             setNameTitle("");
           }}
-          className="cursor-pointer max-w-20 px-3 py-2 my-2 ml-1 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300"
+          className="cursor-pointer px-4 py-2 my-2 ml-1 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300"
         >
-          <span className="text-[14px] font-medium text-white">{nameBtn}</span>
+          <span className="text-sm font-medium text-white">{nameBtn}</span>
         </div>
-        <div onClick={() => setShowItem(false)} className="cursor-pointer hover:bg-gray-300 ml-2 p-[8px] rounded-[4px]">
+        <div
+          onClick={() => setShowItem(false)}
+          className="cursor-pointer hover:bg-gray-300 ml-2 p-[8px] rounded-[4px]"
+        >
           <CloseIcon className=" p-[2px] rounded-[4px]" />
         </div>
       </div>

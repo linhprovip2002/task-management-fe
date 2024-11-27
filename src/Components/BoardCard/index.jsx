@@ -33,9 +33,16 @@ import UploadFile from "./Attachment/UploadFile";
 import Attachment from "./Attachment";
 import CalendarPopper from "./CalendarPopper";
 import { CardComments } from "./ShowComment";
-import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
+import {
+  AddTagInCard,
+  RemoveTagInCard
+} from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
-import { JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
+import {
+  JoinToCard,
+  RemoveUserToCard,
+  updateCard
+} from "../../Services/API/ApiCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
 import { EQueryKeys } from "../../constants";
@@ -57,7 +64,7 @@ export const BoardCard = () => {
     setContent,
     isSaving,
     setEditorInstance,
-    setDataCard,
+    setDataCard
   } = useListBoardContext();
   const { idBoard } = useParams();
 
@@ -87,16 +94,26 @@ export const BoardCard = () => {
 
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [checkOverdue, setCheckOverdue] = useState(false);
-  const [endDateCheck, setEndDateCheck] = useState(formatDate(dataCard?.endDate));
+  const [endDateCheck, setEndDateCheck] = useState(
+    formatDate(dataCard?.endDate)
+  );
 
-  const [chooseColorBackground, setChooseColorBackground] = useState(dataCard?.coverUrl || "");
+  const [chooseColorBackground, setChooseColorBackground] = useState(
+    dataCard?.coverUrl || ""
+  );
 
   const [openAttach, setOpenAttach] = useState(false);
   const handleOpenAttach = () => setOpenAttach(true);
   const handleCloseAttach = () => setOpenAttach(false);
 
-  const { cardComments, isLoading: isLoadingComments } = useGetCardComments(idBoard, cardId);
-  const listComment = useMemo(() => cardComments?.reverse() || [], [cardComments]);
+  const { cardComments, isLoading: isLoadingComments } = useGetCardComments(
+    idBoard,
+    cardId
+  );
+  const listComment = useMemo(
+    () => cardComments?.reverse() || [],
+    [cardComments]
+  );
 
   const { boardTags, isLoading: isLoadingTags } = useGetTagByBoardId(idBoard);
 
@@ -144,7 +161,9 @@ export const BoardCard = () => {
   }, []);
 
   useEffect(() => {
-    const isUserJoined = dataCard?.members.some((member) => member?.user.avatarUrl === userData.avatarUrl);
+    const isUserJoined = dataCard?.members.some(
+      (member) => member?.user.avatarUrl === userData.avatarUrl
+    );
     const newBtnCard = listBtnCard.map((btn) => {
       if (btn.nameBtn === "Join" && isUserJoined) {
         setIsJoin(true);
@@ -152,7 +171,12 @@ export const BoardCard = () => {
         return {
           ...btn,
           nameBtn: "Leave",
-          Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+          Icon: (
+            <PersonRemoveAlt1OutlinedIcon
+              className="ml-1 mr-2"
+              fontSize="small"
+            />
+          )
         };
       }
       return btn;
@@ -168,7 +192,7 @@ export const BoardCard = () => {
           const isCreateItem = !item.isCreateItem;
           return {
             ...item,
-            isCreateItem: isCreateItem,
+            isCreateItem: isCreateItem
           };
         }
         return item;
@@ -192,7 +216,7 @@ export const BoardCard = () => {
       setTag(item);
       setInputTitleLabel(item.name);
     },
-    [isUpdateLabel, ShowDetailNewLabel],
+    [isUpdateLabel, ShowDetailNewLabel]
   );
 
   const handleCreateNewLabel = async (dataColor, titleLabel = "") => {
@@ -202,7 +226,7 @@ export const BoardCard = () => {
       const tag = await createTag({
         idBoard: Number(idBoard),
         name: titleLabel,
-        color: dataColor?.colorCode,
+        color: dataColor?.colorCode
       });
       tag && setListColorLabel([...listColorLabel, tag]);
       tag && (await AddTagInCard(idBoard, dataCard?.id, tag.id));
@@ -219,13 +243,15 @@ export const BoardCard = () => {
         idBoard: Number(idBoard),
         name: titleLabel,
         color: dataColor?.colorCode,
-        tagId: tag.id,
+        tagId: tag.id
       });
       if (resTag) {
         setListColorLabel((prevList) =>
           prevList.map((item) =>
-            item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
-          ),
+            item.id === tag.id
+              ? { ...item, name: titleLabel, color: dataColor?.colorCode }
+              : item
+          )
         );
       }
     } catch (error) {
@@ -238,7 +264,7 @@ export const BoardCard = () => {
       id: listToDo.length + 1,
       title: nameItem,
       todoItem: [],
-      percent: 0,
+      percent: 0
     };
     setListToDo((prev) => {
       if (prev.some((item) => item.id === dataToDo.id)) {
@@ -282,7 +308,7 @@ export const BoardCard = () => {
         tagId: dataCard.tagId,
         startDate: dataCard.startDate,
         endDate: dataCard.endDate,
-        listId: dataList.id,
+        listId: dataList.id
       };
       const res = await updateCard(dataCard.id, data);
       setDataCard((prev) => {
@@ -320,7 +346,7 @@ export const BoardCard = () => {
         }
       });
     },
-    [dataCard, idBoard],
+    [dataCard, idBoard]
   );
 
   const handleCheckDoneToDoItem = (Item, todoItemList) => {
@@ -332,18 +358,21 @@ export const BoardCard = () => {
             if (todoItem.id === todoItemList.id) {
               return {
                 ...todoItem,
-                checkDone: updatedCheckDone,
+                checkDone: updatedCheckDone
               };
             }
             return todoItem;
           });
 
-          const checkDoneCount = updatedTodoItems.filter((i) => i.checkDone).length;
-          const percent = Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
+          const checkDoneCount = updatedTodoItems.filter(
+            (i) => i.checkDone
+          ).length;
+          const percent =
+            Math.round((100 * checkDoneCount) / updatedTodoItems.length) || 0;
           return {
             ...todo,
             todoItem: updatedTodoItems,
-            percent,
+            percent
           };
         }
         return todo;
@@ -358,11 +387,11 @@ export const BoardCard = () => {
           const newDataItem = {
             id: i.todoItem.length + 1,
             title: nameItem,
-            checkDone: false,
+            checkDone: false
           };
           return {
             ...i,
-            todoItem: [...i.todoItem, newDataItem],
+            todoItem: [...i.todoItem, newDataItem]
           };
         }
         return i;
@@ -391,19 +420,26 @@ export const BoardCard = () => {
 
   const handleJoinIntoCard = async (item) => {
     try {
-      const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
+      const isUserJoined = membersInCard?.some(
+        (member) => member?.user?.id === item.id
+      );
       const newBtnCard = updatedBtnCard.map((btn) => {
         if (btn.nameBtn === "Leave" && isUserJoined) {
           return {
             ...btn,
             nameBtn: "Join",
-            Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />,
+            Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />
           };
         } else if (btn.nameBtn === "Join" && !isUserJoined) {
           return {
             ...btn,
             nameBtn: "Leave",
-            Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+            Icon: (
+              <PersonRemoveAlt1OutlinedIcon
+                className="ml-1 mr-2"
+                fontSize="small"
+              />
+            )
           };
         }
         return btn;
@@ -418,7 +454,7 @@ export const BoardCard = () => {
 
       setUpdatedBtnCard(newBtnCard);
       queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD],
+        queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD]
       });
     } catch (error) {
       console.error("Error handling join member to card:", error);
@@ -434,7 +470,7 @@ export const BoardCard = () => {
       const res = await JoinToCard(dataCard.id, item?.user.id);
       res && setMembersInCard([...membersInCard, { user: item?.user }]);
       queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD],
+        queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD]
       });
     } catch (error) {
       console.error("Error handling member:", error);
@@ -548,7 +584,8 @@ export const BoardCard = () => {
     }
   };
 
-  const loading = !dataCard || !cardComments || isLoadingComments || isLoadingTags;
+  const loading =
+    !dataCard || !cardComments || isLoadingComments || isLoadingTags;
 
   return (
     <>
@@ -557,7 +594,7 @@ export const BoardCard = () => {
           style={{
             scrollbarWidth: "thin",
             scrollbarColor: "#fff6 #00000026",
-            overflowY: "auto",
+            overflowY: "auto"
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -568,11 +605,15 @@ export const BoardCard = () => {
           {chooseColorBackground && (
             <div
               style={{
-                backgroundImage: chooseColorBackground.startsWith("http") ? `url(${chooseColorBackground})` : "none",
+                backgroundImage: chooseColorBackground.startsWith("http")
+                  ? `url(${chooseColorBackground})`
+                  : "none",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                backgroundColor: chooseColorBackground.startsWith("#") ? chooseColorBackground : "",
+                backgroundColor: chooseColorBackground.startsWith("#")
+                  ? chooseColorBackground
+                  : ""
               }}
               className={`w-full min-h-[150px] rounded-t-l-[8px]`}
             />
@@ -584,17 +625,27 @@ export const BoardCard = () => {
                   <FeaturedPlayListIcon fontSize="small" />
                 </div>
                 <div className="flex-1 ml-4">
-                  <div className="text-[16px] mb-2">{dataCard?.title || "No Title"}</div>
+                  <div className="text-[16px] mb-2">
+                    {dataCard?.title || "No Title"}
+                  </div>
                   <div className="flex items-center text-[12px] mb-6">
                     <span className="mr-2 font-normal">in the list</span>
                     <div className="cursor-pointer text-[12px] px-1 bg-gray-300 rounded-[2px] font-bold">
                       {dataList?.title || "No Title"}
                     </div>
-                    {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
+                    {isFollowing && (
+                      <RemoveRedEyeOutlinedIcon
+                        className="ml-2"
+                        style={{ fontSize: "16px" }}
+                      />
+                    )}
                   </div>
                   <div className="flex items-center flex-wrap">
                     {membersInCard && membersInCard?.length !== 0 && (
-                      <ItemPerson membersInCard={membersInCard} handleShowMenuBtnCard={handleShowMenuBtnCard} />
+                      <ItemPerson
+                        membersInCard={membersInCard}
+                        handleShowMenuBtnCard={handleShowMenuBtnCard}
+                      />
                     )}
                     {labelOfCard?.length > 0 && (
                       <div className="mr-2 mb-2">
@@ -606,7 +657,7 @@ export const BoardCard = () => {
                             <div
                               key={item.id}
                               style={{
-                                backgroundColor: item.color,
+                                backgroundColor: item.color
                               }}
                               className={`flex items-center justify-center rounded-[4px] min-w-[32px] h-[32px] px-3 py-2 mb-2 mr-1 font-bold text-white text-[12px] `}
                             >
@@ -630,12 +681,16 @@ export const BoardCard = () => {
                         <li className="flex items-center cursor-pointer">
                           <input
                             checked={checkCompleteEndDate}
-                            onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                            onChange={() =>
+                              setCheckCompleteEndDate(!checkCompleteEndDate)
+                            }
                             type="checkbox"
                             className="w-5 h-5 cursor-pointer"
                           />
                           <span
-                            onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                            onClick={() =>
+                              setCheckCompleteEndDate(!checkCompleteEndDate)
+                            }
                             className="flex items-center w-full"
                           >
                             <div
@@ -643,7 +698,9 @@ export const BoardCard = () => {
                             >
                               <div className="">{endDateCheck}</div>
                               {checkCompleteEndDate && (
-                                <div className="bg-green-500 p-[2px] text-[10px] rounded-[4px] ml-2">complete</div>
+                                <div className="bg-green-500 p-[2px] text-[10px] rounded-[4px] ml-2">
+                                  complete
+                                </div>
                               )}
                               <KeyboardArrowDownIcon fontSize="small" />
                             </div>
@@ -660,9 +717,14 @@ export const BoardCard = () => {
                         isFollowing={isFollowing}
                         isActive={true}
                         nameBtn={"Following"}
-                        className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
+                        className={
+                          "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
+                        }
                       >
-                        <RemoveRedEyeOutlinedIcon className="ml-1 mr-2" fontSize="small" />
+                        <RemoveRedEyeOutlinedIcon
+                          className="ml-1 mr-2"
+                          fontSize="small"
+                        />
                       </ButtonBoardCard>
                     </div>
                   </div>
@@ -673,8 +735,8 @@ export const BoardCard = () => {
                   <SubjectIcon fontSize="small" />
                 </div>
                 <div className="flex-1 ml-4">
-                  <div className="text-[16px] mb-2">Describe</div>
-                  <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-[14px] mb-2 p-2 pb-6 rounded-[4px]">
+                  <div className="text-base mb-2">Description</div>
+                  <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-sm mb-2 p-2 pb-6 rounded-md">
                     <div>Add more detailed description...</div>
                   </div>
                 </div>
@@ -687,12 +749,18 @@ export const BoardCard = () => {
                     <p className="ml-3">Attachment</p>
                   </div>
                   <div>
-                    <button onClick={handleOpenAttach} className="px-4 py-1 bg-gray-300 rounded-sm">
+                    <button
+                      onClick={handleOpenAttach}
+                      className="px-4 py-1 bg-gray-300 rounded-sm"
+                    >
                       Add
                     </button>
                     {openAttach && (
                       <div>
-                        <UploadPoper handleFileChange={handleFileChange} handleCloseAttach={handleCloseAttach} />
+                        <UploadPoper
+                          handleFileChange={handleFileChange}
+                          handleCloseAttach={handleCloseAttach}
+                        />
                       </div>
                     )}
                   </div>
@@ -720,7 +788,9 @@ export const BoardCard = () => {
                             onHandleEvent={() => handleRemoveToDoList(item)}
                             isActive={true}
                             nameBtn={"Erase"}
-                            className={"w-[60px] justify-center bg-gray-200 hover:bg-gray-300"}
+                            className={
+                              "w-[60px] justify-center bg-gray-200 hover:bg-gray-300"
+                            }
                           />
                         </div>
                       </div>
@@ -736,16 +806,23 @@ export const BoardCard = () => {
                     </div>
                     <ul>
                       {item.todoItem.map((dataItem, index) => (
-                        <li key={index} className="flex items-center my-2 cursor-pointer">
+                        <li
+                          key={index}
+                          className="flex items-center my-2 cursor-pointer"
+                        >
                           <input
                             checked={dataItem.checkDone}
-                            onChange={() => handleCheckDoneToDoItem(item, dataItem)}
+                            onChange={() =>
+                              handleCheckDoneToDoItem(item, dataItem)
+                            }
                             type="checkbox"
                             className="w-5 h-5 mx-2 cursor-pointer"
                           />
                           <span className="flex items-center w-full">
                             <div
-                              onClick={() => handleCheckDoneToDoItem(item, dataItem)}
+                              onClick={() =>
+                                handleCheckDoneToDoItem(item, dataItem)
+                              }
                               className={`flex-1 hover:bg-gray-300 h-[34px] p-2 rounded-[4px] transition-all duration-50`}
                             >
                               <font>{dataItem.title}</font>
@@ -759,7 +836,9 @@ export const BoardCard = () => {
                             onHandleEvent={() => ShowCreateToDoItem(item)}
                             isActive={true}
                             nameBtn={"Add an item"}
-                            className={"w-[120px] justify-center bg-gray-200 hover:bg-gray-300"}
+                            className={
+                              "w-[120px] justify-center bg-gray-200 hover:bg-gray-300"
+                            }
                           />
                         ) : (
                           <div>
@@ -775,16 +854,22 @@ export const BoardCard = () => {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center">
                                 <ButtonBoardCard
-                                  onHandleEvent={() => handleAddToDoItem(inputTitleToDoItem, item)}
+                                  onHandleEvent={() =>
+                                    handleAddToDoItem(inputTitleToDoItem, item)
+                                  }
                                   isActive={true}
                                   nameBtn={"More"}
-                                  className={"w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600"}
+                                  className={
+                                    "w-[80px] justify-center bg-blue-500 text-white hover:bg-blue-600"
+                                  }
                                 />
                                 <ButtonBoardCard
                                   onHandleEvent={() => ShowCreateToDoItem(item)}
                                   isActive={true}
                                   nameBtn={"Cancel"}
-                                  className={"w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300"}
+                                  className={
+                                    "w-[80px] ml-2 justify-center bg-gray-100 hover:bg-gray-300"
+                                  }
                                 />
                               </div>
                               <div className="flex items-center">
@@ -792,12 +877,14 @@ export const BoardCard = () => {
                                   onHandleEvent={ShowCreateToDoItem}
                                   isActive={true}
                                   nameBtn={"Assign"}
-                                  className={"w-[80px] justify-center hover:bg-gray-200"}
+                                  className={
+                                    "w-[80px] justify-center hover:bg-gray-200"
+                                  }
                                 >
                                   <Person4OutlinedIcon
                                     style={{
                                       fontSize: "18px",
-                                      marginRight: "4px",
+                                      marginRight: "4px"
                                     }}
                                   />
                                 </ButtonBoardCard>
@@ -805,12 +892,14 @@ export const BoardCard = () => {
                                   onHandleEvent={ShowCreateToDoItem}
                                   isActive={true}
                                   nameBtn={"Expiration day"}
-                                  className={"w-[140px] ml-2 justify-center hover:bg-gray-200"}
+                                  className={
+                                    "w-[140px] ml-2 justify-center hover:bg-gray-200"
+                                  }
                                 >
                                   <AccessTimeIcon
                                     style={{
                                       fontSize: "18px",
-                                      marginRight: "4px",
+                                      marginRight: "4px"
                                     }}
                                   />
                                 </ButtonBoardCard>
@@ -833,7 +922,9 @@ export const BoardCard = () => {
                     <ButtonBoardCard
                       isActive={true}
                       nameBtn={"Show details"}
-                      className={"w-[100px] justify-center bg-gray-200 hover:bg-gray-300"}
+                      className={
+                        "w-[100px] justify-center bg-gray-200 hover:bg-gray-300"
+                      }
                     />
                   </div>
                   <div className="flex items-center text-[12px] mb-2"></div>

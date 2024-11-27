@@ -15,14 +15,14 @@ export const SearchMember = (
   const [searchOptions, setSearchOptions] = useState([]);
   const debounceSearchMember = useDebounce(searchMember, 500);
 
-  const { userInfo, isLoading } = useGetUser({
+  const { userList, isLoading } = useGetUser({
     search: debounceSearchMember
   });
 
   useEffect(() => {
-    if (userInfo?.data) setSearchOptions(userInfo.data);
+    if (userList?.data) setSearchOptions(userList.data);
     // eslint-disable-next-line
-  }, [JSON.stringify(userInfo)]);
+  }, [JSON.stringify(userList)]);
 
   return (
     <div className="flex flex-col gap-1">
@@ -37,6 +37,7 @@ export const SearchMember = (
         blurOnSelect={false}
         filterSelectedOptions
         disableCloseOnBlur
+        size="small"
         noOptionsText={
           isLoading ? (
             <div className="h-10">

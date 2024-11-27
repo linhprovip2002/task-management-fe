@@ -3,6 +3,7 @@ import { Button, TextField } from "@mui/material";
 import { Editor } from "@tinymce/tinymce-react";
 import { useGetCardById } from "../../../Hooks";
 import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
+import { useParams } from "react-router-dom";
 
 const CardAddDetail = ({ content, setContent, loading }) => {
   const { handlePostComment } = useListBoardContext();

@@ -197,7 +197,7 @@ function ListInBoard() {
     try {
       await CreateList(idBoard, newListItem);
       setShowAddListItem((prev) => !prev);
-      queryClient.invalidateQueries([EQueryKeys.GET_BOARD_BY_ID]);
+      queryClient.invalidateQueries({ queryKey: [EQueryKeys.GET_BOARD_BY_ID] });
     } catch (error) {
       console.error("Failed to create list:", error);
     }
