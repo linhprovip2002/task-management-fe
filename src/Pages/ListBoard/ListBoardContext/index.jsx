@@ -1,19 +1,7 @@
-import React, {
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useState,
-  useMemo
-} from "react";
+import React, { createContext, useContext, useCallback, useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
-import {
-  useGetAllCardByList,
-  useGetBoardById,
-  useGetMembersByBoard,
-  useGetWorkspaceById
-} from "../../../Hooks";
+import { useGetAllCardByList, useGetBoardById, useGetMembersByBoard, useGetWorkspaceById } from "../../../Hooks";
 import { useStorage } from "../../../Contexts";
 
 const ListBoardContext = createContext();
@@ -43,7 +31,6 @@ function ListBoardProvider({ children }) {
 
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [upFileComment, setUpFileComment] = useState([]);
 
@@ -53,10 +40,7 @@ function ListBoardProvider({ children }) {
   const { data: dataListAPI } = useGetAllCardByList(dataBoard);
   const { data: membersBoard } = useGetMembersByBoard(boardId);
 
-  const isOwner = useMemo(
-    () => dataBoard?.ownerId === userData?.id,
-    [dataBoard, userData]
-  );
+  const isOwner = useMemo(() => dataBoard?.ownerId === userData?.id, [dataBoard, userData]);
 
   useEffect(() => {
     setDataList(dataListAPI);
@@ -69,7 +53,7 @@ function ListBoardProvider({ children }) {
       localStorage.setItem("cardId", dataCard.id);
       toggleCardEditModal && setToggleCardEditModal((prev) => !prev);
     },
-    [isShowBoardCard, toggleCardEditModal]
+    [isShowBoardCard, toggleCardEditModal],
   );
 
   const handleShowBoardEdit = useCallback(
@@ -83,23 +67,21 @@ function ListBoardProvider({ children }) {
       // setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
-    [toggleCardEditModal]
+    [toggleCardEditModal],
   );
 
   const handleShowAddCard = (idList) => {
     setActiveIndex((prev) => (prev === idList ? null : idList));
     const newList = dataList.map((list) => ({
       ...list,
-      isShowAddCard: list.id === idList ? !list.isShowAddCard : false
+      isShowAddCard: list.id === idList ? !list.isShowAddCard : false,
     }));
     setDataList(newList);
   };
 
   const handleChange = async (e, idList) => {
     setDataList((prevDataList) =>
-      prevDataList.map((list) =>
-        list.id === idList ? { ...list, title: e.target.value } : list
-      )
+      prevDataList.map((list) => (list.id === idList ? { ...list, title: e.target.value } : list)),
     );
   };
 
@@ -164,7 +146,6 @@ function ListBoardProvider({ children }) {
         handleChange,
         handleChangeTitleCard,
         handleShowAddCard,
-        loading,
         content,
         setContent,
         isSaving,
@@ -173,7 +154,7 @@ function ListBoardProvider({ children }) {
         setUpFileComment,
         setToggleCardEditModal,
         setActiveIndex,
-        isOwner
+        isOwner,
       }}
     >
       {children}

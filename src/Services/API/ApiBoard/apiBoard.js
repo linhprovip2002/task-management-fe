@@ -87,8 +87,8 @@ export async function updateBoard(boardId, data) {
   return await request.patch(`/board/${boardId}`, data);
 }
 
-export async function getActivities(boardId) {
-  const response = await request.get(`/board/${boardId}/activities`);
+export async function getActivities({ boardId, page, perPage }) {
+  const response = await request.get(`/board/${boardId}/activities?page=${page}&limit=${perPage}`);
   return response?.data;
 }
 
