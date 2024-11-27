@@ -9,7 +9,7 @@ import {
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
   Replay as ReplayIcon,
-  Remove as RemoveIcon,
+  Remove as RemoveIcon
 } from "@mui/icons-material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -51,8 +51,12 @@ import Loading from "../Loading";
 import { formatDate } from "./WriteComment/helpers/formatDate";
 import { createTag, updateTag } from "../../Services/API/APITags";
 import { useGetCardComments } from "../../Hooks/useCards";
-import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
+import {
+  apiAssignFile,
+  apiUploadMultiFile
+} from "../../Services/API/ApiUpload/apiUpload";
 import DeleteCard from "./DeleteCard";
+import { Description } from "./Description/Description";
 
 export const BoardCard = () => {
   const {
@@ -75,7 +79,9 @@ export const BoardCard = () => {
   const { userData } = useStorage();
   const [labelOfCard, setLabelOfCard] = useState([]);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
+  const [postUploadedFiles, setPostUploadedFiles] = useState(
+    dataCard?.files || []
+  );
   const [updatedBtnCard, setUpdatedBtnCard] = useState(listBtnCard);
   const [listColorLabel, setListColorLabel] = useState([]);
   const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
@@ -127,8 +133,8 @@ export const BoardCard = () => {
             updatedAt: tag.updatedAt || null,
             color: tag.color,
             name: tag.name,
-            boardId: idBoard,
-          })) || [],
+            boardId: idBoard
+          })) || []
       );
       setPostUploadedFiles(dataCard?.files || []);
       setMembersInCard(dataCard?.members || []);
@@ -445,7 +451,10 @@ export const BoardCard = () => {
       });
       if (isUserJoined) {
         const res = await RemoveUserToCard(idBoard, dataCard.id, item.id);
-        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+        res &&
+          setMembersInCard((prev) =>
+            prev.filter((p) => p?.user?.id !== item.id)
+          );
       } else {
         const res = await JoinToCard(dataCard.id, item.id);
         res && setMembersInCard([...membersInCard, { user: item }]);
@@ -536,14 +545,14 @@ export const BoardCard = () => {
           {
             id: 13,
             nameBtn: "Send to board",
-            Icon: <ReplayIcon className="ml-1 mr-2" fontSize="small" />,
+            Icon: <ReplayIcon className="ml-1 mr-2" fontSize="small" />
           },
           {
             id: 14,
             nameBtn: "Delete",
             Icon: <RemoveIcon className="ml-1 mr-2" fontSize="small" />,
-            color: "#ca3521",
-          },
+            color: "#ca3521"
+          }
         ];
       }
       return [btn];
@@ -733,12 +742,7 @@ export const BoardCard = () => {
                 <div>
                   <SubjectIcon fontSize="small" />
                 </div>
-                <div className="flex-1 ml-4">
-                  <div className="text-base mb-2">Description</div>
-                  <div className="bg-gray-200 hover:bg-gray-300 cursor-pointer w-full text-sm mb-2 p-2 pb-6 rounded-md">
-                    <div>Add more detailed description...</div>
-                  </div>
-                </div>
+                <Description />
               </div>
               {/* SHOW ATTACHMENT */}
               <div className="px-2">
