@@ -113,7 +113,6 @@ export const BoardCard = () => {
             boardId: idBoard,
           })) || [],
       );
-
       setPostUploadedFiles(dataCard?.files || []);
       setMembersInCard(dataCard?.members || []);
       setChooseColorBackground(dataCard?.coverUrl || "");
@@ -441,10 +440,10 @@ export const BoardCard = () => {
     }
   };
 
-  const handlePostFiles = useCallback(async (id, allUrls) => {
+  const handlePostFiles = useCallback(async (id, idBoard, allUrls) => {
     try {
-      const response = await apiAssignFile(id, allUrls);
-      setPostUploadedFiles([...response.data.files]);
+      const response = await apiAssignFile(id, idBoard, allUrls);
+      setPostUploadedFiles(response.data.files);
       return response.data.files;
     } catch (error) {
       console.error("Failed to get uploaded files:", error);
@@ -484,7 +483,7 @@ export const BoardCard = () => {
       const uploadedUrls = uploadedFilesData.map((file) => file.url);
 
       // Gọi API để đính kèm (gửi) các URL len dữ liệu thẻ (card)
-      await handlePostFiles(dataCard.id, uploadedUrls);
+      await handlePostFiles(dataCard.id, idBoard, uploadedUrls);
       return uploadedFilesData;
     } catch (error) {
       console.error("Error uploading files:", error);
@@ -592,16 +591,16 @@ export const BoardCard = () => {
                     </div>
                     {isFollowing && <RemoveRedEyeOutlinedIcon className="ml-2" style={{ fontSize: "16px" }} />}
                   </div>
-                  <div className="flex items-center flex-wrap">
+                  <div className="flex flex-wrap items-center">
                     {membersInCard && membersInCard?.length !== 0 && (
                       <ItemPerson membersInCard={membersInCard} handleShowMenuBtnCard={handleShowMenuBtnCard} />
                     )}
                     {labelOfCard?.length > 0 && (
-                      <div className="mr-2 mb-2">
+                      <div className="mb-2 mr-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Label</span>
                         </div>
-                        <div className="flex items-center flex-wrap">
+                        <div className="flex flex-wrap items-center">
                           {labelOfCard.map((item) => (
                             <div
                               key={item.id}
@@ -623,7 +622,7 @@ export const BoardCard = () => {
                       </div>
                     )}
                     {endDateCheck != null && (
-                      <div className="mr-2 mb-2">
+                      <div className="mb-2 mr-2">
                         <div className="flex items-center text-[12px] mb-2">
                           <span className="mr-2">Expiration date</span>
                         </div>
@@ -651,7 +650,7 @@ export const BoardCard = () => {
                         </li>
                       </div>
                     )}
-                    <div className="mr-2 mb-2">
+                    <div className="mb-2 mr-2">
                       <div className="flex items-center text-[12px] mb-2">
                         <span className="mr-2">Notification</span>
                       </div>
