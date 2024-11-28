@@ -22,9 +22,9 @@ const UserBoards = () => {
           <AccessTimeIcon />
           <span className="ml-2 text-xl font-bold">YOUR WORKSPACES</span>
         </div>
-        {workspaceBoard?.map((wspItem) => {
+        {workspaceBoard?.map((wspItem, index) => {
           return (
-            <div className="mt-6 mb-8">
+            <div key={index} className="mt-6 mb-8">
               <WorkspaceItem
                 key={wspItem.id}
                 wspItem={wspItem}

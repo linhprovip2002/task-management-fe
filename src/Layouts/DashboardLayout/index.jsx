@@ -20,9 +20,7 @@ const DashBoardLayout = ({ children }) => {
   const { workspaceInfo, isLoading, isFetching } = useGetWorkspaceByUser();
 
   const isActiveClassname = (path) => {
-    return location.pathname === path
-      ? "bg-blue-100 text-blue-700"
-      : "hover:bg-gray-200";
+    return location.pathname === path ? "bg-blue-100 text-blue-700" : "hover:bg-gray-200";
   };
 
   useEffect(() => {
@@ -32,8 +30,16 @@ const DashBoardLayout = ({ children }) => {
     if (!firstWorkspace && workspaceInfo?.length) {
       setFirstWorkspace(workspaceInfo[0]);
     }
+
     // eslint-disable-next-line
   }, [workspaceInfo, firstWorkspace]);
+
+  useEffect(() => {
+    document.title = "Workspace | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  }, []);
 
   return (
     <>
@@ -49,9 +55,7 @@ const DashBoardLayout = ({ children }) => {
                     className={`hover:cursor-pointer flex items-center p-2 rounded-md ${isActiveClassname(item.path)}`}
                     onClick={() => navigate(item.path)}
                   >
-                    <span className="flex items-center justify-center">
-                      {item.icon}
-                    </span>
+                    <span className="flex items-center justify-center">{item.icon}</span>
                     <span className="ml-2 font-semibold">{item.title}</span>
                   </div>
                 );
@@ -74,14 +78,8 @@ const DashBoardLayout = ({ children }) => {
                       position="right"
                       title={
                         <div className="flex items-center gap-4 text-base">
-                          <Avatar
-                            sx={{ width: 24, height: 24, borderRadius: 1 }}
-                          >
-                            {workspace.title[0]}
-                          </Avatar>
-                          <div className="text-sm font-bold">
-                            {workspace.title}
-                          </div>
+                          <Avatar sx={{ width: 24, height: 24, borderRadius: 1 }}>{workspace.title[0]}</Avatar>
+                          <div className="text-sm font-bold">{workspace.title}</div>
                         </div>
                       }
                     >
@@ -93,9 +91,7 @@ const DashBoardLayout = ({ children }) => {
                               className={`hover:cursor-pointer pl-10 py-2 rounded-md flex items-center ${isActiveClassname(item.path)}`}
                               onClick={() => navigate(item.path)}
                             >
-                              <span className="flex items-center justify-center">
-                                {item.icon}
-                              </span>
+                              <span className="flex items-center justify-center">{item.icon}</span>
                               <span className="ml-2">{item.title}</span>
                             </div>
                           );
@@ -106,14 +102,9 @@ const DashBoardLayout = ({ children }) => {
                 })
               ) : (
                 <div className="ml-4 flex flex-col gap-3">
-                  <div className="text-base text-textColor">
-                    No workspace to show
-                  </div>
+                  <div className="text-base text-textColor">No workspace to show</div>
                   <div className="w-full">
-                    <Button
-                      onClick={() => setToggleModal(true)}
-                      variant="contained"
-                    >
+                    <Button onClick={() => setToggleModal(true)} variant="contained">
                       Create your first workspace
                     </Button>
                   </div>
@@ -124,12 +115,7 @@ const DashBoardLayout = ({ children }) => {
           <div className="w-full">{children}</div>
         </div>
       </div>
-      {toggleModal && (
-        <EditWorkspaceModal
-          open={toggleModal}
-          handleClose={() => setToggleModal(false)}
-        />
-      )}
+      {toggleModal && <EditWorkspaceModal open={toggleModal} handleClose={() => setToggleModal(false)} />}
       {(isLoading || isFetching) && <Loading />}
     </>
   );

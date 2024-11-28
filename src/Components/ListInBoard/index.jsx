@@ -208,6 +208,13 @@ function ListInBoard() {
     setColumns(dataList);
   }, [dataList]);
 
+  useEffect(() => {
+    document.title = "Board | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  });
+
   return (
     <div className="relative h-[90vh]">
       <div
