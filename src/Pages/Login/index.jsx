@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Button, Divider, TextField } from "@mui/material";
 import { TrelloIconColor } from "../../Components/Icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -49,6 +49,12 @@ const Login = memo(() => {
       });
   };
 
+  useEffect(() => {
+    document.title = "Login | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  }, []);
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">

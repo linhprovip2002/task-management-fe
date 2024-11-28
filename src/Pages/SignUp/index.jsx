@@ -1,11 +1,6 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { Button, Divider, TextField } from "@mui/material";
-import {
-  Apple,
-  FaceBookColor,
-  GoogleColor,
-  TrelloIconColor
-} from "../../Components/Icons";
+import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from "../../Components/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { SignUp as register } from "../../Services/API/Auth";
@@ -24,11 +19,11 @@ function SignUp(props) {
       userName: "",
       email: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
     },
     resolver: joiResolver(validation),
     mode: "onSubmit",
-    reValidateMode: "onBlur"
+    reValidateMode: "onBlur",
   });
 
   const handleSubmit = (values) => {
@@ -43,6 +38,12 @@ function SignUp(props) {
         toast.error("Register account fail");
       });
   };
+  useEffect(() => {
+    document.title = "Signup | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  }, []);
 
   return (
     <div className="mt-[50px] w-full flex justify-center items-center h-full">
@@ -52,15 +53,10 @@ function SignUp(props) {
             <div className="flex justify-center">
               <TrelloIconColor />
             </div>
-            <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
-              Register to continue
-            </h5>
+            <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Register to continue</h5>
           </div>
 
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col"
-          >
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col">
             <Controller
               name="userName"
               control={form.control}
@@ -74,8 +70,8 @@ function SignUp(props) {
                   sx={{
                     marginBottom: 2,
                     "& .MuiInputBase-input": {
-                      padding: 1
-                    }
+                      padding: 1,
+                    },
                   }}
                   placeholder="User Name"
                 />
@@ -95,8 +91,8 @@ function SignUp(props) {
                   sx={{
                     marginBottom: 2,
                     "& .MuiInputBase-input": {
-                      padding: 1
-                    }
+                      padding: 1,
+                    },
                   }}
                   placeholder="Email"
                 />
@@ -116,8 +112,8 @@ function SignUp(props) {
                   sx={{
                     marginBottom: 2,
                     "& .MuiInputBase-input": {
-                      padding: 1
-                    }
+                      padding: 1,
+                    },
                   }}
                   placeholder="Password"
                 />
@@ -136,8 +132,8 @@ function SignUp(props) {
                   sx={{
                     marginBottom: 2,
                     "& .MuiInputBase-input": {
-                      padding: 1
-                    }
+                      padding: 1,
+                    },
                   }}
                   placeholder="Confirm Password"
                 />
@@ -149,9 +145,7 @@ function SignUp(props) {
             </Button>
           </form>
           <div className="mt-6">
-            <span className="mb-4 text-[14px] font-bold text-slate-400">
-              Others:
-            </span>
+            <span className="mb-4 text-[14px] font-bold text-slate-400">Others:</span>
           </div>
 
           <div>
@@ -179,10 +173,7 @@ function SignUp(props) {
             <Divider component="div" />
           </div>
           <div className="flex">
-            <Link
-              to={"/login"}
-              className="text-[#0c66e4] text-[14px] hover:underline"
-            >
+            <Link to={"/login"} className="text-[#0c66e4] text-[14px] hover:underline">
               Already have an Atlassian account? Login
             </Link>
           </div>

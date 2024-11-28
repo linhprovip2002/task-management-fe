@@ -59,6 +59,13 @@ const WorkspaceSettings = () => {
     setWorkspaceData(workspaceDetails);
   }, [workspaceDetails]);
 
+  useEffect(() => {
+    document.title = "Settings | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  }, []);
+
   if (isLoading) return <Loading />;
 
   const canDelete = confirmDelete === workspaceData?.title;

@@ -4,11 +4,18 @@ import { useGetWorkspaceById, useGetWorkspaceMember } from "../../../Hooks";
 import { useParams } from "react-router-dom";
 import Loading from "../../../Components/Loading";
 import { MemberCard } from "./components/MemberCard";
+import { useEffect } from "react";
 
 const WorkspaceMembers = () => {
   const { id } = useParams();
   const { workspaceMembers, isLoading, isRefetching } = useGetWorkspaceMember(id);
   const { workspaceDetails } = useGetWorkspaceById(id);
+  useEffect(() => {
+    document.title = "Members | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  }, []);
 
   if (isLoading || isRefetching || !workspaceMembers) return <Loading />;
   const isOwner = workspaceDetails.isOwner;

@@ -3,7 +3,7 @@ import PublicIcon from "@mui/icons-material/Public";
 import { Controller, useForm } from "react-hook-form";
 import { userServices } from "../../../Services";
 import { toast } from "react-toastify";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStorage } from "../../../Contexts";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import classnames from "classnames/bind";
@@ -83,6 +83,13 @@ export const ProfileAndVisibility = () => {
         });
     }
   };
+
+  useEffect(() => {
+    document.title = `${userData.name} | Kanban`;
+    return () => {
+      document.title = "Kanban";
+    };
+  }, [userData]);
 
   return (
     <div className="max-w-[900px] p-8 m-auto">
