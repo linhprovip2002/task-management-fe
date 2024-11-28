@@ -68,7 +68,7 @@ const Header = () => {
           >
             <div className="flex items-center gap-2 m-1">
               <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-4 h-4" />
-              <span className="text-lg font-bold">Trello</span>
+              <span className="text-lg font-bold">Kanban</span>
             </div>
           </Link>
           <div className="items-center hidden space-x-4 xl:flex">
