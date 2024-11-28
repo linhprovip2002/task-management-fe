@@ -40,6 +40,7 @@ const Header = () => {
       userServices
         .searchGlobal({ searchValue: debounceValue })
         .then((res) => {
+          console.log(res);
           setSearchResult(res);
         })
         .catch((err) => {

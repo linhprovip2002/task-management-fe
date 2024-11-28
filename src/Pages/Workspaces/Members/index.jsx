@@ -11,7 +11,8 @@ const WorkspaceMembers = () => {
   const { workspaceDetails } = useGetWorkspaceById(id);
 
   if (isLoading || isRefetching || !workspaceMembers) return <Loading />;
-  const isOwner = false;
+  const isOwner = workspaceDetails.isOwner;
+
   return (
     <div className="flex flex-col gap-4">
       <BoardInformation isMemberPage />
