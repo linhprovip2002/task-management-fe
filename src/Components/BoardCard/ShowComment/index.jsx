@@ -28,8 +28,8 @@ export const CardComments = ({ item }) => {
 
   const method = useForm({
     defaultValues: {
-      content: item.content || ""
-    }
+      content: item.content || "",
+    },
   });
   const { setValue, watch, handleSubmit } = method;
 
@@ -37,12 +37,6 @@ export const CardComments = ({ item }) => {
     setValue("content", item.content);
     // eslint-disable-next-line
   }, [item.content]);
-
-  // const handleImageClick = (url) => {
-  //   console.log("url", url);
-  //   setValue("selectedImgUrl", url);
-  //   setOpenImagePreview(true);
-  // };
 
   const handleUpdateComment = async (data, e) => {
     e.preventDefault();
@@ -57,7 +51,7 @@ export const CardComments = ({ item }) => {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: cardId
+      cardId: cardId,
     };
 
     try {
@@ -65,7 +59,7 @@ export const CardComments = ({ item }) => {
       const newComment = response.data;
       setValue("content", newComment.content);
       queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_CARD_COMMENT]
+        queryKey: [EQueryKeys.GET_CARD_COMMENT],
       });
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
     } catch (err) {
@@ -81,7 +75,7 @@ export const CardComments = ({ item }) => {
     try {
       await deleteComment(idBoard, commentId);
       queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_CARD_COMMENT]
+        queryKey: [EQueryKeys.GET_CARD_COMMENT],
       });
       toast.success("Deleted comment successfully!");
     } catch (err) {
@@ -115,20 +109,13 @@ export const CardComments = ({ item }) => {
   return (
     <FormProvider {...method}>
       <div className="flex p-4 my-4 gap-4 rounded-md bg-gray-50" key={item.id}>
-        <Avatar
-          sx={{ width: "30px", height: "30px" }}
-          src={userData?.avatarUrl}
-        >
+        <Avatar sx={{ width: "30px", height: "30px" }} src={userData?.avatarUrl}>
           {userData?.name[0] || " "}
         </Avatar>
         <div className="w-full">
           <div className="flex items-center w-full mb-4">
-            <span className="mr-4 text-[14px] font-medium">
-              {userData.name}
-            </span>
-            <p className="text-[14px] font-normal text-gray-500">
-              Created {formatDate(item.createdAt)}
-            </p>
+            <span className="mr-4 text-[14px] font-medium">{userData.name}</span>
+            <p className="text-[14px] font-normal text-gray-500">Created {formatDate(item.createdAt)}</p>
           </div>
           <form onSubmit={handleSubmit(handleUpdateComment)}>
             {canEdit ? (
@@ -171,10 +158,7 @@ export const CardComments = ({ item }) => {
                   className="p-3 my-2 w-full  bg-white border border-gray-300 rounded-md max-w-[400px] break-words"
                 />
                 <div className="flex mt-2 space-x-4 text-sm text-gray-500">
-                  <button
-                    onClick={() => setCanEdit(true)}
-                    className="hover:underline"
-                  >
+                  <button onClick={() => setCanEdit(true)} className="hover:underline">
                     Edit
                   </button>
                   <span>•</span>
@@ -192,14 +176,8 @@ export const CardComments = ({ item }) => {
         </div>
       </div>
 
-      {!userData ||
-        (loading && <Loading className="bg-white bg-opacity-10 z-1" />)}
-      {
-        <PreviewImageModal
-          open={openImagePreview}
-          handleCloseImageClick={handleCloseImageClick}
-        />
-      }
+      {!userData || (loading && <Loading className="bg-white bg-opacity-10 z-1" />)}
+      {<PreviewImageModal open={openImagePreview} handleCloseImageClick={handleCloseImageClick} />}
     </FormProvider>
   );
 };

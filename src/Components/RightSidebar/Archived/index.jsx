@@ -27,7 +27,7 @@ export default function Archived() {
 
   return (
     <Slide in={true} direction="left">
-      <div>
+      <div className="overflow-y-scroll overflow-x-hidden">
         <div className="flex items-center justify-between h-8">
           <div>
             <TextField

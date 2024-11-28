@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useStorage } from "../../../../Contexts";
 import { useState } from "react";
 import { RemoveMemberModal } from "../../../../Components/Modals/RemoveMemberModal";
+import { stringAvatar } from "../../../../Utils/color";
 
 export const MemberCard = ({ member, canRemove = false }) => {
   const { userData } = useStorage();
@@ -14,7 +15,7 @@ export const MemberCard = ({ member, canRemove = false }) => {
       <div className="ml-8 flex flex-col gap-2">
         <div key={member.id} className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Avatar src={member.avatarUrl} alt={member.name} className="w-8 h-8 rounded-full" />
+            <Avatar {...stringAvatar(member.name)} alt={member.name} src={member.avatarUrl || ""} />
             <div>
               <div className="font-bold">{member.name}</div>
               <div>{member.email}</div>

@@ -52,21 +52,20 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
 
   if (isLoading || !dataBoardRole || !userData) return <Loading />;
 
+  let { sx, children, title } = stringAvatar(data?.name);
+  sx = {
+    ...sx,
+    width: 32,
+    height: 32,
+    marginRight: 1,
+    fontSize: "16px",
+  };
+
   return (
     <ListItem disableGutters>
       <div className="flex gap-2 w-full hover:bg-slate-100 p-2 rounded-md items-center h-[56px]">
         <div className="flex-1 flex">
-          <Avatar
-            {...stringAvatar(data?.name)}
-            alt={data?.name}
-            src={data?.avatarUrl}
-            sx={{
-              width: 32,
-              height: 32,
-              marginRight: 1,
-              fontSize: "16px",
-            }}
-          />
+          <Avatar alt={data?.name} src={data?.avatarUrl} sx={sx} children={children} title={title} />
           <ListItemText sx={{ color: "#172b4d" }} primary={data?.email} />
         </div>
         {isAdmin && (

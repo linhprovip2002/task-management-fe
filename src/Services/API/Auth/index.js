@@ -33,3 +33,8 @@ export async function getProfile() {
     console.error(error);
   }
 }
+
+export async function requestForgotPassowrd(email) {
+  const response = await request.get(`/auth/forgot-password/${email}`);
+  return response?.data;
+}
