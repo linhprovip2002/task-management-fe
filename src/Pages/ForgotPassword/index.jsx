@@ -7,12 +7,15 @@ import Loading from "../../Components/Loading";
 import routes from "../../config/routes";
 import "./ForgotPassword.css";
 import { joiResolver } from "@hookform/resolvers/joi";
-import validation from "./validation";
-import { requestForgotPassowrd } from "../../Services/API/Auth";
+import validation, { resetPasswordValidation } from "./validation";
+import { requestForgotPassowrd, resetPassowrd } from "../../Services/API/Auth";
+import { toast } from "react-toastify";
 
 const ForgotPassword = memo(() => {
   const [isLoading, setLoading] = useState(false);
-  const [sentMail, setSentMail] = useState(false);
+  const [sentMail, setSentMail] = useState(true);
+  const [resetSuccess, setResetSuccess] = useState(false);
+
   const { handleSubmit, control, getValues, setError } = useForm({
     defaultValues: {
       email: "",
@@ -22,9 +25,18 @@ const ForgotPassword = memo(() => {
     reValidateMode: "onBlur",
   });
 
-  const onLogin = (values) => {
-    const { email } = values;
+  const form = useForm({
+    defaultValues: {
+      secretToken: "",
+      newPassword: "",
+    },
+    resolver: joiResolver(resetPasswordValidation),
+    mode: "onSubmit",
+    reValidateMode: "onBlur",
+  });
 
+  const handleSendMail = (values) => {
+    const { email } = values;
     setLoading(true);
     requestForgotPassowrd(email)
       .then((res) => {
@@ -34,6 +46,24 @@ const ForgotPassword = memo(() => {
         setError("email", { type: "manual", message: err.response?.data?.message || err.message });
       })
       .finally(() => setLoading(false));
+  };
+
+  const handleResetPassword = (values) => {
+    const email = getValues("email");
+    setLoading(true);
+    resetPassowrd({ email: email, token: values.secretToken, password: values.newPassword })
+      .then((res) => {
+        setResetSuccess(true);
+        toast.success("Change password successfully");
+      })
+      .catch((err) => {
+        if (err.response.data.statusCode === 400)
+          setError("secretToken", { type: "manual", message: err.response?.data?.message || err.message });
+        toast.error("Reset password unsuccessfully");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -48,7 +78,7 @@ const ForgotPassword = memo(() => {
             <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">You can't Login ?</h5>
           </div>
           {sentMail || (
-            <form onSubmit={handleSubmit(onLogin)} className="flex flex-col gap-3">
+            <form onSubmit={handleSubmit(handleSendMail)} className="flex flex-col gap-3">
               <div className="text-sm text-[var(--dark-slate-blue)] font-semibold">We will send the link to</div>
               <Controller
                 name="email"
@@ -89,25 +119,78 @@ const ForgotPassword = memo(() => {
                   margin: `8px 0px 16px`,
                 }}
               ></div>
-              <p className="text-sm text-[var(--dark-slate-blue)]">We have sent you a recover link at</p>
-              <p className="text-base font-semibold text-[var(--text-color)]">{getValues("email")}</p>
-              <p className="text-xs text-[var(--dark-slate-blue)]">
-                If you haven't received the email, please check your spam folder or{" "}
-                <Link to={routes.signup} className="text-[var(--primary)] hover:underline">
-                  subscribe
-                </Link>
-                .
-              </p>
-              <div className="flex justify-center mt-6">
-                <div
-                  onClick={() => setSentMail(false)}
-                  className="text-[#0c66e4] text-[14px] hover:underline cursor-pointer"
-                >
-                  Go back
-                </div>
-                <p className="text-[14px] text-[#42526E] mx-2">•</p>
-                <Link className="text-[#0c66e4] text-[14px] hover:underline">Resend recover link</Link>
-              </div>
+              {resetSuccess ? (
+                <p className="text-sm text-[var(--dark-slate-blue)] text-center font-semibold">
+                  You have changed password successfully!
+                </p>
+              ) : (
+                <>
+                  <p className="text-sm text-[var(--dark-slate-blue)]">We have sent you a recover link at</p>
+                  <p className="text-base font-semibold text-[var(--text-color)]">{getValues("email")}</p>
+                  <p className="text-xs text-[var(--dark-slate-blue)]">
+                    If you haven't received the email, please check your spam folder or{" "}
+                    <Link to={routes.signup} className="text-[var(--primary)] hover:underline">
+                      subscribe
+                    </Link>
+                    .
+                  </p>
+                  <form onSubmit={form.handleSubmit(handleResetPassword)} className="w-full mt-2 flex flex-col gap-3">
+                    <Controller
+                      name="secretToken"
+                      control={form.control}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          onChange={field.onChange}
+                          value={field.email}
+                          error={Boolean(error)} // Hiển thị lỗi nếu có
+                          helperText={error ? error.message : ""} // Hiển thị thông báo lỗi
+                          sx={{
+                            width: "100%",
+                            "& .MuiInputBase-input": {
+                              padding: 1,
+                            },
+                          }}
+                          placeholder="Reset password token"
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name="newPassword"
+                      control={form.control}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          type="password"
+                          onChange={field.onChange}
+                          value={field.email}
+                          error={Boolean(error)} // Hiển thị lỗi nếu có
+                          helperText={error ? error.message : ""} // Hiển thị thông báo lỗi
+                          sx={{
+                            width: "100%",
+                            "& .MuiInputBase-input": {
+                              padding: 1,
+                            },
+                          }}
+                          placeholder="New password"
+                        />
+                      )}
+                    />
+                    <Button type="submit" variant="contained">
+                      Change password
+                    </Button>
+                  </form>
+                  <div className="flex justify-center mt-6">
+                    <div
+                      onClick={() => setSentMail(false)}
+                      className="text-[#0c66e4] text-[14px] hover:underline cursor-pointer"
+                    >
+                      Go back
+                    </div>
+                    <p className="text-[14px] text-[#42526E] mx-2">•</p>
+                    <Link className="text-[#0c66e4] text-[14px] hover:underline">Resend recover link</Link>
+                  </div>
+                </>
+              )}
             </>
           )}
 
