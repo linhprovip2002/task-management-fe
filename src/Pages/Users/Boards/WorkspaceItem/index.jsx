@@ -3,6 +3,7 @@ import { CreateNewBoard } from "../../../../Components/Modals/CreateNewBoard/Cre
 import { Board } from "../../../../Components/Board/Board";
 import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { Link } from "react-router-dom";
 
 const WorkspaceItem = ({ wspItem, handleClose, open, handleOpen }) => {
   return (
@@ -10,24 +11,24 @@ const WorkspaceItem = ({ wspItem, handleClose, open, handleOpen }) => {
       <div className="flex items-center justify-between my-4">
         <div className="flex items-center">
           <div className="flex items-center justify-center bg-orange-400 rounded-md w-9 h-9">
-            <p>{wspItem?.title[0]}</p>
+            <p className="uppercase">{wspItem?.title[0]}</p>
           </div>
           <p className="ml-2 font-bold">{wspItem?.title}</p>
         </div>
         <div className="flex items-center">
-          <button className="px-[10px] py-[6px] mr-2 flex items-center bg-gray-200 rounded-sm">
+          <Link to={`/workspace/${wspItem.id}/members`} className="px-[10px] py-[6px] mr-2 flex items-center cursor-pointer bg-gray-200 rounded-sm">
             <PeopleIcon sx={{fontSize: '22px', marginRight: '4px'}}/>
             Member
-          </button>
-          <button className="px-[10px] py-[6px] mr-2 flex items-center bg-gray-200 rounded-sm">
+          </Link>
+          <Link to={`/workspace/${wspItem.id}/settings`} className="px-[10px] py-[6px] mr-2 flex items-center cursor-pointer bg-gray-200 rounded-sm">
             <SettingsIcon sx={{fontSize: '22px', marginRight: '4px'}}/>
             Settings
-          </button>
+          </Link>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {wspItem?.boards?.map((board, index) => {
-          return <Board key={index} board={board} />;
+          return <Board key={index} wspId={wspItem.id} board={board} />;
         })}
         <button
           onClick={handleOpen}
