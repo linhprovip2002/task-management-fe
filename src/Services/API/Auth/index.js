@@ -38,3 +38,12 @@ export async function requestForgotPassowrd(email) {
   const response = await request.get(`/auth/forgot-password/${email}`);
   return response?.data;
 }
+
+export async function resetPassowrd({ email, token, password }) {
+  const response = await request.post(`/auth/reset-password`, {
+    email: email,
+    resetPasswordToken: token,
+    password: password,
+  });
+  return response?.data;
+}
