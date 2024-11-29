@@ -8,11 +8,12 @@ import routes from "../../config/routes";
 import "./ForgotPassword.css";
 import { joiResolver } from "@hookform/resolvers/joi";
 import validation from "./validation";
+import { requestForgotPassowrd } from "../../Services/API/Auth";
 
 const ForgotPassword = memo(() => {
   const [isLoading, setLoading] = useState(false);
   const [sentMail, setSentMail] = useState(false);
-  const { handleSubmit, control, getValues } = useForm({
+  const { handleSubmit, control, getValues, setError } = useForm({
     defaultValues: {
       email: "",
     },
@@ -25,11 +26,14 @@ const ForgotPassword = memo(() => {
     const { email } = values;
 
     setLoading(true);
-    setTimeout(() => {
-      console.log(email);
-      setSentMail(true);
-      setLoading(false);
-    }, 1000);
+    requestForgotPassowrd(email)
+      .then((res) => {
+        setSentMail(true);
+      })
+      .catch((err) => {
+        setError("email", { type: "manual", message: err.response?.data?.message || err.message });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (

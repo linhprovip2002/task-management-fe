@@ -140,9 +140,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         setToggleCardEditModal((prev) => !prev);
       }
       return res;
-    } catch (error) {
-      console.error("Error setup background in card detail: ", error);
-    }
+    } catch (error) {}
   };
 
   const handleCloseShowMenuBtnCard = () => {
@@ -273,9 +271,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         return { ...prev, coverUrl: chooseColorBackground };
       });
       return res;
-    } catch (error) {
-      console.error("Error setup background in card detail: ", error);
-    }
+    } catch (error) {}
   };
 
   const handleChooseColorBackground = useCallback(async (item) => {

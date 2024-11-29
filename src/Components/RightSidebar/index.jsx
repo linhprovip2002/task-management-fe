@@ -267,7 +267,7 @@ function RightSidebar({ isOpen, onClose }) {
           <Divider component={"div"} />
         </div>
 
-        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-y-scroll overflow-x-hidden">{renderItems()}</div>
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-hidden">{renderItems()}</div>
       </div>
 
       {/* //TODO  Bật lên popup rời khỏi board  */}

@@ -6,14 +6,12 @@ import { useParams } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Activities() {
-  const [isLoading, setIsLoading] = useState(true);
   const [activities, setActivities] = useState([]);
   const { idBoard } = useParams();
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchData = () => {
-    setIsLoading(true);
     getActivities({ boardId: idBoard, page: page, perPage: 20 })
       .then((res) => {
         setActivities((prevItems) => [...prevItems, ...res.docs]);
@@ -24,31 +22,31 @@ export default function Activities() {
       })
       .catch((err) => {
         console.log(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    fetchData();
+    hasMore && fetchData();
     // eslint-disable-next-line
   }, []);
   return (
     <Slide in={true} direction="left">
-      <div className="flex flex-col">
-        {isLoading && (
-          <div className="flex justify-center">
-            <CircularProgress size={20} />
-          </div>
-        )}
-        <div>
-          <InfiniteScroll dataLength={activities.length} next={fetchData} hasMore={hasMore}>
-            {activities.map((act, index) => (
-              <ActivityItem data={act} key={index} />
-            ))}
-          </InfiniteScroll>
-        </div>
+      <div className="flex flex-col  overflow-y-scroll overflow-x-hidden">
+        <InfiniteScroll
+          scrollThreshold={"100px"}
+          dataLength={activities.length}
+          next={fetchData}
+          hasMore={hasMore}
+          loader={
+            <div className="flex justify-center">
+              <CircularProgress size={20} />
+            </div>
+          }
+        >
+          {activities.map((act, index) => (
+            <ActivityItem data={act} key={index} />
+          ))}
+        </InfiniteScroll>
       </div>
     </Slide>
   );
