@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 
 const ForgotPassword = memo(() => {
   const [isLoading, setLoading] = useState(false);
-  const [sentMail, setSentMail] = useState(true);
+  const [sentMail, setSentMail] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
 
   const { handleSubmit, control, getValues, setError } = useForm({
