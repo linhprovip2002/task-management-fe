@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import { Button, Divider, TextField } from "@mui/material";
-import { TrelloIconColor } from "../../Components/Icons";
+// import { TrelloIconColor } from "../../Components/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { SignIn } from "../../Services/API/Auth";
@@ -10,6 +10,7 @@ import { useStorage } from "../../Contexts/Storage";
 import routes, { workspaceRoutes } from "../../config/routes";
 import { loginLogoList } from "./constants/logo";
 import Loading from "../../Components/Loading";
+import TrelloLogoIcon from "../../Components/TrelloLogoIcon/TrelloLogoIcon";
 
 const Login = memo(() => {
   const storage = useStorage();
@@ -60,8 +61,9 @@ const Login = memo(() => {
       <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
         <div>
           <div className="mb-4">
-            <div className="flex justify-center">
-              <TrelloIconColor />
+            <div className="flex items-center justify-center">
+              <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-3 h-3 mr-1" />
+              <span className="text-xl font-bold">Kanban</span>
             </div>
             <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Login to continue</h5>
           </div>
