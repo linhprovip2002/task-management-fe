@@ -12,11 +12,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../constants";
 import { toast } from "react-toastify";
+import { useStorage } from "../../../Contexts";
 
 function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
   const [memberPopup, setMemberPopup] = useState(false);
   const { dataBoard } = useListBoardContext();
   const { idBoard, id } = useParams();
+  const {userData} = useStorage()
   const [leaving, setLeaving] = useState(false);
 
   const queryClient = useQueryClient();
@@ -24,6 +26,8 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
 
   const isAdmin = dataBoard.role?.roleName === "admin";
 
+  const isOwner = dataBoard.ownerId === userData.id
+  
   const handleCloseOrLeave = () => {
     setLeaving(true);
     if (isAdmin) {
@@ -76,12 +80,12 @@ function NavbarBoard({ isChooseMoveList, handleLeaveBoard, toggleCollape }) {
           </div>
           <ChevronRightIcon fontSize="small" />
         </div>
-        <div
+        {isOwner && <div
           onClick={() => setMemberPopup(true)}
           className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
         >
           <div className="">Members manager</div>
-        </div>
+        </div>}
         <CloseIcon
           onClick={handleLeaveBoard}
           className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
