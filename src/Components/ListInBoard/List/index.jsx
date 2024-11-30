@@ -49,9 +49,8 @@ function List({ item = {}, id }) {
     handleShowAddCard,
     dataList,
     setDataList,
-    isOwner,
   } = useListBoardContext();
-  const { getCardPermissionByUser } = useGetBoardPermission(idBoard, isOwner);
+  const { getCardPermissionByUser } = useGetBoardPermission();
 
   const handleClickOutside = async (event) => {
     if (event.target.value) {

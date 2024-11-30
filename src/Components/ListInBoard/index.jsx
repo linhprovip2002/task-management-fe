@@ -14,14 +14,20 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { arrayMove, insertAtIndex, removeAtIndex } from "../../Utils/array";
-import { changePositionList, CreateList } from "../../Services/API/ApiListOfBoard";
+import {
+  changePositionList,
+  CreateList,
+} from "../../Services/API/ApiListOfBoard";
 import { changePositionCard } from "../../Services/API/ApiCard";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 import { EQueryKeys } from "../../constants";
 import { useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { findColById } from "../../Utils/dragDrop";
-import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import {
+  horizontalListSortingStrategy,
+  SortableContext,
+} from "@dnd-kit/sortable";
 import { toast } from "react-toastify";
 import ItemList from "../ItemList";
 
@@ -43,10 +49,12 @@ function ListInBoard() {
   const [showAddListItem, setShowAddListItem] = useState(false);
 
   const [activeItemType, setActiveItemType] = useState(null);
-  const { dataList, isOwner } = useListBoardContext();
-  const { getListPermissionByUser } = useGetBoardPermission(idBoard, isOwner);
+  const { dataList } = useListBoardContext();
+  const { getBoardPermissionByUser } = useGetBoardPermission();
   const [activeItemData, setActiveItemData] = useState(null);
   const [columns, setColumns] = useState(dataList);
+
+  const { getCardPermissionByUser } = useGetBoardPermission();
 
   const handleDragStart = ({ over, active }) => {
     setActiveItemType(active.data.current.type);
@@ -137,7 +145,8 @@ function ListInBoard() {
           });
         setColumns((prev) => {
           const newItems = [...prev];
-          const activeCard = newItems[activeContainerIndex].cards?.[activeIndex];
+          const activeCard =
+            newItems[activeContainerIndex].cards?.[activeIndex];
 
           if (activeContainerIndex === overContainerIndex) {
             newItems[activeContainerIndex].cards = arrayMove(
@@ -182,7 +191,14 @@ function ListInBoard() {
     setActiveItemData(null);
   };
 
-  const moveBetweenContainers = (items, activeContainer, activeIndex, overContainer, overIndex, item) => {
+  const moveBetweenContainers = (
+    items,
+    activeContainer,
+    activeIndex,
+    overContainer,
+    overIndex,
+    item,
+  ) => {
     return {
       activeCol: removeAtIndex(items[activeContainer].cards, activeIndex),
       overCol: insertAtIndex(items[overContainer].cards, overIndex, item),
@@ -226,35 +242,54 @@ function ListInBoard() {
       >
         <div className="my-4 px-[4px] flex h-full">
           <div className="flex flex-nowrap">
-            <DndContext
-              sensors={mySensors}
-              onDragStart={handleDragStart}
-              onDragOver={handleDragOver}
-              onDragEnd={handleDragEnd}
-              collisionDetection={closestCorners}
-            >
-              <SortableContext strategy={horizontalListSortingStrategy} items={columns.map((col) => col.id)}>
-                <div style={{ display: "flex" }}>
-                  {columns?.map((item, index) => {
-                    return <List id={item.id} key={index} item={item} />;
-                  })}
-                </div>
-              </SortableContext>
-              <DragOverlay>
-                {activeItemType === "CARD" ? (
-                  <ItemList id={activeItemData.activeCardId} dataCard={activeItemData.dataCard} />
-                ) : null}
+            {getCardPermissionByUser("move") ? (
+              <DndContext
+                sensors={mySensors}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+                collisionDetection={closestCorners}
+              >
+                <SortableContext
+                  strategy={horizontalListSortingStrategy}
+                  items={columns.map((col) => col.id)}
+                >
+                  <div style={{ display: "flex" }}>
+                    {columns?.map((item, index) => {
+                      return <List id={item.id} key={index} item={item} />;
+                    })}
+                  </div>
+                </SortableContext>
+                <DragOverlay>
+                  {activeItemType === "CARD" ? (
+                    <ItemList
+                      id={activeItemData.activeCardId}
+                      dataCard={activeItemData.dataCard}
+                    />
+                  ) : null}
 
-                {activeItemType === "COLUMN" ? (
-                  <List id={activeItemData.activeColumnId} item={activeItemData.dataColumn} />
-                ) : null}
-              </DragOverlay>
-            </DndContext>
+                  {activeItemType === "COLUMN" ? (
+                    <List
+                      id={activeItemData.activeColumnId}
+                      item={activeItemData.dataColumn}
+                    />
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
+            ) : (
+              columns?.map((item, index) => {
+                return <List id={item.id} key={index} item={item} />;
+              })
+            )}
 
             <div className="px-[8px]">
-              {getListPermissionByUser("create") && (
+              {getBoardPermissionByUser("update") && (
                 <div
-                  onClick={() => (!showAddListItem ? setShowAddListItem((prev) => !prev) : null)}
+                  onClick={() =>
+                    !showAddListItem
+                      ? setShowAddListItem((prev) => !prev)
+                      : null
+                  }
                   className={`flex items-center w-[248px] rounded-[12px] bg-gray-100 p-[6px] ${!showAddListItem ? "hover:bg-gray-300" : ""} cursor-pointer`}
                 >
                   {!showAddListItem ? (
@@ -262,7 +297,9 @@ function ListInBoard() {
                       <div className="rounded-[4px] p-2 hover:bg-gray-300 transition-opacity duration-300">
                         <AddIcon width={16} height={16} />
                       </div>
-                      <div className="text-[14px] font-medium text-[#44546f]">Add another list</div>
+                      <div className="text-[14px] font-medium text-[#44546f]">
+                        Add another list
+                      </div>
                     </>
                   ) : (
                     <div className="w-full">

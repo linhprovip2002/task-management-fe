@@ -38,7 +38,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   const { idBoard } = useParams();
   const queryClient = useQueryClient();
 
-  const { dataBoardPermission } = useGetBoardPermission(idBoard);
+  const { dataBoardPermission } = useGetBoardPermission();
   const {
     dataBoardRole,
     isLoading: isLoadingRole,

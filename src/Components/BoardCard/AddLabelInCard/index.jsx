@@ -1,5 +1,8 @@
 import React from "react";
-import { Close as CloseIcon, ModeEdit as ModeEditIcon } from "@mui/icons-material";
+import {
+  Close as CloseIcon,
+  ModeEdit as ModeEditIcon,
+} from "@mui/icons-material";
 import { ButtonBoardCard } from "../../ButtonBoardCard";
 import ClickAway from "../ClickAway";
 
@@ -45,7 +48,10 @@ function AddLabelInCard({
             <div className="py-2 bg-white">Label</div>
             <ul>
               {listColorLabel?.map((item, index) => (
-                <li key={index} className="flex items-center my-2 cursor-pointer">
+                <li
+                  key={index}
+                  className="flex items-center my-2 cursor-pointer"
+                >
                   <input
                     checked={labelOfCard.some((i) => i.id === item.id)}
                     onChange={() => handleAddLabel(item)}
@@ -62,7 +68,10 @@ function AddLabelInCard({
                     >
                       <font>{item.name}</font>
                     </div>
-                    <div onClick={() => ShowUpdateLabel(item)} className=" hover:bg-gray-300 p-2 ml-2 rounded-[4px]">
+                    <div
+                      onClick={() => ShowUpdateLabel(item)}
+                      className=" hover:bg-gray-300 p-2 ml-2 rounded-[4px]"
+                    >
                       <ModeEditIcon style={{ fontSize: "16px" }} />
                     </div>
                   </span>

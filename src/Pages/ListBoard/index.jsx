@@ -15,7 +15,7 @@ import NavbarTable from "../../Components/HiDotsVertical/NavbarTable";
 import Loading from "../../Components/Loading";
 
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ListBoard() {
   return (
@@ -27,7 +27,6 @@ function ListBoard() {
 
 function ListBoardContent() {
   const navigate = useNavigate();
-  const { idBoard } = useParams();
 
   const {
     dataBoard,
@@ -35,13 +34,9 @@ function ListBoardContent() {
     toggleNavbar,
     isShowBoardCard,
     toggleCardEditModal,
-    loading,
-    isOwner
+    loading
   } = useListBoardContext();
-  const { isLoading: isLoadingPermission } = useGetBoardPermission(
-    idBoard,
-    isOwner
-  );
+  const { isLoading: isLoadingPermission } = useGetBoardPermission();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [titleName, settitleName] = useState("Sort by alphabetical order");

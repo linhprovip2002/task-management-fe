@@ -11,17 +11,34 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Avatar from "@mui/material/Avatar";
 
 import { stringAvatar } from "../../Utils/color";
-import { EditIcon, AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
+import {
+  EditIcon,
+  AttachmentIcon,
+  DescriptionIcon,
+} from "../../Components/Icons";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 import "./ItemList.css";
 
-function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false }) {
+function ItemList({
+  id,
+  item,
+  dataCard,
+  isFollowing = false,
+  isArchived = false,
+}) {
   const navigate = useNavigate();
   const { id: idWorkSpace, idBoard } = useParams();
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: id,
     data: { type: "CARD" },
   });
@@ -29,13 +46,12 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
   const {
     handleShowBoardCard,
     handleShowBoardEdit,
-    isOwner,
-    setIsShowBoardCard,
     isShowBoardCard,
-    setToggleCardEditModal,
     toggleCardEditModal,
+    setToggleCardEditModal,
+    setIsShowBoardCard,
   } = useListBoardContext();
-  const { getCardPermissionByUser } = useGetBoardPermission(idBoard, isOwner);
+  const { getCardPermissionByUser } = useGetBoardPermission();
 
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
@@ -98,11 +114,15 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
         {dataCard?.coverUrl && (
           <div
             style={{
-              backgroundImage: dataCard?.coverUrl.startsWith("http") ? `url(${dataCard?.coverUrl})` : "none",
+              backgroundImage: dataCard?.coverUrl.startsWith("http")
+                ? `url(${dataCard?.coverUrl})`
+                : "none",
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              backgroundColor: dataCard?.coverUrl.startsWith("#") ? dataCard?.coverUrl : "",
+              backgroundColor: dataCard?.coverUrl.startsWith("#")
+                ? dataCard?.coverUrl
+                : "",
             }}
             className={`w-full min-h-[80px] rounded-t-[6px]`}
           />
@@ -122,7 +142,9 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
                 ) : null,
               )}
           </div>
-          <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">{dataCard?.title}</div>
+          <div className="text-[14px] font-[400] text-black-500 py-[4px] whitespace-normal">
+            {dataCard?.title}
+          </div>
           <div className="flex items-center justify-between w-full flex-wrap">
             <div className="flex items-center flex-wrap pb-2">
               {endDateCheck != null && (
@@ -134,11 +156,16 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
                   >
                     <label className="flex items-center">
                       <div className="flex items-center cursor-pointer justify-center w-[20px] h-[20px] relative">
-                        <AccessTimeIcon style={{ fontSize: "16px" }} className="child-hidden" />
+                        <AccessTimeIcon
+                          style={{ fontSize: "16px" }}
+                          className="child-hidden"
+                        />
                         <input
                           type="checkbox"
                           checked={checkCompleteEndDate}
-                          onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                          onChange={() =>
+                            setCheckCompleteEndDate(!checkCompleteEndDate)
+                          }
                           className="w-[12px] h-[12px] hidden child-visible"
                         />
                       </div>
@@ -149,7 +176,11 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
               )}
               {isFollowing && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">You are following this tag</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      You are following this tag
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
@@ -160,7 +191,11 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
               )}
               {dataCard?.description && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">The card already has a description</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      The card already has a description
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
@@ -171,37 +206,53 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
               )}
               {dataCard?.comments?.length > 0 && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">Comment</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">Comment</span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
                   <div className="flex items-center ">
                     <SmsOutlinedIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{dataCard?.comments?.length}</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">
+                      {dataCard?.comments?.length}
+                    </div>
                   </div>
                 </Tippy>
               )}
               {dataCard?.files?.length > 0 && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">Attachments</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      Attachments
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
                   <div className="flex items-center ">
                     <AttachmentIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">{dataCard?.files?.length}</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">
+                      {dataCard?.files?.length}
+                    </div>
                   </div>
                 </Tippy>
               )}
               {isArchived && (
                 <Tippy
-                  content={<span className="text-[12px] max-w-[150px]">Attachments</span>}
+                  content={
+                    <span className="text-[12px] max-w-[150px]">
+                      Attachments
+                    </span>
+                  }
                   arrow={false}
                   placement="bottom"
                 >
                   <div className="flex items-center ">
                     <InventoryIcon className={"p-[4px] ml-[2px]"} />
-                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">Archived</div>
+                    <div className="text-[12px] font-[400] text-black-500 py-[4px]">
+                      Archived
+                    </div>
                   </div>
                 </Tippy>
               )}
@@ -225,7 +276,9 @@ function ItemList({ id, item, dataCard, isFollowing = false, isArchived = false 
       {getCardPermissionByUser("update") &&
         (isArchived || (
           <Tippy
-            content={<span className="text-[12px] max-w-[150px]">Edit card</span>}
+            content={
+              <span className="text-[12px] max-w-[150px]">Edit card</span>
+            }
             arrow={false}
             placement="bottom"
           >

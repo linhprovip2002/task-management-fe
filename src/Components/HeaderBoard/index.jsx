@@ -18,12 +18,13 @@ import Loading from "../Loading";
 
 function HeaderBoard() {
   const { idBoard } = useParams();
-  const { activeStar, handleActiveStar, dataBoard, isOwner } =
+  const { activeStar, handleActiveStar, dataBoard } =
     useListBoardContext();
   const { data: memberBoard, isLoading: isLoadingBoardMembers } =
     useGetMembersByBoard(idBoard);
-  const { getListPermissionByUser, isLoading: isLoadingBoardPermissions } =
-    useGetBoardPermission(idBoard, isOwner);
+  const { getBoardPermissionByUser, isLoading: isLoadingBoardPermissions } =
+    useGetBoardPermission();
+
   const [rightSidebar, setRightSidebar] = useState(false);
   const [isActiveFilter, setIsActiveFilter] = useState(false);
   const [openMemberModal, setOpenMemberModal] = useState(false);
@@ -85,7 +86,7 @@ function HeaderBoard() {
             </TippyDetail>
             {isActiveFilter && <Filter onClose={handleClickFilter} />}
           </div>
-          {getListPermissionByUser("list_member") && (
+          {getBoardPermissionByUser("update") && (
             <TippyDetail title={"Share Board"}>
               <div
                 onClick={() => setOpenMemberModal(true)}

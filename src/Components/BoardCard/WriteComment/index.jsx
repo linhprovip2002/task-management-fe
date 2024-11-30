@@ -11,11 +11,13 @@ import Loading from "../../Loading";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../constants";
 import { stringAvatar } from "../../../Utils/color";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 
 const WriteComment = () => {
   const queryClient = useQueryClient();
   const { idBoard } = useParams();
   const { userData } = useStorage();
+  const { getCommentPermissionByUser } = useGetBoardPermission();
 
   const method = useForm();
   const { setValue, handleSubmit, reset, watch } = method;
@@ -64,10 +66,17 @@ const WriteComment = () => {
     }
   };
 
-  return (
-    <form className="flex justify-between mr-2" onSubmit={handleSubmit(handlePostComment)}>
+  return getCommentPermissionByUser("create") ? (
+    <form
+      className="flex justify-between mr-2"
+      onSubmit={handleSubmit(handlePostComment)}
+    >
       {loading && <Loading className="bg-white bg-opacity-10 z-1" />}
-      <Avatar {...stringAvatar(userData?.name)} alt={userData?.name} src={userData?.avatarUrl || ""} />
+      <Avatar
+        {...stringAvatar(userData?.name)}
+        alt={userData?.name}
+        src={userData?.avatarUrl || ""}
+      />
       <div className="ml-4">
         <div className="border-gray-300 rounded-sm ">
           <div className="w-[428px] h-full">
@@ -119,6 +128,8 @@ const WriteComment = () => {
         </div>
       </div>
     </form>
+  ) : (
+    <></>
   );
 };
 

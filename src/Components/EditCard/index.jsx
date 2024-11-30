@@ -13,20 +13,33 @@ import { listBtnCard } from "./constans";
 import { AttachmentIcon, DescriptionIcon } from "../../Components/Icons";
 import { ButtonBoardCard } from "../ButtonBoardCard";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
-import { deleteCard, JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
+import {
+  deleteCard,
+  JoinToCard,
+  RemoveUserToCard,
+  updateCard,
+} from "../../Services/API/ApiCard";
 import AddLabelInCard from "../BoardCard/AddLabelInCard";
 import CreateLabel from "../BoardCard/CreateLabel";
-import { AddTagInCard, getAllTagByIdBoard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
+import {
+  AddTagInCard,
+  getAllTagByIdBoard,
+  RemoveTagInCard,
+} from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "../BoardCard/BackgroundPhoto";
 import CalendarPopper from "../BoardCard/CalendarPopper";
 import { useGetCardById } from "../../Hooks";
 import { useParams } from "react-router-dom";
 import { createTag, deleteTag, updateTag } from "../../Services/API/APITags";
 import { stringAvatar } from "../../Utils/color";
-import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
+import {
+  apiAssignFile,
+  apiUploadMultiFile,
+} from "../../Services/API/ApiUpload/apiUpload";
 import MemberMenu from "../MemberMenuOfBoard";
 import { useStorage } from "../../Contexts";
 import { EQueryKeys } from "../../constants";
+import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
 
 export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   const {
@@ -49,7 +62,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   const [tag, setTag] = useState({});
   const [labelOfCard, setLabelOfCard] = useState([]);
   const [listColorLabel, setListColorLabel] = useState([]);
-  const [postUploadedFiles, setPostUploadedFiles] = useState(dataCard?.files || []);
+  const [postUploadedFiles, setPostUploadedFiles] = useState(
+    dataCard?.files || [],
+  );
   const [membersInCard, setMembersInCard] = useState(dataCard?.members || []);
   const [inputTitle, setInputTitle] = useState(dataCard?.title || "");
   const [isShowMenuBtnCard, setIsShowMenuBtnCard] = useState(false);
@@ -59,11 +74,15 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   const [isUpdateLabel, setIsUpdateLabel] = useState(false);
   const [inputTitleLabel, setInputTitleLabel] = useState("");
   const [chooseColorLabel, setChooseColorLabel] = useState("");
-  const [chooseColorBackground, setChooseColorBackground] = useState(dataCard?.coverUrl || "");
+  const [chooseColorBackground, setChooseColorBackground] = useState(
+    dataCard?.coverUrl || "",
+  );
   const [checkOverdue, setCheckOverdue] = useState(false);
   const [checkCompleteEndDate, setCheckCompleteEndDate] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [endDateCheck, setEndDateCheck] = useState(null);
+
+  const { getTagPermissionByUser } = useGetBoardPermission();
 
   useEffect(() => {
     if (dataCard) {
@@ -174,19 +193,23 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       };
       setLabelOfCard((prevCountLabel) => {
         if (prevCountLabel.some((i) => i.id === item.id)) {
-          removeTagAsync();
-          return prevCountLabel.filter((i) => i.id !== item.id);
+          if (getTagPermissionByUser("unassign")) {
+            removeTagAsync();
+            return prevCountLabel.filter((i) => i.id !== item.id);
+          } else {
+            toast.error("You don't have permission to remove this tag.");
+          }
         } else {
-          addTagAsync();
-          return [...prevCountLabel, item];
+          if (getTagPermissionByUser("assign")) {
+            addTagAsync();
+            return [...prevCountLabel, item];
+          } else {
+            toast.error("You don't have permission to add this tag.");
+          }
         }
       });
-      setDataCard((prevDataCard) => ({
-        ...prevDataCard,
-        tagCards: [...(prevDataCard.tagCards || [])],
-      }));
     },
-    //  eslint-disable-next-line
+    // eslint-disable-next-line
     [dataCard, idBoard],
   );
 
@@ -240,7 +263,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       setInputTitleLabel("");
       setListColorLabel((prev) => prev.filter((label) => label.id !== tag.id));
       await deleteTag(tag?.boardId, tag?.id);
-      setLabelOfCard((prevCountLabel) => prevCountLabel.filter((label) => label.id !== tag?.id));
+      setLabelOfCard((prevCountLabel) =>
+        prevCountLabel.filter((label) => label.id !== tag?.id),
+      );
     } catch (err) {
       setListColorLabel([...listColorLabel]);
       console.error("Error add data tag in card detail: ", err);
@@ -253,12 +278,16 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       setInputTitleLabel("");
       setListColorLabel((prevList) =>
         prevList.map((item) =>
-          item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+          item.id === tag.id
+            ? { ...item, name: titleLabel, color: dataColor?.colorCode }
+            : item,
         ),
       );
       setLabelOfCard((prevCountLabel) =>
         prevCountLabel.map((item) =>
-          item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+          item.id === tag.id
+            ? { ...item, name: titleLabel, color: dataColor?.colorCode }
+            : item,
         ),
       );
       await updateTag({
@@ -306,7 +335,10 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         queryKey: [EQueryKeys.GET_CARD_BY_ID, dataCard?.id.toString()],
       })
       .then(() => {
-        const updatedDataCard = queryClient.getQueryData([EQueryKeys.GET_CARD_BY_ID, dataCard?.id.toString()]);
+        const updatedDataCard = queryClient.getQueryData([
+          EQueryKeys.GET_CARD_BY_ID,
+          dataCard?.id.toString(),
+        ]);
         handleShowBoardEdit(e, dataList, updatedDataCard?.data);
       });
   };
@@ -388,7 +420,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
 
   const handleJoinIntoCard = async (item) => {
     try {
-      const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
+      const isUserJoined = membersInCard?.some(
+        (member) => member?.user?.id === item.id,
+      );
       if (isUserJoined) {
         setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
         await RemoveUserToCard(idBoard, dataCard.id, item.id);
@@ -448,7 +482,10 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         onClick={(e) => handleCloseEditBoard(e, dataList, dataCard)}
         className="absolute top-0 left-0 flex w-full h-full bg-black bg-opacity-50 overflow-auto z-[9]"
       >
-        <div style={{ top: position.top - 120, left: position.left - 200 }} className="absolute mt-20 mb-10">
+        <div
+          style={{ top: position.top - 120, left: position.left - 200 }}
+          className="absolute mt-20 mb-10"
+        >
           <div
             onClick={(e) => e.stopPropagation()}
             className=" flex justify-between w-[240px] bg-white rounded-[8px] font-medium text-[12px] z-500"
@@ -463,7 +500,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
-                    backgroundColor: chooseColorBackground.startsWith("#") ? chooseColorBackground : "",
+                    backgroundColor: chooseColorBackground.startsWith("#")
+                      ? chooseColorBackground
+                      : "",
                   }}
                   className={`w-full h-[100px] rounded-t-[8px]`}
                 />
@@ -495,7 +534,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                     {endDateCheck != null && (
                       <div onClick={(e) => e.stopPropagation()}>
                         <div
-                          onClick={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                          onClick={() =>
+                            setCheckCompleteEndDate(!checkCompleteEndDate)
+                          }
                           onMouseEnter={() => setIsHovered(true)}
                           onMouseLeave={() => setIsHovered(false)}
                           className={`flex items-center text-[12px] ${checkCompleteEndDate ? "bg-green-300" : checkOverdue ? "bg-red-100" : "bg-gray-300"} cursor-pointer rounded-[4px] p-1  hover:opacity-90 relative`}
@@ -504,7 +545,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                             {isHovered ? (
                               <input
                                 checked={checkCompleteEndDate}
-                                onChange={() => setCheckCompleteEndDate(!checkCompleteEndDate)}
+                                onChange={() =>
+                                  setCheckCompleteEndDate(!checkCompleteEndDate)
+                                }
                                 type="checkbox"
                                 className="w-[12px] h-[12px] cursor-pointer"
                               />
@@ -518,7 +561,11 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                     )}
                     {isFollowing && (
                       <Tippy
-                        content={<span className="text-[12px] max-w-[150px]">You are following this tag</span>}
+                        content={
+                          <span className="text-[12px] max-w-[150px]">
+                            You are following this tag
+                          </span>
+                        }
                         arrow={false}
                         placement="bottom"
                       >
@@ -529,7 +576,11 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                     )}
                     {dataCard?.description && (
                       <Tippy
-                        content={<span className="text-[12px] max-w-[150px]">The card already has a description</span>}
+                        content={
+                          <span className="text-[12px] max-w-[150px]">
+                            The card already has a description
+                          </span>
+                        }
                         arrow={false}
                         placement="bottom"
                       >
@@ -540,7 +591,11 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                     )}
                     {dataCard?.comments?.length > 0 && (
                       <Tippy
-                        content={<span className="text-[12px] max-w-[150px]">Comment</span>}
+                        content={
+                          <span className="text-[12px] max-w-[150px]">
+                            Comment
+                          </span>
+                        }
                         arrow={false}
                         placement="bottom"
                       >
@@ -554,7 +609,11 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                     )}
                     {dataCard?.files?.length > 0 && (
                       <Tippy
-                        content={<span className="text-[12px] max-w-[150px]">Attachments</span>}
+                        content={
+                          <span className="text-[12px] max-w-[150px]">
+                            Attachments
+                          </span>
+                        }
                         arrow={false}
                         placement="bottom"
                       >
@@ -568,13 +627,19 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                     )}
                     {isArchived && (
                       <Tippy
-                        content={<span className="text-[12px] max-w-[150px]">Attachments</span>}
+                        content={
+                          <span className="text-[12px] max-w-[150px]">
+                            Attachments
+                          </span>
+                        }
                         arrow={false}
                         placement="bottom"
                       >
                         <div className="flex items-center ">
                           <InventoryIcon className={"p-[4px] ml-[2px]"} />
-                          <div className="text-[12px] font-[400] text-black-500 py-[4px]">Archived</div>
+                          <div className="text-[12px] font-[400] text-black-500 py-[4px]">
+                            Archived
+                          </div>
                         </div>
                       </Tippy>
                     )}
@@ -582,7 +647,10 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                   <div className="flex flex-1 items-center justify-end w-full">
                     {membersInCard?.length > 0 &&
                       membersInCard?.map((member, index) => (
-                        <div key={index} className="flex items-center flex-wrap pb-2">
+                        <div
+                          key={index}
+                          className="flex items-center flex-wrap pb-2"
+                        >
                           <Avatar
                             {...stringAvatar(member.user?.name)}
                             alt={member.user?.name}
@@ -605,7 +673,9 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
             <ButtonBoardCard
               isActive={true}
               nameBtn={"Save"}
-              className={"text-white font-[500] justify-center bg-blue-500 hover:bg-blue-400 mb-1"}
+              className={
+                "text-white font-[500] justify-center bg-blue-500 hover:bg-blue-400 mb-1"
+              }
               onHandleEvent={handleSaveTitleCard}
             />
           </div>

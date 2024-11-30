@@ -2,18 +2,27 @@ import Avatar from "@mui/material/Avatar";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
-import { Autocomplete, Button, CircularProgress, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  CircularProgress,
+  TextField,
+} from "@mui/material";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
-import { removeMember } from "../../../Services/API/ApiBoard/apiBoard";
+import {
+  removeMember,
+  updateMemberRole,
+} from "../../../Services/API/ApiBoard/apiBoard";
 import { stringAvatar } from "../../../Utils/color";
 import { useGetBoardRole } from "../../../Hooks/useBoardPermission";
 import Loading from "../../Loading";
 import { useStorage } from "../../../Contexts";
 
 function MemberItem({ data, onDeleted, isAdmin = true }) {
+  const [loading, setLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -24,9 +33,27 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
   const { userData } = useStorage();
 
   const roleOptions = useMemo(
-    () => dataBoardRole?.map((role) => ({ label: role.name, value: role.id })) || [],
+    () =>
+      dataBoardRole?.map((role) => ({ label: role.name, value: role.id })) ||
+      [],
     [dataBoardRole],
   );
+
+  const handleUpdateMemberRole = (newRole) => {
+    setLoading(true);
+    updateMemberRole(idBoard, data.id, newRole.value)
+      .then(() => {
+        setRole(newRole);
+        toast.success("Updated role successfully");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Update role unsuccessfully");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
     if (!data) return;
@@ -62,53 +89,66 @@ function MemberItem({ data, onDeleted, isAdmin = true }) {
   };
 
   return (
-    <ListItem disableGutters>
-      <div className="flex gap-2 w-full hover:bg-slate-100 p-2 rounded-md items-center h-[56px]">
-        <div className="flex-1 flex">
-          <Avatar alt={data?.name} src={data?.avatarUrl} sx={sx} children={children} title={title} />
-          <ListItemText sx={{ color: "#172b4d" }} primary={data?.email} />
-        </div>
-        {isAdmin && (
-          <div className={`flex-1 flex ${confirmDelete && "justify-end"}`}>
-            <Autocomplete
-              fullWidth
-              disableClearable
-              value={role}
-              onChange={(_, newValue) => setRole(newValue)}
-              getOptionLabel={(option) => option.label}
-              getOptionKey={(option) => option.value}
-              options={roleOptions}
-              size="small"
-              renderInput={(params) => <TextField {...params} />}
-              style={{ display: confirmDelete ? "none" : "block" }}
+    <>
+      {loading && <Loading className="bg-white bg-opacity-40" />}
+      <ListItem disableGutters>
+        <div className="flex gap-2 w-full hover:bg-slate-100 p-2 rounded-md items-center h-[56px]">
+          <div className="flex-1 flex">
+            <Avatar
+              alt={data?.name}
+              src={data?.avatarUrl}
+              sx={sx}
+              children={children}
+              title={title}
             />
+            <ListItemText sx={{ color: "#172b4d" }} primary={data?.email} />
+          </div>
+          {isAdmin && (
+            <div className={`flex-1 flex ${confirmDelete && "justify-end"}`}>
+              <Autocomplete
+                fullWidth
+                disableClearable
+                value={role}
+                onChange={(_, newValue) => {
+                  handleUpdateMemberRole(newValue);
+                }}
+                getOptionLabel={(option) => option.label}
+                getOptionKey={(option) => option.value}
+                options={roleOptions}
+                size="small"
+                renderInput={(params) => <TextField {...params} />}
+                style={{ display: confirmDelete ? "none" : "block" }}
+              />
 
-            <div className="flex gap-4">
-              <Button
-                disabled={userData.id === data.id}
-                onClick={() => setConfirmDelete(!confirmDelete)}
-                variant="contained"
-                color="error"
-                sx={{ textTransform: "none", paddingY: 0.5, marginLeft: 1 }}
-              >
-                {confirmDelete ? "Cancel" : "Remove"}
-              </Button>
-              {confirmDelete && (
+              <div className="flex gap-4">
                 <Button
-                  onClick={handleRemoveMember}
-                  startIcon={isDeleting && <CircularProgress size={18} color="#fff" />}
+                  disabled={userData.id === data.id}
+                  onClick={() => setConfirmDelete(!confirmDelete)}
                   variant="contained"
                   color="error"
-                  sx={{ textTransform: "none", paddingY: 0.5 }}
+                  sx={{ textTransform: "none", paddingY: 0.5, marginLeft: 1 }}
                 >
-                  Confirm
+                  {confirmDelete ? "Cancel" : "Remove"}
                 </Button>
-              )}
+                {confirmDelete && (
+                  <Button
+                    onClick={handleRemoveMember}
+                    startIcon={
+                      isDeleting && <CircularProgress size={18} color="#fff" />
+                    }
+                    variant="contained"
+                    color="error"
+                    sx={{ textTransform: "none", paddingY: 0.5 }}
+                  >
+                    Confirm
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </ListItem>
+          )}
+        </div>
+      </ListItem>
+    </>
   );
 }
 

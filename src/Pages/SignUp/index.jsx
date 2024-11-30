@@ -176,7 +176,7 @@ function SignUp(props) {
           </div>
           <div className="flex">
             <Link to={"/login"} className="text-[#0c66e4] text-[14px] hover:underline">
-              Already have an Atlassian account? Login
+              Already have an account? Login
             </Link>
           </div>
         </div>
