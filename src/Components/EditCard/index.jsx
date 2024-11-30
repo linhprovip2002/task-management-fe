@@ -323,8 +323,6 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         }
         return list;
       });
-      console.log(dataList);
-      console.log(updatedLists);
       setDataList(updatedLists);
       const res = await deleteCard(idBoard, dataCard.id);
       if (res.removed === 1) setDataCard(res);

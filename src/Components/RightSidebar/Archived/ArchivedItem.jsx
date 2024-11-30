@@ -18,7 +18,7 @@ function ArchivedItem({ data, onDeleted, onResend }) {
   const handleDeleteCard = () => {
     setIsFetching(true);
 
-    destroyCard(data.id)
+    destroyCard(idBoard, data.id)
       .then((res) => {
         toast.success("Delete card successfully");
         if (onDeleted) onDeleted(data.id);

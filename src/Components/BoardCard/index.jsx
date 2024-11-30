@@ -35,7 +35,15 @@ import CalendarPopper from "./CalendarPopper";
 import { CardComments } from "./ShowComment";
 import { AddTagInCard, RemoveTagInCard } from "../../Services/API/ApiBoard/apiBoard";
 import BackgroundPhoto from "./BackgroundPhoto";
-import { JoinToCard, RemoveUserToCard, updateCard } from "../../Services/API/ApiCard";
+import {
+  deleteCard,
+  destroyCard,
+  getArchivedCards,
+  JoinToCard,
+  RemoveUserToCard,
+  resendCard,
+  updateCard,
+} from "../../Services/API/ApiCard";
 import UploadPoper from "./Attachment/UploadPoper";
 import WriteComment from "./WriteComment";
 import { EQueryKeys } from "../../constants";
@@ -47,6 +55,8 @@ import { useGetCardComments } from "../../Hooks/useCards";
 import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
 import DeleteCard from "./DeleteCard";
 import { Description } from "./Description/Description";
+import { findColById } from "../../Utils/dragDrop";
+import { insertAtIndex } from "../../Utils/array";
 
 export const BoardCard = () => {
   const {
@@ -61,6 +71,7 @@ export const BoardCard = () => {
     setDataCard,
     setIsShowBoardCard,
     isShowBoardCard,
+    setDataList,
   } = useListBoardContext();
   const { idBoard } = useParams();
 
@@ -158,22 +169,50 @@ export const BoardCard = () => {
   }, []);
 
   useEffect(() => {
-    const isUserJoined = dataCard?.members.some((member) => member?.user.id === userData.id);
-    const newBtnCard = listBtnCard.map((btn) => {
-      if (btn.nameBtn === "Join" && isUserJoined) {
-        setIsJoin(true);
-        setIsFollowing(true);
-        return {
-          ...btn,
-          nameBtn: "Leave",
-          Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
-        };
-      }
-      return btn;
-    });
+    const updateBtnBegin = async () => {
+      console.log(cardId);
+      if (dataCard) {
+        const isUserJoined = dataCard?.members.some((member) => member?.user.id === userData.id);
+        const newBtnCard = listBtnCard.map((btn) => {
+          if (btn.nameBtn === "Join" && isUserJoined) {
+            setIsJoin(true);
+            setIsFollowing(true);
+            return {
+              ...btn,
+              nameBtn: "Leave",
+              Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+            };
+          }
+          return btn;
+        });
 
-    setUpdatedBtnCard(newBtnCard);
-  }, [dataCard, userData]);
+        setUpdatedBtnCard(newBtnCard);
+      } else {
+        const cardsArchived = await getArchivedCards(idBoard);
+        setDataCard(cardsArchived.find((card) => card.id === Number(cardId)));
+        const updateBtnList = listBtnCard.flatMap((btn) => {
+          if (btn.id === 12) {
+            return [
+              {
+                id: 13,
+                nameBtn: "Send to board",
+                Icon: <ReplayIcon className="ml-1 mr-2" fontSize="small" />,
+              },
+              {
+                id: 14,
+                nameBtn: "Delete",
+                Icon: <RemoveIcon className="ml-1 mr-2" fontSize="small" />,
+                color: "#ca3521",
+              },
+            ];
+          }
+          return [btn];
+        });
+        setUpdatedBtnCard(updateBtnList);
+      }
+    };
+    updateBtnBegin();
+  }, [dataCard, userData, idBoard, cardId, setDataCard]);
 
   const ShowCreateToDoItem = (Item) => {
     setListToDo((prev) => {
@@ -527,36 +566,81 @@ export const BoardCard = () => {
     }
   };
 
-  const handleArchived = useCallback((idBtn) => {
-    const updateBtnList = listBtnCard.flatMap((btn) => {
-      if (btn.id === idBtn) {
-        return [
-          {
-            id: 13,
-            nameBtn: "Send to board",
-            Icon: <ReplayIcon className="ml-1 mr-2" fontSize="small" />,
-          },
-          {
-            id: 14,
-            nameBtn: "Delete",
-            Icon: <RemoveIcon className="ml-1 mr-2" fontSize="small" />,
-            color: "#ca3521",
-          },
-        ];
-      }
-      return [btn];
-    });
-    setUpdatedBtnCard(updateBtnList);
-  }, []);
+  const handleArchived = useCallback(
+    async (idBtn) => {
+      const updateBtnList = listBtnCard.flatMap((btn) => {
+        if (btn.id === idBtn) {
+          return [
+            {
+              id: 13,
+              nameBtn: "Send to board",
+              Icon: <ReplayIcon className="ml-1 mr-2" fontSize="small" />,
+            },
+            {
+              id: 14,
+              nameBtn: "Delete",
+              Icon: <RemoveIcon className="ml-1 mr-2" fontSize="small" />,
+              color: "#ca3521",
+            },
+          ];
+        }
+        return [btn];
+      });
+      setUpdatedBtnCard(updateBtnList);
 
-  const handleSendToBoard = useCallback(() => {
+      try {
+        const updatedLists = dataList.map((list) => {
+          if (list.cards.some((card) => card.id === dataCard.id)) {
+            return {
+              ...list,
+              cards: list.cards.filter((card) => card.id !== dataCard.id),
+            };
+          }
+          return list;
+        });
+        setDataList(updatedLists);
+        const res = await deleteCard(idBoard, dataCard.id);
+        if (res.removed === 1) setDataCard(res);
+      } catch (error) {
+        console.error("Error: Unable to store data on the card", error);
+        setDataList(dataList);
+      }
+    },
+    [dataCard?.id, dataList, idBoard, setDataCard, setDataList],
+  );
+
+  const handleSendToBoard = async () => {
     setUpdatedBtnCard(listBtnCard);
-  }, []);
+    resendCard(dataCard.id, idBoard)
+      .then((res) => {
+        setDataList((prev) => {
+          const newState = [...prev];
+          const colIndex = findColById(newState, dataCard?.listId);
+          newState[colIndex].cards = insertAtIndex(newState[colIndex].cards, dataCard.position, dataCard);
+          return newState;
+        });
+        toast.success("Resend to board successfully");
+      })
+      .catch((err) => {
+        toast.error("Resend to board unsuccessfully");
+      });
+  };
 
   const handleDeleteCard = useCallback(() => {
+    setIsShowBoardCard(!isShowBoardCard);
     setLoadingDelete(true);
+    destroyCard(idBoard, dataCard?.id)
+      .then((res) => {
+        toast.success("Delete card successfully");
+      })
+      .catch((err) => {
+        toast.error("Delete card unsuccessfully");
+      })
+      .finally(() => {
+        setLoadingDelete(false);
+      });
     setUpdatedBtnCard(listBtnCard);
-    setLoadingDelete(false);
+
     // eslint-disable-next-line
   }, [dataCard, idBoard]);
 
