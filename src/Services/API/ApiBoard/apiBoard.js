@@ -80,7 +80,8 @@ export async function removeMember(userId, boardId) {
 
 export async function addMemberIntoBoard(userId, boardId) {
   return await request.post(`/board/${boardId}/members`, {
-    memberIds: [userId],
+    userId: userId,
+    roleId: 3,
   });
 }
 export async function updateBoard(boardId, data) {
