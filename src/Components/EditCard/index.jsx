@@ -21,7 +21,7 @@ import BackgroundPhoto from "../BoardCard/BackgroundPhoto";
 import CalendarPopper from "../BoardCard/CalendarPopper";
 import { useGetCardById } from "../../Hooks";
 import { useParams } from "react-router-dom";
-import { createTag, updateTag } from "../../Services/API/APITags";
+import { createTag, deleteTag, updateTag } from "../../Services/API/APITags";
 import { stringAvatar } from "../../Utils/color";
 import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
 import MemberMenu from "../MemberMenuOfBoard";
@@ -38,6 +38,8 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     dataList,
     setDataList,
     position,
+    setIsShowBoardCard,
+    isShowBoardCard,
   } = useListBoardContext();
   const { userData } = useStorage();
   const queryClient = useQueryClient();
@@ -132,7 +134,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         endDate: dataCard.endDate,
         listId: dataList.id,
       };
-      const res = await updateCard(dataCard.id, data);
+      const res = await updateCard(idBoard, dataCard.id, data);
       setDataCard((prev) => {
         return { ...prev, title: inputTitle };
       });
@@ -226,7 +228,21 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
       });
       tag && setListColorLabel([...listColorLabel, tag]);
       tag && (await AddTagInCard(idBoard, dataCard?.id, tag.id));
+      setLabelOfCard((prevCountLabel) => [...prevCountLabel, tag]);
     } catch (err) {
+      console.error("Error add data tag in card detail: ", err);
+    }
+  };
+
+  const handleRemoveLabel = async (tag) => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      setListColorLabel((prev) => prev.filter((label) => label.id !== tag.id));
+      await deleteTag(tag?.boardId, tag?.id);
+      setLabelOfCard((prevCountLabel) => prevCountLabel.filter((label) => label.id !== tag?.id));
+    } catch (err) {
+      setListColorLabel([...listColorLabel]);
       console.error("Error add data tag in card detail: ", err);
     }
   };
@@ -235,20 +251,25 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     try {
       ShowDetailNewLabel();
       setInputTitleLabel("");
-      const resTag = await updateTag({
-        boardId: Number(idBoard),
+      setListColorLabel((prevList) =>
+        prevList.map((item) =>
+          item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+        ),
+      );
+      setLabelOfCard((prevCountLabel) =>
+        prevCountLabel.map((item) =>
+          item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+        ),
+      );
+      await updateTag({
+        boardId: idBoard,
         name: titleLabel,
         color: dataColor?.colorCode,
         tagId: tag.id,
       });
-      if (resTag) {
-        setListColorLabel((prevList) =>
-          prevList.map((item) =>
-            item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
-          ),
-        );
-      }
     } catch (error) {
+      setListColorLabel([...listColorLabel]);
+      setLabelOfCard(labelOfCard);
       console.error("Error update data tag in card detail: ", error);
     }
   };
@@ -266,7 +287,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         endDate: dataCard.endDate,
         listId: dataList.id,
       };
-      const res = await updateCard(dataCard.id, data);
+      const res = await updateCard(idBoard, dataCard.id, data);
       setDataCard((prev) => {
         return { ...prev, coverUrl: chooseColorBackground };
       });
@@ -278,8 +299,21 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     setChooseColorBackground(item);
   }, []);
 
+  const handleCloseEditBoard = async (e, dataList, dataCard) => {
+    setToggleCardEditModal(!toggleCardEditModal);
+    queryClient
+      .invalidateQueries({
+        queryKey: [EQueryKeys.GET_CARD_BY_ID, dataCard?.id.toString()],
+      })
+      .then(() => {
+        const updatedDataCard = queryClient.getQueryData([EQueryKeys.GET_CARD_BY_ID, dataCard?.id.toString()]);
+        handleShowBoardEdit(e, dataList, updatedDataCard?.data);
+      });
+  };
+
   const handleStorageToCard = async (dataCard) => {
     try {
+      setToggleCardEditModal(!toggleCardEditModal);
       const updatedLists = dataList.map((list) => {
         if (list.cards.some((card) => card.id === dataCard.id)) {
           return {
@@ -289,6 +323,8 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         }
         return list;
       });
+      console.log(dataList);
+      console.log(updatedLists);
       setDataList(updatedLists);
       const res = await deleteCard(idBoard, dataCard.id);
       if (res.removed === 1) setDataCard(res);
@@ -356,16 +392,17 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     try {
       const isUserJoined = membersInCard?.some((member) => member?.user?.id === item.id);
       if (isUserJoined) {
-        const res = await RemoveUserToCard(dataCard.id, item.id);
-        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+        setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+        await RemoveUserToCard(idBoard, dataCard.id, item.id);
       } else {
-        const res = await JoinToCard(dataCard.id, item.id, idBoard);
-        res && setMembersInCard([...membersInCard, { user: item }]);
+        setMembersInCard([...membersInCard, { user: item }]);
+        await JoinToCard(idBoard, dataCard.id, item.id);
       }
       queryClient.invalidateQueries({
         queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD],
       });
     } catch (error) {
+      setMembersInCard([...membersInCard]);
       console.error("Error handling join member to card:", error);
     }
   };
@@ -376,12 +413,13 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         handleJoinIntoCard(item?.user);
         return;
       }
-      const res = await JoinToCard(dataCard.id, item?.user.id, idBoard);
-      res && setMembersInCard([...membersInCard, { user: item?.user }]);
+      setMembersInCard([...membersInCard, { user: item?.user }]);
+      await JoinToCard(idBoard, dataCard.id, item?.user.id);
       queryClient.invalidateQueries({
         queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD],
       });
     } catch (error) {
+      setMembersInCard([...membersInCard]);
       console.error("Error handling member:", error);
     }
   };
@@ -390,6 +428,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
     setNumberShow(item.id);
     switch (item.id) {
       case 1:
+        setIsShowBoardCard(!isShowBoardCard);
         handleShowBoardCard(dataCard);
         break;
       case 2:
@@ -400,7 +439,6 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
         break;
       case 8:
         handleStorageToCard(dataCard);
-        handleShowBoardEdit(e, dataList, dataCard);
         break;
       default:
         break;
@@ -409,7 +447,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
   return (
     <>
       <div
-        onClick={(e) => handleShowBoardEdit(e, dataList, dataCard)}
+        onClick={(e) => handleCloseEditBoard(e, dataList, dataCard)}
         className="absolute top-0 left-0 flex w-full h-full bg-black bg-opacity-50 overflow-auto z-[9]"
       >
         <div style={{ top: position.top - 120, left: position.left - 200 }} className="absolute mt-20 mb-10">
@@ -455,7 +493,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                   className="flex-1 rounded-[8px] py-1 text-[14px] font-[400] cursor-pointer whitespace-normal"
                 />
                 <div className="flex items-center justify-between w-full flex-wrap">
-                  <div className="flex flex-1 items-center flex-wrap pb-2">
+                  <div className="flex items-center flex-wrap pb-2">
                     {endDateCheck != null && (
                       <div onClick={(e) => e.stopPropagation()}>
                         <div
@@ -543,17 +581,19 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                       </Tippy>
                     )}
                   </div>
-                  {dataCard?.members?.length > 0 &&
-                    dataCard?.members?.map((member, index) => (
-                      <div key={index} className="flex items-center flex-wrap pb-2">
-                        <Avatar
-                          {...stringAvatar(member.user?.name)}
-                          alt={member.user?.name}
-                          src={member.user?.avatarUrl || ""}
-                          sx={{ width: 24, height: 24, marginLeft: "8px" }}
-                        />
-                      </div>
-                    ))}
+                  <div className="flex flex-1 items-center justify-end w-full">
+                    {membersInCard?.length > 0 &&
+                      membersInCard?.map((member, index) => (
+                        <div key={index} className="flex items-center flex-wrap pb-2">
+                          <Avatar
+                            {...stringAvatar(member.user?.name)}
+                            alt={member.user?.name}
+                            src={member.user?.avatarUrl || ""}
+                            sx={{ width: 24, height: 24, marginLeft: "8px" }}
+                          />
+                        </div>
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -618,6 +658,7 @@ export const EditCardModal = ({ isFollowing = false, isArchived = false }) => {
                 inputTitleLabel={inputTitleLabel}
                 handleChooseColor={handleChooseColor}
                 handleCreateNewLabel={handleCreateNewLabel}
+                handleRemoveLabel={handleRemoveLabel}
                 onUpdateLabel={handleUpdateLabel}
               />
             )}

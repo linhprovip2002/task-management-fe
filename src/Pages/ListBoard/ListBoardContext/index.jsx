@@ -48,23 +48,33 @@ function ListBoardProvider({ children }) {
   }, [dataListAPI]);
 
   const handleShowBoardCard = useCallback(
-    async (dataCard) => {
-      setIsShowBoardCard(!isShowBoardCard);
-      localStorage.setItem("cardId", dataCard.id);
+    async (dataBoardCard) => {
+      const updatedLists = dataList.map((list) => ({
+        ...list,
+        cards: list.cards.map((card) => (card.id === dataBoardCard.id ? { ...card, ...dataBoardCard } : card)),
+      }));
+      setDataList(updatedLists);
+      localStorage.setItem("cardId", dataBoardCard.id);
       toggleCardEditModal && setToggleCardEditModal((prev) => !prev);
     },
-    [isShowBoardCard, toggleCardEditModal],
+    [toggleCardEditModal, dataList],
   );
 
   const handleShowBoardEdit = useCallback(
     async (e, item, dataCard) => {
       localStorage.setItem("cardId", dataCard?.id);
-      const rect = e.currentTarget.getBoundingClientRect();
-      setToggleCardEditModal(!toggleCardEditModal);
-      setPosition({ top: rect.bottom + 8, left: rect.left });
-      setItemList(item);
+      if (e.currentTarget) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setPosition({ top: rect.bottom + 8, left: rect.left });
+      }
+      dataList.length > 0 &&
+        setDataList(
+          dataList.map((list) => ({
+            ...list,
+            cards: list.cards.map((card) => (card.id === dataCard.id ? { ...card, ...dataCard } : card)),
+          })),
+        );
       setDataCard(dataCard);
-      // setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
     [toggleCardEditModal],
@@ -155,6 +165,7 @@ function ListBoardProvider({ children }) {
         setToggleCardEditModal,
         setActiveIndex,
         isOwner,
+        setIsShowBoardCard,
       }}
     >
       {children}

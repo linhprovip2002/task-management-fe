@@ -42,7 +42,7 @@ import { EQueryKeys } from "../../constants";
 import { useGetCardById, useGetTagByBoardId } from "../../Hooks";
 import Loading from "../Loading";
 import { formatDate } from "./WriteComment/helpers/formatDate";
-import { createTag, updateTag } from "../../Services/API/APITags";
+import { createTag, deleteTag, updateTag } from "../../Services/API/APITags";
 import { useGetCardComments } from "../../Hooks/useCards";
 import { apiAssignFile, apiUploadMultiFile } from "../../Services/API/ApiUpload/apiUpload";
 import DeleteCard from "./DeleteCard";
@@ -59,6 +59,8 @@ export const BoardCard = () => {
     isSaving,
     setEditorInstance,
     setDataCard,
+    setIsShowBoardCard,
+    isShowBoardCard,
   } = useListBoardContext();
   const { idBoard } = useParams();
 
@@ -135,6 +137,18 @@ export const BoardCard = () => {
     setListColorLabel(boardTags?.data || []);
   }, [boardTags]);
 
+  const handleCloseBoardCard = async (data) => {
+    setIsShowBoardCard(!isShowBoardCard);
+    queryClient
+      .invalidateQueries({
+        queryKey: [EQueryKeys.GET_CARD_BY_ID, data?.id.toString()],
+      })
+      .then(() => {
+        const updatedDataCard = queryClient.getQueryData([EQueryKeys.GET_CARD_BY_ID, data?.id.toString()]);
+        handleShowBoardCard(updatedDataCard?.data);
+      });
+  };
+
   const handleFollowing = () => {
     setIsFollowing(!isFollowing);
   };
@@ -144,7 +158,7 @@ export const BoardCard = () => {
   }, []);
 
   useEffect(() => {
-    const isUserJoined = dataCard?.members.some((member) => member?.user.avatarUrl === userData.avatarUrl);
+    const isUserJoined = dataCard?.members.some((member) => member?.user.id === userData.id);
     const newBtnCard = listBtnCard.map((btn) => {
       if (btn.nameBtn === "Join" && isUserJoined) {
         setIsJoin(true);
@@ -200,13 +214,27 @@ export const BoardCard = () => {
       ShowDetailNewLabel();
       setInputTitleLabel("");
       const tag = await createTag({
-        idBoard: Number(idBoard),
+        boardId: Number(idBoard),
         name: titleLabel,
         color: dataColor?.colorCode,
       });
       tag && setListColorLabel([...listColorLabel, tag]);
       tag && (await AddTagInCard(idBoard, dataCard?.id, tag.id));
+      setLabelOfCard((prevCountLabel) => [...prevCountLabel, tag]);
     } catch (err) {
+      console.error("Error add data tag in card detail: ", err);
+    }
+  };
+
+  const handleRemoveLabel = async (tag) => {
+    try {
+      ShowDetailNewLabel();
+      setInputTitleLabel("");
+      setListColorLabel((prev) => prev.filter((label) => label.id !== tag.id));
+      await deleteTag(tag?.boardId, tag?.id);
+      setLabelOfCard((prevCountLabel) => prevCountLabel.filter((label) => label.id !== tag?.id));
+    } catch (err) {
+      setListColorLabel([...listColorLabel]);
       console.error("Error add data tag in card detail: ", err);
     }
   };
@@ -215,20 +243,25 @@ export const BoardCard = () => {
     try {
       ShowDetailNewLabel();
       setInputTitleLabel("");
-      const resTag = await updateTag({
-        idBoard: Number(idBoard),
+      setListColorLabel((prevList) =>
+        prevList.map((item) =>
+          item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+        ),
+      );
+      setLabelOfCard((prevCountLabel) =>
+        prevCountLabel.map((item) =>
+          item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
+        ),
+      );
+      await updateTag({
+        boardId: idBoard,
         name: titleLabel,
         color: dataColor?.colorCode,
         tagId: tag.id,
       });
-      if (resTag) {
-        setListColorLabel((prevList) =>
-          prevList.map((item) =>
-            item.id === tag.id ? { ...item, name: titleLabel, color: dataColor?.colorCode } : item,
-          ),
-        );
-      }
     } catch (error) {
+      setListColorLabel([...listColorLabel]);
+      setLabelOfCard(labelOfCard);
       console.error("Error update data tag in card detail: ", error);
     }
   };
@@ -284,7 +317,7 @@ export const BoardCard = () => {
         endDate: dataCard.endDate,
         listId: dataList.id,
       };
-      const res = await updateCard(dataCard.id, data);
+      const res = await updateCard(idBoard, dataCard.id, data);
       setDataCard((prev) => {
         return { ...prev, coverUrl: chooseColorBackground };
       });
@@ -406,19 +439,21 @@ export const BoardCard = () => {
         }
         return btn;
       });
+      setUpdatedBtnCard(newBtnCard);
       if (isUserJoined) {
-        const res = await RemoveUserToCard(idBoard, dataCard.id, item.id);
-        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+        setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== item.id));
+        await RemoveUserToCard(idBoard, dataCard.id, item.id);
       } else {
-        const res = await JoinToCard(dataCard.id, item.id);
-        res && setMembersInCard([...membersInCard, { user: item }]);
+        setMembersInCard([...membersInCard, { user: item }]);
+        await JoinToCard(idBoard, dataCard.id, item.id);
       }
 
-      setUpdatedBtnCard(newBtnCard);
       queryClient.invalidateQueries({
         queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD],
       });
     } catch (error) {
+      setMembersInCard([...membersInCard]);
+      setUpdatedBtnCard(updatedBtnCard);
       console.error("Error handling join member to card:", error);
     }
   };
@@ -429,8 +464,9 @@ export const BoardCard = () => {
         handleJoinIntoCard(item?.user);
         return;
       }
-      const res = await JoinToCard(dataCard.id, item?.user.id);
-      res && setMembersInCard([...membersInCard, { user: item?.user }]);
+      setMembersInCard([...membersInCard, { user: item?.user }]);
+      const res = await JoinToCard(idBoard, dataCard.id, item?.user.id);
+      !res && setMembersInCard([...membersInCard]);
       queryClient.invalidateQueries({
         queryKey: [EQueryKeys.GET_MEMBER_BY_BOARD],
       });
@@ -865,7 +901,7 @@ export const BoardCard = () => {
             </div>
           </div>
           <CloseIcon
-            onClick={() => handleShowBoardCard(dataCard)}
+            onClick={() => handleCloseBoardCard(dataCard)}
             className="cursor-pointer absolute right-3 top-3 p-1 rounded-[4px] hover:bg-gray-100 "
           />
         </div>
@@ -873,6 +909,8 @@ export const BoardCard = () => {
           <MemberMenu
             onAddMember={handleAddMember}
             membersInCard={membersInCard}
+            updatedBtnCard={updatedBtnCard}
+            setUpdatedBtnCard={setUpdatedBtnCard}
             setMembersInCard={setMembersInCard}
             handleCloseShowMenuBtnCard={handleCloseShowMenuBtnCard}
           />
@@ -902,6 +940,7 @@ export const BoardCard = () => {
                 inputTitleLabel={inputTitleLabel}
                 handleChooseColor={handleChooseColor}
                 handleCreateNewLabel={handleCreateNewLabel}
+                handleRemoveLabel={handleRemoveLabel}
                 onUpdateLabel={handleUpdateLabel}
               />
             )}

@@ -17,6 +17,7 @@ function CreateLabel({
   inputTitleLabel,
   handleChooseColor,
   handleCreateNewLabel,
+  handleRemoveLabel,
   onUpdateLabel,
 }) {
   const handleClickAway = () => {
@@ -104,7 +105,7 @@ function CreateLabel({
                   className={"w-[100px] bg-blue-500 justify-center text-white hover:opacity-90"}
                 />
                 <ButtonBoardCard
-                  onHandleEvent={() => handleCreateNewLabel(chooseColorLabel, inputTitleLabel)}
+                  onHandleEvent={() => handleRemoveLabel(tag)}
                   nameBtn="Remove"
                   isActive={true}
                   className={"w-[100px] bg-red-500 justify-center text-white hover:opacity-90"}

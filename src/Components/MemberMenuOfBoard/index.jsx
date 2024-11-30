@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import PersonRemoveAlt1OutlinedIcon from "@mui/icons-material/PersonRemoveAlt1Outlined";
 
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import ItemMember from "./ItemMember";
@@ -7,15 +9,23 @@ import { RemoveUserToCard } from "../../Services/API/ApiCard";
 import ClickAway from "../BoardCard/ClickAway";
 import { useGetCardById } from "../../Hooks";
 import { useParams } from "react-router-dom";
+import { useStorage } from "../../Contexts";
 
-const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseShowMenuBtnCard }) => {
+const MemberMenu = ({
+  onAddMember,
+  membersInCard,
+  updatedBtnCard,
+  setUpdatedBtnCard,
+  setMembersInCard,
+  handleCloseShowMenuBtnCard,
+}) => {
+  const { userData } = useStorage();
   const { position, membersBoard } = useListBoardContext();
   const [inputTitle, setInputTitle] = useState("");
   const [filteredMembersBoard, setFilteredMembersBoard] = useState([]);
   const { idBoard } = useParams();
   const cardId = localStorage.getItem("cardId");
   const { data: dataCard } = useGetCardById(idBoard, cardId);
-
   const HandleAddMemberInCard = (item) => {
     if (handleCloseShowMenuBtnCard) {
       handleCloseShowMenuBtnCard();
@@ -29,9 +39,30 @@ const MemberMenu = ({ onAddMember, membersInCard, setMembersInCard, handleCloseS
   const HandleRemoveMember = useCallback(
     async (member) => {
       try {
-        const res = await RemoveUserToCard(dataCard?.id, member?.user.id);
-        res && setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== member?.user?.id));
+        const isUserJoined = membersInCard?.some((item) => item?.user?.id === member?.user?.id);
+        if (updatedBtnCard) {
+          const newBtnCard = updatedBtnCard.map((btn) => {
+            if (btn.nameBtn === "Leave" && isUserJoined && member?.user.id === userData.id) {
+              return {
+                ...btn,
+                nameBtn: "Join",
+                Icon: <PersonAddAltIcon className="ml-1 mr-2" fontSize="small" />,
+              };
+            } else if (btn.nameBtn === "Join" && !isUserJoined && member?.user.id === userData.id) {
+              return {
+                ...btn,
+                nameBtn: "Leave",
+                Icon: <PersonRemoveAlt1OutlinedIcon className="ml-1 mr-2" fontSize="small" />,
+              };
+            }
+            return btn;
+          });
+          setUpdatedBtnCard(newBtnCard);
+        }
+        setMembersInCard((prev) => prev.filter((p) => p?.user?.id !== member?.user?.id));
+        await RemoveUserToCard(idBoard, dataCard?.id, member?.user.id);
       } catch (error) {
+        setMembersInCard([...membersInCard]);
         console.error("error handle remove member in card", error);
       }
     },

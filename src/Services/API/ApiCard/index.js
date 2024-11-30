@@ -34,7 +34,7 @@ export async function deleteCard(boardId, cardId) {
   }
 }
 
-export async function JoinToCard(idCard, idUser, boardId) {
+export async function JoinToCard(boardId, idCard, idUser) {
   return await request.post(`/board/${boardId}/card/${idCard}/assign`, {
     userId: idUser,
   });
