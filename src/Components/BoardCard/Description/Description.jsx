@@ -13,6 +13,7 @@ export const Description = () => {
   const cardId = localStorage.getItem("cardId");
   const { idBoard } = useParams();
   const { data, refetch } = useGetCardById(idBoard, cardId);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (data) setDescription(data.description);
@@ -38,6 +39,8 @@ export const Description = () => {
       {isEditing ? (
         <>
           <TextEditor
+            loading={loading}
+            setLoading={setLoading}
             setIsEditing={setIsEditing}
             value={description}
             onChange={(value) => {
