@@ -36,7 +36,6 @@ export const SearchMember = (
         getOptionKey={(option) => option.id}
         blurOnSelect={false}
         filterSelectedOptions
-        disableCloseOnBlur
         size="small"
         noOptionsText={
           isLoading ? (

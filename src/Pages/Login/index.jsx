@@ -72,6 +72,7 @@ const Login = memo(() => {
               control={control}
               render={({ field }) => (
                 <TextField
+                  name="email"
                   type="email"
                   onChange={field.onChange}
                   value={field.email}
@@ -89,6 +90,7 @@ const Login = memo(() => {
               control={control}
               render={({ field }) => (
                 <TextField
+                  name="password"
                   onChange={field.onChange}
                   value={field.password}
                   type="password"
