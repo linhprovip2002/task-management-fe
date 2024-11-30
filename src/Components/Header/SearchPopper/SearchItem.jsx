@@ -1,9 +1,10 @@
 import React from "react";
-import { CardIcon, TrelloIconColor } from "../../Icons";
+import { CardIcon } from "../../Icons";
 import HeadlessTippy from "@tippyjs/react/headless";
 import "./SearchPopper.css";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import TrelloLogoIcon from "../../TrelloLogoIcon/TrelloLogoIcon";
 
 export default function SearchItem({ type = "board", title, desc, coverUrl, linkTo }) {
   const isHexColor = coverUrl?.startsWith("#");
@@ -37,8 +38,9 @@ export default function SearchItem({ type = "board", title, desc, coverUrl, link
                 }}
               ></div>
             )}
-            <div className="py-2">
-              <TrelloIconColor height={16} />
+            <div className="flex items-center py-2">
+              <TrelloLogoIcon style={{ color: "#172b4d", width: '16' }}  />
+              <span className="ml-1 text-sm font-bold">Kanban</span>
             </div>
           </div>
         )}
@@ -55,7 +57,7 @@ export default function SearchItem({ type = "board", title, desc, coverUrl, link
                 backgroundColor: isHexColor && coverUrl,
                 backgroundSize: "cover",
               }}
-              className="w-6 h-6 rounded-sm mr-4"
+              className="w-6 h-6 mr-4 rounded-sm"
             ></div>
           )}
 

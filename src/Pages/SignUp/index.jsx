@@ -1,6 +1,6 @@
 import React, { memo, useEffect } from "react";
 import { Button, Divider, TextField } from "@mui/material";
-import { Apple, FaceBookColor, GoogleColor, TrelloIconColor } from "../../Components/Icons";
+import { Apple, FaceBookColor, GoogleColor } from "../../Components/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { SignUp as register } from "../../Services/API/Auth";
@@ -8,6 +8,7 @@ import { SignUp as register } from "../../Services/API/Auth";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-toastify";
 import validation from "./validation";
+import TrelloLogoIcon from "../../Components/TrelloLogoIcon/TrelloLogoIcon";
 
 const borderStyle = "border-[1px] border-[#8590A2] border-solid";
 
@@ -50,8 +51,9 @@ function SignUp(props) {
       <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
         <div>
           <div className="mb-4">
-            <div className="flex justify-center">
-              <TrelloIconColor />
+            <div className="flex items-center justify-center">
+              <TrelloLogoIcon style={{ color: "#172b4d", width: '22' }}  />
+              <span className="ml-1 text-xl font-bold">Kanban</span>
             </div>
             <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Register to continue</h5>
           </div>

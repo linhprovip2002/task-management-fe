@@ -1,6 +1,5 @@
 import { memo, useState } from "react";
 import { Button, Divider, TextField } from "@mui/material";
-import { TrelloIconColor } from "../../Components/Icons";
 import { Link } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import Loading from "../../Components/Loading";
@@ -10,6 +9,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import validation, { resetPasswordValidation } from "./validation";
 import { requestForgotPassowrd, resetPassowrd } from "../../Services/API/Auth";
 import { toast } from "react-toastify";
+import TrelloLogoIcon from "../../Components/TrelloLogoIcon/TrelloLogoIcon";
 
 const ForgotPassword = memo(() => {
   const [isLoading, setLoading] = useState(false);
@@ -72,8 +72,9 @@ const ForgotPassword = memo(() => {
       <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
         <div>
           <div className="mb-4">
-            <div className="flex justify-center">
-              <TrelloIconColor />
+            <div className="flex items-center justify-center">
+              <TrelloLogoIcon style={{ color: "#172b4d", width: '16' }}  />
+              <span className="ml-1 text-sm font-bold">Kanban</span>
             </div>
             <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">You can't Login ?</h5>
           </div>
@@ -134,7 +135,7 @@ const ForgotPassword = memo(() => {
                     </Link>
                     .
                   </p>
-                  <form onSubmit={form.handleSubmit(handleResetPassword)} className="w-full mt-2 flex flex-col gap-3">
+                  <form onSubmit={form.handleSubmit(handleResetPassword)} className="flex flex-col w-full gap-3 mt-2">
                     <Controller
                       name="secretToken"
                       control={form.control}
