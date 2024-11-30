@@ -34,7 +34,7 @@ const UserBoards = () => {
               />{" "}
             </div>
           );
-        })}
+        }) || <div>You don't have any workspace yet</div>}
       </div>
     </>
   );

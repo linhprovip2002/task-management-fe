@@ -7,7 +7,7 @@ import { SignIn } from "../../Services/API/Auth";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useStorage } from "../../Contexts/Storage";
-import routes, { workspaceRoutes } from "../../config/routes";
+import routes from "../../config/routes";
 import { loginLogoList } from "./constants/logo";
 import Loading from "../../Components/Loading";
 import TrelloLogoIcon from "../../Components/TrelloLogoIcon/TrelloLogoIcon";
@@ -36,11 +36,20 @@ const Login = memo(() => {
           expires: 7,
           path: "/",
         });
+        Cookies.set("userId", res.user.id, {
+          expires: 7,
+          path: "/",
+        });
+        toast.success("Login successfully");
         storage.setIsLoggedIn(true);
         storage.setUserData(res.user);
-        storage.setFirstWorkspace(res.defaultWorkspaceId);
-        toast.success("Login successfully");
-        navigate(workspaceRoutes.workspaceHome);
+        if (res.defaultWorkspaceId) {
+          storage.setFirstWorkspace(res.defaultWorkspaceId);
+          navigate(`workspace/${res.defaultWorkspaceId}/home`);
+        } else {
+          console.log(res.user.id);
+          navigate(`user/${res.user.id}/boards`);
+        }
       })
       .catch(() => {
         toast.error("Login not successfully");
@@ -56,19 +65,28 @@ const Login = memo(() => {
       document.title = "Kanban";
     };
   }, []);
+
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
         <div>
           <div className="mb-4">
             <div className="flex items-center justify-center">
-              <TrelloLogoIcon style={{ color: "#172b4d" }} className="w-3 h-3 mr-1" />
+              <TrelloLogoIcon
+                style={{ color: "#172b4d" }}
+                className="w-3 h-3 mr-1"
+              />
               <span className="text-xl font-bold">Kanban</span>
             </div>
-            <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">Login to continue</h5>
+            <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
+              Login to continue
+            </h5>
           </div>
 
-          <form onSubmit={handleSubmit(onLogin)} className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit(onLogin)}
+            className="flex flex-col gap-4"
+          >
             <Controller
               name="email"
               control={control}
@@ -110,7 +128,9 @@ const Login = memo(() => {
             </Button>
           </form>
 
-          <div className="mt-6 text-[14px] font-bold text-slate-400">Others:</div>
+          <div className="mt-6 text-[14px] font-bold text-slate-400">
+            Others:
+          </div>
 
           {loginLogoList.map((item, index) => (
             <div
@@ -127,11 +147,17 @@ const Login = memo(() => {
           </div>
 
           <div className="flex">
-            <Link to="/forgot-pass" className="text-[#0c66e4] text-[14px] hover:underline">
+            <Link
+              to="/forgot-pass"
+              className="text-[#0c66e4] text-[14px] hover:underline"
+            >
               You can't login ?
             </Link>
             <p className="text-[14px] text-[#42526E] mx-2">•</p>
-            <Link to={routes.signup} className="text-[#0c66e4] text-[14px] hover:underline">
+            <Link
+              to={routes.signup}
+              className="text-[#0c66e4] text-[14px] hover:underline"
+            >
               Create account
             </Link>
           </div>
