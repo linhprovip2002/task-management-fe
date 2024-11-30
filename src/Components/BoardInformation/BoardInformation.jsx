@@ -12,6 +12,8 @@ export const BoardInformation = (props) => {
 
   const [openInviteModal, setOpenInviteModal] = useState(false);
 
+  const isOwner = workspaceDetails?.isOwner
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -28,7 +30,7 @@ export const BoardInformation = (props) => {
             <div>Privacy</div>
           </div>
         </div>
-        {props.isMemberPage && (
+        {props.isMemberPage && isOwner &&  (
           <Button
             variant="contained"
             startIcon={<PersonAddAlt1Icon />}
