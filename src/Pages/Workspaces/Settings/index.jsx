@@ -69,6 +69,7 @@ const WorkspaceSettings = () => {
   if (isLoading) return <Loading />;
 
   const canDelete = confirmDelete === workspaceData?.title;
+  const isOwner = workspaceDetails?.isOwner
 
   return (
     <div className="px-8 workSpaceSetting">
@@ -92,12 +93,12 @@ const WorkspaceSettings = () => {
               <div>
                 <div className="flex items-center">
                   <h2 className="text-xl font-semibold">{workspaceDetails.title}</h2>
-                  <div
+                 {isOwner && <div
                     onClick={handleOpenUpdate}
                     className="w-6 h-6 hover:bg-[var(--hover-background)] cursor-pointer flex items-center justify-center ml-2 rounded-md"
                   >
                     <EditIcon sx={{ fontSize: "16px" }} />
-                  </div>
+                  </div>}
                 </div>
                 <span className="text-xs flex  text-[#44546F]">
                   <LockIcon sx={{ fontSize: 16 }} />
@@ -109,7 +110,7 @@ const WorkspaceSettings = () => {
           </div>
         )}
         {/* right  */}
-        <div>
+        {isOwner && <div>
           <Button
             onClick={() => setInvitePopup(true)}
             sx={{
@@ -122,17 +123,17 @@ const WorkspaceSettings = () => {
           >
             Invite workspace members
           </Button>
-        </div>
+        </div>}
       </div>
       <Divider component={"div"} className="my-2" />
-      <div className="py-3">
+      {isOwner && <div className="py-3">
         <p
           onClick={handleClick}
           className=" select-none w-fit text-sm font-semibold text-[#AE2E24] cursor-pointer hover:underline"
         >
           Delete this workspace?
         </p>
-      </div>
+      </div>}
       <InviteMemberModal open={invitePopup} handleClose={() => setInvitePopup(false)} />
 
       <Popper placement="bottom-start" id={id} open={openDelete} anchorEl={anchorEl} transition>
