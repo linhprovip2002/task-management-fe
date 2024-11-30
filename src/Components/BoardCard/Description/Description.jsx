@@ -75,7 +75,10 @@ export const Description = () => {
           onClick={() => setIsEditing(true)}
         >
           {description ? (
-            <div dangerouslySetInnerHTML={{ __html: description }} />
+            <div
+              dangerouslySetInnerHTML={{ __html: description }}
+              id="custom-text-editor"
+            />
           ) : (
             "Add more detailed description..."
           )}

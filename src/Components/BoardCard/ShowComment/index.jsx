@@ -169,6 +169,7 @@ export const CardComments = ({ item }) => {
             ) : (
               <>
                 <div
+                  id="custom-text-editor"
                   dangerouslySetInnerHTML={renderContent}
                   onClick={handleImageClick}
                   className="p-3 my-2 w-full  bg-white border border-gray-300 rounded-md max-w-[400px] break-words"
