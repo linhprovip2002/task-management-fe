@@ -47,7 +47,6 @@ const Login = memo(() => {
           storage.setFirstWorkspace(res.defaultWorkspaceId);
           navigate(`workspace/${res.defaultWorkspaceId}/home`);
         } else {
-          console.log(res.user.id);
           navigate(`user/${res.user.id}/boards`);
         }
       })

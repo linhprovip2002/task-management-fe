@@ -148,7 +148,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
     const permissionsByRole = dataBoardPermission
       .map((permission) => permission.isGranted && permission.id)
       .filter(Boolean);
-    console.log(permissionsByRole);
+
     setValue("permissions", permissionsByRole);
     setCheckedAll({});
     // eslint-disable-next-line

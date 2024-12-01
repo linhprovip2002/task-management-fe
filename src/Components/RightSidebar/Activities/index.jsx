@@ -21,7 +21,7 @@ export default function Activities() {
         setPage((prevPage) => prevPage + 1);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 

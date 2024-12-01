@@ -203,7 +203,6 @@ export const BoardCard = () => {
 
   useEffect(() => {
     const updateBtnBegin = async () => {
-      console.log(cardId);
       if (dataCard) {
         const isUserJoined = dataCard?.members.some(
           (member) => member?.user.id === userData.id,

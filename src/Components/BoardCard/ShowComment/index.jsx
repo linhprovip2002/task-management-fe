@@ -107,13 +107,12 @@ export const CardComments = ({ item }) => {
 
   const handleImageClick = (event) => {
     const target = event.target;
-    console.log("target", target.tagName.src);
     if (target.tagName === "IMG" && target.dataset.index) {
       setValue("selectedImgUrl", target.src);
       setOpenImagePreview(true);
     }
   };
-  console.log();
+
   return (
     <FormProvider {...method}>
       <div className="flex p-4 my-4 gap-4 rounded-md bg-gray-50" key={item.id}>
