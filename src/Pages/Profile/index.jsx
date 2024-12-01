@@ -13,16 +13,13 @@ export default function Profile() {
   const { userData } = useStorage();
 
   if (!userData) return <Loading />;
-  console.log(userData)
+
   return (
     <div>
       <div>
         <div className="max-w-[875px] pl-[48px] pr-8 py-[26px] flex">
           <div className="flex py-5">
             <div className="flex items-center justify-center w-12 h-12 mr-4 rounded-full">
-            {/* <Avatar sx={{
-              textTransform: 'uppercase'
-            }}>{userData?.name[0]}</Avatar> */}
             <Avatar {...stringAvatar(userData?.name)} alt={userData?.name} src={userData?.avatarUrl || ""} />
             </div>
             <div className="flex flex-col">
