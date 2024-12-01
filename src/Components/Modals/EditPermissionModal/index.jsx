@@ -139,25 +139,16 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   };
 
   useEffect(() => {
-    if (watchRole?.value === "newRole") return;
-    const permissionsByRole = dataBoardPermission
-      .map((permission) => permission.isGranted && permission.id)
-      .filter(Boolean);
-    console.log(permissionsByRole);
-    setValue("permissions", permissionsByRole);
-    // eslint-disable-next-line
-  }, [dataBoardPermission]);
-
-  useEffect(() => {
     if (watchRole?.value === "newRole") {
       setValue("role", null);
       setOpenCreateRoleModal(true);
       return;
     }
 
-    const permissionsByRole = dataBoardRole
-      ?.find((role) => role.id === watchRole?.value)
-      ?.permissionRoles.map((permission) => permission.permissionId);
+    const permissionsByRole = dataBoardPermission
+      .map((permission) => permission.isGranted && permission.id)
+      .filter(Boolean);
+    console.log(permissionsByRole);
     setValue("permissions", permissionsByRole);
     setCheckedAll({});
     // eslint-disable-next-line
