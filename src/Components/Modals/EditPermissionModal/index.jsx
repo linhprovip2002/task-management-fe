@@ -4,7 +4,7 @@ import {
   Checkbox,
   Modal,
   Switch,
-  TextField
+  TextField,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ import { CenterModel } from "../styles";
 import { CreateNewRoleModal } from "./CreateNewRoleModal";
 import {
   useGetBoardPermission,
-  useGetBoardRole
+  useGetBoardRole,
 } from "../../../Hooks/useBoardPermission";
 import { updateBoardPermission } from "../../../Services/API/apiBoardPermission";
 import { EQueryKeys } from "../../../constants";
@@ -30,7 +30,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
     list: false,
     card: false,
     comment: false,
-    tag: false
+    tag: false,
   });
   const [openCreateRoleModal, setOpenCreateRoleModal] = useState(false);
 
@@ -38,11 +38,11 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   const { idBoard } = useParams();
   const queryClient = useQueryClient();
 
-  const { dataBoardPermission } = useGetBoardPermission();
+  const { dataBoardPermission } = useGetBoardPermission(watch("role")?.value);
   const {
     dataBoardRole,
     isLoading: isLoadingRole,
-    refetch: refetchBoardRole
+    refetch: refetchBoardRole,
   } = useGetBoardRole(idBoard);
 
   const RoleOptions = useMemo(() => {
@@ -51,18 +51,19 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
     dataBoardRole.forEach((role) => {
       roles.push({
         value: role.id,
-        label: role.name
+        label: role.name,
       });
     });
     return roles;
   }, [dataBoardRole]);
 
   const PermissionGridConstants = useMemo(() => {
+    if (!dataBoardPermission) return [];
     return dataBoardPermission.reduce((acc, permission) => {
       if (!acc.find((p) => p.title === permission.moduleName)) {
         acc.push({
           title: permission.moduleName,
-          children: []
+          children: [],
         });
       }
       const index = acc.findIndex((p) => p.title === permission.moduleName);
@@ -72,7 +73,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
         title:
           capitalize(permission.moduleName) +
           " " +
-          capitalize(permission.actionName)
+          capitalize(permission.actionName),
       });
       return acc;
     }, []);
@@ -87,12 +88,12 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
 
     const payload = {
       roleId: data.role.value,
-      permissionId: [...new Set(data.permissions)]
+      permissionId: [...new Set(data.permissions)],
     };
     updateBoardPermission(idBoard, payload)
       .then(() => {
         queryClient.invalidateQueries({
-          queryKey: [EQueryKeys.GET_BOARD_PERMISSION]
+          queryKey: [EQueryKeys.GET_BOARD_PERMISSION],
         });
         refetchBoardRole();
         toast.success("Permission updated successfully");
@@ -122,7 +123,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
   const handleCheckedAll = (module, value) => {
     setCheckedAll((prev) => ({
       ...prev,
-      [module]: value
+      [module]: value,
     }));
     const modulePermission = dataBoardPermission
       .filter((permission) => permission.moduleName === module)
@@ -136,6 +137,16 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
 
     setValue("permissions", updatedPermissions);
   };
+
+  useEffect(() => {
+    if (watchRole?.value === "newRole") return;
+    const permissionsByRole = dataBoardPermission
+      .map((permission) => permission.isGranted && permission.id)
+      .filter(Boolean);
+    console.log(permissionsByRole);
+    setValue("permissions", permissionsByRole);
+    // eslint-disable-next-line
+  }, [dataBoardPermission]);
 
   useEffect(() => {
     if (watchRole?.value === "newRole") {
@@ -163,7 +174,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
         .map((child) => child.id);
 
       const allChecked = modulePermission.every((perm) =>
-        watchPermissionByRole?.includes(perm)
+        watchPermissionByRole?.includes(perm),
       );
 
       updatedCheckedAll[permission.title] = allChecked;
@@ -250,7 +261,7 @@ export const EditPermissionModal = ({ open: defaultOpen, handleClose }) => {
                           >
                             <Switch
                               checked={watchPermissionByRole?.includes(
-                                child.id
+                                child.id,
                               )}
                               onChange={(_, value) => {
                                 handleChange(child, value);

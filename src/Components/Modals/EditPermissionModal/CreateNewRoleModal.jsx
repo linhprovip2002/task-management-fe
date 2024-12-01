@@ -21,7 +21,9 @@ export const CreateNewRoleModal = ({ open, handleClose }) => {
     createBoardRole(idBoard, roleName)
       .then((res) => {
         console.error(res);
-        queryClient.invalidateQueries([EQueryKeys.GET_BOARD_ROLE]);
+        queryClient.invalidateQueries({
+          queryKey: [EQueryKeys.GET_BOARD_ROLE],
+        });
         toast.success("Role created successfully");
       })
       .catch(() => {

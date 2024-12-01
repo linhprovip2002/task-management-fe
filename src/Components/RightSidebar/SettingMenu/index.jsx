@@ -4,7 +4,6 @@ import { EditPermissionModal } from "../../Modals/EditPermissionModal";
 import BoardMemberModal from "../../Modals/BoardMemberModal";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetWorkspaceById } from "../../../Hooks";
-import { useListBoardContext } from "../../../Pages/ListBoard/ListBoardContext";
 
 const styles = {
   permissionHeader:
@@ -20,8 +19,8 @@ function SettingMenu() {
 
   const { id } = useParams();
   const { workspaceDetails } = useGetWorkspaceById(id);
-  const { isOwner } = useListBoardContext();
 
+  const isOwner = true;
   return (
     <>
       <Slide in={true} direction="left">

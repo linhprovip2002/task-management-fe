@@ -1,8 +1,22 @@
-import React, { createContext, useContext, useCallback, useEffect, useState, useMemo } from "react";
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import { useParams } from "react-router-dom";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
-import { useGetAllCardByList, useGetBoardById, useGetMembersByBoard, useGetWorkspaceById } from "../../../Hooks";
+import {
+  useGetAllCardByList,
+  useGetBoardById,
+  useGetMembersByBoard,
+  useGetWorkspaceById,
+} from "../../../Hooks";
 import { useStorage } from "../../../Contexts";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
+import { toast } from "react-toastify";
 
 const ListBoardContext = createContext();
 
@@ -39,8 +53,12 @@ function ListBoardProvider({ children }) {
   const { data: dataBoard } = useGetBoardById(boardId);
   const { data: dataListAPI } = useGetAllCardByList(dataBoard);
   const { data: membersBoard } = useGetMembersByBoard(boardId);
+  const { getBoardPermissionByUser } = useGetBoardPermission();
 
-  const isOwner = useMemo(() => dataBoard?.ownerId === userData?.id, [dataBoard, userData]);
+  const isOwner = useMemo(
+    () => dataBoard?.ownerId === userData?.id,
+    [dataBoard, userData],
+  );
 
   useEffect(() => {
     setDataList(dataListAPI);
@@ -51,7 +69,9 @@ function ListBoardProvider({ children }) {
     async (dataBoardCard) => {
       const updatedLists = dataList.map((list) => ({
         ...list,
-        cards: list.cards.map((card) => (card.id === dataBoardCard.id ? { ...card, ...dataBoardCard } : card)),
+        cards: list.cards.map((card) =>
+          card.id === dataBoardCard.id ? { ...card, ...dataBoardCard } : card,
+        ),
       }));
       setDataList(updatedLists);
       localStorage.setItem("cardId", dataBoardCard.id);
@@ -71,7 +91,9 @@ function ListBoardProvider({ children }) {
         setDataList(
           dataList.map((list) => ({
             ...list,
-            cards: list.cards.map((card) => (card.id === dataCard.id ? { ...card, ...dataCard } : card)),
+            cards: list.cards.map((card) =>
+              card.id === dataCard.id ? { ...card, ...dataCard } : card,
+            ),
           })),
         );
       setDataCard(dataCard);
@@ -91,7 +113,9 @@ function ListBoardProvider({ children }) {
 
   const handleChange = async (e, idList) => {
     setDataList((prevDataList) =>
-      prevDataList.map((list) => (list.id === idList ? { ...list, title: e.target.value } : list)),
+      prevDataList.map((list) =>
+        list.id === idList ? { ...list, title: e.target.value } : list,
+      ),
     );
   };
 
@@ -121,8 +145,13 @@ function ListBoardProvider({ children }) {
   }, [dataBoard]);
 
   const handleActiveStar = useCallback(() => {
+    if (!getBoardPermissionByUser("update")) {
+      toast.error("You do not have permission to perform this action");
+      return;
+    }
     setActiveStar(!activeStar);
     updateBoard(boardId, { ...dataBoard, isFavorite: !activeStar });
+    //eslint-disable-next-line
   }, [activeStar, boardId, dataBoard]);
 
   return (

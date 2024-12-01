@@ -18,8 +18,7 @@ import Loading from "../Loading";
 
 function HeaderBoard() {
   const { idBoard } = useParams();
-  const { activeStar, handleActiveStar, dataBoard } =
-    useListBoardContext();
+  const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
   const { data: memberBoard, isLoading: isLoadingBoardMembers } =
     useGetMembersByBoard(idBoard);
   const { getBoardPermissionByUser, isLoading: isLoadingBoardPermissions } =
@@ -66,7 +65,7 @@ function HeaderBoard() {
         </div>
         <div
           style={{
-            transition: "margin 0.2s ease-in"
+            transition: "margin 0.2s ease-in",
           }}
           className={`flex items-center ${rightSidebar && "mr-[330px]"}`}
         >
@@ -86,7 +85,7 @@ function HeaderBoard() {
             </TippyDetail>
             {isActiveFilter && <Filter onClose={handleClickFilter} />}
           </div>
-          {getBoardPermissionByUser("update") && (
+          {getBoardPermissionByUser("members") && (
             <TippyDetail title={"Share Board"}>
               <div
                 onClick={() => setOpenMemberModal(true)}

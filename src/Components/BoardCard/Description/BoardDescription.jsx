@@ -7,16 +7,19 @@ import { useGetBoardById } from "../../../Hooks";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../constants";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 
 export const BoardDescription = () => {
   const queryClient = useQueryClient();
+
   const [isEditing, setIsEditing] = useState(false);
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { idBoard } = useParams();
   const { data: boardData } = useGetBoardById(idBoard);
-  const [loading, setLoading] = useState(false);
-  // console.log(boardData);
+  const { getBoardPermissionByUser } = useGetBoardPermission();
+
   useEffect(() => {
     if (boardData) setDescription(boardData.description);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,7 +43,7 @@ export const BoardDescription = () => {
   return (
     <form className="flex-1 ml-4" onSubmit={handleSubmit}>
       <div className="text-base mb-2">Description</div>
-      {isEditing ? (
+      {isEditing && getBoardPermissionByUser("update") ? (
         <>
           <TextEditor
             loading={loading}

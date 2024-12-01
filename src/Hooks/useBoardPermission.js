@@ -7,15 +7,19 @@ import {
 import { useListBoardContext } from "../Pages/ListBoard/ListBoardContext";
 import { useParams } from "react-router-dom";
 
-export const useGetBoardPermission = () => {
-  const { isOwner } = useListBoardContext();
+export const useGetBoardPermission = (boardRoleId) => {
+  const boardContext = useListBoardContext();
+  const isOwner = boardContext?.isOwner || false;
+  const roleId = boardRoleId || boardContext?.dataBoard?.role.roleId;
+
   const { idBoard } = useParams();
+
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [EQueryKeys.GET_BOARD_PERMISSION, idBoard],
-    queryFn: () => getBoardPermission(idBoard),
+    queryKey: [EQueryKeys.GET_BOARD_PERMISSION, idBoard, roleId],
+    queryFn: () => getBoardPermission(idBoard, roleId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!idBoard,
+      enabled: !!idBoard && !!roleId,
     },
   });
 
@@ -29,6 +33,7 @@ export const useGetBoardPermission = () => {
 
   const getCardPermissionByUser = (item) => {
     if (isOwner) return true;
+    if (!getBoardPermissionByUser("update")) return false;
     const moduleName = "card";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item,
@@ -37,6 +42,8 @@ export const useGetBoardPermission = () => {
 
   const getCommentPermissionByUser = (item) => {
     if (isOwner) return true;
+    if (!getBoardPermissionByUser("update")) return false;
+
     const moduleName = "comment";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item,
@@ -45,6 +52,7 @@ export const useGetBoardPermission = () => {
 
   const getTagPermissionByUser = (item) => {
     if (isOwner) return true;
+    if (!getBoardPermissionByUser("update")) return false;
     const moduleName = "tag";
     return data?.find(
       (el) => el.moduleName === moduleName && el.actionName === item,
@@ -60,6 +68,7 @@ export const useGetBoardPermission = () => {
     getCardPermissionByUser,
     getCommentPermissionByUser,
     getTagPermissionByUser,
+    isOwner,
   };
 };
 

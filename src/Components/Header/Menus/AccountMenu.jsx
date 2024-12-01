@@ -11,7 +11,8 @@ import { Avatar, Divider } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { stringAvatar } from "../../../Utils/color";
 
-export const styleCSS = "block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100";
+export const styleCSS =
+  "block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100";
 
 export default function AccountMenu() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export default function AccountMenu() {
     localStorage.clear();
     Cookies.remove("authToken");
     Cookies.remove("refreshToken");
+    Cookies.remove("userId");
     navigate("/login");
   };
 
@@ -43,37 +45,32 @@ export default function AccountMenu() {
             tabIndex="-1"
             {...attrs}
           >
-            <p className="px-4 my-2 font-semibold text-gray-600 text-[12px]">ACCOUNT</p>
+            <p className="px-4 my-2 font-semibold text-gray-600 text-[12px]">
+              ACCOUNT
+            </p>
             <div className="flex items-center">
               <div className="flex items-center px-4 py-2">
-              <Avatar  {...stringAvatar(userProfile?.name)} alt={userProfile?.name} src={userProfile?.avatarUrl || ""} />
+                <Avatar
+                  {...stringAvatar(userProfile?.name)}
+                  alt={userProfile?.name}
+                  src={userProfile?.avatarUrl || ""}
+                />
                 <div className="ml-2">
                   <p className="text-[15px] font-normal">{userProfile?.name}</p>
                   <p className="text-[12px] font-normal">{userProfile.email}</p>
                 </div>
               </div>
             </div>
-            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
-              Switch account
-            </button>
-            {/* <Link
-              to={routes.manageProfile}
-              className="flex items-center justify-between w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-            >
-              <p>Manage account</p>
-              <OpenInNewIcon sx={{ fontSize: "14px" }} />
-            </Link> */}
             <Divider />
-            <p className="px-4 my-3 font-semibold text-gray-600 text-[12px]">TRELLO</p>
+            <p className="px-4 my-3 font-semibold text-gray-600 text-[12px]">
+              TRELLO
+            </p>
             <Link
               to={routes.profile.replace(":id", userData.id)}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               Profile and visibility
             </Link>
-            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
-              Cards
-            </button>
             <div className="my-2 border-t border-gray-200"></div>
             <button
               onClick={() => {
@@ -85,13 +82,6 @@ export default function AccountMenu() {
               <PeopleAltIcon sx={{ fontSize: "15px", marginRight: "8px" }} />
               <p>Create Workspace</p>
             </button>
-            <div className="my-2 border-t border-gray-200"></div>
-            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
-              Add another account
-            </button>
-            <button onClick={() => setIsMenuOpen(false)} className={`${styleCSS}`}>
-              Settings
-            </button>
             <Divider />
             <button
               onClick={handleLogout}
@@ -102,12 +92,22 @@ export default function AccountMenu() {
           </div>
         )}
       >
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex items-center ml-4 text-gray-700">
-        <Avatar {...stringAvatar(userData?.name)} alt={userData?.name} src={userData?.avatarUrl || ""} />
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="flex items-center ml-4 text-gray-700"
+        >
+          <Avatar
+            {...stringAvatar(userData?.name)}
+            alt={userData?.name}
+            src={userData?.avatarUrl || ""}
+          />
         </button>
       </HeadlessTippy>
 
-      <EditWorkspaceModal open={openEditWorkspaceModal} handleClose={() => setOpenEditWorkspaceModal(false)} />
+      <EditWorkspaceModal
+        open={openEditWorkspaceModal}
+        handleClose={() => setOpenEditWorkspaceModal(false)}
+      />
     </>
   );
 }

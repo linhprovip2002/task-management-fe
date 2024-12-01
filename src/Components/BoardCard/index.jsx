@@ -173,6 +173,7 @@ export const BoardCard = () => {
   }, [boardTags]);
 
   const handleCloseBoardCard = async (data) => {
+    
     setIsShowBoardCard(!isShowBoardCard);
     queryClient
       .invalidateQueries({
@@ -192,7 +193,12 @@ export const BoardCard = () => {
   };
 
   const handleChooseColorBackground = useCallback(async (item) => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     setChooseColorBackground(item);
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -283,6 +289,10 @@ export const BoardCard = () => {
   );
 
   const handleCreateNewLabel = async (dataColor, titleLabel = "") => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     try {
       ShowDetailNewLabel();
       setInputTitleLabel("");
@@ -300,6 +310,10 @@ export const BoardCard = () => {
   };
 
   const handleRemoveLabel = async (tag) => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     try {
       ShowDetailNewLabel();
       setInputTitleLabel("");
@@ -315,6 +329,10 @@ export const BoardCard = () => {
   };
 
   const handleUpdateLabel = async (tag, dataColor, titleLabel = "") => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     try {
       ShowDetailNewLabel();
       setInputTitleLabel("");
@@ -345,7 +363,11 @@ export const BoardCard = () => {
     }
   };
 
-  const handleCreateNewToDoList = (nameItem, dataCopy = null) => {
+  const handleCreateNewToDoList = (nameItem) => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     const dataToDo = {
       id: listToDo.length + 1,
       title: nameItem,
@@ -354,10 +376,6 @@ export const BoardCard = () => {
     };
     setListToDo((prev) => {
       if (prev.some((item) => item.id === dataToDo.id)) {
-        // const itemLabel = prev.find((item) => item.id === dataToDo.id);
-        // if (itemLabel.title !== dataToDo.title) {
-        //   return prev.map((item) => (item.id === dataToDo.id ? { ...item, title: dataToDo.title } : item));
-        // }
         return prev;
       } else {
         return [...prev, dataToDo];
@@ -367,6 +385,10 @@ export const BoardCard = () => {
   };
 
   const handleRemoveToDoList = (item) => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     setListToDo((prev) => {
       return prev.filter((i) => i.id !== item.id);
     });
@@ -443,6 +465,10 @@ export const BoardCard = () => {
   );
 
   const handleCheckDoneToDoItem = (Item, todoItemList) => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     setListToDo((prev) => {
       return prev.map((todo) => {
         if (todo.id === Item.id) {
@@ -474,6 +500,10 @@ export const BoardCard = () => {
   };
 
   const handleAddToDoItem = (nameItem, item) => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     if (nameItem !== "") {
       const updatedList = listToDo.map((i) => {
         if (i.id === item.id) {
@@ -512,6 +542,10 @@ export const BoardCard = () => {
   };
 
   const handleJoinIntoCard = async (item) => {
+    if (!getCardPermissionByUser("update")) {
+      toast.error("You don't have permission to join this card.");
+      return;
+    }
     try {
       const isUserJoined = membersInCard?.some(
         (member) => member?.user?.id === item.id,
@@ -557,6 +591,14 @@ export const BoardCard = () => {
   };
 
   const handleAddMember = async (item) => {
+    if (
+      !getCardPermissionByUser("assign") ||
+      !getCardPermissionByUser("unassign") ||
+      !getCardPermissionByUser("update")
+    ) {
+      toast.error("You don't have permission to add this member.");
+      return;
+    }
     try {
       if (item?.user.id === userData.id) {
         handleJoinIntoCard(item?.user);
