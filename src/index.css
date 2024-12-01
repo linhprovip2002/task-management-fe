@@ -16,8 +16,8 @@
   --default-layout-height: 60px;
   --default-layout-width: 1150px;
   --default-layout-horizontal-spacer: 24px;
-  --font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu, Droid Sans, Helvetica Neue,
-    sans-serif;
+  --font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans,
+    Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
   --ds-shadow-overlay: 0px 8px 12px #091e4226, 0px 0px 1px #091e424f;
 }
 * {
@@ -87,4 +87,40 @@ input[type="range" i] {
     "Helvetica Neue",
     sans-serif;
   src: url("../src/Assets/fonts/BlinkMacSystemFont.ttf");
+}
+
+#custom-text-editor * {
+  all: revert;
+}
+
+#custom-text-editor > ul {
+  list-style-type: disc;
+}
+
+#custom-text-editor > ol {
+  list-style-type: decimal;
+}
+
+#custom-text-editor > table {
+  border: 1px solid #aaa;
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+#custom-text-editor table tr:nth-child(even) {
+  background: #fafafa;
+}
+
+#custom-text-editor > table td {
+  border: 1px solid #aaa;
+  border-collapse: collapse;
+  padding: 15px 7px;
+  font: inherit;
+}
+
+#custom-text-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }

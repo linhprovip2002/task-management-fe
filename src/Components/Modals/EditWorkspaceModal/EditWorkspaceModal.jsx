@@ -10,28 +10,31 @@ import { SearchMember } from "../../SearchMember/SearchMember";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import Loading from "../../Loading";
+import { useNavigate } from "react-router-dom";
 
 export const EditWorkspaceModal = ({ open, handleClose }) => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm({
-    defaultValues: CreateWorkspaceDefaultValues
+    defaultValues: CreateWorkspaceDefaultValues,
   });
 
   const { mutate: mutateCreate } = useMutation({
     mutationFn: (workspaceData) =>
       workspaceServices.createWorkspace(workspaceData),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Workspace created successfully");
+      navigate(`/workspace/${data.id}/home`);
       queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER]
+        queryKey: [EQueryKeys.GET_WORKSPACE_BY_USER],
       });
     },
     onSettled: () => {
       setIsLoading(false);
       handleClose();
       reset(CreateWorkspaceDefaultValues);
-    }
+    },
   });
 
   const onSubmit = async (workspaceData) => {

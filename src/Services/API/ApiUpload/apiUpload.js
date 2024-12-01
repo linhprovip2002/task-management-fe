@@ -21,13 +21,13 @@ export function apiUploadMultiFile(formData) {
 }
 
 // api assign file, get file
-export function apiAssignFile(id, urls) {
-  return request.post(`card/${id}/attach-file`, {
+export function apiAssignFile(id, boardId, urls) {
+  return request.post(`board/${boardId}/card/${id}/attach-file`, {
     urls: urls,
   });
 }
 
 //delete file id
-export function apiDeleteFile(id, filedId) {
-  return request.delete(`card/${id}/delete-file/${filedId}`);
+export function apiDeleteFile(boardId, id, fileId) {
+  return request.delete(`/board/${boardId}/card/${id}/delete-file/${fileId}`);
 }

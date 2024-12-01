@@ -41,6 +41,7 @@ export const TextEditor = ({ loading, setLoading, ...props }) => {
         },
       },
     }),
+    // eslint-disable-next-line
     [],
   );
 

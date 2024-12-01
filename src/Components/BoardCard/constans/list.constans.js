@@ -1,11 +1,11 @@
 import {
   PersonAddAlt as PersonAddAltIcon,
   Person4Outlined as Person4OutlinedIcon,
-  Label as LabelIcon,
+  LabelOutlined as LabelOutlinedIcon,
   CheckBoxOutlined as CheckBoxOutlinedIcon,
   AccessTimeOutlined as AccessTimeOutlinedIcon,
   AttachmentOutlined as AttachmentOutlinedIcon,
-  InsertPhoto as InsertPhotoIcon,
+  InsertPhotoOutlined as InsertPhotoOutlinedIcon,
   BackupTableOutlined as BackupTableOutlinedIcon,
 } from "@mui/icons-material";
 
@@ -23,7 +23,7 @@ export const listBtnCard = [
   {
     id: 3,
     nameBtn: "Label",
-    Icon: <LabelIcon className="ml-1 mr-2" fontSize="small" />,
+    Icon: <LabelOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 4,
@@ -43,7 +43,7 @@ export const listBtnCard = [
   {
     id: 7,
     nameBtn: "Cover photo",
-    Icon: <InsertPhotoIcon className="ml-1 mr-2" fontSize="small" />,
+    Icon: <InsertPhotoOutlinedIcon className="ml-1 mr-2" fontSize="small" />,
   },
   {
     id: 12,

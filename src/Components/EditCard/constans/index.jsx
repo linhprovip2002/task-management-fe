@@ -1,6 +1,6 @@
 import {
   Person4Outlined as Person4OutlinedIcon,
-  Label as LabelIcon,
+  LabelOutlined as LabelOutlinedIcon,
   AccessTimeOutlined as AccessTimeOutlinedIcon,
   SaveAsOutlined as SaveAsOutlinedIcon,
   BackupTableOutlined as BackupTableOutlinedIcon,
@@ -15,7 +15,7 @@ export const listBtnCard = [
   {
     id: 2,
     nameBtn: "Edit label",
-    Icon: <LabelIcon className="mr-2 ml-1" fontSize="small" />,
+    Icon: <LabelOutlinedIcon className="mr-2 ml-1" fontSize="small" />,
   },
   {
     id: 3,

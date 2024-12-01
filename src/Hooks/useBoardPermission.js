@@ -2,51 +2,60 @@ import { useQuery } from "@tanstack/react-query";
 import { EQueryKeys } from "../constants";
 import {
   getBoardPermission,
-  getBoardRole
+  getBoardRole,
 } from "../Services/API/apiBoardPermission";
+import { useListBoardContext } from "../Pages/ListBoard/ListBoardContext";
+import { useParams } from "react-router-dom";
 
-export const useGetBoardPermission = (boardId) => {
+export const useGetBoardPermission = (boardRoleId) => {
+  const boardContext = useListBoardContext();
+  const isOwner = boardContext?.isOwner || false;
+  const roleId = boardRoleId || boardContext?.dataBoard?.role.roleId;
+
+  const { idBoard } = useParams();
+
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: [EQueryKeys.GET_BOARD_PERMISSION, boardId],
-    queryFn: () => getBoardPermission(boardId),
+    queryKey: [EQueryKeys.GET_BOARD_PERMISSION, idBoard, roleId],
+    queryFn: () => getBoardPermission(idBoard, roleId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!boardId
-    }
+      enabled: !!idBoard && !!roleId,
+    },
   });
 
   const getBoardPermissionByUser = (item) => {
+    if (isOwner) return true;
     const moduleName = "board";
     return data?.find(
-      (el) => el.moduleName === moduleName && el.actionName === item
+      (el) => el.moduleName === moduleName && el.actionName === item,
     );
   };
 
-  const getListPermissionByUser = (item) => {
-    const moduleName = "list";
-    return data?.find(
-      (el) => el.moduleName === moduleName && el.actionName === item
-    )?.isGranted;
-  };
-
   const getCardPermissionByUser = (item) => {
+    if (isOwner) return true;
+    if (!getBoardPermissionByUser("update")) return false;
     const moduleName = "card";
     return data?.find(
-      (el) => el.moduleName === moduleName && el.actionName === item
+      (el) => el.moduleName === moduleName && el.actionName === item,
     )?.isGranted;
   };
 
   const getCommentPermissionByUser = (item) => {
+    if (isOwner) return true;
+    if (!getBoardPermissionByUser("update")) return false;
+
     const moduleName = "comment";
     return data?.find(
-      (el) => el.moduleName === moduleName && el.actionName === item
+      (el) => el.moduleName === moduleName && el.actionName === item,
     )?.isGranted;
   };
 
   const getTagPermissionByUser = (item) => {
+    if (isOwner) return true;
+    if (!getBoardPermissionByUser("update")) return false;
     const moduleName = "tag";
     return data?.find(
-      (el) => el.moduleName === moduleName && el.actionName === item
+      (el) => el.moduleName === moduleName && el.actionName === item,
     )?.isGranted;
   };
 
@@ -56,10 +65,10 @@ export const useGetBoardPermission = (boardId) => {
     isError,
     refetch,
     getBoardPermissionByUser,
-    getListPermissionByUser,
     getCardPermissionByUser,
     getCommentPermissionByUser,
-    getTagPermissionByUser
+    getTagPermissionByUser,
+    isOwner,
   };
 };
 
@@ -69,8 +78,8 @@ export const useGetBoardRole = (boardId) => {
     queryFn: () => getBoardRole(boardId),
     ...{
       refetchOnWindowFocus: false,
-      enabled: !!boardId
-    }
+      enabled: !!boardId,
+    },
   });
 
   return { dataBoardRole: data, isLoading, isError, refetch };

@@ -1,10 +1,4 @@
-import {
-  Button,
-  CircularProgress,
-  Divider,
-  Slide,
-  TextField
-} from "@mui/material";
+import { Button, CircularProgress, Slide, TextField } from "@mui/material";
 import HeadlessTippy from "@tippyjs/react/headless";
 import LabelEditor from "./LabelEditor";
 import { useEffect, useState } from "react";
@@ -12,6 +6,7 @@ import { createTag, getTags } from "../../../Services/API/APITags";
 import { useParams } from "react-router-dom";
 import LabelItem from "./LabelItem";
 import { toast } from "react-toastify";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 
 export default function LabelMenu() {
   const [tags, setTags] = useState([]);
@@ -20,13 +15,14 @@ export default function LabelMenu() {
   const handleOpenCloseCreator = () => setCreatorPopper(!creatorPopper);
   const { idBoard } = useParams();
   const [isFetching, setIsFetching] = useState(true);
+  const { getTagPermissionByUser } = useGetBoardPermission();
 
   const handleCreateTag = (data) => {
     setCreatorPopper(false);
     createTag({
       boardId: Number(idBoard),
       name: data.title,
-      color: data.choosedColor
+      color: data.choosedColor,
     })
       .then((res) => {
         toast.success("Create tag successfully");
@@ -49,7 +45,7 @@ export default function LabelMenu() {
       .finally(() => setIsFetching(false));
   }, [idBoard]);
 
-  return (
+  return getTagPermissionByUser("list") ? (
     <Slide in={true} direction="left">
       <div className="flex flex-col">
         <TextField
@@ -59,8 +55,8 @@ export default function LabelMenu() {
               paddingY: "6px",
               paddingLeft: "12px",
               paddingRight: "18px",
-              fontSize: "14px"
-            }
+              fontSize: "14px",
+            },
           }}
           placeholder="Search labels..."
         />
@@ -75,7 +71,7 @@ export default function LabelMenu() {
               Labels
             </span>
 
-            <ul className="pt-1 pb-2">
+            <ul className="pt-1 pb-2 flex flex-col gap-2">
               {tags.map((tag, index) => (
                 <LabelItem key={index} data={tag} setTags={setTags} />
               ))}
@@ -104,31 +100,16 @@ export default function LabelMenu() {
               paddingX: "12px",
               marginY: 0.5,
               "&:hover": {
-                bgcolor: "#091E4224"
-              }
+                bgcolor: "#091E4224",
+              },
             }}
           >
             Create a new label
           </Button>
         </HeadlessTippy>
-        <Divider element="div" sx={{ marginY: 1 }} />
-
-        <Button
-          sx={{
-            bgcolor: "var(--hover-background)",
-            color: "var(--text-color)",
-            textTransform: "none",
-            paddingY: "4px",
-            paddingX: "12px",
-            marginY: 0.5,
-            "&:hover": {
-              bgcolor: "#091E4224"
-            }
-          }}
-        >
-          Enable colorblind friendly mode
-        </Button>
       </div>
     </Slide>
+  ) : (
+    <></>
   );
 }

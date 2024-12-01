@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Avatar, Button, TextField } from "@mui/material";
 import { useStorage } from "../../../Contexts";
-import { useGetCardById, useGetUserProfile } from "../../../Hooks";
+import { useGetCardById } from "../../../Hooks";
 import { TextEditor } from "../../TextEditor/TextEditor";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -10,12 +10,14 @@ import { useParams } from "react-router-dom";
 import Loading from "../../Loading";
 import { useQueryClient } from "@tanstack/react-query";
 import { EQueryKeys } from "../../../constants";
+import { stringAvatar } from "../../../Utils/color";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 
 const WriteComment = () => {
   const queryClient = useQueryClient();
   const { idBoard } = useParams();
-  const { userData, isLoggedIn } = useStorage();
-  const { userProfile } = useGetUserProfile(isLoggedIn);
+  const { userData } = useStorage();
+  const { getCommentPermissionByUser } = useGetBoardPermission();
 
   const method = useForm();
   const { setValue, handleSubmit, reset, watch } = method;
@@ -25,7 +27,7 @@ const WriteComment = () => {
   const [loading, setLoading] = useState(false);
 
   const cardId = localStorage.getItem("cardId");
-  const { data: dataCard } = useGetCardById(cardId);
+  const { data: dataCard } = useGetCardById(idBoard, cardId);
 
   useEffect(() => {
     if (isEditMode && textEditorRef.current) {
@@ -47,7 +49,7 @@ const WriteComment = () => {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: dataCard.id
+      cardId: dataCard.id,
     };
 
     try {
@@ -64,23 +66,17 @@ const WriteComment = () => {
     }
   };
 
-  return (
+  return getCommentPermissionByUser("create") ? (
     <form
       className="flex justify-between mr-2"
       onSubmit={handleSubmit(handlePostComment)}
     >
       {loading && <Loading className="bg-white bg-opacity-10 z-1" />}
-      {userData?.avatarUrl ? (
-        <Avatar
-          sx={{ width: "30px", height: "30px" }}
-          alt={userData?.name}
-          src={userData?.avatarUrl}
-        />
-      ) : (
-        <div className="flex items-center justify-center bg-orange-400 rounded-full w-9 h-9">
-          {userProfile?.name[0] || " "}
-        </div>
-      )}
+      <Avatar
+        {...stringAvatar(userData?.name)}
+        alt={userData?.name}
+        src={userData?.avatarUrl || ""}
+      />
       <div className="ml-4">
         <div className="border-gray-300 rounded-sm ">
           <div className="w-[428px] h-full">
@@ -132,6 +128,8 @@ const WriteComment = () => {
         </div>
       </div>
     </form>
+  ) : (
+    <></>
   );
 };
 

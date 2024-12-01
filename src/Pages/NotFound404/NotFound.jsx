@@ -16,7 +16,7 @@ export const NotFound = () => {
 
   useEffect(() => {
     if (Cookies.get("authToken")) {
-      navigate(routes.workspaceHome);
+      navigate(`/user/${Cookies.get("userId")}/boards`);
     }
     // eslint-disable-next-line
   }, [Cookies.get("authToken")]);

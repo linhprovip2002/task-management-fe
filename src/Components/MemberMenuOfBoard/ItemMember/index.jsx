@@ -4,6 +4,14 @@ import Avatar from "@mui/material/Avatar";
 import { stringAvatar } from "../../../Utils/color";
 
 function ItemMember({ item, onHandleAddMember, isClose = false, onClose }) {
+  let { sx: avatarStyles, children, title } = stringAvatar(item.user?.name);
+  avatarStyles = {
+    ...avatarStyles,
+    width: 32,
+    height: 32,
+    marginRight: "8px",
+  };
+
   return (
     <div
       onClick={() => onHandleAddMember && onHandleAddMember(item)}
@@ -11,10 +19,11 @@ function ItemMember({ item, onHandleAddMember, isClose = false, onClose }) {
     >
       <div className="flex items-center">
         <Avatar
-          {...stringAvatar(item.user?.name)}
           alt={item.user?.name}
           src={item.user?.avatarUrl || ""}
-          sx={{ width: 32, height: 32, marginRight: "8px" }}
+          sx={avatarStyles}
+          children={children}
+          title={title}
         />
         <div>{item?.user?.name}</div>
       </div>

@@ -10,17 +10,25 @@ import { collectTypeSort, nameOperations } from "./constans";
 import { useListBoardContext } from "../../Pages/ListBoard/ListBoardContext";
 import { ClickAwayListener, Popper } from "@mui/material";
 import { useGetBoardPermission } from "../../Hooks/useBoardPermission";
+import { useParams } from "react-router-dom";
 
 const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
-  const { boardId, dataBoard, setListCount, handleShowAddCard, handleActiveMonitor, setDataList, dataList } =
-    useListBoardContext();
+  const { idBoard } = useParams();
+  const {
+    dataBoard,
+    setListCount,
+    handleShowAddCard,
+    handleActiveMonitor,
+    setDataList,
+    dataList
+  } = useListBoardContext();
   const [isLeaveBoard, setIsLeaveBoard] = useState(false);
   const [activeCollectOperation, setActiveCollectOperation] = useState(null);
   const [nameList, setNameList] = useState(data && data.title);
   const [anchorEl, setAnchorEl] = useState(null);
   const [chooseMenuOperation, setchooseMenuOperation] = useState(true);
 
-  const { getListPermissionByUser } = useGetBoardPermission(boardId);
+  const { getBoardPermissionByUser } = useGetBoardPermission();
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
@@ -45,11 +53,11 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
     const dataList = {
       title: nameList.trim(),
       description: data.description,
-      boardId: dataBoard.id,
+      boardId: dataBoard.id
     };
     const dataCopyList = {
       ...data,
-      title: nameList.trim(),
+      title: nameList.trim()
     };
     try {
       const list = await CreateList(dataBoard?.id, dataList);
@@ -60,9 +68,9 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
           coverUrl: card.coverUrl || "",
           priority: card.priority || "",
           tagId: card.tagId || "",
-          listId: list.id,
+          listId: list.id
         };
-        await createCardByIdList(dataCard);
+        await createCardByIdList(idBoard, dataCard);
       });
 
       setDataList([...dataList, dataCopyList]);
@@ -90,7 +98,9 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
         break;
     }
 
-    const updatedListCount = dataList.map((list) => (list.id === idList ? { ...list, cards: listCards } : list));
+    const updatedListCount = dataList.map((list) =>
+      list.id === idList ? { ...list, cards: listCards } : list
+    );
     setListCount(updatedListCount);
   };
 
@@ -128,14 +138,20 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      {getListPermissionByUser("update") ? (
+      {getBoardPermissionByUser("update") ? (
         <div className="relative">
           <Tippy
-            content={<span className="text-[12px] max-w-[150px]">{tippyName}</span>}
+            content={
+              <span className="text-[12px] max-w-[150px]">{tippyName}</span>
+            }
             arrow={false}
             placement="bottom"
           >
-            <div aria-describedby={id} className={className} onClick={handleClickHidot}>
+            <div
+              aria-describedby={id}
+              className={className}
+              onClick={handleClickHidot}
+            >
               <HiDotsVertical size={16} className="text-gray-700 rotate-90" />
             </div>
           </Tippy>
@@ -206,7 +222,9 @@ const ConvertHiDotsVertical = ({ tippyName, data, className }) => {
                   onBack={toggleCollape}
                 >
                   <div className="w-full px-4">
-                    <p className="whitespace-normal">Are you sure you want to save all selected tags?</p>
+                    <p className="whitespace-normal">
+                      Are you sure you want to save all selected tags?
+                    </p>
                   </div>
                 </ItemMenu>
               )}

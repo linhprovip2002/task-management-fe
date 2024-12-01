@@ -13,14 +13,16 @@ import { useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "../../Loading";
 import { EQueryKeys } from "../../../constants";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
 
 export const CardComments = ({ item }) => {
   const queryClient = useQueryClient();
   const { idBoard } = useParams();
   const { setPostUploadedFiles } = useListBoardContext();
-  const [loading, setLoading] = useState(false);
+  const { getCommentPermissionByUser } = useGetBoardPermission();
   const { userData } = useStorage();
 
+  const [loading, setLoading] = useState(false);
   const [openImagePreview, setOpenImagePreview] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
 
@@ -28,8 +30,8 @@ export const CardComments = ({ item }) => {
 
   const method = useForm({
     defaultValues: {
-      content: item.content || ""
-    }
+      content: item.content || "",
+    },
   });
   const { setValue, watch, handleSubmit } = method;
 
@@ -37,12 +39,6 @@ export const CardComments = ({ item }) => {
     setValue("content", item.content);
     // eslint-disable-next-line
   }, [item.content]);
-
-  // const handleImageClick = (url) => {
-  //   console.log("url", url);
-  //   setValue("selectedImgUrl", url);
-  //   setOpenImagePreview(true);
-  // };
 
   const handleUpdateComment = async (data, e) => {
     e.preventDefault();
@@ -57,7 +53,7 @@ export const CardComments = ({ item }) => {
     const params = {
       content: content,
       files: imageUrls,
-      cardId: cardId
+      cardId: cardId,
     };
 
     try {
@@ -65,7 +61,7 @@ export const CardComments = ({ item }) => {
       const newComment = response.data;
       setValue("content", newComment.content);
       queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_CARD_COMMENT]
+        queryKey: [EQueryKeys.GET_CARD_COMMENT],
       });
       setPostUploadedFiles((prev) => [...prev, ...newComment.files]);
     } catch (err) {
@@ -81,7 +77,7 @@ export const CardComments = ({ item }) => {
     try {
       await deleteComment(idBoard, commentId);
       queryClient.invalidateQueries({
-        queryKey: [EQueryKeys.GET_CARD_COMMENT]
+        queryKey: [EQueryKeys.GET_CARD_COMMENT],
       });
       toast.success("Deleted comment successfully!");
     } catch (err) {
@@ -100,18 +96,24 @@ export const CardComments = ({ item }) => {
     const doc = parser.parseFromString(item.content, "text/html");
     const images = doc.querySelectorAll("img");
 
-    images.forEach((img) => {
+    images.forEach((img, index) => {
+      img.setAttribute("data-index", index.toString());
       img.style.cursor = "pointer";
-      img.onclick = () => {
-        setValue("selectedImgUrl", img.src);
-        setOpenImagePreview(true);
-      };
     });
 
     return { __html: doc.body.innerHTML };
     // eslint-disable-next-line
   }, [item.content]);
 
+  const handleImageClick = (event) => {
+    const target = event.target;
+    console.log("target", target.tagName.src);
+    if (target.tagName === "IMG" && target.dataset.index) {
+      setValue("selectedImgUrl", target.src);
+      setOpenImagePreview(true);
+    }
+  };
+  console.log();
   return (
     <FormProvider {...method}>
       <div className="flex p-4 my-4 gap-4 rounded-md bg-gray-50" key={item.id}>
@@ -167,24 +169,32 @@ export const CardComments = ({ item }) => {
             ) : (
               <>
                 <div
+                  id="custom-text-editor"
                   dangerouslySetInnerHTML={renderContent}
+                  onClick={handleImageClick}
                   className="p-3 my-2 w-full  bg-white border border-gray-300 rounded-md max-w-[400px] break-words"
                 />
                 <div className="flex mt-2 space-x-4 text-sm text-gray-500">
-                  <button
-                    onClick={() => setCanEdit(true)}
-                    className="hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <span>•</span>
-                  <button
-                    onClick={() => handleDeleteComment(item.id)}
-                    type="button"
-                    className="hover:underline hover:text-red-500"
-                  >
-                    Delete
-                  </button>
+                  {getCommentPermissionByUser("update") && (
+                    <button
+                      onClick={() => setCanEdit(true)}
+                      className="hover:underline"
+                    >
+                      Edit
+                    </button>
+                  )}
+                  {getCommentPermissionByUser("delete") && (
+                    <>
+                      <span>•</span>
+                      <button
+                        onClick={() => handleDeleteComment(item.id)}
+                        type="button"
+                        className="hover:underline hover:text-red-500"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </div>
               </>
             )}

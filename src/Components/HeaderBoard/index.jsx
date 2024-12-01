@@ -19,8 +19,11 @@ import Loading from "../Loading";
 function HeaderBoard() {
   const { idBoard } = useParams();
   const { activeStar, handleActiveStar, dataBoard } = useListBoardContext();
-  const { data: memberBoard, isLoading: isLoadingBoardMembers } = useGetMembersByBoard(idBoard);
-  const { getListPermissionByUser, isLoading: isLoadingBoardPermissions } = useGetBoardPermission(idBoard);
+  const { data: memberBoard, isLoading: isLoadingBoardMembers } =
+    useGetMembersByBoard(idBoard);
+  const { getBoardPermissionByUser, isLoading: isLoadingBoardPermissions } =
+    useGetBoardPermission();
+
   const [rightSidebar, setRightSidebar] = useState(false);
   const [isActiveFilter, setIsActiveFilter] = useState(false);
   const [openMemberModal, setOpenMemberModal] = useState(false);
@@ -33,14 +36,20 @@ function HeaderBoard() {
     setIsActiveFilter(!isActiveFilter);
   }, [isActiveFilter]);
 
-  const isLoading = !dataBoard || !memberBoard || isLoadingBoardMembers || isLoadingBoardPermissions;
+  const isLoading =
+    !dataBoard ||
+    !memberBoard ||
+    isLoadingBoardMembers ||
+    isLoadingBoardPermissions;
 
   return (
     <>
       {isLoading && <Loading className="bg-white bg-opacity-10 z-10" />}
       <div className="relative flex items-center justify-between h-[32px] py-6 px-4 bg-gray-100">
         <div className="flex items-center">
-          <div className="text-black p-2 font-bold text-[18px]">{dataBoard.title}</div>
+          <div className="text-black p-2 font-bold text-[18px]">
+            {dataBoard.title}
+          </div>
           <TippyDetail title="Star or unstar this tables. Starred tables will appear at the top of the tables list.">
             <div
               onClick={handleActiveStar}
@@ -76,14 +85,20 @@ function HeaderBoard() {
             </TippyDetail>
             {isActiveFilter && <Filter onClose={handleClickFilter} />}
           </div>
-          {getListPermissionByUser("list_member") && (
+          {getBoardPermissionByUser("members") && (
             <TippyDetail title={"Share Board"}>
               <div
                 onClick={() => setOpenMemberModal(true)}
                 className="cursor-pointer flex items-center px-3 py-1 ml-2 rounded-[4px] bg-gray-600 hover:bg-gray-700 transition-bg duration-300"
               >
-                <GroupIcon width={16} height={16} className={"mr-2 text-white"} />
-                <span className="text-[14px] font-medium text-white">Members</span>
+                <GroupIcon
+                  width={16}
+                  height={16}
+                  className={"mr-2 text-white"}
+                />
+                <span className="text-[14px] font-medium text-white">
+                  Members
+                </span>
               </div>
             </TippyDetail>
           )}
@@ -96,8 +111,16 @@ function HeaderBoard() {
             </div>
           </TippyDetail>
         </div>
-        <RightSidebar onClose={handleToggleRightSidebar} isOpen={rightSidebar} />
-        {openMemberModal && <BoardMemberModal open={openMemberModal} onClose={() => setOpenMemberModal(false)} />}
+        <RightSidebar
+          onClose={handleToggleRightSidebar}
+          isOpen={rightSidebar}
+        />
+        {openMemberModal && (
+          <BoardMemberModal
+            open={openMemberModal}
+            onClose={() => setOpenMemberModal(false)}
+          />
+        )}
       </div>
     </>
   );

@@ -1,7 +1,22 @@
-import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import { useParams } from "react-router-dom";
 import { updateBoard } from "../../../Services/API/ApiBoard/apiBoard";
-import { useGetAllCardByList, useGetBoardById, useGetMembersByBoard, useGetWorkspaceById } from "../../../Hooks";
+import {
+  useGetAllCardByList,
+  useGetBoardById,
+  useGetMembersByBoard,
+  useGetWorkspaceById,
+} from "../../../Hooks";
+import { useStorage } from "../../../Contexts";
+import { useGetBoardPermission } from "../../../Hooks/useBoardPermission";
+import { toast } from "react-toastify";
 
 const ListBoardContext = createContext();
 
@@ -30,14 +45,20 @@ function ListBoardProvider({ children }) {
 
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [upFileComment, setUpFileComment] = useState([]);
 
+  const { userData } = useStorage();
   const { workspaceDetails: dataWorkspace } = useGetWorkspaceById(idWorkSpace);
   const { data: dataBoard } = useGetBoardById(boardId);
   const { data: dataListAPI } = useGetAllCardByList(dataBoard);
   const { data: membersBoard } = useGetMembersByBoard(boardId);
+  const { getBoardPermissionByUser } = useGetBoardPermission();
+
+  const isOwner = useMemo(
+    () => dataBoard?.ownerId === userData?.id,
+    [dataBoard, userData],
+  );
 
   useEffect(() => {
     setDataList(dataListAPI);
@@ -45,23 +66,37 @@ function ListBoardProvider({ children }) {
   }, [dataListAPI]);
 
   const handleShowBoardCard = useCallback(
-    async (dataCard) => {
-      setIsShowBoardCard(!isShowBoardCard);
-      localStorage.setItem("cardId", dataCard.id);
+    async (dataBoardCard) => {
+      const updatedLists = dataList.map((list) => ({
+        ...list,
+        cards: list.cards.map((card) =>
+          card.id === dataBoardCard.id ? { ...card, ...dataBoardCard } : card,
+        ),
+      }));
+      setDataList(updatedLists);
+      localStorage.setItem("cardId", dataBoardCard.id);
       toggleCardEditModal && setToggleCardEditModal((prev) => !prev);
     },
-    [isShowBoardCard, toggleCardEditModal],
+    [toggleCardEditModal, dataList],
   );
 
   const handleShowBoardEdit = useCallback(
     async (e, item, dataCard) => {
       localStorage.setItem("cardId", dataCard?.id);
-      const rect = e.currentTarget.getBoundingClientRect();
-      setToggleCardEditModal(!toggleCardEditModal);
-      setPosition({ top: rect.bottom + 8, left: rect.left });
-      setItemList(item);
+      if (e.currentTarget) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setPosition({ top: rect.bottom + 8, left: rect.left });
+      }
+      dataList.length > 0 &&
+        setDataList(
+          dataList.map((list) => ({
+            ...list,
+            cards: list.cards.map((card) =>
+              card.id === dataCard.id ? { ...card, ...dataCard } : card,
+            ),
+          })),
+        );
       setDataCard(dataCard);
-      // setPostUploadedFiles([...dataCard?.files]);
     },
     //eslint-disable-next-line
     [toggleCardEditModal],
@@ -78,7 +113,9 @@ function ListBoardProvider({ children }) {
 
   const handleChange = async (e, idList) => {
     setDataList((prevDataList) =>
-      prevDataList.map((list) => (list.id === idList ? { ...list, title: e.target.value } : list)),
+      prevDataList.map((list) =>
+        list.id === idList ? { ...list, title: e.target.value } : list,
+      ),
     );
   };
 
@@ -108,8 +145,13 @@ function ListBoardProvider({ children }) {
   }, [dataBoard]);
 
   const handleActiveStar = useCallback(() => {
+    if (!getBoardPermissionByUser("update")) {
+      toast.error("You do not have permission to perform this action");
+      return;
+    }
     setActiveStar(!activeStar);
     updateBoard(boardId, { ...dataBoard, isFavorite: !activeStar });
+    //eslint-disable-next-line
   }, [activeStar, boardId, dataBoard]);
 
   return (
@@ -143,7 +185,6 @@ function ListBoardProvider({ children }) {
         handleChange,
         handleChangeTitleCard,
         handleShowAddCard,
-        loading,
         content,
         setContent,
         isSaving,
@@ -152,6 +193,8 @@ function ListBoardProvider({ children }) {
         setUpFileComment,
         setToggleCardEditModal,
         setActiveIndex,
+        isOwner,
+        setIsShowBoardCard,
       }}
     >
       {children}

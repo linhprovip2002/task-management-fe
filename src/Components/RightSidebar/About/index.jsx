@@ -1,9 +1,9 @@
-import { Slide } from "@mui/material";
+import { BoardDescription } from "../../BoardCard/Description/BoardDescription";
 
 export default function About() {
   return (
-    <Slide in={true} direction="left">
-      <div>About</div>
-    </Slide>
+    <div>
+      <BoardDescription />
+    </div>
   );
 }

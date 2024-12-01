@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider
+  Divider,
 } from "@mui/material";
 import classNames from "classnames/bind";
 import styles from "./RightSidebar.module.scss";
@@ -16,13 +16,8 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ListIcon from "@mui/icons-material/List";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import LabelOutlinedIcon from "@mui/icons-material/LabelOutlined";
-import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import RemoveIcon from "@mui/icons-material/Remove";
-import ShareIcon from "@mui/icons-material/Share";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SettingMenu from "./SettingMenu";
@@ -30,7 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Archived from "./Archived";
 import {
   deleteBoardId,
-  leaveBoard
+  leaveBoard,
 } from "../../Services/API/ApiBoard/apiBoard";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
@@ -41,6 +36,7 @@ import { memo } from "react";
 import LabelMenu from "./LabelMenu";
 import About from "./About";
 import Activities from "./Activities";
+import { useStorage } from "../../Contexts";
 
 const cx = classNames.bind(styles);
 
@@ -48,7 +44,8 @@ const sizeIcon = 20;
 
 function RightSidebar({ isOpen, onClose }) {
   const { dataBoard } = useListBoardContext();
-  const isOwner = dataBoard?.role?.roleName === "admin";
+  const { userData } = useStorage();
+  const isOwner = dataBoard.ownerId === userData.id;
 
   const items = {
     headerTitle: "Menu",
@@ -58,16 +55,16 @@ function RightSidebar({ isOpen, onClose }) {
         icon: <ErrorOutlineIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "About",
-          component: <About />
-        }
+          component: <About />,
+        },
       },
       {
         title: "Activity",
         icon: <ListIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "Activity",
-          component: <Activities />
-        }
+          component: <Activities />,
+        },
       },
       {
         title: "Archived Items",
@@ -75,16 +72,16 @@ function RightSidebar({ isOpen, onClose }) {
         divide: true,
         children: {
           headerTitle: "Archived",
-          component: <Archived />
-        }
+          component: <Archived />,
+        },
       },
       {
         title: "Settings",
         icon: <SettingsOutlinedIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "Settings",
-          component: <SettingMenu />
-        }
+          component: <SettingMenu />,
+        },
       },
 
       {
@@ -100,42 +97,17 @@ function RightSidebar({ isOpen, onClose }) {
         ),
         children: {
           headerTitle: "Change Background",
-          component: <ChangeBackgroundMenu />
-        }
-      },
-      {
-        title: "Power-Ups",
-        icon: <RocketLaunchIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
+          component: <ChangeBackgroundMenu />,
+        },
       },
       {
         title: "Labels",
         icon: <LabelOutlinedIcon sx={{ fontSize: sizeIcon }} />,
         children: {
           headerTitle: "Labels",
-          component: <LabelMenu />
+          component: <LabelMenu />,
         },
-        divide: true
-      },
-      {
-        title: "Watch",
-        icon: <RemoveRedEyeOutlinedIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
-      },
-      {
-        title: "Coppy board",
-        icon: <ContentCopyIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
-      },
-      {
-        title: "Email to board",
-        icon: <MailOutlineIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
-      },
-      {
-        title: "Print,export and share",
-        icon: <ShareIcon sx={{ fontSize: sizeIcon }} />,
-        disable: true
+        divide: true,
       },
       {
         title: isOwner ? "Close board" : "Leave this board",
@@ -144,9 +116,9 @@ function RightSidebar({ isOpen, onClose }) {
         ) : (
           <LogoutIcon sx={{ fontSize: sizeIcon }} />
         ),
-        onClick: () => setDeleteDialog(true)
-      }
-    ]
+        onClick: () => setDeleteDialog(true),
+      },
+    ],
   };
 
   const [menuItems, setMenuItems] = useState([items]);
@@ -221,7 +193,7 @@ function RightSidebar({ isOpen, onClose }) {
       deleteBoardId(idBoard)
         .then((res) => {
           queryClient.invalidateQueries({
-            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
           });
           toast.success("Close board successfully");
           return navigate(`/workspace/${idWorkSpace}/home`);
@@ -239,7 +211,7 @@ function RightSidebar({ isOpen, onClose }) {
         .then((res) => {
           //* Gọi lại API get board từ useQuery để reload lại giao diện
           queryClient.invalidateQueries({
-            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID]
+            queryKey: [EQueryKeys.GET_WORKSPACE_BY_ID],
           });
           //! chưa load lại được dữ liệu mới ở trang home workspace
           toast.success("Leave board successfully");
@@ -260,12 +232,12 @@ function RightSidebar({ isOpen, onClose }) {
   return (
     <div
       className={cx(["drawer", "absolute top-0 right-0 z-[300]"], {
-        open: isOpen
+        open: isOpen,
       })}
     >
       <div
         className={cx([
-          "w-[339px] flex bg-white border-l border-solid border-gray-300 flex-col h-full"
+          "w-[339px] flex bg-white border-l border-solid border-gray-300 flex-col h-full",
         ])}
       >
         <div className="px-3">
@@ -294,7 +266,7 @@ function RightSidebar({ isOpen, onClose }) {
           <Divider component={"div"} />
         </div>
 
-        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-y-scroll overflow-x-hidden">
+        <div className="flex flex-col gap-1 px-3 pt-3 pb-2 overflow-hidden">
           {renderItems()}
         </div>
       </div>
@@ -309,8 +281,8 @@ function RightSidebar({ isOpen, onClose }) {
         aria-describedby="alert-dialog-description"
         sx={{
           "& .MuiDialog-paper": {
-            borderRadius: 3
-          }
+            borderRadius: 3,
+          },
         }}
       >
         <DialogTitle id="alert-dialog-title">

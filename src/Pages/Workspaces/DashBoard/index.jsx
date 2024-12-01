@@ -37,6 +37,13 @@ const DashBoard = () => {
     if (Array.isArray(workspaceDetails?.boards)) setListBoard(workspaceDetails?.boards);
   }, [workspaceDetails?.boards, id]);
 
+  useEffect(() => {
+    document.title = "Workspace | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  }, []);
+
   if (!workspaceInfo?.length) {
     return <div className="text-xl font-semibold">LOOK LIKE YOU DON'T HAVE ANY WORKSPACE YET!</div>;
   }

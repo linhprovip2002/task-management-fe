@@ -1,8 +1,10 @@
 import request from "./request";
 
-export const getBoardPermission = async (boardId) => {
+export const getBoardPermission = async (boardId, roleId) => {
   try {
-    const response = await request.get(`/board/${boardId}/permission`);
+    const response = await request.get(
+      `/board/${boardId}/permission/${roleId}`,
+    );
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -21,7 +23,7 @@ export const getBoardRole = async (boardId) => {
 export const createBoardRole = async (boardId, name) => {
   try {
     const response = await request.post(`/board/${boardId}/role`, {
-      name
+      name,
     });
     return response.data;
   } catch (error) {
@@ -30,10 +32,6 @@ export const createBoardRole = async (boardId, name) => {
 };
 
 export const updateBoardPermission = async (boardId, payload) => {
-  try {
-    const response = await request.put(`/board/${boardId}/permission`, payload);
-    return response.data;
-  } catch (error) {
-    console.error("Error:", error);
-  }
+  const response = await request.put(`/board/${boardId}/permission`, payload);
+  return response.data;
 };

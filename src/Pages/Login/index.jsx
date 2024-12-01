@@ -1,15 +1,16 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Button, Divider, TextField } from "@mui/material";
-import { TrelloIconColor } from "../../Components/Icons";
+// import { TrelloIconColor } from "../../Components/Icons";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { SignIn } from "../../Services/API/Auth";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { useStorage } from "../../Contexts/Storage";
-import routes, { workspaceRoutes } from "../../config/routes";
+import routes from "../../config/routes";
 import { loginLogoList } from "./constants/logo";
 import Loading from "../../Components/Loading";
+import TrelloLogoIcon from "../../Components/TrelloLogoIcon/TrelloLogoIcon";
 
 const Login = memo(() => {
   const storage = useStorage();
@@ -18,8 +19,8 @@ const Login = memo(() => {
   const { handleSubmit, control } = useForm({
     defaultValues: {
       email: "",
-      password: ""
-    }
+      password: "",
+    },
   });
 
   const onLogin = (values) => {
@@ -29,17 +30,26 @@ const Login = memo(() => {
       .then((res) => {
         Cookies.set("authToken", res.accessToken, {
           expires: 7,
-          path: "/"
+          path: "/",
         });
         Cookies.set("refreshToken", res.refreshToken, {
           expires: 7,
-          path: "/"
+          path: "/",
         });
+        Cookies.set("userId", res.user.id, {
+          expires: 7,
+          path: "/",
+        });
+        toast.success("Login successfully");
         storage.setIsLoggedIn(true);
         storage.setUserData(res.user);
-        storage.setFirstWorkspace(res.defaultWorkspaceId);
-        toast.success("Login successfully");
-        navigate(workspaceRoutes.workspaceHome);
+        if (res.defaultWorkspaceId) {
+          storage.setFirstWorkspace(res.defaultWorkspaceId);
+          navigate(`workspace/${res.defaultWorkspaceId}/home`);
+        } else {
+          console.log(res.user.id);
+          navigate(`user/${res.user.id}/boards`);
+        }
       })
       .catch(() => {
         toast.error("Login not successfully");
@@ -49,13 +59,24 @@ const Login = memo(() => {
       });
   };
 
+  useEffect(() => {
+    document.title = "Login | Kanban";
+    return () => {
+      document.title = "Kanban";
+    };
+  }, []);
+
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="px-[40px] py-[32px] w-[400px] shadow-lg shadow-gray-300/50">
         <div>
           <div className="mb-4">
-            <div className="flex justify-center">
-              <TrelloIconColor />
+            <div className="flex items-center justify-center">
+              <TrelloLogoIcon
+                style={{ color: "#172b4d" }}
+                className="w-3 h-3 mr-1"
+              />
+              <span className="text-xl font-bold">Kanban</span>
             </div>
             <h5 className="text-[16px] font-medium pt-6 text-center text-[var(--text-color)]">
               Login to continue
@@ -71,13 +92,14 @@ const Login = memo(() => {
               control={control}
               render={({ field }) => (
                 <TextField
+                  name="email"
                   type="email"
                   onChange={field.onChange}
                   value={field.email}
                   sx={{
                     "& .MuiInputBase-input": {
-                      padding: 1
-                    }
+                      padding: 1,
+                    },
                   }}
                   placeholder="Input your email"
                 />
@@ -88,13 +110,14 @@ const Login = memo(() => {
               control={control}
               render={({ field }) => (
                 <TextField
+                  name="password"
                   onChange={field.onChange}
                   value={field.password}
                   type="password"
                   sx={{
                     "& .MuiInputBase-input": {
-                      padding: 1
-                    }
+                      padding: 1,
+                    },
                   }}
                   placeholder="Input your password"
                 />
@@ -124,7 +147,10 @@ const Login = memo(() => {
           </div>
 
           <div className="flex">
-            <Link className="text-[#0c66e4] text-[14px] hover:underline">
+            <Link
+              to="/forgot-pass"
+              className="text-[#0c66e4] text-[14px] hover:underline"
+            >
               You can't login ?
             </Link>
             <p className="text-[14px] text-[#42526E] mx-2">•</p>

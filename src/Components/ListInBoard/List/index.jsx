@@ -15,6 +15,7 @@ import { memo } from "react";
 import { createCardByIdList } from "../../../Services/API/ApiCard";
 import { toast } from "react-toastify";
 import { useDroppable } from "@dnd-kit/core";
+import { useParams } from "react-router-dom";
 
 function List({ item = {}, id }) {
   const {
@@ -39,8 +40,8 @@ function List({ item = {}, id }) {
     cursor: "default",
   };
 
+  const { idBoard } = useParams();
   const {
-    boardId,
     activeMonitor,
     setActiveIndex,
     activeIndex,
@@ -49,17 +50,17 @@ function List({ item = {}, id }) {
     dataList,
     setDataList,
   } = useListBoardContext();
-  const { getCardPermissionByUser } = useGetBoardPermission(boardId);
+  const { getCardPermissionByUser } = useGetBoardPermission();
 
   const handleClickOutside = async (event) => {
     if (event.target.value) {
       const dataList = {
         title: event.target.value.trim(),
         description: item?.description,
-        boardId: boardId,
+        idBoard: idBoard,
       };
       try {
-        await UpdateList(boardId, id, dataList);
+        await UpdateList(idBoard, id, dataList);
       } catch (error) {
         console.error("Failed to create list:", error);
       }
@@ -68,7 +69,7 @@ function List({ item = {}, id }) {
 
   const handleAddCard = async (nameTitle) => {
     try {
-      const newCard = await createCardByIdList({
+      const newCard = await createCardByIdList(idBoard, {
         title: nameTitle,
         description: "",
         coverUrl: "",
@@ -96,7 +97,7 @@ function List({ item = {}, id }) {
   return (
     <div ref={colNodeRef} style={dndKitColumStyles} {...attributes}>
       <div {...listeners} className="px-[8px]">
-        <div className="flex flex-col w-[248px] max-h-[80vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
+        <div className="flex flex-col w-[272px] max-h-[78vh] bg-gray-100 rounded-[12px] p-1 transition-opacity duration-300  ">
           <div className="flex p-1 items-center bg-gray-100">
             <input
               type="text"

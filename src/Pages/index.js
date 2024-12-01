@@ -1,5 +1,7 @@
 export { default as Login } from "./Login";
 export { default as SignUp } from "./SignUp";
+export { default as ForgotPassword } from "./ForgotPassword";
+
 // Workspace
 export { default as WorkspaceHighlights } from "./Workspaces/Highlights";
 export { default as WorkspaceViews } from "./Workspaces/Views";

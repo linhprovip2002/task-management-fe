@@ -4,10 +4,12 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import { updateBoard } from "../../Services/API/ApiBoard/apiBoard";
 
-export const Board = ({ board }) => {
+export const Board = ({ board, wspId }) => {
   const [isFavorite, setIsFavorite] = useState(board.isFavorite);
   const [open, setOpen] = useState(false);
   const { id: workspaceId } = useParams();
+
+  const effectiveWorkspaceId = wspId || workspaceId;  
 
   const getStar = useMemo(() => {
     return isFavorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />;
@@ -24,7 +26,7 @@ export const Board = ({ board }) => {
   return (
     <>
       <Link
-        to={`/workspace/${workspaceId}/board/${board.id}`}
+        to={`/workspace/${effectiveWorkspaceId}/board/${board.id}`}
         className="relative w-[12rem] h-[110px] rounded-lg hover:brightness-95 brightness-80 hover:cursor-pointer"
         onMouseOver={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -43,8 +45,8 @@ export const Board = ({ board }) => {
             <p className="justify-start p-2 ml-1 font-bold text-white flext text-md">{board.title}</p>
           </div>
           {(open || isFavorite) && (
-            <div className="absolute inset-0 bg-white bg-opacity-10 z-10">
-              <div className="absolute bottom-2 right-2 text-yellow-400" onClick={handleToggleFavorite}>
+            <div className="absolute inset-0 z-10 bg-white bg-opacity-10">
+              <div className="absolute text-yellow-400 bottom-2 right-2" onClick={handleToggleFavorite}>
                 {getStar}
               </div>
             </div>

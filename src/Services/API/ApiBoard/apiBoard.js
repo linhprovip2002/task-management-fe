@@ -27,31 +27,37 @@ export async function getBoard(options) {
   }
 }
 
-// get board theo id
-export async function getBoardById(id) {
+export async function getBoardById(boardId) {
   try {
-    const response = await request.get(`/board/${id}`);
+    const response = await request.get(`/board/${boardId}`);
     return response.data;
   } catch (error) {
     throw error;
   }
 }
 
-export async function deleteBoardId(id) {
+export async function deleteBoardId(boardId) {
   try {
-    const response = await request.delete(`/board/${id}`);
+    const response = await request.delete(`/board/${boardId}`);
     return response.data;
   } catch (error) {
     throw error;
   }
 }
 
-export async function getAllMembersByIdBoard(id) {
-  return await request.get(`/board/${id}/members`);
+export async function getAllMembersByIdBoard(boardId) {
+  return await request.get(`/board/${boardId}/members`);
 }
 
-export async function getAllTagByIdBoard(id) {
-  return await request.get(`/board/${id}/tag`);
+export async function updateMemberRole(boardId, userId, roleId) {
+  return await request.put(`/board/${boardId}/members`, {
+    userId,
+    roleId,
+  });
+}
+
+export async function getAllTagByIdBoard(boardId) {
+  return await request.get(`/board/${boardId}/tag`);
 }
 
 export async function AddTagInCard(boardId, cardId, tagId) {
@@ -80,15 +86,18 @@ export async function removeMember(userId, boardId) {
 
 export async function addMemberIntoBoard(userId, boardId) {
   return await request.post(`/board/${boardId}/members`, {
-    memberIds: [userId],
+    userId: userId,
+    roleId: 3,
   });
 }
 export async function updateBoard(boardId, data) {
   return await request.patch(`/board/${boardId}`, data);
 }
 
-export async function getActivities(boardId) {
-  const response = await request.get(`/board/${boardId}/activities`);
+export async function getActivities({ boardId, page, perPage }) {
+  const response = await request.get(
+    `/board/${boardId}/activities?page=${page}&limit=${perPage}`,
+  );
   return response?.data;
 }
 
